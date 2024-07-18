@@ -147,12 +147,10 @@ class Turtle {
 
     right(angle) {
         this.angle += angle;
-        this.drawTurtle();
     }
 
     left(angle) {
         this.angle -= angle;
-        this.drawTurtle();
     }
 
     penUp() {
@@ -228,6 +226,9 @@ const hideTurtle = () => new TurtleMonad(null).addCommand({
 const showTurtle = () => new TurtleMonad(null).addCommand({
     execute: (turtle) => turtle.unhideTurtle()
 });
+const drawTurtle = () => new TurtleMonad(null).addCommand({
+    execute: (turtle) => turtle.drawTurtle()
+});
 const penUp = () => new TurtleMonad(null).addCommand(new PenUp());
 const penDown = () => new TurtleMonad(null).addCommand(new PenDown());
 const setColor = color => new TurtleMonad(null).addCommand(new SetColor(color));
@@ -289,6 +290,7 @@ function parseProgram(program) {
     while (tokens.length > 0) {
         expressions.push(parseExpression(tokens));
     }
+    expressions.push(drawTurtle())
     return TurtleMonad.of(null).flatMap(() => TurtleMonad.run(expressions));
 }
 
@@ -313,7 +315,7 @@ function runCode() {
 
         // Execute all instructions
         result.commands.forEach(command => command.execute(turtle));
-
+        console.log(turtle)
         // Display output
         output.innerHTML = `Instructions executed: ${result.commands.length}`;
     } catch (error) {
@@ -341,6 +343,7 @@ editor.addEventListener('input', debouncedRunCode);
 
 // Initial program
 editor.value = `beColour #FFF
+hd
 for 36 (
   fw 100
   rt 170
