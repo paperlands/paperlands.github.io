@@ -76,14 +76,16 @@ class Left extends Command {
 }
 
 class PenUp extends Command {
-    execute(turtle) {
-        turtle.penUp();
+    constructor() {
+        super();
+        this.penDown = false
     }
 }
 
 class PenDown extends Command {
-    execute(turtle) {
-        turtle.penDown();
+    constructor() {
+        super();
+        this.penDown = true
     }
 }
 
@@ -126,6 +128,7 @@ class Turtle {
         this.ctx.strokeStyle = this.color;
         this.ctx.beginPath();
         this.ctx.moveTo(this.x, this.y);
+        this.showTurtle = true;
     }
 
     forward(distance) {
@@ -139,14 +142,17 @@ class Turtle {
         }
         this.x = newX;
         this.y = newY;
+        //this.drawTurtle();
     }
 
     right(angle) {
         this.angle += angle;
+        this.drawTurtle();
     }
 
     left(angle) {
         this.angle -= angle;
+        this.drawTurtle();
     }
 
     penUp() {
@@ -157,6 +163,54 @@ class Turtle {
         this.penDown = true;
     }
 
+    drawTurtle() {
+        if (this.showTurtle) {
+            const headSize = 10;
+
+            this.ctx.save();
+            this.ctx.fillStyle = this.color;
+            this.ctx.translate(this.x, this.y);
+            this.ctx.rotate(this.angle * Math.PI / 180);
+
+            this.ctx.beginPath();
+            this.ctx.moveTo(headSize, 0);
+            this.ctx.lineTo(-headSize / 2, headSize / 2);
+            this.ctx.lineTo(-headSize / 2, -headSize / 2);
+            this.ctx.closePath();
+            this.ctx.fill();
+
+            this.ctx.restore();
+
+        //     const headSize = 10;
+        //     const headX = this.x + headSize * Math.cos(this.angle * Math.PI / 180);
+        //     const headY = this.y + headSize * Math.sin(this.angle * Math.PI / 180);
+
+        //     this.ctx.save();
+        //     this.ctx.fillStyle = this.color;
+        //     this.ctx.beginPath();
+        //     this.ctx.moveTo(headX, headY);
+        //     this.ctx.lineTo(
+        //         this.x + headSize / 2 * Math.cos((this.angle + 140) * Math.PI / 180),
+        //         this.y + headSize / 2 * Math.sin((this.angle + 140) * Math.PI / 180)
+        //     );
+        //     this.ctx.lineTo(
+        //         this.x + headSize / 2 * Math.cos((this.angle - 140) * Math.PI / 180),
+        //         this.y + headSize / 2 * Math.sin((this.angle - 140) * Math.PI / 180)
+        //     );
+        //     this.ctx.closePath();
+        //     this.ctx.fill();
+        //     this.ctx.restore();
+        // }
+        }}
+
+    hideTurtle() {
+        this.showTurtle = false;
+    }
+
+    unhideTurtle() {
+        this.showTurtle = true;
+    }
+
     setColor(color) {
         this.color = color;
         this.ctx.strokeStyle = this.color;
@@ -165,8 +219,15 @@ class Turtle {
 
 // Command functions
 const fw = distance => new TurtleMonad(null).addCommand(new Forward(distance));
+const jmp = distance => new TurtleMonad(null).addCommand(new PenUp()).addCommand(new Forward(distance)).addCommand(new PenDown());
 const right = angle => new TurtleMonad(null).addCommand(new Right(angle));
 const left = angle => new TurtleMonad(null).addCommand(new Left(angle));
+const hideTurtle = () => new TurtleMonad(null).addCommand({
+    execute: (turtle) => turtle.hideTurtle()
+});
+const showTurtle = () => new TurtleMonad(null).addCommand({
+    execute: (turtle) => turtle.unhideTurtle()
+});
 const penUp = () => new TurtleMonad(null).addCommand(new PenUp());
 const penDown = () => new TurtleMonad(null).addCommand(new PenDown());
 const setColor = color => new TurtleMonad(null).addCommand(new SetColor(color));
@@ -211,8 +272,11 @@ function parseExpression(tokens) {
             case 'fw': return fw(Number(tokens.shift()));
             case 'rt': return right(Number(tokens.shift()));
             case 'lt': return left(Number(tokens.shift()));
+            case 'jmp': return jmp(Number(tokens.shift()));
             case 'penUp': return penUp();
             case 'penDown': return penDown();
+            case 'hd': return hideTurtle();
+            case '!hd': return showTurtle();
             case 'beColour': return setColor(tokens.shift());
             default: throw new Error(`Unknown command: ${token}`);
         }
@@ -230,6 +294,9 @@ function parseProgram(program) {
 
 // UI setup
 const canvas = document.getElementById('canvas');
+// upres canvas
+canvas.width = window.innerWidth
+canvas.height = window.innerHeight;
 const editor = document.getElementById('editor');
 const output = document.getElementById('output');
 
