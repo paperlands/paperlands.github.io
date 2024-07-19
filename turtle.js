@@ -302,12 +302,19 @@ const canvas = document.getElementById('canvas');
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight;
 const editor = document.getElementById('editor');
-//var shell = CodeMirror.fromTextArea(editor);
+
+var shell = CodeMirror.fromTextArea(editor, {theme: "abbott",
+                                               mode: "apl",
+                                               lineNumbers: true,
+                                               value: "beColour #FFF \n hd \nfor 36 ( \n fw 100 \n rt 170)"
+                                              });
 const output = document.getElementById('output');
 
 function runCode() {
     const turtle = new Turtle(canvas);
-    const code = editor.value;
+    //const code = editor.value()
+    const code = shell.getValue();
+
 
     try {
         const result = parseProgram(code);
@@ -341,15 +348,9 @@ function debounce(func, wait) {
 
 // Set up event listeners
 const debouncedRunCode = debounce(runCode, 300);
-editor.addEventListener('input', debouncedRunCode);
-
-// Initial program
-editor.value = `beColour #FFF
-hd
-for 36 (
-  fw 100
-  rt 170
-)`;
+shell.on('change', function(cm, change) {
+    debouncedRunCode()
+    })
 
 // Run initial program
 runCode();

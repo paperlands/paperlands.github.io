@@ -46,15 +46,16 @@
             overflow-y: auto;
         }
     </style>
-<!--     <script src="shell/codemirror.js"></script> -->
-<!--     <link rel="stylesheet" href="shell/codemirror.css"> -->
-<!-- <script src="shell/dojologo.js"></script> -->
+<script src="shell/codemirror.js"></script>
+<link rel="stylesheet" href="shell/codemirror.css">
+<link rel="stylesheet" href="shell/theme/abbott.css">
+<script src="shell/mode/apl/apl.js"></script>
 </head>
 <body style="background:black;color:white;">
   <h1>Dojo Shell 🐚</h1>
    <div id="runenv">
     <textarea id="editor"></textarea>
-    <button id="runButton">Go</button>
+    <button id="runButton" onclick="runCode()" >Go</button>
     </div>
     <canvas id="canvas" width="1000" height="1000"></canvas>
     <div id="output"></div>
