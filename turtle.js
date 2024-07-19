@@ -305,8 +305,7 @@ const editor = document.getElementById('editor');
 
 var shell = CodeMirror.fromTextArea(editor, {theme: "abbott",
                                                mode: "apl",
-                                               lineNumbers: true,
-                                               value: "beColour #FFF \n hd \nfor 36 ( \n fw 100 \n rt 170)"
+                                               lineNumbers: true
                                               });
 const output = document.getElementById('output');
 
@@ -348,6 +347,18 @@ function debounce(func, wait) {
 
 // Set up event listeners
 const debouncedRunCode = debounce(runCode, 300);
+
+editor.value = `beColour #F4C430
+hd
+for 2(
+for 36 (
+  fw 100
+  jmp 50
+  rt 170
+)
+jmp 50
+)`;
+
 shell.on('change', function(cm, change) {
     debouncedRunCode()
     })
