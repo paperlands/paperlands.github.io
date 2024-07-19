@@ -153,11 +153,11 @@ class Turtle {
         this.angle -= angle;
     }
 
-    penUp() {
+    noPen() {
         this.penDown = false;
     }
 
-    penDown() {
+    oPen() {
         this.penDown = true;
     }
 
@@ -217,7 +217,11 @@ class Turtle {
 
 // Command functions
 const fw = distance => new TurtleMonad(null).addCommand(new Forward(distance));
-const jmp = distance => new TurtleMonad(null).addCommand(new PenUp()).addCommand(new Forward(distance)).addCommand(new PenDown());
+const jmp = distance => new TurtleMonad(null).addCommand({
+    execute: (turtle) => turtle.noPen()
+}).addCommand(new Forward(distance)).addCommand({
+    execute: (turtle) => turtle.oPen()
+});
 const right = angle => new TurtleMonad(null).addCommand(new Right(angle));
 const left = angle => new TurtleMonad(null).addCommand(new Left(angle));
 const hideTurtle = () => new TurtleMonad(null).addCommand({
@@ -229,8 +233,6 @@ const showTurtle = () => new TurtleMonad(null).addCommand({
 const drawTurtle = () => new TurtleMonad(null).addCommand({
     execute: (turtle) => turtle.drawTurtle()
 });
-const penUp = () => new TurtleMonad(null).addCommand(new PenUp());
-const penDown = () => new TurtleMonad(null).addCommand(new PenDown());
 const setColor = color => new TurtleMonad(null).addCommand(new SetColor(color));
 
 // Control structures
@@ -300,6 +302,7 @@ const canvas = document.getElementById('canvas');
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight;
 const editor = document.getElementById('editor');
+//var shell = CodeMirror.fromTextArea(editor);
 const output = document.getElementById('output');
 
 function runCode() {
@@ -315,7 +318,6 @@ function runCode() {
 
         // Execute all instructions
         result.commands.forEach(command => command.execute(turtle));
-        console.log(turtle)
         // Display output
         output.innerHTML = `Instructions executed: ${result.commands.length}`;
     } catch (error) {
