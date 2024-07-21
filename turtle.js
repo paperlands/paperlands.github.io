@@ -1,4 +1,7 @@
-// TurtleMonad class for managing state and commands
+// TurtleMonad class for managing state and commands'
+var x = null
+var y = null
+
 class TurtleMonad {
     constructor(value, commands = []) {
         this.value = value;
@@ -109,10 +112,10 @@ class Turtle {
     spawn() {
         const fl = 2
         const  cl = 8
-        const  horiz = Math.floor(Math.random() * (cl - fl ) ) + fl
-        const vert = Math.floor(Math.random() * (cl - fl ) ) + fl
-        this.x = this.ctx.canvas.width / horiz;
-        this.y = this.ctx.canvas.height / vert;
+        x  = x || Math.floor(Math.random() * (cl - fl ) ) + fl
+        y  = y || Math.floor(Math.random() * (cl - fl ) ) + fl
+        this.x = this.ctx.canvas.width / x;
+        this.y = this.ctx.canvas.height / y;
     }
 
     reset() {
