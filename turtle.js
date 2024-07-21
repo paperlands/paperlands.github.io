@@ -302,17 +302,25 @@ function parseProgram(program) {
 // UI setup
 const canvas = document.getElementById('canvas');
 // upres canvas
-canvas.width = window.innerWidth
-canvas.height = window.innerHeight;
+
+// const observer = new ResizeObserver((entries) => {
+//   width = canvas.clientWidth;
+//   height = canvas.clientHeight;
+// });
+// observer.observe(canvas)
+
 const editor = document.getElementById('editor');
 
-var shell = CodeMirror.fromTextArea(editor, {theme: "abbott",
+let shell = CodeMirror.fromTextArea(editor, {theme: "abbott",
                                                mode: "apl",
                                                lineNumbers: true
                                               });
 const output = document.getElementById('output');
 
 function runCode() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
     const turtle = new Turtle(canvas);
     //const code = editor.value()
     const code = shell.getValue();
@@ -351,18 +359,24 @@ function debounce(func, wait) {
 // Set up event listeners
 const debouncedRunCode = debounce(runCode, 300);
 
-editor.value = `beColour #F4C430
+shell.setValue(loadEditorContent());
+
+function saveEditorContent() {
+  localStorage.setItem('@my.turtle', shell.getValue());
+}
+
+function loadEditorContent() {
+  return localStorage.getItem('@my.turtle') || `beColour gold
 hd
-for 2(
-for 36 (
-  fw 100
-  jmp 50
-  rt 170
-)
-jmp 50
+for 40(
+  fw 5
+  rt 9
 )`;
+}
+
 
 shell.on('change', function(cm, change) {
+    saveEditorContent();
     debouncedRunCode()
     })
 
