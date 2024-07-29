@@ -273,6 +273,14 @@ function parseExpression(tokens) {
         const times = Number(tokens.shift());
         const action = parseExpression(tokens);
         return repeat(times, () => TurtleMonad.run(action));
+    } else if (token === 'do') {
+        const funcName = tokens.shift();
+        const args = [];
+        while (tokens[0] && tokens[0] !== '(') {
+            args.push(tokens.shift());
+        }
+        const body = parseExpression(tokens);
+        return { type: 'func', name: funcName, args, body };
     } else {
         switch (token) {
             case 'fw': return fw(Number(tokens.shift()));
@@ -292,10 +300,18 @@ function parseExpression(tokens) {
 function parseProgram(program) {
     const tokens = tokenize(program);
     const expressions = [];
+    const functions = {};
     while (tokens.length > 0) {
-        expressions.push(parseExpression(tokens));
+        const expr = parseExpression(tokens);
+        console.log(expr)
+        if (expr.type === 'func') {
+            functions[expr.name] = expr;
+        }
+        else {
+            expressions.push(expr);
+        }
     }
-    expressions.push(drawTurtle())
+    // expressions.push(drawTurtle())
     return TurtleMonad.of(null).flatMap(() => TurtleMonad.run(expressions));
 }
 
