@@ -5,11 +5,15 @@ id: home
 permalink: /
 ---
 
-# Good morning! 🌅
+# Good morning! 
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="88" height="88"> 
+<image xlink:href="/assets/logo.svg" width="100" height="88"/>
+</svg>
 
   Welcome to Paperlands! <span style="font-weight: bold">[[Your first note]]</span> to get started on your exploration.
 
-Find us [on GitHub here](https://github.com/ve1ld/vyasa).
+Find us [on GitHub here](https://github.com/paperlands).
 
 <strong>Past Writings</strong>
 
@@ -90,6 +94,8 @@ body {
         height: 200px;
         position: fixed;
         bottom: 0;
+        right: 0;
+        transform: translateX(50%);
     }
 }
 
