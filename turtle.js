@@ -241,7 +241,7 @@ const setColor = color => new TurtleMonad(null).addCommand(new SetColor(color));
 // Control structures
 const repeat = (times, action) =>
     new TurtleMonad(null).flatMap(() =>
-        Array(times).fill().reduce(acc => acc.flatMap(action), TurtleMonad.of(null))
+        Array(times > 10000 && 10000 || times).fill().reduce(acc => acc.flatMap(action), TurtleMonad.of(null))
     );
 
 // Parser
@@ -313,8 +313,43 @@ const editor = document.getElementById('editor');
 
 let shell = CodeMirror.fromTextArea(editor, {theme: "abbott",
                                                mode: "apl",
-                                               lineNumbers: true
-                                              });
+                                             lineNumbers: true,
+                                             styleActiveLine: true,
+                                             autocorrect: true,
+                                             extraKeys: {
+                                                 "Ctrl-Space": function() {
+      snippet()
+    }}});
+
+ const snippets = [
+    { text: 'fw 1', displayText: 'go forward 1 unit' },
+    { text: 'hd', displayText: 'hide turtle' },
+    { text: 'jmp 1', displayText: 'jump by 1 unit' },
+     { text: 'rt 90', displayText: 'turn right angle 90' },
+     { text: 'lt 90', displayText: 'turn left angle 90 ' },
+     { text: 'for 2 ()', displayText: 'repeat twice' },
+  ];
+
+  function snippet() {
+    CodeMirror.showHint(shell, function () {
+      const cursor = shell.getCursor();
+      const token = shell.getTokenAt(cursor);
+      const start = token.start;
+      const end = cursor.ch;
+      const line = cursor.line;
+      const currentWord = token.string;
+
+      const list = snippets.filter(function (item) {
+        return item.text.indexOf(currentWord) >= 0;
+      });
+
+      return {
+        list: list.length ? list : snippets,
+        from: CodeMirror.Pos(line, start),
+        to: CodeMirror.Pos(line, end)
+      };
+    }, { completeSingle: true });
+  }
 const output = document.getElementById('output');
 
 function runCode() {
