@@ -8,6 +8,8 @@ title: Beginnings
 
 Thinking is often intertwined with the context within which we operate and apply them. Two of the greatest of such context have been writing and mathematical notation. These tools need not only be notational or symbolic. The human mind in the presence of an abacus for instance exploits it much like a scaffold around which to structure cognitive operations. Such objects adapt and extend the thoughts that run our human minds into the external world. Computational environments have in recent years been at the forefront of this process helping people and businesses reason about processes that they want to observe, intervene, model and share.
 
+{% include figure image_path="assets/lib/kids.jpg" alt="" caption="Computational thinking is about formulating the thinking about processes with enough clarity, and in a systematic that it can be firstly understood by people, and only incidentally to the extent that it can tell even a computer what to do" %}
+
 Computers are still however being ill treated as modes for instruction in class when in fact they are a far richer tool as modes for interaction. It is still the child and the paper and the teacher, just that the paper has been substituted for the screen. 
 
 ## Interacting
