@@ -1,6 +1,7 @@
 $color-primary: hsl(0, 0%, 10%);
 $color-text: hsl(0, 0%, 20%);
 $color-subtext: hsl(0, 0%, 30%);
+$color-core: rgb(255, 153, 51);
 $color-border: hsl(18.74, 100%, 50%);
 $color-box-background: rgba(254,254,254, 0);
 $border-radius: 4px;
@@ -122,8 +123,8 @@ a {
   border-bottom: 1px solid $color-border;
   color: $color-primary;
   &:hover {
-    color: black !important;
-    background: #fffaf1;
+    color: white !important;
+    background: #000000;
   }
   &:after {
     position: relative;
@@ -168,7 +169,7 @@ nav {
 }
 
 code {
-  background: #f5f5f5;
+  background: rgba(255, 232, 188, 0.2);
   padding: 0.1em 0.2em;
   border-radius: 4px;
 }
@@ -187,7 +188,7 @@ code {
 
 content a.internal-link {
   border-color: #8b88e6;
-  background-color: #efefff;
+  background-color: $color-core;
 }
 
 input.margin-toggle {
