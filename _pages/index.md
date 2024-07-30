@@ -11,7 +11,7 @@ permalink: /
 <image xlink:href="/assets/logo.svg" width="100" height="88"/>
 </svg>
 
-  Welcome to Paperlands! <span style="font-weight: bold">[[Your first note]]</span> to get started on your exploration.
+  Welcome to Paperlands! Read <span style="font-weight: bold">our [[Beginnings]]</span> to get started
 
 Find us [on GitHub here](https://github.com/paperlands).
 

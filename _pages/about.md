@@ -9,7 +9,7 @@ permalink: /about
 On a mission to build a school
 
 
-> In the elder days of Art,
+> In the elder days of Art,<br>
 Builders wrought with greatest care <br>
 Each minute and unseen part; <br>
 For the Gods see everywhere. <br>
