@@ -43,6 +43,15 @@ class TurtleMonad {
 
 }
 
+
+class ASTNode {
+  constructor(type, value, children = []) {
+    this.type = type;
+    this.value = value;
+    this.children = children;
+  }
+}
+
 // Command classes
 class Command {
     execute(turtle) {}
@@ -107,6 +116,16 @@ class Turtle {
     constructor(canvas) {
         this.ctx = canvas.getContext('2d');
         this.reset();
+        this.commands = {
+            // Add other command references here
+            fd: this.forward.bind(this),
+            rt: this.right.bind(this),
+            lt: this.left.bind(this),
+            show: this.unhideTurtle.bind(this),
+            hd: this.hideTurtle.bind(this),
+            jmp: this.jmp.bind(this)
+        };
+        this.functions = {};
     }
 
     spawn() {
@@ -117,6 +136,54 @@ class Turtle {
         this.x = this.ctx.canvas.width / x;
         this.y = this.ctx.canvas.height / y;
     }
+
+    defineFunction(name, parameters, body) {
+        this.functions[name] = { parameters, body };
+    }
+
+    callFunction(name, args) {
+        const func = this.functions[name];
+        if (!func)
+        {this.callCommand(name, args)}
+        else
+        {
+            const context = {};
+            func.parameters.forEach((param, index) => {
+                context[param] = args[index];
+            });
+
+            this.executeBody(func.body, context);
+
+        }
+    }
+
+    callCommand(commandName, ...args) {
+        const com = this.commands[commandName];
+        if (com) {
+            com(...args); // Call the command with its arguments
+        } else {
+            throw new Error(`Function ${commandName} not defined`);
+        }
+    }
+
+    executeBody(body, context) {
+        body.forEach(node => {
+            switch (node.type) {
+            case 'Loop':
+                const times = context[node.value];
+                for (let i = 0; i < times; i++) {
+                    this.executeBody(node.children, context);
+                }
+                break;
+            case 'Call':
+                const args = node.children.map(arg => context[arg.value] || arg.value);
+                this.callFunction(node.value, ...args);
+                break;
+            }
+        });
+    }
+
+
 
     reset() {
         if( this.x == undefined ) {
@@ -156,6 +223,13 @@ class Turtle {
         this.angle -= angle;
     }
 
+    jmp(distance){
+
+        this.noPen();
+        this.forward(distance);
+        this.oPen();
+    }
+
     noPen() {
         this.penDown = false;
     }
@@ -182,26 +256,6 @@ class Turtle {
 
             this.ctx.restore();
 
-        //     const headSize = 10;
-        //     const headX = this.x + headSize * Math.cos(this.angle * Math.PI / 180);
-        //     const headY = this.y + headSize * Math.sin(this.angle * Math.PI / 180);
-
-        //     this.ctx.save();
-        //     this.ctx.fillStyle = this.color;
-        //     this.ctx.beginPath();
-        //     this.ctx.moveTo(headX, headY);
-        //     this.ctx.lineTo(
-        //         this.x + headSize / 2 * Math.cos((this.angle + 140) * Math.PI / 180),
-        //         this.y + headSize / 2 * Math.sin((this.angle + 140) * Math.PI / 180)
-        //     );
-        //     this.ctx.lineTo(
-        //         this.x + headSize / 2 * Math.cos((this.angle - 140) * Math.PI / 180),
-        //         this.y + headSize / 2 * Math.sin((this.angle - 140) * Math.PI / 180)
-        //     );
-        //     this.ctx.closePath();
-        //     this.ctx.fill();
-        //     this.ctx.restore();
-        // }
         }}
 
     hideTurtle() {
