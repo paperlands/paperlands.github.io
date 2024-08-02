@@ -125,11 +125,17 @@ blockquote {
 }
 
 hr {
-  width: 100%;
-  border: 0;
-  height: 1px;
-  margin: 1.5em 0;
-  background: $color-border;
+    border: none;
+    color: $color-border;
+    overflow: visible;
+    text-align: center;
+    height: 2px;
+}
+hr:after {
+    content: '☙ ——— ›– ✧ –‹ ——— ❧ ';
+    padding: 0 4px;
+    position: relative;
+    top: -14px;
 }
 
 h1,

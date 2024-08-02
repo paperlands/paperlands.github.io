@@ -13,13 +13,13 @@
   .text text {
     cursor: pointer;
     fill: #333;
-    text-shadow: -1px -1px 0 #fafafabb, 1px -1px 0 #fafafabb, -1px 1px 0 #fafafabb, 1px 1px 0 #fafafabb;
+    text-shadow: -1px -1px 0 inherit, 1px -1px 0 inherit, -1px 1px 0 inherit, 1px 1px 0 inherit;
   }
 
   .nodes [active],
   .text [active] {
     cursor: pointer;
-    fill: black;
+    fill: rgb(255, 153, 51);
   }
 
   .inactive {
@@ -28,7 +28,7 @@
   }
 
   #graph-wrapper {
-    background: #fcfcfc;
+    background: inherit;
     border-radius: 4px;
     height: auto;
   }
