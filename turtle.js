@@ -10,6 +10,13 @@ class ASTNode {
   }
 }
 
+// Numeric Typecheck for Args
+function isNumeric(str) {
+  if (typeof str != "string") return false // we only process strings!
+  return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+         !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+}
+
 // Turtle class for actual drawing
 class Turtle {
     constructor(canvas) {
@@ -70,14 +77,19 @@ class Turtle {
         body.forEach(node => {
             switch (node.type) {
             case 'Loop':
-                const times = context[node.value];
+                const times = isNumeric(node.value) ? parseFloat(node.value) : context[node.value] || node.value; // is context getting dereferenced fi needed
                 for (let i = 0; i < times; i++) {
                     this.executeBody(node.children, context);
                 }
                 break;
             case 'Call':
-                const args = node.children.map(arg => context[arg.value] || arg.value);
+                const args = node.children.map(arg => isNumeric(arg.value) ? parseFloat(arg.value) : context[arg.value] || arg.value);
                 this.callFunction(node.value, ...args);
+                break;
+
+            case 'Define':
+                //const args = node.children.map(arg => isNumeric(arg.value) ? parseFloat(arg.value) : context[arg.value] || arg.value);
+                //this.defineFunction(node.value, ...args);
                 break;
             }
         });
@@ -173,84 +185,70 @@ class Turtle {
 }
 
 // Parser
+//
 function tokenize(program) {
-    return program.replace(/\(/g, ' ( ')
-        .replace(/\)/g, ' ) ')
-        .trim()
-        .split(/\r?\n/)
-        .reduce((acc, curr, index) => {
-            acc[index] = curr.split(/\s+/); // Split current string by whitespace and store in accu
-            return acc;
-        }, [])
+  return program.split(/\r?\n/)
+    .map(line => line.trim())
+    .filter(line => line.length > 0);
 }
 
-function parseExpression(lines, tokens = []) {
-
-    if (lines.length === 0) {
-        throw new Error("Unexpected end of input");
-    }
-
-    if (tokens.length === 0) {
-        tokens = lines.shift();
-    }
-
-    const token = tokens.shift();
-
-    if (token === '(') {
-        const subExpr = [];
-        while (tokens[0] !== ')') {
-            if (tokens.length === 0) {
-                throw new Error("Mismatched parentheses");
-            }
-            subExpr.push(parseExpression(lines, tokens));
-        }
-        tokens.shift(); // Remove closing parenthesis
-        return subExpr;
-    } else if (token === 'for') {
-        const times = Number(tokens.shift());
-        const body = [];
-        while (tokens[0] !== ')') {
-            if (tokens.length === 0) {
-                throw new Error("Mismatched parentheses");
-            }
-            body.push(parseExpression(tokens));
-        }
-        tokens.shift(); // Remove closing parenthesis
-        return new ASTNode('Loop', times, body);
-    } else if (token === 'do') {
-        const funcName = tokens.shift();
-        const args = [];
-        while (tokens[0] && tokens[0] !== '(') {
-            args.push(new ASTNode('Argument', tokens.shift()));
-        }
-        tokens.shift(); // Remove opening parenthesis
-        const body = parseExpression(tokens);
-        return new ASTNode('Define', funcName, args, body);
-    } else {
-        const commandName = token;
-        const args = [];
-        while (tokens[0] && tokens[0] !== ')' && tokens[0] !== '(') {
-            args.push(new ASTNode('Argument', tokens.shift()));
-        }
-        if (tokens[0] === '(') {
-            args.push(parseExpression(tokens));
-        }
-        if (tokens[0] === ')') {
-            tokens.shift(); // Remove closing parenthesis if present
-        }
-        return new ASTNode('Call', commandName, args);
-    }
+// Helper function to parse a single line into tokens
+function parseTokens(line) {
+  return line.split(/\s+/);
 }
 
+// Helper function to parse a block of lines
+function parseBlock(lines, blockStack) {
+  const block = [];
+  blockStack.push(block);
+  while (lines.length > 0) {
+    const line = lines.shift();
+    if (line === ')') {
+      return blockStack.pop();
+    }
+    block.push(parseLine(line, lines, blockStack));
+  }
+  throw new Error("Unmatched opening parenthesis");
+}
 
+// Function to parse a single line
+function parseLine(line, lines, blockStack) {
+  const tokens = parseTokens(line);
+  const command = tokens.shift();
+
+  if (command === 'for') {
+    const times = Number(tokens.shift());
+    if (tokens.shift() !== '(') throw new Error("Expected '(' after 'for'");
+    return new ASTNode('Loop', times, parseBlock(lines, blockStack));
+  } else if (command === 'do') {
+    const funcName = tokens.shift();
+    const args = tokens.map(arg => new ASTNode('Argument', arg));
+    if (tokens.pop() !== '(') throw new Error("Expected '(' at the end of 'do'");
+    return new ASTNode('Define', funcName, args.concat(parseBlock(lines, blockStack)));
+  } else {
+    const args = tokens.map(arg => new ASTNode('Argument', arg));
+    return new ASTNode('Call', command, args);
+  }
+}
+
+// Main function to parse the entire program
 function parseProgram(program) {
-    const lines = tokenize(program)
-    const expressions = [];
-    while (lines.length > 0) {
-        expressions.push(parseExpression(lines));
-    }
-    return expressions;
+  const lines = tokenize(program);
+  const ast = [];
+  const blockStack = [ast];
+
+  while (lines.length > 0) {
+    const line = lines.shift();
+    blockStack[blockStack.length - 1].push(parseLine(line, lines, blockStack));
+  }
+
+  if (blockStack.length > 1) {
+    throw new Error("Unmatched opening parenthesis");
+  }
+
+  return ast;
 }
+
 
 // UI setup
 const canvas = document.getElementById('canvas');
@@ -307,16 +305,17 @@ function runCode() {
 
 
     try {
-        const result = parseProgram(code);
+        const commands = parseProgram(code);
 
         // Clear canvas
         turtle.ctx.clearRect(0, 0, canvas.width, canvas.height);
         turtle.reset();
 
         // Execute all instructions
-        turtle.executeBody(result, {});
+        turtle.executeBody(commands, {});
+
         // Display output
-        output.innerHTML = `Instructions executed: ${result.length}`;
+        output.innerHTML = `Instructions executed: ${commands.length}`;
     } catch (error) {
         output.innerHTML = `Error: ${error.message}`;
         console.error(error);
