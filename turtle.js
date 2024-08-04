@@ -3,9 +3,10 @@ var x = null
 var y = null
 
 class ASTNode {
-  constructor(type, value, children = []) {
+    constructor(type, value, children = [], meta = {}) {
     this.type = type;
     this.value = value;
+        this.meta = meta;
     this.children = children;
   }
 }
@@ -51,7 +52,7 @@ class Turtle {
     callFunction(name, args) {
         const func = this.functions[name];
         if (!func)
-        {this.callCommand(name, args)}
+        {this.callCommand(name, ...args)}
         else
         {
             const context = {};
@@ -84,12 +85,12 @@ class Turtle {
                 break;
             case 'Call':
                 const args = node.children.map(arg => isNumeric(arg.value) ? parseFloat(arg.value) : context[arg.value] || arg.value);
-                this.callFunction(node.value, ...args);
+                this.callFunction(node.value, args); // ...args
                 break;
 
             case 'Define':
-                //const args = node.children.map(arg => isNumeric(arg.value) ? parseFloat(arg.value) : context[arg.value] || arg.value);
-                //this.defineFunction(node.value, ...args);
+                const params = node.meta?.args?.map(n => n.value) || []
+                this.defineFunction(node.value,  params, node.children)
                 break;
             }
         });
@@ -222,9 +223,9 @@ function parseLine(line, lines, blockStack) {
     return new ASTNode('Loop', times, parseBlock(lines, blockStack));
   } else if (command === 'do') {
     const funcName = tokens.shift();
-    const args = tokens.map(arg => new ASTNode('Argument', arg));
     if (tokens.pop() !== '(') throw new Error("Expected '(' at the end of 'do'");
-    return new ASTNode('Define', funcName, args.concat(parseBlock(lines, blockStack)));
+    const args = tokens.map(arg => new ASTNode('Argument', arg));
+      return new ASTNode('Define', funcName, parseBlock(lines, blockStack), {args: args} );
   } else {
     const args = tokens.map(arg => new ASTNode('Argument', arg));
     return new ASTNode('Call', command, args);

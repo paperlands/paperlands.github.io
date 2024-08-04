@@ -90,8 +90,8 @@ body {
 
 @media (max-width: 1024px) {
     #runenv, #editor {
-        width: 100%;
-        height: 200px;
+        width: 400px;
+        height: 400px;
         position: fixed;
         bottom: 0;
         right: 0;
