@@ -132,7 +132,7 @@ class Turtle {
         // Command execution tracking
         this.commandCount = 0;
         this.maxCommands = 5000;
-        this.maxRecurse = 8
+        this.maxRecurse = 36
 
 
         //mafs
@@ -227,7 +227,7 @@ class Turtle {
         window.scrollTo(this.x , scrolly);
         this.angle = 0;
         this.penDown = true;
-        this.color = 'blue';
+        this.color = 'red';
         this.ctx.strokeStyle = this.color;
         this.ctx.beginPath();
         this.ctx.moveTo(this.x, this.y);
@@ -245,7 +245,6 @@ class Turtle {
         }
         this.x = newX;
         this.y = newY;
-        //this.drawTurtle();
     }
 
     right(angle) {
@@ -317,7 +316,8 @@ function tokenize(program) {
 
 // Helper function to parse a single line into tokens
 function parseTokens(line) {
-    return line.split(/\s+/);
+    const [code, commie] = line.split('#')
+    return [code.trim().split(/\s+/), new ASTNode('Lit', commie)];
 }
 
 // Helper function to parse a block of lines
@@ -336,7 +336,7 @@ function parseBlock(lines, blockStack) {
 
 // Function to parse a single line
 function parseLine(line, lines, blockStack) {
-    const tokens = parseTokens(line);
+    const [tokens, litcomment] = parseTokens(line);
     const command = tokens.shift();
     if (command === 'for') {
         const times = tokens.shift();
@@ -347,7 +347,10 @@ function parseLine(line, lines, blockStack) {
         if (tokens.pop() !== '(') throw new Error("Expected '(' at the end of 'draw'");
         const args = tokens.map(arg => new ASTNode('Argument', arg));
         return new ASTNode('Define', funcName, parseBlock(lines, blockStack), {args: args} );
-    }  else {
+    } else if (!command) {
+        return litcomment;
+    }
+    else {
         const args = tokens.map(arg => new ASTNode('Argument', arg));
         return new ASTNode('Call', command, args);
     }
@@ -435,6 +438,7 @@ function runCode() {
 
         // Execute all instructions
         turtle.executeBody(commands, {});
+        turtle.drawTurtle()
 
         // Display output
         output.innerHTML = `Instructions executed: ${turtle.commandCount}`;
@@ -467,29 +471,26 @@ function saveEditorContent() {
 }
 
 function loadEditorContent() {
-  return localStorage.getItem('@my.turtle') || `
+    return localStorage.getItem('@my.turtle') || `rt 30
+jmp 200
+hd
+draw spiral size fo fi (
  beColour gold
- jmp 200
-
- draw polygon sides len (
-   for sides (
-    fw len
-    polygon sides len
-    rt 360/sides
-   )
+ # character arc begins
+ for 360/[2*4] (
+  fw size
+  rt 2
  )
- draw circle curve radius (
-   polygon 1/curve 3.142*radius*2*curve
- )
-
- circle 1/8 100`;
+ spiral size*[fo+fi]/fi fi fi+fo #fibo go brrr
+)
+spiral 0.005 0 1`;
 }
 
 
 shell.on('change', function(cm, change) {
     saveEditorContent();
     debouncedRunCode()
-    })
+})
 
 // Run initial program
 runCode();

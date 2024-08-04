@@ -89,7 +89,7 @@ body {
 
 @media (max-width: 1024px) {
     #runenv, #editor {
-        width: 400px;
+        width: 600px;
         height: 400px;
         position: fixed;
         bottom: 0;
