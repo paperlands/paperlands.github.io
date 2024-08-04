@@ -4,14 +4,108 @@ var y = null
 
 class ASTNode {
     constructor(type, value, children = [], meta = {}) {
-    this.type = type;
-    this.value = value;
+        this.type = type;
+        this.value = value;
         this.meta = meta;
-    this.children = children;
-  }
+        this.children = children;
+        this.left = children[0]
+        this.right = children[1]
+    }
 }
 
-// Numeric Typecheck for Args
+class MafsParser {
+    // take it to the shuntingyard
+    constructor() {
+        this.precedence = {
+            '+': 1, '-': 1,
+            '*': 2, '/': 2,
+            '^': 3
+        };
+    }
+
+    run(expression) {
+        const tokens = this.tokenise(expression);
+        const output = [];
+        const operators = [];
+
+        for (const token of tokens) {
+            if (this.isOperand(token)) {
+                output.push(new ASTNode('operand', token));
+            } else if (token in this.precedence) {
+                while (operators.length > 0 &&
+                       this.precedence[operators[operators.length - 1]] >= this.precedence[token]) {
+                    this.createOperatorNode(operators, output);
+                }
+                operators.push(token);
+            } else if (token === '(') {
+                operators.push(token);
+            } else if (token === ')') {
+                while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+                    this.createOperatorNode(operators, output);
+                }
+                operators.pop(); // Remove '('
+            }
+        }
+
+        while (operators.length > 0) {
+            this.createOperatorNode(operators, output);
+        }
+
+        return output[0]; // The root of the AST
+    }
+
+    tokenise(expression) {
+        return expression.match(/\d+\.?\d*|[a-zA-Z]+|\S/g) || [];
+    }
+
+    isOperand(token) {
+        return /^\d+\.?\d*$/.test(token) || /^[a-zA-Z]+$/.test(token);
+    }
+
+    createOperatorNode(operators, output) {
+        const operator = operators.pop();
+        const right = output.pop();
+        const left = output.pop();
+        output.push(new ASTNode('operator', operator, [left, right]));
+    }
+}
+
+class MafsEvaluator {
+    run(ast, context) {
+        if (ast.type === 'operand') {
+            if (/^\d+\.?\d*$/.test(ast.value)) {
+                return parseFloat(ast.value);
+            } else {
+                return this.resolveContext(ast.value, context);
+            }
+        } else if (ast.type === 'operator') {
+            const left = this.run(ast.left, context);
+            const right = this.run(ast.right, context);
+            return this.applyOperator(ast.value, left, right);
+        }
+    }
+
+    resolveContext(variable, context) {
+        if (variable in context) {
+            return context[variable];
+        }
+        throw new Error(`Undefined variable: ${variable}`);
+    }
+
+    applyOperator(operator, left, right) {
+        switch (operator) {
+            case '+': return left + right;
+            case '-': return left - right;
+            case '*': return left * right;
+            case '/': return left / right;
+            case '^': return Math.pow(left, right);
+            default: throw new Error(`Unknown operator: ${operator}`);
+        }
+    }
+}
+
+
+
 function isNumeric(str) {
   if (typeof str != "string") return false // we only process strings!
   return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
@@ -34,6 +128,12 @@ class Turtle {
             beColour: this.setColor.bind(this)
         };
         this.functions = {};
+
+        //mafs
+        this.math = {
+            parser: new MafsParser(),
+            evaluator: new MafsEvaluator()
+        }
     }
 
     spawn() {
@@ -95,25 +195,25 @@ class Turtle {
                 break;
             }
         });
-    }
+   }
 
     evaluateExpression(expr, context) {
         if (isNumeric(expr)) return parseFloat(expr);
         if (context[expr]) return context[expr];
-        const tokens = this.tokenizeExpression(expr)
-        if (tokens.length > 1) return this.evaluateTokens(tokens, context);
-        return tokens[0] // probably a string
+        const tree = this.math.parser.run(expr)
+        if (tree.children.length > 1) return this.math.evaluator.run(tree, context);
+        return tree.value // probably a string
     }
 
-    tokenizeExpression(expr) {
-        const regex = /\d+\.?\d*|[a-zA-Z]+|\s?[+\-*/]\s?|\(\s?|\)\s?/g;
-        return expr.match(regex);
-    }
+    // tokenizeExpression(expr) {
+    //     const regex = /\d+\.?\d*|[a-zA-Z]+|\s?[+\-*/]\s?|\(\s?|\)\s?/g;
+    //     return expr.match(regex);
+    // }
 
-    evaluateTokens(tokens, context) {
+    // evaluateTokens(tokens, context) {
 
-        return tokens[0];
-    }
+    //     return tokens[0];
+    // }
 
 
 
@@ -368,7 +468,7 @@ function saveEditorContent() {
 function loadEditorContent() {
   return localStorage.getItem('@my.turtle') || `beColour gold
 hd
-for 40(
+for 40 (
   fw 5
   rt 9
 )`;
