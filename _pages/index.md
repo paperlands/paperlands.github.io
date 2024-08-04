@@ -78,13 +78,12 @@ body {
 
 @media (min-width: 1024px) {
     #runenv, #editor {
-        width: 400px;
-        height: 400px;
+        width: 500px;
+        height: 800px;
         margin: 10px;
         position: fixed;
         right: 0;
-        top: 50%;
-        transform: translateY(-50%);
+        top: 18%;
     }
 }
 

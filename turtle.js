@@ -37,10 +37,10 @@ class MafsParser {
                     this.createOperatorNode(operators, output);
                 }
                 operators.push(token);
-            } else if (token === '(') {
+            } else if (token === '[') {
                 operators.push(token);
-            } else if (token === ')') {
-                while (operators.length > 0 && operators[operators.length - 1] !== '(') {
+            } else if (token === ']') {
+                while (operators.length > 0 && operators[operators.length - 1] !== '[') {
                     this.createOperatorNode(operators, output);
                 }
                 operators.pop(); // Remove '('
@@ -129,6 +129,12 @@ class Turtle {
         };
         this.functions = {};
 
+        // Command execution tracking
+        this.commandCount = 0;
+        this.maxCommands = 5000;
+        this.maxRecurse = 8
+
+
         //mafs
         this.math = {
             parser: new MafsParser(),
@@ -149,7 +155,11 @@ class Turtle {
         this.functions[name] = { parameters, body };
     }
 
-    callFunction(name, args) {
+    callFunction(name, args, depth =0) {
+        if (depth >= this.maxRecurse) {
+            this.forward(0.01)
+            return;
+        }
         const func = this.functions[name];
         if (!func)
         {this.callCommand(name, ...args)}
@@ -159,15 +169,18 @@ class Turtle {
             func.parameters.forEach((param, index) => {
                 context[param] = args[index];
             });
-
-            this.executeBody(func.body, context);
-
+            context['__depth__'] = depth;
+            return this.executeBody(func.body, context);
         }
     }
 
     callCommand(commandName, ...args) {
         const com = this.commands[commandName];
         if (com) {
+            if (this.commandCount >= this.maxCommands) {
+                throw new Error(`Maximum command limit of ${this.maxCommands} reached`);
+            }
+            this.commandCount++;
             com(...args); // Call the command with its arguments
         } else {
             throw new Error(`Function ${commandName} not defined`);
@@ -178,15 +191,15 @@ class Turtle {
         body.forEach(node => {
             switch (node.type) {
             case 'Loop':
-                const times = isNumeric(node.value) ? parseFloat(node.value) : context[node.value] || node.value; // is context getting dereferenced fi needed
+                const times = this.evaluateExpression(node.value, context); // is context getting dereferenced fi needed
                 for (let i = 0; i < times; i++) {
                     this.executeBody(node.children, context);
                 }
                 break;
             case 'Call':
-                // const args = node.children.map(arg => isNumeric(arg.value) ? parseFloat(arg.value) : context[arg.value] || arg.value);
                 const args = node.children.map(arg => this.evaluateExpression(arg.value, context));
-                this.callFunction(node.value, args); // ...args
+                const currDepth = context['__depth__'] || 0;
+                this.callFunction(node.value, args, currDepth + 1); // ...args
                 break;
 
             case 'Define':
@@ -204,18 +217,6 @@ class Turtle {
         if (tree.children.length > 1) return this.math.evaluator.run(tree, context);
         return tree.value // probably a string
     }
-
-    // tokenizeExpression(expr) {
-    //     const regex = /\d+\.?\d*|[a-zA-Z]+|\s?[+\-*/]\s?|\(\s?|\)\s?/g;
-    //     return expr.match(regex);
-    // }
-
-    // evaluateTokens(tokens, context) {
-
-    //     return tokens[0];
-    // }
-
-
 
     reset() {
         if( this.x == undefined ) {
@@ -343,7 +344,7 @@ function parseLine(line, lines, blockStack) {
         return new ASTNode('Loop', times, parseBlock(lines, blockStack));
     } else if (command === 'draw') {
         const funcName = tokens.shift();
-        if (tokens.pop() !== '(') throw new Error("Expected '(' at the end of 'do'");
+        if (tokens.pop() !== '(') throw new Error("Expected '(' at the end of 'draw'");
         const args = tokens.map(arg => new ASTNode('Argument', arg));
         return new ASTNode('Define', funcName, parseBlock(lines, blockStack), {args: args} );
     }  else {
@@ -436,7 +437,7 @@ function runCode() {
         turtle.executeBody(commands, {});
 
         // Display output
-        output.innerHTML = `Instructions executed: ${commands.length}`;
+        output.innerHTML = `Instructions executed: ${turtle.commandCount}`;
     } catch (error) {
         output.innerHTML = `Error: ${error.message}`;
         console.error(error);
@@ -466,12 +467,22 @@ function saveEditorContent() {
 }
 
 function loadEditorContent() {
-  return localStorage.getItem('@my.turtle') || `beColour gold
-hd
-for 40 (
-  fw 5
-  rt 9
-)`;
+  return localStorage.getItem('@my.turtle') || `
+ beColour gold
+ jmp 200
+
+ draw polygon sides len (
+   for sides (
+    fw len
+    polygon sides len
+    rt 360/sides
+   )
+ )
+ draw circle curve radius (
+   polygon 1/curve 3.142*radius*2*curve
+ )
+
+ circle 1/8 100`;
 }
 
 
