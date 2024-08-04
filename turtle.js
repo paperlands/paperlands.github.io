@@ -2,113 +2,12 @@
 var x = null
 var y = null
 
-class TurtleMonad {
-    constructor(value, commands = []) {
-        this.value = value;
-        this.commands = commands;
-    }
-
-    static of(value) {
-        return new TurtleMonad(value);
-    }
-
-    map(fn) {
-        return new TurtleMonad(fn(this.value), this.commands);
-    }
-
-    flatMap(fn) {
-        const result = fn(this.value);
-        return new TurtleMonad(result.value, this.commands.concat(result.commands));
-    }
-
-    addCommand(command) {
-        return new TurtleMonad(this.value, [...this.commands, command]);
-    }
-
-    bind(fn) {
-        const result = fn(this.value);
-        return new TurtleMonad(
-            result.value,
-            this.commands.concat(result.commands)
-        );
-    }
-
-
-    static run(expressions) {
-        return expressions.reduce(
-            (acc, expr) => acc.bind(() => expr),
-            TurtleMonad.of(null)
-        );
-    }
-
-}
-
-
 class ASTNode {
   constructor(type, value, children = []) {
     this.type = type;
     this.value = value;
     this.children = children;
   }
-}
-
-// Command classes
-class Command {
-    execute(turtle) {}
-}
-
-class Forward extends Command {
-    constructor(distance) {
-        super();
-        this.distance = distance;
-    }
-    execute(turtle) {
-        turtle.forward(this.distance);
-    }
-}
-
-class Right extends Command {
-    constructor(angle) {
-        super();
-        this.angle = angle;
-    }
-    execute(turtle) {
-        turtle.right(this.angle);
-    }
-}
-
-class Left extends Command {
-    constructor(angle) {
-        super();
-        this.angle = angle;
-    }
-    execute(turtle) {
-        turtle.left(this.angle);
-    }
-}
-
-class PenUp extends Command {
-    constructor() {
-        super();
-        this.penDown = false
-    }
-}
-
-class PenDown extends Command {
-    constructor() {
-        super();
-        this.penDown = true
-    }
-}
-
-class SetColor extends Command {
-    constructor(color) {
-        super();
-        this.color = color;
-    }
-    execute(turtle) {
-        turtle.setColor(this.color);
-    }
 }
 
 // Turtle class for actual drawing
@@ -118,12 +17,13 @@ class Turtle {
         this.reset();
         this.commands = {
             // Add other command references here
-            fd: this.forward.bind(this),
+            fw: this.forward.bind(this),
             rt: this.right.bind(this),
             lt: this.left.bind(this),
             show: this.unhideTurtle.bind(this),
             hd: this.hideTurtle.bind(this),
-            jmp: this.jmp.bind(this)
+            jmp: this.jmp.bind(this),
+            beColour: this.setColor.bind(this)
         };
         this.functions = {};
     }
@@ -272,43 +172,26 @@ class Turtle {
     }
 }
 
-// Command functions
-const fw = distance => new TurtleMonad(null).addCommand(new Forward(distance));
-const jmp = distance => new TurtleMonad(null).addCommand({
-    execute: (turtle) => turtle.noPen()
-}).addCommand(new Forward(distance)).addCommand({
-    execute: (turtle) => turtle.oPen()
-});
-const right = angle => new TurtleMonad(null).addCommand(new Right(angle));
-const left = angle => new TurtleMonad(null).addCommand(new Left(angle));
-const hideTurtle = () => new TurtleMonad(null).addCommand({
-    execute: (turtle) => turtle.hideTurtle()
-});
-const showTurtle = () => new TurtleMonad(null).addCommand({
-    execute: (turtle) => turtle.unhideTurtle()
-});
-const drawTurtle = () => new TurtleMonad(null).addCommand({
-    execute: (turtle) => turtle.drawTurtle()
-});
-const setColor = color => new TurtleMonad(null).addCommand(new SetColor(color));
-
-// Control structures
-const repeat = (times, action) =>
-    new TurtleMonad(null).flatMap(() =>
-        Array(times > 10000 && 10000 || times).fill().reduce(acc => acc.flatMap(action), TurtleMonad.of(null))
-    );
-
 // Parser
 function tokenize(program) {
     return program.replace(/\(/g, ' ( ')
-                 .replace(/\)/g, ' ) ')
-                 .trim()
-                 .split(/\s+/);
+        .replace(/\)/g, ' ) ')
+        .trim()
+        .split(/\r?\n/)
+        .reduce((acc, curr, index) => {
+            acc[index] = curr.split(/\s+/); // Split current string by whitespace and store in accu
+            return acc;
+        }, [])
 }
 
-function parseExpression(tokens) {
-    if (tokens.length === 0) {
+function parseExpression(lines, tokens = []) {
+
+    if (lines.length === 0) {
         throw new Error("Unexpected end of input");
+    }
+
+    if (tokens.length === 0) {
+        tokens = lines.shift();
     }
 
     const token = tokens.shift();
@@ -319,65 +202,58 @@ function parseExpression(tokens) {
             if (tokens.length === 0) {
                 throw new Error("Mismatched parentheses");
             }
-            subExpr.push(parseExpression(tokens));
+            subExpr.push(parseExpression(lines, tokens));
         }
         tokens.shift(); // Remove closing parenthesis
         return subExpr;
     } else if (token === 'for') {
         const times = Number(tokens.shift());
-        const action = parseExpression(tokens);
-        return repeat(times, () => TurtleMonad.run(action));
+        const body = [];
+        while (tokens[0] !== ')') {
+            if (tokens.length === 0) {
+                throw new Error("Mismatched parentheses");
+            }
+            body.push(parseExpression(tokens));
+        }
+        tokens.shift(); // Remove closing parenthesis
+        return new ASTNode('Loop', times, body);
     } else if (token === 'do') {
         const funcName = tokens.shift();
         const args = [];
         while (tokens[0] && tokens[0] !== '(') {
-            args.push(tokens.shift());
+            args.push(new ASTNode('Argument', tokens.shift()));
         }
+        tokens.shift(); // Remove opening parenthesis
         const body = parseExpression(tokens);
-        return { type: 'func', name: funcName, args, body };
+        return new ASTNode('Define', funcName, args, body);
     } else {
-        switch (token) {
-            case 'fw': return fw(Number(tokens.shift()));
-            case 'rt': return right(Number(tokens.shift()));
-            case 'lt': return left(Number(tokens.shift()));
-            case 'jmp': return jmp(Number(tokens.shift()));
-            case 'penUp': return penUp();
-            case 'penDown': return penDown();
-            case 'hd': return hideTurtle();
-            case '!hd': return showTurtle();
-            case 'beColour': return setColor(tokens.shift());
-            default: throw new Error(`Unknown command: ${token}`);
+        const commandName = token;
+        const args = [];
+        while (tokens[0] && tokens[0] !== ')' && tokens[0] !== '(') {
+            args.push(new ASTNode('Argument', tokens.shift()));
         }
+        if (tokens[0] === '(') {
+            args.push(parseExpression(tokens));
+        }
+        if (tokens[0] === ')') {
+            tokens.shift(); // Remove closing parenthesis if present
+        }
+        return new ASTNode('Call', commandName, args);
     }
 }
 
+
 function parseProgram(program) {
-    const tokens = tokenize(program);
+    const lines = tokenize(program)
     const expressions = [];
-    const functions = {};
-    while (tokens.length > 0) {
-        const expr = parseExpression(tokens);
-        console.log(expr)
-        if (expr.type === 'func') {
-            functions[expr.name] = expr;
-        }
-        else {
-            expressions.push(expr);
-        }
+    while (lines.length > 0) {
+        expressions.push(parseExpression(lines));
     }
-    // expressions.push(drawTurtle())
-    return TurtleMonad.of(null).flatMap(() => TurtleMonad.run(expressions));
+    return expressions;
 }
 
 // UI setup
 const canvas = document.getElementById('canvas');
-// upres canvas
-
-// const observer = new ResizeObserver((entries) => {
-//   width = canvas.clientWidth;
-//   height = canvas.clientHeight;
-// });
-// observer.observe(canvas)
 
 const editor = document.getElementById('editor');
 
@@ -427,7 +303,6 @@ function runCode() {
     canvas.height = window.innerHeight;
 
     const turtle = new Turtle(canvas);
-    //const code = editor.value()
     const code = shell.getValue();
 
 
@@ -439,9 +314,9 @@ function runCode() {
         turtle.reset();
 
         // Execute all instructions
-        result.commands.forEach(command => command.execute(turtle));
+        turtle.executeBody(result, {});
         // Display output
-        output.innerHTML = `Instructions executed: ${result.commands.length}`;
+        output.innerHTML = `Instructions executed: ${result.length}`;
     } catch (error) {
         output.innerHTML = `Error: ${error.message}`;
         console.error(error);
