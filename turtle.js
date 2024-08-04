@@ -84,7 +84,8 @@ class Turtle {
                 }
                 break;
             case 'Call':
-                const args = node.children.map(arg => isNumeric(arg.value) ? parseFloat(arg.value) : context[arg.value] || arg.value);
+                // const args = node.children.map(arg => isNumeric(arg.value) ? parseFloat(arg.value) : context[arg.value] || arg.value);
+                const args = node.children.map(arg => this.evaluateExpression(arg.value, context));
                 this.callFunction(node.value, args); // ...args
                 break;
 
@@ -94,6 +95,24 @@ class Turtle {
                 break;
             }
         });
+    }
+
+    evaluateExpression(expr, context) {
+        if (isNumeric(expr)) return parseFloat(expr);
+        if (context[expr]) return context[expr];
+        const tokens = this.tokenizeExpression(expr)
+        if (tokens.length > 1) return this.evaluateTokens(tokens, context);
+        return tokens[0] // probably a string
+    }
+
+    tokenizeExpression(expr) {
+        const regex = /\d+\.?\d*|[a-zA-Z]+|\s?[+\-*/]\s?|\(\s?|\)\s?/g;
+        return expr.match(regex);
+    }
+
+    evaluateTokens(tokens, context) {
+
+        return tokens[0];
     }
 
 
@@ -188,48 +207,49 @@ class Turtle {
 // Parser
 //
 function tokenize(program) {
-  return program.split(/\r?\n/)
-    .map(line => line.trim())
-    .filter(line => line.length > 0);
+    return program
+        .replace(/\)\)/g, ')\n)') // line feed if cosecutive closing ps
+        .split(/\r?\n/)
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
 }
 
 // Helper function to parse a single line into tokens
 function parseTokens(line) {
-  return line.split(/\s+/);
+    return line.split(/\s+/);
 }
 
 // Helper function to parse a block of lines
 function parseBlock(lines, blockStack) {
-  const block = [];
-  blockStack.push(block);
-  while (lines.length > 0) {
-    const line = lines.shift();
-    if (line === ')') {
-      return blockStack.pop();
+    const block = [];
+    blockStack.push(block);
+    while (lines.length > 0) {
+        const line = lines.shift();
+        if (line === ')') {
+            return blockStack.pop();
+        }
+        block.push(parseLine(line, lines, blockStack));
     }
-    block.push(parseLine(line, lines, blockStack));
-  }
-  throw new Error("Unmatched opening parenthesis");
+    throw new Error("Unmatched opening parenthesis");
 }
 
 // Function to parse a single line
 function parseLine(line, lines, blockStack) {
-  const tokens = parseTokens(line);
-  const command = tokens.shift();
-
-  if (command === 'for') {
-    const times = Number(tokens.shift());
-    if (tokens.shift() !== '(') throw new Error("Expected '(' after 'for'");
-    return new ASTNode('Loop', times, parseBlock(lines, blockStack));
-  } else if (command === 'do') {
-    const funcName = tokens.shift();
-    if (tokens.pop() !== '(') throw new Error("Expected '(' at the end of 'do'");
-    const args = tokens.map(arg => new ASTNode('Argument', arg));
-      return new ASTNode('Define', funcName, parseBlock(lines, blockStack), {args: args} );
-  } else {
-    const args = tokens.map(arg => new ASTNode('Argument', arg));
-    return new ASTNode('Call', command, args);
-  }
+    const tokens = parseTokens(line);
+    const command = tokens.shift();
+    if (command === 'for') {
+        const times = tokens.shift();
+        if (tokens.shift() !== '(') throw new Error("Expected '(' after 'for'");
+        return new ASTNode('Loop', times, parseBlock(lines, blockStack));
+    } else if (command === 'draw') {
+        const funcName = tokens.shift();
+        if (tokens.pop() !== '(') throw new Error("Expected '(' at the end of 'do'");
+        const args = tokens.map(arg => new ASTNode('Argument', arg));
+        return new ASTNode('Define', funcName, parseBlock(lines, blockStack), {args: args} );
+    }  else {
+        const args = tokens.map(arg => new ASTNode('Argument', arg));
+        return new ASTNode('Call', command, args);
+    }
 }
 
 // Main function to parse the entire program
