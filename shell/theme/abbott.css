@@ -21,7 +21,7 @@
  *   dark_olive: #273900
  *   forest_green: #24a507
  *   chartreuse: #a0ea00
- *   pastel_chartreuse: #d8ff84
+ *   pastel_chartreuse: #48c0a3 (old: d8ff84)
  *
  * Yellow shades:
  *   marigold: #fbb32f
@@ -45,7 +45,7 @@
 /* Equivalent to Vim's Normal group. */
 .cm-s-abbott.CodeMirror {
   background: rgba(35, 28, 20, .1) /* bistre */;
-  color: #d8ff84 /* pastel_chartreuse */;
+  color: 	#48c0a3 /* pastel_chartreuse */;
 
 }
 
@@ -258,7 +258,7 @@
 
 /* Equivalent to Vim's CursorLineNr group. */
 .cm-s-abbott .CodeMirror-activeline-gutter .CodeMirror-linenumber {
-  color: #d8ff84 /* pastel_chartreuse */;
+  color: #48c0a3 /* pastel_chartreuse */;
   font-weight: bold;
 }
 
