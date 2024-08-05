@@ -131,8 +131,8 @@ class Turtle {
 
         // Command execution tracking
         this.commandCount = 0;
-        this.maxCommands = 5000;
-        this.maxRecurse = 36
+        this.maxCommands = 8888;
+        this.maxRecurse = 8
 
 
         //mafs
