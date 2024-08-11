@@ -53,6 +53,10 @@ That’s why I believe that the future of education needs to better address the 
 
 # Two parters
 
+{% margin %}
+"Context is worth 80 IQ points" ~ Alan Kay
+{% endmargin %}
+
 Understanding “why” has 2 parts.
 Past context and present context.
 
@@ -67,6 +71,8 @@ Second, the students need to understand how that CONTEXT relates to their PRESEN
 Drawing similarities between context of the past and the context of today.
 Adapting and moulding the concept to apply it for themselves.
 Through this practice, we can see a true mark of mastery, and a clear demonstration of a complete understanding of “WHY I learned this”.
+
+
 
 # Poorly positioned
 
