@@ -89,30 +89,30 @@ and developing deep appreciation for the idea through that experience.
 That’s the job of a practitioner of the craft, not a school teacher.
 
 We know this.
-Business teachers invite successful founders to the classroom.
-Physics teachers invite astronauts to the classroom.
-Basketball coaches invite NBA players to the classroom.
-It’s to show that this knowledge is very much real and how it translates to real life.
+Business teachers love to invite big business owners to the classroom.
+Physics teachers love to invite engineers to the classroom.
+Basketball coaches love to invite NBA players to the lockerroom.
 
-The practitioners are much better positioned than teachers for the second part.
-Their daily experience help showcase how the learnings translate to real world application,
-bringing relevance to the material they are studying,
-inspiring the students to study better.
+Teachers value the PRESENT CONTEXT these industry professionals bring.
+Their experiences showcase how concepts apply to the real world,
+bringing relevance to the material students study,
+inspiring the students to learn.
+They are better positioned to answer the second part.
 
 
 # Untapped potential
 
 What if engineers, doctors, designers, leaders were invited into the classrooms.
 
-To share the knowledge they find interesting.
-To share the problems they are trying to solve
-To share the things that motivate them to learn more every day.
-Unconstrained by the same set of limitations which school teachers are bounded by.
+To share the things they put into practice which they find interesting.
+To share the contexts of the big problems they are solving.
+To share the motivations behind their learning.
 
-Imagine how different class will feel like.
-Imagine the perspectives that they can bring to the students.
-Imagine the different answers they will receive if they were to ask “why must I learn this”.
+So that students walk away 
+knowing what they are chasing,
+knowing where they are heading,
+knowing why they are learning.
 
-Why wouldn't that be wonderful?
+Why wouldn't you want this for your kids?
 
 ~ Princeton
