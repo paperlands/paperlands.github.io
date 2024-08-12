@@ -113,6 +113,6 @@ knowing what they are chasing,<br>
 knowing where they are heading,<br>
 knowing why they are learning.<br>
 
-Why wouldn't you want this for your kids?<br>
+Why wouldn't that be wonderful?<br>
 
 ~ Princeton
