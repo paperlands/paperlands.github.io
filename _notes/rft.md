@@ -62,6 +62,9 @@ I wish for students to [gain a deeper understanding for fractals and recursion] 
 - through [playing and programming simple graphics on the computer]
 
 
+Possible structures 4:
+I wish for students to become [values you wish to impart].
+
 
 ## 1. Applicable RFT tag (optional)
 Input which RFT is this applicable to.
