@@ -39,6 +39,29 @@ Ideally, they should be able to [print simple everyday items after.]
 # Request for Learners (RFL) Template
 What inspires you and compels you to share this knowledge with the world?
 
+Possible structures 1:
+I am inspired by [inspiration].
+I want to share more about [knowledge & perspective].
+Hopefully the students will [expected long term outcome].
+
+
+Possible structures 2:
+I wish students will [long term outcome]
+
+I wish students will become more confident in their speech
+I wish students will become more fluent in Chinese
+I wish students will be able to create impactful branding statements
+
+
+Possible structures 3:
+I wish for students to [long term outcome] through [innovative method].
+
+I wish for students to [gain a deeper understanding for fractals and recursion] ...
+- through [turle graphics simulation with computers]
+- through [simple visualisations on the computer]
+- through [playing and programming simple graphics on the computer]
+
+
 
 ## 1. Applicable RFT tag (optional)
 Input which RFT is this applicable to.
