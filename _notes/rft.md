@@ -2,68 +2,44 @@
 title: Request For Teachers
 ---
 
-I believe that the RFT should be approached from the "problem" angle. 
-Meaning the teachers should be reaching for a RFT whenever they see a problem.
-Here are some examples off the top of my head.
-
-Real ones mentioned:
-- Some of my students have a hard time coming up with compelling copywriting for their product launch
-- Some of my students don't really know how to brand themselves and their talents
-- Some of my students find governance in social studies very dry
-
-Fake ones I came up with:
-- Some of my students find text based programming hard to understand
-- Some of my students want to learn how to use the laser printer but don't know how to
-- Some of my students can't seem to find the interest in math
-
-
-
 ------------------------------------------------------------------------------------
 # Request For Teacher (RFT) Template
 This is the RFT template.
-## 1. Title
-Write a catchy title here
-e.g Looking for an alumni to teach copywriting for a new product launch
-- Looking for ... 
 
-## 2. Problem
-Describe what is the problem you're facing
-e.g Some of my students are having trouble writing compelling copy for their idea.
-- 
+Students currently [Current Context]. 
+However, [Identified Gap]. 
+Ideally they should be able to [Ideal Outcome].
 
-## 3. Context
-Give some context as to why you're facing this problem
-e.g A few of my sec 4 students from my TDP program want to launch their own startup ideas. However, I find that their copy can be improved. I don't have the time to teach them myself.
-- 
+Optional details:
+- What have you tried?
+- Possible implementation ideas
+- Engagement format (e.g looking for workshop/internship/lecture)
+- Assessment criterias
 
-## 4. What have you tried?
-This is to minimize falling into the same trap
-e.g I gave them some Youtube tutorial to guide them through but it's not effective.
-- 
-
-## 5. Possible approaches
-What's your best guess as to how to address this problem?
-e.g A workshop to analyse the copy of good companies and how they can apply those techniques to their own ideas would be great!
-- 
-
-## 6. Acceptable engagement format
-How would you want your students to be engaged?
-- [ ] Lecture
-- [ ] Workshop
-- [ ] Internship
-- [ ] Job Shadowing
-- [ ] Others
-
-## 7. Assessment
-How do you plan to assess if your outcomes are met?
-e.g My students should be able to better tell the difference between good and bad copy.
-- 
-
+EXAMPLES:
+1.
+Students currently [are trying to launch their own startup ideas]. 
+However, [their copywriting skills are lacking, resulting in poor marketing outcomes]. 
+Ideally they should be able to [write compelling copy to showcase their ideas].
+2.
+Students currently [have to study governance for social studies]. 
+However, [they find it really dry and just try to memorise the content, leading to poor understanding]. 
+Ideally they should be able to [learn about governance in a more engaging way].
+3.
+Students currently [understand fundamental of graphics and have knowledge of lighting scenes and 3d modelling.]
+However, [they lack practical insight into procedural node based programming as being applied in real-world world of animation and 3D visualisation.]
+Ideally, students should be able to [construct a simple 3d scene with programmable elements, that sets them up in good stead for their 3d digital game art project.]
+4.
+Students currently [have 3d printers in the homeroom.]
+However, [they lack the practice around CAD tooling.] 
+Ideally, they should be able to [print simple everyday items after.]
 
 
 ------------------------------------------------------------------------------------
-# Industry Learning Proposal (ILP) Template
-This is the ILP template
+# Request for Learners (RFL) Template
+What inspires you and compels you to share this knowledge with the world?
+
+
 ## 1. Applicable RFT tag (optional)
 Input which RFT is this applicable to.
 e.g Default: None
