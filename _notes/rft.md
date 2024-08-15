@@ -46,7 +46,7 @@ Students currently [have to study "good governance" for social studies].
 However, [they find it really dry and just try to memorise the content, leading to poor understanding and application]. 
 Ideally they should be able to [learn about governance in a more engaging way].
 
-Optional Details:
+Further Details:
 [It would be great if students get to learn more about other "Bad" government policies to contrast what "Good" governance mean.]
 
 ------------------------------------------------------------------------------------
@@ -54,12 +54,12 @@ Optional Details:
 
 I want to help students [long-term outcome] through [creative method].
 
-Optional Details:
-- This is in response to which RFT?
-- Please list your key lesson objectives
-- What is your exact lesson plan?
-- What is your exact activity plan?
-- What are some measurable metrics you would like to track?
+Further Details:
+- Which RFT is this applicable to?
+- State your KEY lesson objectives
+- Build your lesson plan
+- Let's design an activity or two
+- What evidence/report do you expect to see from the students if they successfully applied your lesson in their work?
 
 ---
 SAMPLE RFLs:
