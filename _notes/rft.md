@@ -9,7 +9,7 @@ Students currently [Current Context].
 However, [Identified Gap]. 
 Ideally they should be able to [Ideal Outcome].
 
-Optional Details:
+Further Details:
 [- Possible implementation ideas (e.g thoughts you have on how to achieve the ideal outcome)
 - Assessment criteria (e.g any tangible reflections you expect to see)
 - Engagement format (e.g looking for workshop/internship/lecture)
@@ -64,7 +64,7 @@ Further Details:
 ---
 SAMPLE RFLs:
 1. I want to help students [gain a deeper understanding for fractals and recursion] through [playing and programming simple graphics on the computer].
-2. I want to help students [refine their product launch copy] through [analysis how famous companies do it].
+2. I want to help students [refine their product launch copy] through [analysing how famous companies do it].
 3. I want to help students [learn more about how food is made] through [getting them to grow their own vege].
 4. I want to help students [better understand the importance of good governance] through [getting them to run a mini civilisation].
 
