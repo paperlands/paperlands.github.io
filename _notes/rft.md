@@ -10,11 +10,11 @@ However, [Identified Gap].
 Ideally they should be able to [Ideal Outcome].
 
 Further Details:
-[- Possible implementation ideas (e.g thoughts you have on how to achieve the ideal outcome)
-- Assessment criteria (e.g any tangible reflections you expect to see)
-- Engagement format (e.g looking for workshop/internship/lecture)
-- Engagement timeline (e.g available dates)
-- Etc]
+- Possible ideas
+- Your assessment criteria
+- Engagement format (e.g workshop/internship/lecture)
+- Potential timeline
+- Etc
 
 ---
 SAMPLE RFT 1
@@ -55,11 +55,11 @@ Further Details:
 I want to help students [long-term outcome] through [creative method].
 
 Further Details:
-- Which RFT is this applicable to?
-- State your KEY lesson objectives
-- Build your lesson plan
-- Let's design an activity or two
-- What evidence/report do you expect to see from the students if they successfully applied your lesson in their work?
+- Key lesson outcomes
+- Plan of content
+- Activity design
+- Reflection questions/homework
+- My availability
 
 ---
 SAMPLE RFLs:
