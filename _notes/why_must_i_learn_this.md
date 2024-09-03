@@ -1,5 +1,6 @@
 ---
 title: Why Must I Learn This?
+author: princeton
 ---
 
 # “Why” matters
@@ -114,5 +115,3 @@ knowing where they are heading,<br>
 knowing why they are learning.<br>
 
 Why wouldn't that be wonderful?<br>
-
-~ Princeton

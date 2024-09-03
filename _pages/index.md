@@ -5,17 +5,17 @@ id: home
 permalink: /
 ---
 
-# Welcome to Paperland! 
-
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="88" height="88"> 
-<image xlink:href="/assets/logo.svg" width="100" height="88"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" height="200" style="float: right; " > 
+<image xlink:href="/assets/logo.svg" width="50" height="50"/>
 </svg>
 
-  <!-- Welcome to Paperlands! Read <span style="font-weight: bold">our [[Beginnings]]</span> to get started -->
+# Welcome to Paperland! 
 
-<!-- Find us [on GitHub here](https://github.com/paperlands). -->
+*We design new patterns of learning*
 
-<strong>Lesson Material</strong>
+Find us [on GitHub](https://github.com/paperlands) or [on ⛩️ Dojo](https://thedojo.fly.dev/shell).
+
+<strong>Past Writings </strong>
 
 <ul>
   {% assign recent_notes = site.notes | sort: "last_modified_at_timestamp" | reverse %}
@@ -35,14 +35,6 @@ permalink: /
   <div id="output"></div>
     
 <style>
-body {
-    margin: 0;
-    overflow: hidden;
-}
-
-#canvas.night-mode{
-   background-color: white;
-}
 
 #canvas {
     position: fixed;
@@ -52,6 +44,14 @@ body {
     height: 100%;
     background-color: inherit;
     z-index: -1;
+    animation: fadeIn 1s ease-in-out;
+}
+
+
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 #runenv {
@@ -78,44 +78,34 @@ body {
 
 @media (min-width: 1024px) {
     #runenv, #editor {
-        width: 500px;
-        height: 800px;
-        margin: 10px;
+        width: 30%;  /* Responsive width for large screens */
+        height: 80%; /* Responsive height for large screens */
         position: fixed;
+        align-items: right; 
         right: 0;
-        top: 18%;
+        top: 30%;
+        bottom: 0; /* Ensures it stretches from top to bottom */
+        overflow-y: auto; /* Handles overflow if content exceeds height */
     }
 }
 
 @media (max-width: 1024px) {
     #runenv, #editor {
-        width: 600px;
-        height: 400px;
+        width: 90%;  /* Full width for small screens */
+        height: 30%;  /* Adjusted height for bottom drawer */
         position: fixed;
-        bottom: 0;
-        right: 0;
+        align-items: center; 
+        bottom: 0;    /* Positioned at the bottom */
+        overflow-y: auto; /* Handles overflow if content exceeds height */
     }
 }
+
 
 #editor:hover, #editor:focus {
     border-color: #00f;
     transition: border-color 0.3s ease-in-out;
 }
 
-#runButton:hover {
-    background-color: #00f;
-    color: #fff;
-    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-}
-
-#canvas {
-    animation: fadeIn 1s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
 </style>
 
 <script src="shell/codemirror.js"></script>

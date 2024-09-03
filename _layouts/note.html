@@ -16,6 +16,8 @@ layout: default
   <div id="notes-entry-container">
     <content>
       {{ content }}
+      <div style="text-align: right; color: #f93;"> <i>~ {{ page.author }}</i></div>
+      <hr>
     </content>
 
     <side style="font-size: 0.9em">
@@ -34,8 +36,7 @@ layout: default
   </div>
 </article>
 
-<hr>
 
-<p>Here are all the notes in our garden, along with their links, visualized as a graph.</p>
+<p>Here are all our notes in Paperland interlinked.</p>
 
 {% include notes_graph.html %}

@@ -19,7 +19,7 @@ body {
   color: $color-text;
   font-size: 1rem;
   counter-reset: sidenote-counter;
-  max-width: 63em;
+  max-width: 64em;
 
   @media (min-width: 820px) {
     font-size: 1.2rem;
@@ -126,7 +126,7 @@ blockquote {
 
 hr {
     border: none;
-    color: $color-border;
+    color: $color-core;
     overflow: visible;
     text-align: center;
     height: 2px;

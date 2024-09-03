@@ -471,19 +471,19 @@ function saveEditorContent() {
 }
 
 function loadEditorContent() {
-    return localStorage.getItem('@my.turtle') || `rt 30
-jmp 200
+    return localStorage.getItem('@my.turtle') || `
 hd
 draw spiral size fo fi (
- beColour gold
- # character arc begins
+ beColour orange
+ # arc begins
  for 360/[2*4] (
   fw size
   rt 2
  )
- spiral size*[fo+fi]/fi fi fi+fo #fibo go brrr
+  #fibonacci recurse
+ spiral size*[fo+fi]/fi fi fi+fo
 )
-spiral 0.005 0 1`;
+spiral 1 1 1`;
 }
 
 
