@@ -7,6 +7,11 @@
 
   <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.title }}{% endif %}">
 
+  <link
+      rel="stylesheet"
+      href="https://unpkg.com/papercss@1.9.2/dist/paper.min.css"
+    />
+
   <meta property="og:site_name" content="{{ site.title }}">
 
   <link rel="icon" href="logo.svg">
