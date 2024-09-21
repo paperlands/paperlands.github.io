@@ -76,7 +76,7 @@ permalink: /
   <h1 class="landing_header">Work with us</h1>
 
   <div class="work_with_us_content">
-    <div>
+    <div class="padding-right-large">
       <p>Want to redesign your system from first principles?</p>
 
       <p>Want to augment your class with better programming tools?</p>
@@ -85,28 +85,19 @@ permalink: /
 
       <p>If you have a learning opportunity, we would love to have a chat with you!</p>
     </div>
-
-    <div class="col form-group card">
-      <div class="name_inputs">
-        <div>
-          <label for="paperInputs1">First name *</label>
-          <input type="text" placeholder="Alan" id="paperInputs1">
-        </div>
-
-        <div>
-          <label for="paperInputs2">Last name *</label>
-          <input type="text" placeholder="Kay" id="paperInputs2">
-        </div>
-      </div>
-
-      <label for="paperInputs3">Company name *</label>
-      <input class="text" type="text" placeholder="Paperland pte ltd" id="paperInputs3">
     
-      <label for="large-input">Your message *</label>
-      <textarea id="large-input" placeholder="Large input"></textarea>
-
-      <button class="submit_button">Submit</button>
-    </div>
+    <form class="col padding-left-large form-group card" accept-charset="UTF-8" action="https://india.fly.dev/proxy/apps/guru/work" method="POST">
+    <label for="name-input">Your Name *</label>
+    <input id="name-input" type="text" name="name" placeholder="Alan Kay">
+    <label for="email-input">Email *</label>
+    <input id="email-input" type="email" name="email" placeholder="alan@paperland.in">
+    <label for="company-input">Company/Org</label>
+    <input id="company-input" type="text" name="company" placeholder="Xerox Parc">
+    <label for="message-input">Your message *</label>
+    <textarea id="message-input" name="message" rows="4" placeholder="There are more contexts than the one that we're in — the one that we think is reality"></textarea>
+    <input type="hidden" name="return_url" value="{{ page.url | absolute_url }}">
+    <button type="submit">Submit</button>
+    </form>
   </div>
 </div>
 
@@ -124,7 +115,7 @@ permalink: /
   }
 
   .our_work {
-    padding-bottom: 100px; 
+    padding-bottom: 100px;
 
     .landing_work_layout {
       display: flex;
@@ -170,7 +161,7 @@ permalink: /
 
   .work_with_us {
     padding-bottom: 100px;
-
+    
     .work_with_us_content {
       display: flex;
 
