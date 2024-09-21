@@ -99,6 +99,14 @@ permalink: /
     <button type="submit">Submit</button>
     </form>
   </div>
+  <div class="toast" id="toast">
+    <i class="fa fa-check-circle"></i>
+    <input class="alert-state" id="toast-alert" type="checkbox">
+    <div class="alert alert-muted dismissible">
+    Sent! To the desks <a class="internal-link" href="/about"> <b>@paperland</b></a>
+    <label class="btn-close" for="toast-alert">X</label>
+  </div>
+  </div>
 </div>
 
 
@@ -149,7 +157,7 @@ permalink: /
         margin: 20px;
       }
 
-      @media (max-width: 640px) {
+      @media (max-width: 768px) {
         flex-direction: column;
       }
     }
@@ -165,7 +173,7 @@ permalink: /
     .work_with_us_content {
       display: flex;
 
-      @media (max-width: 640px) {
+      @media (max-width: 768px) {
         flex-direction: column;
       }
     }
@@ -179,4 +187,54 @@ permalink: /
       margin: 1rem;
     }
   }
+  
+  .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 0vh;
+      transform: translateX(-50%);
+      padding: 10px 20px;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      display: none;
+      animation: fade-in 10s ease-in-out forwards;
+    }
+
+    @keyframes fade-in {
+      0% {
+        opacity: 0;
+        visibility: visible;
+        transform: translateX(-50%) translateY(20px);
+      }
+      15% {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+      }
+      
+      90% {
+        opacity: 0;
+        visibility: hidden;
+        transform: translateX(-50%) translateY(0);
+      }
+      
+      100% {
+        opacity: 0;
+        display: none;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
 </style>
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search)
+  if (urlParams.get('sent') == "true"){
+   const element = document.getElementById('toast');
+   element.style.display = 'block'; // Show the element
+            
+   }
+
+</script>
+
+
