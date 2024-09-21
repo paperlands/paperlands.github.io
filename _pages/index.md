@@ -7,8 +7,6 @@ permalink: /
 
 <h2 class="hero_text">We design new<br>patterns of <ins>learning</ins></h2>
 
-
-
 <div class="our_work">
   <!-- header -->
   <h1 class="landing_header">Our work</h1>
