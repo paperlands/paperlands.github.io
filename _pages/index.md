@@ -5,7 +5,7 @@ id: home
 permalink: /
 ---
 
-<h2 class="hero_text">We design new<br>patterns of <ins>learning</ins></h2>
+<h2 class="hero_text">we design new<br>patterns of <ins>Learning</ins></h2>
 
 <div class="our_work">
   <!-- header -->
@@ -74,7 +74,7 @@ permalink: /
   <h1 class="landing_header">Work with us</h1>
 
   <div class="work_with_us_content">
-    <div class="padding-right-large">
+    <div class="padding-right-large work_with_us_content_el_1">
       <p>Want to redesign your system from first principles?</p>
 
       <p>Want to augment your class with better programming tools?</p>
@@ -84,26 +84,34 @@ permalink: /
       <p>If you have a learning opportunity, we would love to have a chat with you!</p>
     </div>
     
-    <form class="col padding-left-large form-group card" accept-charset="UTF-8" action="https://india.fly.dev/proxy/apps/guru/work" method="POST">
-    <label for="name-input">Your Name *</label>
-    <input id="name-input" type="text" name="name" placeholder="Alan Kay">
-    <label for="email-input">Email *</label>
-    <input id="email-input" type="email" name="email" placeholder="alan@paperland.in">
-    <label for="company-input">Company/Org</label>
-    <input id="company-input" type="text" name="company" placeholder="Xerox Parc">
-    <label for="message-input">Your message *</label>
-    <textarea id="message-input" name="message" rows="4" placeholder="There are more contexts than the one that we're in — the one that we think is reality"></textarea>
-    <input type="hidden" name="return_url" value="{{ page.url | absolute_url }}">
-    <button type="submit">Submit</button>
+    <form class="col form-group card work_with_us_content_el_2" accept-charset="UTF-8" action="https://india.fly.dev/proxy/apps/guru/work" method="POST">
+      <label for="name-input">Your Name *</label>
+      <input id="name-input" type="text" name="name" placeholder="Alan Kay">
+
+      <label for="email-input">Email *</label>
+      <input id="email-input" type="email" name="email" placeholder="alan@paperland.in">
+
+      <label for="company-input">Company/Org</label>
+      <input id="company-input" type="text" name="company" placeholder="Xerox Parc">
+      
+      <label for="message-input">Your message *</label>
+      <textarea id="message-input" name="message" rows="4" placeholder="There are more contexts than the one that we're in — the one that we think is reality"></textarea>
+
+      <input type="hidden" name="return_url" value="{{ page.url | absolute_url }}">
+
+      <br>
+
+      <button type="submit">Submit</button>
     </form>
   </div>
   <div class="toast" id="toast">
     <i class="fa fa-check-circle"></i>
     <input class="alert-state" id="toast-alert" type="checkbox">
+
     <div class="alert alert-muted dismissible">
-    Sent! To the desks <a class="internal-link" href="/about"> <b>@paperland</b></a>
-    <label class="btn-close" for="toast-alert">X</label>
-  </div>
+      Sent! To the desks <a class="internal-link" href="/about"> <b>@paperland</b></a>
+      <label class="btn-close" for="toast-alert">X</label>
+    </div>
   </div>
 </div>
 
@@ -111,9 +119,13 @@ permalink: /
 
 
 <style>
+  h1 {
+    margin: 1rem;
+  }
+  
   .hero_text {
     text-align: center;
-    padding: 10%; 
+    padding: 15%; 
   }
 
   .landing_header {
@@ -170,9 +182,22 @@ permalink: /
     
     .work_with_us_content {
       display: flex;
+      justify-content: center;
 
       @media (max-width: 768px) {
         flex-direction: column;
+      }
+
+      .work_with_us_content_el_1 {
+        flex-basis: 60%;
+      }
+      .work_with_us_content_el_2 {
+        flex-basis: 40%;
+        
+        label {
+          margin-bottom: 0;
+          margin-top: 10px;
+        }
       }
     }
 
