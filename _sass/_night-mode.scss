@@ -52,12 +52,8 @@ body.night-mode {
 		width: 100%;
 		height: 75px;
   }
-a.subdue-link {
-    color: #ffffff;
-    background-color: #fd4f00;
-  }
 
-a {
+a:not(:has(*)) {
  transition: background 300ms;
  padding: 0 0.1em;
  text-decoration: none;

@@ -154,7 +154,7 @@ h6 {
 }
 
 
-a:not(:has(> *)) {
+a:not(:has(*)) {
   transition: background 300ms;
   padding: 0 0.1em;
   text-decoration: none;
