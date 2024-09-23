@@ -11,22 +11,22 @@ permalink: /
   <!-- header -->
   <h1 class="landing_header">Our work</h1>
 
-  <div class="landing_work_layout">
+  <div class="our_work_layout">
     <!-- Project cards -->
     <div class="card">
       <div class="card-body">
         <h4 class="card-title">Project Dojo</h4>
         <!-- <h5 class="card-subtitle">Nice looking subtitle.</h5> -->
-        <p class="card-text">We design collaborative learning workshops for programming</p>
+        <p class="card-text">We design programming workshops that are social and collaborative.</p>
       </div>
-      <img class="image-bottom" src="/assets/lib/landing/project_dojo.jpg" alt="Card example image">
+      <img class="image-bottom" src="/assets/lib/landing/dojo.jpg" alt="Project Dojo students interacting with collaborative learning medium">
     </div>
 
     <!-- Project cards -->
     <div class="card">
       <div class="card-body">
         <h4 class="card-title">Project Optic</h4>
-        <p class="card-text">We design interfaces to teach non-technical people how to program robots</p>
+        <p class="card-text">We design interfaces to help non-technical people easily program robots.</p>
       </div>
       <img class="image-bottom" src="/assets/lib/landing/ivansutherland.jpeg" alt="Card example image">
     </div>
@@ -135,9 +135,8 @@ permalink: /
   .our_work {
     padding-bottom: 100px;
 
-    .landing_work_layout {
+    .our_work_layout {
       display: flex;
-
       @media (max-width: 640px) {
         flex-direction: column;
       }
@@ -146,9 +145,17 @@ permalink: /
     .card {
       margin: 20px;
       width: 50%;
-      
       @media (max-width: 640px) {
         width: 90%;
+      }
+
+      img {
+        height: 100%;
+        object-fit: cover;
+      }
+      
+      .card-text {
+        margin-bottom: 0;
       }
     }
   }
