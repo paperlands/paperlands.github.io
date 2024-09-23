@@ -13,23 +13,10 @@ permalink: /
 
   <div class="our_work_layout">
     <!-- Project cards -->
-    <div class="card">
-      <div class="card-body">
-        <h4 class="card-title">Project Dojo</h4>
-        <!-- <h5 class="card-subtitle">Nice looking subtitle.</h5> -->
-        <p class="card-text">We design programming workshops that are social and collaborative.</p>
-      </div>
-      <img class="image-bottom" src="/assets/lib/landing/dojo.jpg" alt="Project Dojo students interacting with collaborative learning medium">
-    </div>
+    {% include card.html title="Project Dojo"  description="We design workshops where coding is a social and multiplayer activity" image_path="/assets/lib/landing/dojo.jpg" image_alt="Project Dojo students interacting with collaborative learning medium" href="/turtle" %}
+    
+    {% include card.html title="Project Optic"  description="We design interfaces to help non-technical people easily program robots." image_path="/assets/lib/landing/ivansutherland.jpeg" image_alt="Sutherland on Sketchpad"%}
 
-    <!-- Project cards -->
-    <div class="card">
-      <div class="card-body">
-        <h4 class="card-title">Project Optic</h4>
-        <p class="card-text">We design interfaces to help non-technical people easily program robots.</p>
-      </div>
-      <img class="image-bottom" src="/assets/lib/landing/ivansutherland.jpeg" alt="Card example image">
-    </div>
   </div>
 </div>
 
@@ -133,7 +120,7 @@ permalink: /
   }
 
   .our_work {
-    padding-bottom: 100px;
+    padding-bottom: 10vh;
 
     .our_work_layout {
       display: flex;

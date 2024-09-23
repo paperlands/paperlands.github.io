@@ -139,6 +139,7 @@ hr:after {
     padding: 0 4px;
     position: relative;
     top: -14px;
+    color: $color-core;
 }
 
 h1,
@@ -152,7 +153,8 @@ h6 {
   padding-bottom: 0;
 }
 
-a {
+
+a:not(:has(> *)) {
   transition: background 300ms;
   padding: 0 0.1em;
   text-decoration: none;

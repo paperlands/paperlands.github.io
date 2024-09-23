@@ -11,7 +11,7 @@ permalink: /turtle
 
 # Welcome to Paperland! 
 
-*We design new patterns of learning*
+<h1> *We design new patterns of learning* </h1>
 
 Find us [on GitHub](https://github.com/paperlands) or [on ⛩️ Dojo](https://thedojo.fly.dev/shell).
 

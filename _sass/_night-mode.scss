@@ -52,6 +52,11 @@ body.night-mode {
 		width: 100%;
 		height: 75px;
   }
+a.subdue-link {
+    color: #ffffff;
+    background-color: #fd4f00;
+  }
+
 a {
  transition: background 300ms;
  padding: 0 0.1em;
@@ -119,13 +124,6 @@ blockquote.night-mode {
  }
 }
 
-hr.night-mode {
- width: 100%;
- border: 0;
- height: 1px;
- margin: 1.5em 0;
- background: $color-border-night;
-}
 
 h1,
 h2,
