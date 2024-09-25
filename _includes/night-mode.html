@@ -1,34 +1,34 @@
 <script>
 
   function toggleTheme() {
-  if (document.body.classList.contains('night-mode')) {
-    setLightTheme();
-  } else {
-    setDarkTheme();
+    if (document.body.classList.contains('night-mode')) {
+      setLightTheme();
+    } else {
+      setDarkTheme();
+    }
   }
-}
 
-function setLightTheme() {
-  document.body.classList.remove('night-mode');
-  sessionStorage.setItem('night_mode', "false");
-  document.querySelector("#color-switcher").innerHTML = "🌙";
-}
-
-function setDarkTheme() {
-  document.body.classList.add('night-mode');
-  sessionStorage.setItem('night_mode', "true");
-  document.querySelector("#color-switcher").innerHTML = "☀️";
-}
-
-// Initialize theme based on session storage
-document.addEventListener('DOMContentLoaded', (event) => {
-  if (sessionStorage.getItem('night_mode') === "true") {
-    setDarkTheme();
-  } else {
-    setLightTheme();
+  function setLightTheme() {
+    document.body.classList.remove('night-mode');
+    sessionStorage.setItem('night_mode', "false");
+    document.querySelector("#color-switcher").innerHTML = "🌙";
   }
-});
-  
+
+  function setDarkTheme() {
+    document.body.classList.add('night-mode');
+    sessionStorage.setItem('night_mode', "true");
+    document.querySelector("#color-switcher").innerHTML = "☀️";
+  }
+
+  // Initialize theme based on session storage
+  document.addEventListener('DOMContentLoaded', (event) => {
+    if (sessionStorage.getItem('night_mode') === "true") {
+      setDarkTheme();
+    } else {
+      setLightTheme();
+    }
+  });
+    
   // Source for the following three methods: https://stackoverflow.com/a/28344281
   function hasClass(ele, cls) {
     return !!ele.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));

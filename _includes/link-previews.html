@@ -102,5 +102,5 @@
     });
   }
 
-  document.querySelectorAll('{{ include.wrapperQuerySelector }} a').forEach(setupListeners);
+  document.querySelectorAll('a[data-tooltip="true"]').forEach(setupListeners);
 </script>
