@@ -13,9 +13,19 @@ permalink: /
 
   <div class="our_work_layout">
     <!-- Project cards -->
-    {% include card.html title="Project Dojo"  description="We design workshops where coding is a social and multiplayer activity" image_path="/assets/lib/landing/dojo.jpg" image_alt="Project Dojo students interacting with collaborative learning medium" href="/turtle" %}
+    {% include card.html
+      title="Project Dojo"
+      description="We design workshops where coding is a social and multiplayer activity"
+      image_path="/assets/lib/landing/dojo.jpg"
+      image_alt="Project Dojo students interacting with collaborative learning medium"
+      href="/turtle" %}
     
-    {% include card.html title="Project Optic"  description="We design interfaces to help non-technical people easily program robots." image_path="/assets/lib/landing/ivansutherland.jpeg" image_alt="Sutherland on Sketchpad"%}
+    {% include card.html 
+      title="Project Optic"
+      description="We design interfaces to help non-technical people easily program robots."
+      image_path="/assets/lib/landing/ivansutherland.jpeg"
+      image_alt="Sutherland on Sketchpad" 
+      href="/" %}
 
   </div>
 </div>
@@ -47,7 +57,7 @@ permalink: /
     {% assign recent_notes = site.notes | sort: "last_modified_at_timestamp" | reverse %}
     {% for note in recent_notes limit: 5 %}
       <li>
-        {{ note.last_modified_at | date: "%Y-%m-%d" }} — <a class="internal-link" href="{{ site.baseurl }}{{ note.url }}">{{ note.title }}</a>
+        {{ note.last_modified_at | date: "%Y-%m-%d" }} — <a class="internal-link" href="{{ site.baseurl }}{{ note.url }}" data-tooltip="true">{{ note.title }}</a>
       </li>
     {% endfor %}
   </ul>
@@ -136,13 +146,18 @@ permalink: /
         width: 90%;
       }
 
-      img {
-        height: 100%;
-        object-fit: cover;
-      }
-      
       .card-text {
         margin-bottom: 0;
+        /* color: #333; */
+      }
+    }
+  }
+  body.night-mode {
+    .our_work {
+      .card {
+        .card-text {
+          color: #ccc; 
+        }
       }
     }
   }

@@ -1,14 +1,11 @@
 <div class="card">
-  {% if include.href %}
-  <a   href="{{ include.href }}">
-   {% endif %}
+  <a href="{{ include.href }}">
     <div class="card-body">
       <h4 class="card-title">{{ include.title }}</h4>
       <!-- <h5 class="card-subtitle">Nice looking subtitle.</h5> -->
       <p class="card-text">{{ include.description }}</p>
     </div>
+    
     <img class="image-bottom"  src="{{ include.image_path }}" alt="{{ include.image_alt }}">
-    {% if include.href %}
   </a>
-  {% endif %}
 </div>
