@@ -14,15 +14,15 @@ permalink: /
   <div class="projects_layout">
     <!-- Project cards -->
     {% include card.html
-      title="Dojo"
-      description="We craft with UNIQUE coding workshops with you!"
+      title="Project Dojo"
+      description="We craft UNIQUE computation and design workshops with you!"
       image_path="/assets/lib/landing/dojo.jpg"
       image_alt="Project Dojo students interacting with collaborative learning medium"
-      href="/turtle" %}
+      href="dojo" %}
     
     {% include card.html 
-      title="Optic"
-      description="We design better robotic interfaces for your non-tech folks!"
+      title="Project Optic"
+      description="We design INTUITIVE robotic interfaces for your non-tech folks!"
       image_path="/assets/lib/landing/ivansutherland.jpeg"
       image_alt="Sutherland on Sketchpad" 
       href="/" %}
