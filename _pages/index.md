@@ -14,15 +14,15 @@ permalink: /
   <div class="projects_layout">
     <!-- Project cards -->
     {% include card.html
-      title="Project Dojo"
-      description="We design workshops where coding is a social and multiplayer activity"
+      title="Dojo"
+      description="We craft with UNIQUE coding workshops with you!"
       image_path="/assets/lib/landing/dojo.jpg"
       image_alt="Project Dojo students interacting with collaborative learning medium"
       href="/turtle" %}
     
     {% include card.html 
-      title="Project Optic"
-      description="We design interfaces to help non-technical people easily program robots."
+      title="Optic"
+      description="We design better robotic interfaces for your non-tech folks!"
       image_path="/assets/lib/landing/ivansutherland.jpeg"
       image_alt="Sutherland on Sketchpad" 
       href="/" %}
@@ -37,14 +37,12 @@ permalink: /
 
   <div class="our_why_content">
     <div>
-      <p>Very few companies focus on creating good learning environments. It's just viewed as a necessary rite of passage. Rarely do people take the time to improve the system that got them there.</p>
-
       <p>We believe that the world would be a better place if the processes we shape and weave illuminates and uplifts the spirit of fellowship and belonging.</p>
 
       <p>We want to build the tools, the environment, the incentives that will lead to better patterns of teaching for the builders of tomorrow.</p>
     </div>
 
-    <img class="image-bottom" src="/assets/lib/kids.jpg">
+    <img src="/assets/lib/landing/beauty_first.png">
   </div>
 </section>
 
@@ -137,27 +135,13 @@ permalink: /
     text-align: center;
   }
 
-  .projects {
-    .projects_layout {
-      display: flex;
-      @media (max-width: 640px) {
-        flex-direction: column;
-      }
-    }
-
-    .card {
-      margin: 20px;
-      width: 50%;
-      @media (max-width: 640px) {
-        width: 90%;
-      }
-
-      .card-text {
-        margin-bottom: 0;
-        /* color: #333; */
-      }
+  .projects .projects_layout {
+    display: flex;
+    @media (max-width: 640px) {
+      flex-direction: column;
     }
   }
+
   body.night-mode {
     .projects {
       .card {
@@ -169,21 +153,29 @@ permalink: /
   }
 
   .our_why {
-    padding-bottom: 100px; 
+    padding-left: 20%; 
+    padding-right: 20%; 
+    @media (max-width: 768px) {
+      padding-left: 10%; 
+      padding-right: 10%; 
+    }
     
     .our_why_content {
       display: flex;
+      @media (max-width: 768px) {
+        flex-direction: column;
+      }
 
       #div {
         margin: 8px;
       }
 
-      .image-bottom {
-        margin: 20px;
-      }
-
-      @media (max-width: 768px) {
-        flex-direction: column;
+      img {
+        height: 40vh;
+        margin: 0 5%;
+        @media (max-width: 768px) {
+          margin: 0;
+        }
       }
     }
   }
