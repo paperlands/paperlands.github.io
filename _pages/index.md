@@ -127,7 +127,10 @@ permalink: /
   
   .hero_text {
     text-align: center;
-    padding: 15%; 
+    margin: 30vh 0 20vh;
+    @media (max-width: 768px) {
+      margin: 25vh 0 10vh;
+    }
   }
 
   .landing_header {
