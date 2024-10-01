@@ -1,7 +1,46 @@
-<a href="{{ site.baseurl }}/" >
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" height="40"  >
-        <image xlink:href="/assets/logo.svg" width="50" height="50"/>
-    </svg>
-</a>
+<nav class="border fixed split-nav">
+    <div class="nav-brand">
+        <!-- <h4><a href="#">Paperland</a></h4> -->
+        <a href="{{ site.baseurl }}/" >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" height="40"  >
+                <image xlink:href="/assets/logo.svg" width="40" height="40"/>
+            </svg>
+        </a>
+    </div>
 
-<a id="color-switcher" onclick="toggleTheme()">🌙</a>
+    <div class="collapsible">
+        <input id="collapsible1" type="checkbox" name="collapsible1">
+        <label for="collapsible1">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+        </label>
+        
+        <div class="collapsible-body">
+            <ul class="inline">
+                <li><a href="#projects" id="scroll-link">Projects</a></li>
+                <li><a href="#blog">Blog</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a id="color-switcher" onclick="toggleTheme()">🌙</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<style>
+    nav {
+        background-color: #fff;
+        /* margin-right: 10vw; */
+        /* padding-right: 10vw; */
+        /* width: 97vw; */
+    }
+    body.night-mode {
+        nav {
+            background-color: #222222;
+        }
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+</style>

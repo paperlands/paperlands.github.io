@@ -7,11 +7,11 @@ permalink: /
 
 <h2 class="hero_text">we design new<br>patterns of <ins>Learning</ins></h2>
 
-<div class="our_work">
+<section class="projects" id="projects">
   <!-- header -->
-  <h1 class="landing_header">Our work</h1>
+  <h1 class="landing_header">Projects</h1>
 
-  <div class="our_work_layout">
+  <div class="projects_layout">
     <!-- Project cards -->
     {% include card.html
       title="Project Dojo"
@@ -28,11 +28,11 @@ permalink: /
       href="/" %}
 
   </div>
-</div>
+</section>
 
 
 
-<div class="our_why">
+<section class="our_why">
   <h1 class="landing_header">Why Paperland?</h1>
 
   <div class="our_why_content">
@@ -46,11 +46,11 @@ permalink: /
 
     <img class="image-bottom" src="/assets/lib/kids.jpg">
   </div>
-</div>
+</section>
 
 
 
-<div class="our_blog">
+<section class="our_blog" id="blog">
   <h1 class="landing_header">Our blog</h1>
 
   <ul>
@@ -63,11 +63,11 @@ permalink: /
   </ul>
 
   <!-- <button>read more</button> -->
-</div>
+</section>
 
 
 
-<div class="work_with_us">
+<section class="work_with_us" id="contact">
   <h1 class="landing_header">Work with us</h1>
 
   <div class="work_with_us_content">
@@ -110,7 +110,7 @@ permalink: /
       <label class="btn-close" for="toast-alert">X</label>
     </div>
   </div>
-</div>
+</section>
 
 
 
@@ -118,6 +118,11 @@ permalink: /
 <style>
   h1 {
     margin: 1rem;
+  }
+
+  section {
+    padding-top: 10vh;
+    padding-bottom: 10vh;
   }
   
   .hero_text {
@@ -129,10 +134,8 @@ permalink: /
     text-align: center;
   }
 
-  .our_work {
-    padding-bottom: 10vh;
-
-    .our_work_layout {
+  .projects {
+    .projects_layout {
       display: flex;
       @media (max-width: 640px) {
         flex-direction: column;
@@ -153,7 +156,7 @@ permalink: /
     }
   }
   body.night-mode {
-    .our_work {
+    .projects {
       .card {
         .card-text {
           color: #ccc; 
