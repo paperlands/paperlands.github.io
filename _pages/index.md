@@ -18,7 +18,7 @@ permalink: /
       description="We bring LIVELY classrooms where students discover the joy of computation together to you!"
       image_path="/assets/lib/landing/dojo.jpg"
       image_alt="Project Dojo students interacting with collaborative learning medium"
-      href="dojo" %}
+      href="https://dojo.paperland.in/" %}
     
     {% include card.html 
       title="Project Optic"
