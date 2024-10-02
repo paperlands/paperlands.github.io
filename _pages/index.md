@@ -15,7 +15,7 @@ permalink: /
     <!-- Project cards -->
     {% include card.html
       title="Project Dojo"
-      description="We craft UNIQUE computation and design workshops with you!"
+      description="We bring LIVELY classrooms where students discover the joy of computation together to you!"
       image_path="/assets/lib/landing/dojo.jpg"
       image_alt="Project Dojo students interacting with collaborative learning medium"
       href="dojo" %}
@@ -91,10 +91,9 @@ permalink: /
       
       <label for="message-input">Your message *</label>
       <textarea id="message-input" name="message" rows="4" placeholder="There are more contexts than the one that we're in — the one that we think is reality"></textarea>
-
+      
+      <span> &nbsp;  </span>
       <input type="hidden" name="return_url" value="{{ page.url | absolute_url }}">
-
-      <br>
 
       <button type="submit">Submit</button>
     </form>
@@ -155,9 +154,9 @@ permalink: /
   .our_why {
     padding-left: 20%; 
     padding-right: 20%; 
-    @media (max-width: 768px) {
-      padding-left: 10%; 
-      padding-right: 10%; 
+    @media (max-width: 1048px) {
+      padding-left: 5%; 
+      padding-right: 5%; 
     }
     
     .our_why_content {
