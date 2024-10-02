@@ -10,7 +10,6 @@ $font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
 $sans-serif: sans-serif;
 
 body {
-  box-sizing: content-box;
   font-family: $font-family;
   margin: 0 auto;
   line-height: 1.7;
@@ -24,15 +23,6 @@ body {
   @media (min-width: 820px) {
     font-size: 1.2rem;
   }
-}
-
-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    background-color: inherit;
-
 }
 
 .color-switcher {
@@ -167,7 +157,7 @@ a:not(:has(*)) {
     position: relative;
     top: -0.5em;
     font-size: 0.7em;
-    content: "↗";
+    // content: "↗";
     color: #aaaaaa;
   }
   &.internal-link:after,
@@ -182,9 +172,6 @@ a:not(:has(*)) {
   color: black !important;
 }
 
-nav {
-  margin: 1em 0 3em;
-}
 
 #notes-entry-container {
   display: grid;

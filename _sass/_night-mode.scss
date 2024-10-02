@@ -12,7 +12,6 @@ $font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
 // Base styles for night mode
 
 body.night-mode {
- box-sizing: content-box;
  font-family: $font-family;
  margin: 0 auto;
  line-height: 1.7;
@@ -68,7 +67,7 @@ a:not(:has(*)) {
     position: relative;
     top: -0.5em;
     font-size: 0.7em;
-    content: "✧";
+   //  content: "✧";
     color: #ffffff; // Adjust for dark background
  }
 
@@ -139,9 +138,6 @@ h6.night-mode {
  color: #ffffff !important; // Light text for focus
 }
 
-nav.night-mode {
- margin: 1em 0 3em;
-}
 
 #notes-entry-container.night-mode {
  display: grid;

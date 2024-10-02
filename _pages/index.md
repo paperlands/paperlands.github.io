@@ -7,50 +7,48 @@ permalink: /
 
 <h2 class="hero_text">we design new<br>patterns of <ins>Learning</ins></h2>
 
-<div class="our_work">
+<section class="projects" id="projects">
   <!-- header -->
-  <h1 class="landing_header">Our work</h1>
+  <h1 class="landing_header">Projects</h1>
 
-  <div class="our_work_layout">
+  <div class="projects_layout">
     <!-- Project cards -->
     {% include card.html
       title="Project Dojo"
-      description="We design workshops where coding is a social and multiplayer activity"
+      description="We bring LIVELY classrooms where students discover the joy of computation together to you!"
       image_path="/assets/lib/landing/dojo.jpg"
       image_alt="Project Dojo students interacting with collaborative learning medium"
-      href="/turtle" %}
+      href="https://dojo.paperland.in/" %}
     
     {% include card.html 
       title="Project Optic"
-      description="We design interfaces to help non-technical people easily program robots."
+      description="We design INTUITIVE robotic interfaces for your non-tech folks!"
       image_path="/assets/lib/landing/ivansutherland.jpeg"
       image_alt="Sutherland on Sketchpad" 
       href="/" %}
 
   </div>
-</div>
+</section>
 
 
 
-<div class="our_why">
+<section class="our_why">
   <h1 class="landing_header">Why Paperland?</h1>
 
   <div class="our_why_content">
     <div>
-      <p>Very few companies focus on creating good learning environments. It's just viewed as a necessary rite of passage. Rarely do people take the time to improve the system that got them there.</p>
-
       <p>We believe that the world would be a better place if the processes we shape and weave illuminates and uplifts the spirit of fellowship and belonging.</p>
 
       <p>We want to build the tools, the environment, the incentives that will lead to better patterns of teaching for the builders of tomorrow.</p>
     </div>
 
-    <img class="image-bottom" src="/assets/lib/kids.jpg">
+    <img src="/assets/lib/landing/beauty_first.png">
   </div>
-</div>
+</section>
 
 
 
-<div class="our_blog">
+<section class="our_blog" id="blog">
   <h1 class="landing_header">Our blog</h1>
 
   <ul>
@@ -63,11 +61,11 @@ permalink: /
   </ul>
 
   <!-- <button>read more</button> -->
-</div>
+</section>
 
 
 
-<div class="work_with_us">
+<section class="work_with_us" id="contact">
   <h1 class="landing_header">Work with us</h1>
 
   <div class="work_with_us_content">
@@ -93,10 +91,9 @@ permalink: /
       
       <label for="message-input">Your message *</label>
       <textarea id="message-input" name="message" rows="4" placeholder="There are more contexts than the one that we're in — the one that we think is reality"></textarea>
-
+      
+      <span> &nbsp;  </span>
       <input type="hidden" name="return_url" value="{{ page.url | absolute_url }}">
-
-      <br>
 
       <button type="submit">Submit</button>
     </form>
@@ -110,7 +107,7 @@ permalink: /
       <label class="btn-close" for="toast-alert">X</label>
     </div>
   </div>
-</div>
+</section>
 
 
 
@@ -119,41 +116,33 @@ permalink: /
   h1 {
     margin: 1rem;
   }
+
+  section {
+    padding-top: 10vh;
+    padding-bottom: 10vh;
+  }
   
   .hero_text {
     text-align: center;
-    padding: 15%; 
+    margin: 30vh 0 20vh;
+    @media (max-width: 768px) {
+      margin: 25vh 0 10vh;
+    }
   }
 
   .landing_header {
     text-align: center;
   }
 
-  .our_work {
-    padding-bottom: 10vh;
-
-    .our_work_layout {
-      display: flex;
-      @media (max-width: 640px) {
-        flex-direction: column;
-      }
-    }
-
-    .card {
-      margin: 20px;
-      width: 50%;
-      @media (max-width: 640px) {
-        width: 90%;
-      }
-
-      .card-text {
-        margin-bottom: 0;
-        /* color: #333; */
-      }
+  .projects .projects_layout {
+    display: flex;
+    @media (max-width: 640px) {
+      flex-direction: column;
     }
   }
+
   body.night-mode {
-    .our_work {
+    .projects {
       .card {
         .card-text {
           color: #ccc; 
@@ -163,21 +152,29 @@ permalink: /
   }
 
   .our_why {
-    padding-bottom: 100px; 
+    padding-left: 20%; 
+    padding-right: 20%; 
+    @media (max-width: 1048px) {
+      padding-left: 5%; 
+      padding-right: 5%; 
+    }
     
     .our_why_content {
       display: flex;
+      @media (max-width: 768px) {
+        flex-direction: column;
+      }
 
       #div {
         margin: 8px;
       }
 
-      .image-bottom {
-        margin: 20px;
-      }
-
-      @media (max-width: 768px) {
-        flex-direction: column;
+      img {
+        height: 40vh;
+        margin: 0 5%;
+        @media (max-width: 768px) {
+          margin: 0;
+        }
       }
     }
   }

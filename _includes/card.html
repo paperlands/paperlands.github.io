@@ -1,11 +1,31 @@
 <div class="card">
-  <a href="{{ include.href }}">
+  <a href="{{ include.href }}" target="_self" class="card-link">
     <div class="card-body">
       <h4 class="card-title">{{ include.title }}</h4>
       <!-- <h5 class="card-subtitle">Nice looking subtitle.</h5> -->
       <p class="card-text">{{ include.description }}</p>
+      <div class="see-more">...... see more</div>
     </div>
-    
+
     <img class="image-bottom"  src="{{ include.image_path }}" alt="{{ include.image_alt }}">
   </a>
 </div>
+
+
+<style>
+  .card {
+    margin: 20px;
+    width: 50%;
+    @media (max-width: 640px) {
+      width: 90%;
+    }
+
+    .card-text {
+      color: #333333;
+    }
+
+    .see-more {
+      text-align: right;
+    }
+  }
+</style>
