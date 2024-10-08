@@ -15,7 +15,7 @@ permalink: /
     <!-- Project cards -->
     {% include card.html
       title="Project Dojo"
-      description="We bring LIVELY classrooms where students discover the joy of computation together to you!"
+      description="We design workshops to help students discover the JOY of computation"
       image_path="/assets/lib/landing/dojo.jpg"
       image_alt="Project Dojo students interacting with collaborative learning medium"
       href="https://dojo.paperland.in/" %}
