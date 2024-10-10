@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+
+  <link rel="canonical" href="https://paperland.in/404.html" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="description" content="~/paperland">
+
+  <link
+      rel="stylesheet"
+      href="assets/css/paper.min.css"
+    />
+
+  <meta property="og:site_name" content="~/paperland">
+
+  <link rel="icon" href="/favicon.ico" >
+
+
+  <link rel="stylesheet" href="/styles.css">
+
+  
+  <meta property="og:description" content="~/paperland"/>
+  
+
+  
+  <meta property="og:title" content="404">
+  <meta property="og:type" content="article">
+  
+
+  
+
+  <meta property="og:url" content="https://paperland.in/404.html" />
+
+  
+
+  <title>
+    
+      404 &mdash; ~/paperland
+    
+  </title>
+</head>
+
+  <body>
+    <nav class="border fixed split-nav">
+    <div class="nav-brand">
+        <!-- <h4><a href="#">Paperland</a></h4> -->
+        <a href="/" >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" height="40"  >
+                <image xlink:href="/assets/logo.svg" width="40" height="40"/>
+            </svg>
+        </a>
+    </div>
+
+    <div class="collapsible">
+        <input id="collapsible1" type="checkbox" name="collapsible1">
+        <label for="collapsible1">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+        </label>
+        
+        <div class="collapsible-body">
+            <ul class="inline">
+                <li><a href="#projects" id="scroll-link">Projects</a></li>
+                <li><a href="#blog">Blog</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a id="color-switcher" onclick="toggleTheme()">🌙</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<style>
+    nav {
+        background-color: #fff;
+    }
+    body.night-mode {
+        nav {
+            background-color: #222222;
+        }
+    }
+
+    nav .collapsible > label {
+        margin-right: 8vw
+    }
+    body.night-mode nav .collapsible > label {
+        margin-right: 8vw;
+        background-color: #222222;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+</style>
+
+    <div class="wrapper">
+      <main><div>
+  <h1>Oops, that's a 404. 🙈</h1>
+  <p>Looks like this page doesn't exist. <a href="/">Return home</a> to get a fresh start.</p>
+</div>
+</main>
+      <footer> Written in <a class="internal-link" href="/about">Paperland</a>
+</footer>
+    </div>
+
+    <!-- That file is not particularly elegant. This will need a refactor at some point. -->
+<div class='tooltip-wrapper' style="opacity: 0; display: none;" id='tooltip-wrapper'>
+  <div id='tooltip-content'>
+  </div>
+</div>
+
+<iframe style="display: none; height: 0; width: 0;" id='link-preview-iframe' src="">
+</iframe>
+
+<script>
+  var opacityTimeout;
+  var contentTimeout;
+  var transitionDurationMs = 100;
+
+  var iframe = document.getElementById('link-preview-iframe')
+  var tooltipWrapper = document.getElementById('tooltip-wrapper')
+  var tooltipContent = document.getElementById('tooltip-content')
+
+  var linkHistories = {};
+
+  function hideTooltip() {
+    opacityTimeout = setTimeout(function() {
+      tooltipWrapper.style.opacity = 0;
+      contentTimeout = setTimeout(function() {
+        tooltipContent.innerHTML = '';
+        tooltipWrapper.style.display = 'none';
+      }, transitionDurationMs + 1);
+    }, transitionDurationMs)
+  }
+
+  function showTooltip(event) {
+    var elem = event.target;
+    var elem_props = elem.getClientRects()[elem.getClientRects().length - 1];
+    var top = window.pageYOffset || document.documentElement.scrollTop
+
+    if (event.target.host === window.location.host) {
+      if (!linkHistories[event.target.href]) {
+        iframe.src = event.target.href
+        iframe.onload = function() {
+          tooltipContentHtml = ''
+          tooltipContentHtml += '<div style="font-weight: bold;">' + iframe.contentWindow.document.querySelector('h1').innerHTML + '</div>'
+          tooltipContentHtml += iframe.contentWindow.document.querySelector('content').innerHTML
+
+          tooltipContent.innerHTML = tooltipContentHtml
+          linkHistories[event.target.href] = tooltipContentHtml
+
+          tooltipWrapper.style.display = 'block';
+          setTimeout(function() {
+            tooltipWrapper.style.opacity = 1;
+          }, 1)
+        } 
+      } else {
+        tooltipContent.innerHTML = linkHistories[event.target.href]
+        tooltipWrapper.style.display = 'block';
+        setTimeout(function() {
+          tooltipWrapper.style.opacity = 1;
+        }, 1)
+      }
+
+
+      tooltipWrapper.style.left = elem_props.left - (tooltipWrapper.offsetWidth / 2) + (elem_props.width / 2) + "px";
+      if ((window.innerHeight - elem_props.top) < (tooltipWrapper.offsetHeight)) {
+          tooltipWrapper.style.top = elem_props.top + top - tooltipWrapper.offsetHeight - 10 + "px";
+      } else if ((window.innerHeight - elem_props.top) > (tooltipWrapper.offsetHeight)) {
+          tooltipWrapper.style.top = elem_props.top + top + 35 + "px";
+      }
+
+      if ((elem_props.left + (elem_props.width / 2)) < (tooltipWrapper.offsetWidth / 2)) {
+          tooltipWrapper.style.left = "10px";
+      } else if ((document.body.clientWidth - elem_props.left - (elem_props.width / 2)) < (tooltipWrapper.offsetWidth / 2)) {
+          tooltipWrapper.style.left = document.body.clientWidth - tooltipWrapper.offsetWidth - 20 + "px";
+      }
+    }
+  }
+
+  function setupListeners(linkElement) {
+    linkElement.addEventListener('mouseleave', function(_event) {
+      hideTooltip();
+    });
+
+    tooltipWrapper.addEventListener('mouseleave', function(_event) {
+      hideTooltip();
+    });
+
+    linkElement.addEventListener('touchend', function(_event) {
+      hideTooltip();
+    });
+
+    tooltipWrapper.addEventListener('touchend', function(_event) {
+      hideTooltip();
+    });
+
+    linkElement.addEventListener('mouseenter', function(event) {
+      clearTimeout(opacityTimeout);
+      clearTimeout(contentTimeout);
+      showTooltip(event);
+    });
+
+    tooltipWrapper.addEventListener('mouseenter', function(event) {
+      clearTimeout(opacityTimeout);
+      clearTimeout(contentTimeout);
+    });
+  }
+
+  document.querySelectorAll('a[data-tooltip="true"]').forEach(setupListeners);
+</script>
+
+    <script>
+
+  function toggleTheme() {
+    if (document.body.classList.contains('night-mode')) {
+      setLightTheme();
+    } else {
+      setDarkTheme();
+    }
+  }
+
+  function setLightTheme() {
+    document.body.classList.remove('night-mode');
+    sessionStorage.setItem('night_mode', "false");
+    document.querySelector("#color-switcher").innerHTML = "🌙";
+  }
+
+  function setDarkTheme() {
+    document.body.classList.add('night-mode');
+    sessionStorage.setItem('night_mode', "true");
+    document.querySelector("#color-switcher").innerHTML = "☀️";
+  }
+
+  // Initialize theme based on session storage
+  document.addEventListener('DOMContentLoaded', (event) => {
+    if (sessionStorage.getItem('night_mode') === "true") {
+      setDarkTheme();
+    } else {
+      setLightTheme();
+    }
+  });
+    
+  // Source for the following three methods: https://stackoverflow.com/a/28344281
+  function hasClass(ele, cls) {
+    return !!ele.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
+  }
+
+  function addClass(ele, cls) {
+    if (!hasClass(ele, cls)) ele.className += " " + cls;
+  }
+
+  function removeClass(ele, cls) {
+    if (hasClass(ele, cls)) {
+      var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
+      ele.className = ele.className.replace(reg, ' ');
+    }
+  }
+</script>
+
+  </body>
+</html>
