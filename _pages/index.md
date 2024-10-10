@@ -46,7 +46,7 @@ permalink: /
       <p>We want to build the tools, the environment, the incentives that will lead to better patterns of teaching for the builders of tomorrow.</p>
     </div>
 
-    <img src="/assets/lib/landing/beauty_first.png">
+    <img src="/assets/lib/landing/castle_sun.png">
   </div>
 </section>
 
@@ -214,17 +214,22 @@ permalink: /
         flex-direction: column;
       }
 
-      #div {
-        margin: 8px;
-      }
-
-      img {
-        height: 40vh;
+      div {
         margin: 0 5%;
         @media (max-width: 768px) {
           margin: 0;
         }
       }
+
+      img {
+        width: 20vw;
+        height: 20vw;
+        @media (max-width: 768px) {
+          width: 100vw;
+          height: auto;
+        }
+      }
+
     }
   }
 
