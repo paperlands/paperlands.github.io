@@ -4,17 +4,21 @@ title: Home
 id: home
 permalink: /
 ---
-
-<h2 class="hero_text">we design new<br>patterns of <ins>Learning</ins></h2>
+<div class="hero_text">
+  <h1>Paperland.</h1>
+  <div>
+    <h3>designing new patterns of <span class="fancy">Learning!</span></h3>
+  </div>
+</div>
 
 <section class="projects" id="projects">
   <!-- header -->
-  <h1 class="landing_header">Projects</h1>
+  <h2 class="landing_header">Projects</h2>
 
   <div class="projects_layout">
     <!-- Project cards -->
     {% include card.html
-      title="Project Dojo"
+      title="Workhop Dojo"
       description="We design workshops to help students discover the JOY of computation"
       image_path="/assets/lib/landing/dojo.jpg"
       image_alt="Project Dojo students interacting with collaborative learning medium"
@@ -22,7 +26,7 @@ permalink: /
     
     {% include card.html 
       title="Project Optic"
-      description="We design INTUITIVE robotic interfaces for your non-tech folks!"
+      description="We design INTUITIVE robotic interfaces for your non-techical folks!"
       image_path="/assets/lib/landing/ivansutherland.jpeg"
       image_alt="Sutherland on Sketchpad" 
       href="/" %}
@@ -33,7 +37,7 @@ permalink: /
 
 
 <section class="our_why">
-  <h1 class="landing_header">Why Paperland?</h1>
+  <h2 class="landing_header">Why Paperland?</h2>
 
   <div class="our_why_content">
     <div>
@@ -49,7 +53,7 @@ permalink: /
 
 
 <section class="our_blog" id="blog">
-  <h1 class="landing_header">Our blog</h1>
+  <h2 class="landing_header">Our blog</h2>
 
   <ul>
     {% assign recent_notes = site.notes | sort: "last_modified_at_timestamp" | reverse %}
@@ -66,7 +70,7 @@ permalink: /
 
 
 <section class="work_with_us" id="contact">
-  <h1 class="landing_header">Work with us</h1>
+  <h2 class="landing_header">Work with us</h2>
 
   <div class="work_with_us_content">
     <div class="padding-right-large work_with_us_content_el_1">
@@ -114,7 +118,11 @@ permalink: /
 
 <style>
   h1 {
-    margin: 1rem;
+    font-weight: bold;
+    font-size: 9em;
+    @media (max-width: 768px) {
+      font-size: 4em;
+    }
   }
 
   section {
@@ -124,9 +132,50 @@ permalink: /
   
   .hero_text {
     text-align: center;
-    margin: 30vh 0 20vh;
+    margin: 22vh 0 10vh;
     @media (max-width: 768px) {
-      margin: 25vh 0 10vh;
+      margin: 25vh 0 5vh;
+    }
+
+    div {
+      margin: 0 3vw 0
+    }
+  }
+
+  .fancy {
+    position: relative;
+    white-space: nowrap;
+    &:after {
+      --deco-height: 0.3125em;
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: calc(var(--deco-height) * -0.625);
+      height: var(--deco-height);
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='64' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23a)'%3E%3Cpath d='M-17 30.5C-1 22 72-4 54 13 37.9 28.2-2.5 57.5 16 55.5s72-29 104-40' stroke='%23000000' stroke-width='10'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='a'%3E%3Cpath fill='%23fff' d='M0 0h100v64H0z'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E%0A");
+      background-size: auto 100%;
+      background-repeat: round;
+      background-position: 0em;
+    }
+  }
+  body.night-mode {
+    .fancy {
+      position: relative;
+      white-space: nowrap;
+      &:after {
+        --deco-height: 0.3125em;
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: calc(var(--deco-height) * -0.625);
+        height: var(--deco-height);
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='64' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23a)'%3E%3Cpath d='M-17 30.5C-1 22 72-4 54 13 37.9 28.2-2.5 57.5 16 55.5s72-29 104-40' stroke='%23cccccc' stroke-width='10'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='a'%3E%3Cpath fill='%23fff' d='M0 0h100v64H0z'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E%0A");
+        background-size: auto 100%;
+        background-repeat: round;
+        background-position: 0em;
+      }
     }
   }
 
@@ -218,42 +267,42 @@ permalink: /
   }
   
   .toast {
-      position: fixed;
-      bottom: 20px;
-      right: 0vh;
-      transform: translateX(-50%);
-      padding: 10px 20px;
-      z-index: 9999;
+    position: fixed;
+    bottom: 20px;
+    right: 0vh;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    display: none;
+    animation: fade-in 10s ease-in-out forwards;
+  }
+
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+      visibility: visible;
+      transform: translateX(-50%) translateY(20px);
+    }
+    15% {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+    
+    90% {
       opacity: 0;
       visibility: hidden;
+      transform: translateX(-50%) translateY(0);
+    }
+    
+    100% {
+      opacity: 0;
       display: none;
-      animation: fade-in 10s ease-in-out forwards;
+      transform: translateX(-50%) translateY(0);
     }
-
-    @keyframes fade-in {
-      0% {
-        opacity: 0;
-        visibility: visible;
-        transform: translateX(-50%) translateY(20px);
-      }
-      15% {
-        opacity: 1;
-        visibility: visible;
-        transform: translateX(-50%) translateY(0);
-      }
-      
-      90% {
-        opacity: 0;
-        visibility: hidden;
-        transform: translateX(-50%) translateY(0);
-      }
-      
-      100% {
-        opacity: 0;
-        display: none;
-        transform: translateX(-50%) translateY(0);
-      }
-    }
+  }
 </style>
 
 <script>
