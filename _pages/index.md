@@ -46,7 +46,7 @@ permalink: /
       <p>We want to build the tools, the environment, the incentives that will lead to better patterns of teaching for the builders of tomorrow.</p>
     </div>
 
-    <img src="/assets/lib/landing/castle_sun.png">
+    <img src="/assets/lib/landing/castle_sun_1x1.png">
   </div>
 </section>
 
