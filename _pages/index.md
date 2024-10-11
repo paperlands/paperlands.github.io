@@ -105,12 +105,22 @@ permalink: /
 
     </form>
   </div>
-  <div class="toast" id="toast">
+  <div class="toast" id="toast-good">
     <i class="fa fa-check-circle"></i>
     <input class="alert-state" id="toast-alert" type="checkbox">
 
     <div class="alert alert-muted dismissible">
       Sent! To the desks <a class="internal-link" href="/about"> <b>@paperland</b></a>
+      <label class="btn-close" for="toast-alert">X</label>
+    </div>
+  </div>
+  
+  <div class="toast" id="toast-bad">
+    <i class="fa fa-check-circle"></i>
+    <input class="alert-state" id="toast-alert" type="checkbox">
+
+    <div class="alert alert-danger dismissible">
+      Check the I am human checkbox!
       <label class="btn-close" for="toast-alert">X</label>
     </div>
   </div>
@@ -317,10 +327,14 @@ permalink: /
 
   const urlParams = new URLSearchParams(window.location.search)
   if (urlParams.get('sent') == "true"){
-   const element = document.getElementById('toast');
+   const element = document.getElementById('toast-good');
    element.style.display = 'block'; // Show the element
-            
    }
+    else if (urlParams.get('sent') == "false") {
+    const element = document.getElementById('toast-bad');
+    element.style.display = 'block'; // Show the element
+    }
+  
 
 
 </script>
