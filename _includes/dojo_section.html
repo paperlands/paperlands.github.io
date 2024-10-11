@@ -1,0 +1,106 @@
+<!-- Show Group A on screens wider than 768px -->
+<div class="dojo_section">
+  <h3 class="">{{ include.title }}</h3>
+  <p>{{ include.text_top }}
+    <br>{{ include.text_mid }}</p>
+  
+  <div class="inner_card_holder">
+    <div class="inner_card border">
+      <img src="{{ include.first_image_path }}" alt="{{ include.first_image_alt }}">
+      <div>{{ include.first_image_caption }}</div>
+    </div>
+    
+    <div class="inner_card border">
+      <img src="{{ include.second_image_path }}" alt="{{ include.second_image_alt }}">
+      <div>{{ include.second_image_caption }}</div>
+    </div>
+  </div>
+
+  <p>{{ include.text_btm }}</p>
+</div>
+
+
+<!-- Show Group B on screens narrower than 768px -->
+<div class="dojo_section_small ">
+  <h3 class="">{{ include.title }}</h3>
+  <p>{{ include.text_top }}</p>
+  
+  <div class="inner_card border">
+    <img src="{{ include.first_image_path }}" alt="{{ include.first_image_alt }}">
+    <div class="image_caption">{{ include.first_image_caption }}</div>
+  </div>
+
+  <p>{{ include.text_mid }}</p>
+  
+  <div class="inner_card border">
+    <img src="{{ include.second_image_path }}" alt="{{ include.second_image_alt }}">
+    <div class="image_caption">{{ include.second_image_caption }}</div>
+  </div>
+
+  <p>{{ include.text_btm }}</p>
+</div>
+
+
+
+<style>
+  /* Base styles (apply to all screen sizes) */
+  .dojo_section, .dojo_section_small {
+    display: none;
+  }
+
+  /* Show Group A on screens wider than 768px */
+  @media (min-width: 768px) {
+    .dojo_section {
+      display: block;
+      margin-bottom: 10vh;
+
+      padding: 0 1em 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center; 
+
+      .inner_card_holder {
+        display: flex;
+      }
+
+      .inner_card {
+        padding: 1em;
+        width: 35vw;
+        margin: 2em;
+      }
+
+      div {
+        font-size: x-small;
+      }
+    }
+  }
+
+  /* Show Group B on screens narrower than 768px */
+  @media (max-width: 767px) {
+    .dojo_section_small {
+      display: block;
+      margin: 5vh 0;
+
+      padding: 0 1em 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center; 
+
+      .inner_card {
+        padding: 1em;
+        width: 60vw;
+      }
+
+      .image_caption {
+        margin: 0 5vw 0;
+      }
+
+      div {
+        font-size: x-small;
+      }
+    }
+  }
+
+</style>

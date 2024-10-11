@@ -20,9 +20,9 @@ permalink: /
     {% include card.html
       title="Workhop Dojo"
       description="We design workshops to help students discover the JOY of computation"
-      image_path="/assets/lib/landing/dojo.jpg"
+      image_path="/assets/lib/landing/wan_workshop_16x9.jpg"
       image_alt="Project Dojo students interacting with collaborative learning medium"
-      href="https://dojo.paperland.in/" %}
+      href="/dojo" %}
     
     {% include card.html 
       title="Project Optic"
