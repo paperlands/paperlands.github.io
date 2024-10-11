@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card border">
   <a href="{{ include.href }}" target="_self" class="card-link">
     <div class="card-body">
       <h3 class="card-title">{{ include.title }}</h3>
@@ -14,6 +14,7 @@
 
 <style>
   .card {
+    overflow: hidden;
     margin: 20px;
     width: 50%;
     @media (max-width: 640px) {
