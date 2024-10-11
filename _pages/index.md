@@ -59,7 +59,7 @@ permalink: /
     {% assign recent_notes = site.notes | sort: "last_modified_at_timestamp" | reverse %}
     {% for note in recent_notes limit: 5 %}
       <li>
-        {{ note.last_modified_at | date: "%Y-%m-%d" }} — <a class="internal-link" href="{{ site.baseurl }}{{ note.url }}" data-tooltip="true">{{ note.title }}</a>
+        {{ note.last_date | date: "%Y-%m-%d" }} — <a class="internal-link" href="{{ site.baseurl }}{{ note.url }}" data-tooltip="true">{{ note.title }}</a>
       </li>
     {% endfor %}
   </ul>
@@ -83,7 +83,7 @@ permalink: /
       <p>If you have a learning opportunity, we would love to have a chat with you!</p>
     </div>
     
-    <form class="col form-group card work_with_us_content_el_2" accept-charset="UTF-8" action="https://india.fly.dev/proxy/apps/guru/work" method="POST">
+    <form id="paper_form" class="col form-group card work_with_us_content_el_2" accept-charset="UTF-8" action="https://india.fly.dev/proxy/apps/guru/work" method="POST">
       <label for="name-input">Your Name *</label>
       <input id="name-input" type="text" name="name" placeholder="Alan Kay">
 
@@ -96,10 +96,13 @@ permalink: /
       <label for="message-input">Your message *</label>
       <textarea id="message-input" name="message" rows="4" placeholder="There are more contexts than the one that we're in — the one that we think is reality"></textarea>
       
-      <span> &nbsp;  </span>
       <input type="hidden" name="return_url" value="{{ page.url | absolute_url }}">
-
+      <span> &nbsp;  </span>
+      <div class="h-captcha card" data-sitekey="7688737e-8d00-4c1e-acdc-828ee1c02e08"></div>
+      <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+      <span> &nbsp;  </span>
       <button type="submit">Submit</button>
+
     </form>
   </div>
   <div class="toast" id="toast">
@@ -311,12 +314,14 @@ permalink: /
 </style>
 
 <script>
+
   const urlParams = new URLSearchParams(window.location.search)
   if (urlParams.get('sent') == "true"){
    const element = document.getElementById('toast');
    element.style.display = 'block'; // Show the element
             
    }
+
 
 </script>
 

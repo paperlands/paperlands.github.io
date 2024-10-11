@@ -1,9 +1,10 @@
 ---
 title: Why Must I Learn This?
 author: princeton
+last_date: 25-09-2024
 ---
 
-# “Why” matters
+## “Why” matters
 
 “Why must I learn this?"<br>
 I always asked this question as a kid. <br>
