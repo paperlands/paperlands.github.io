@@ -1,0 +1,67 @@
+<div>
+  <div class="testimonial">
+    <p class="testimonial_text">
+      {{ include.text }}
+    </p>
+    <div></div>
+    <p class="author">
+      {{ include.author }}
+    </p>
+  </div>
+</div>
+
+
+
+<style>
+  div {
+    margin: 4px;
+  }
+  .testimonial .testimonial_text {
+    background: #efefef;
+    padding: 3em 2em;
+    position: relative;
+    border: none;
+    border-radius: 10px;
+    font-style: italic;
+    color: black;
+  }
+
+  .testimonial .testimonial_text:before,
+  .testimonial .testimonial_text:after {
+    content: "\201C";
+    position: absolute;
+    font-size: 120px;
+    line-height: 1;
+    color: #757f9a;
+    font-style: normal;
+  }
+
+  .testimonial .testimonial_text:before {
+    top: 25px;
+    left: 15px;
+  }
+
+  .testimonial .testimonial_text:after {
+    content: "\201D";
+    right: 15px;
+    bottom: -0.6em;
+  }
+
+  .testimonial div {
+    width: 0;
+    height: 0;
+    border-left: 0 solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 20px solid #efefef;
+    margin: 0 0 0 70px;
+  }
+
+  .testimonial p {
+    margin: 0 1em 0;
+    text-align: left;
+  }
+
+  .testimonial .author {
+    margin: 4px 2em 0;
+  }
+</style>

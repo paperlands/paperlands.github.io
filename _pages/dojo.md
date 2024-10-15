@@ -8,7 +8,7 @@ permalink: /dojo
 <br>
 <br>
 
-<h1>Project Dojo</h1>
+<h2>Project Dojo</h2>
 <p>We design workshops to discover the joy of computing for all ages</p>
 <a href="https://dojo.paperland.in/" class="paper-btn">Try Turtle Demo</a>
 
@@ -54,6 +54,28 @@ permalink: /dojo
     text_btm="Expect to push the boundaries of how your learnings can be utilised and applied!"
 %}
 
+<section>
+    <h2>Student Reviews</h2>
+    <br>
+    <div class="grid-container">
+        {% include quotes.html 
+            text="I like the workshop and it’s the right level of difficulty, having limited prior experience with coding, it can pose as a little challenge to me and I appreciate the exposure to the workshop :)"
+            author="Zhi Ying &mdash; Abstraction Workshop"
+        %}
+        {% include quotes.html 
+            text="Thanks for conducting the workshop and for the tips on school! Appreciate it! 🙏🏻
+            The content covered was interesting, easy to follow and the pace was good. The idea of letting us view other participants’ work was cool too."
+            author="Bryan &mdash; Turtle Graphics Workshop"
+        %}
+        {% include quotes.html 
+            text="Heyy I really enjoyed the class! To the extent that I would come for other classes if yall do organise em (even though coding aint my fave 👀). 
+            I appreciate that the session started with hands on n I really enjoyed your points about the application as well coz it really tied the session for me (esp the biology part I was hooked)."
+            author="Rithika &mdash; Recursion Workshop"
+        %}
+    </div>
+</section>
+
+
 <style>
     div {
         text-align: center;
@@ -61,5 +83,26 @@ permalink: /dojo
 
     div > h1 {
         font-size: xx-large;
+    }
+
+    section {
+        margin: 30vh 0;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* 3 columns on larger screens */
+      
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr; /* 1 column on smaller screens */
+        row-gap: 10vh;
+      }
+    }
+
+    .grid-item {
+      background-color: #3498db;
+      text-align: center;
+      font-size: 20rem;
+      border-radius: 10px;
     }
 </style>
