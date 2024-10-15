@@ -75,54 +75,13 @@ permalink: /
   <div class="work_with_us_content">
     <div class="padding-right-large work_with_us_content_el_1">
       <p>Want to redesign your system from first principles?</p>
-
       <p>Want to augment your class with better programming tools?</p>
-
       <p>Want to improve how your technology is communicated to beginners?</p>
-
       <p>If you have a learning opportunity, we would love to have a chat with you!</p>
     </div>
     
-    <form id="paper_form" class="col form-group card work_with_us_content_el_2" accept-charset="UTF-8" action="https://india.fly.dev/proxy/apps/guru/work" method="POST">
-      <label for="name-input">Your Name *</label>
-      <input id="name-input" type="text" name="name" placeholder="Alan Kay">
-
-      <label for="email-input">Email *</label>
-      <input id="email-input" type="email" name="email" placeholder="alan@paperland.in">
-
-      <label for="company-input">Company/Org</label>
-      <input id="company-input" type="text" name="company" placeholder="Xerox Parc">
-      
-      <label for="message-input">Your message *</label>
-      <textarea id="message-input" name="message" rows="4" placeholder="There are more contexts than the one that we're in — the one that we think is reality"></textarea>
-      
-      <input type="hidden" name="return_url" value="{{ page.url | absolute_url }}">
-      <span> &nbsp;  </span>
-      <div class="h-captcha card" data-sitekey="7688737e-8d00-4c1e-acdc-828ee1c02e08"></div>
-      <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
-      <span> &nbsp;  </span>
-      <button type="submit">Submit</button>
-
-    </form>
-  </div>
-  <div class="toast" id="toast-good">
-    <i class="fa fa-check-circle"></i>
-    <input class="alert-state" id="toast-alert" type="checkbox">
-
-    <div class="alert alert-muted dismissible">
-      Sent! To the desks <a class="internal-link" href="/about"> <b>@paperland</b></a>
-      <label class="btn-close" for="toast-alert">X</label>
-    </div>
-  </div>
-  
-  <div class="toast" id="toast-bad">
-    <i class="fa fa-check-circle"></i>
-    <input class="alert-state" id="toast-alert" type="checkbox">
-
-    <div class="alert alert-danger dismissible">
-      Check the I am human checkbox!
-      <label class="btn-close" for="toast-alert">X</label>
-    </div>
+    {% include contact_form.html
+      href="/dojo" %}
   </div>
 </section>
 
@@ -264,79 +223,10 @@ permalink: /
       .work_with_us_content_el_1 {
         flex-basis: 60%;
       }
-      .work_with_us_content_el_2 {
-        flex-basis: 40%;
-        
-        label {
-          margin-bottom: 0;
-          margin-top: 10px;
-        }
-      }
-    }
-
-    .name_inputs {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .submit_button {
-      margin: 1rem;
-    }
-  }
-  
-  .toast {
-    position: fixed;
-    bottom: 20px;
-    right: 0vh;
-    transform: translateX(-50%);
-    padding: 10px 20px;
-    z-index: 9999;
-    opacity: 0;
-    visibility: hidden;
-    display: none;
-    animation: fade-in 10s ease-in-out forwards;
-  }
-
-  @keyframes fade-in {
-    0% {
-      opacity: 0;
-      visibility: visible;
-      transform: translateX(-50%) translateY(20px);
-    }
-    15% {
-      opacity: 1;
-      visibility: visible;
-      transform: translateX(-50%) translateY(0);
-    }
-    
-    90% {
-      opacity: 0;
-      visibility: hidden;
-      transform: translateX(-50%) translateY(0);
-    }
-    
-    100% {
-      opacity: 0;
-      display: none;
-      transform: translateX(-50%) translateY(0);
     }
   }
 </style>
 
-<script>
 
-  const urlParams = new URLSearchParams(window.location.search)
-  if (urlParams.get('sent') == "true"){
-   const element = document.getElementById('toast-good');
-   element.style.display = 'block'; // Show the element
-   }
-    else if (urlParams.get('sent') == "false") {
-    const element = document.getElementById('toast-bad');
-    element.style.display = 'block'; // Show the element
-    }
-  
-
-
-</script>
 
 
