@@ -76,6 +76,22 @@ permalink: /dojo
 </section>
 
 
+<section class="work_with_us" id="contact">
+  <h2 class="landing_header">Work with us</h2>
+
+  <div class="work_with_us_content">
+    <div class="padding-right-large work_with_us_content_el_1">
+      <p>Looking for unconventional ways to learn how technology works?</p>
+      <p>Looking for a better way to learn about programming?</p>
+      <p>Looking for computational thinking workshops?</p>
+      <p>Let's have a call to design the perfect lesson together!</p>
+    </div>
+    
+    {% include contact_form.html
+      href="/dojo" %}
+  </div>
+</section>
+
 <style>
     div {
         text-align: center;
@@ -90,19 +106,39 @@ permalink: /dojo
     }
 
     .grid-container {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr); /* 3 columns on larger screens */
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 3 columns on larger screens */
       
-      @media (max-width: 768px) {
-        grid-template-columns: 1fr; /* 1 column on smaller screens */
-        row-gap: 10vh;
-      }
+        @media (max-width: 768px) {
+            grid-template-columns: 1fr; /* 1 column on smaller screens */
+            row-gap: 10vh;
+        }
     }
 
     .grid-item {
-      background-color: #3498db;
-      text-align: center;
-      font-size: 20rem;
-      border-radius: 10px;
+        background-color: #3498db;
+        text-align: center;
+        font-size: 20rem;
+        border-radius: 10px;
+    }
+
+    .work_with_us {
+        padding-bottom: 100px;
+        margin: 0 4vw;
+        
+        .work_with_us_content {
+            text-align: left;
+            display: flex;
+            justify-content: center;
+
+            @media (max-width: 768px) {
+                flex-direction: column;
+            }
+
+            .work_with_us_content_el_1 {
+                flex-basis: 60%;
+                text-align: left;
+            }
+        }
     }
 </style>
