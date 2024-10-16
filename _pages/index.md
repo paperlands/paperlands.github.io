@@ -110,7 +110,9 @@ permalink: /
     }
 
     div {
-      margin: 0 3vw 0
+      margin: 0 3vw 0;
+      position: relative;
+      bottom: 5vh;
     }
   }
 
