@@ -19,7 +19,7 @@ permalink: /
   <div class="projects_layout">
     <!-- Project cards -->
     {% include card.html
-      title="Workhop Dojo"
+      title="Workshop Dojo"
       description="We design workshops to help students discover the JOY of computation"
       image_path="/assets/lib/landing/wan_workshop_16x9.jpg"
       image_alt="Project Dojo students interacting with collaborative learning medium"
