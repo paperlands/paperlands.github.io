@@ -124,7 +124,6 @@ permalink: /dojo
 
     .work_with_us {
         padding-bottom: 100px;
-        margin: 0 4vw;
         
         .work_with_us_content {
             text-align: left;
