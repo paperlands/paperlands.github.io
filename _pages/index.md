@@ -14,6 +14,7 @@ permalink: /
 <section class="projects" id="projects">
   <!-- header -->
   <h2 class="landing_header">Projects</h2>
+  <hr><br>
 
   <div class="projects_layout">
     <!-- Project cards -->
@@ -38,6 +39,7 @@ permalink: /
 
 <section class="our_why">
   <h2 class="landing_header">Why Paperland?</h2>
+  <hr><br>
 
   <div class="our_why_content">
     <div>
@@ -54,6 +56,7 @@ permalink: /
 
 <section class="our_blog" id="blog">
   <h2 class="landing_header">Our blog</h2>
+  <hr><br>
 
   <ul>
     {% assign recent_notes = site.notes | sort: "last_modified_at_timestamp" | reverse %}
@@ -71,6 +74,7 @@ permalink: /
 
 <section class="work_with_us" id="contact">
   <h2 class="landing_header">Work with us</h2>
+  <hr><br>
 
   <div class="work_with_us_content">
     <div class="padding-right-large work_with_us_content_el_1">
@@ -228,7 +232,3 @@ permalink: /
     }
   }
 </style>
-
-
-
-

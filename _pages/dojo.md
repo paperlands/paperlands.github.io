@@ -56,7 +56,8 @@ permalink: /dojo
 
 <section>
     <h2>Student Reviews</h2>
-    <br>
+    <hr><br>
+
     <div class="grid-container">
         {% include quotes.html 
             text="I like the workshop and it’s the right level of difficulty, having limited prior experience with coding, it can pose as a little challenge to me and I appreciate the exposure to the workshop :)"
@@ -78,6 +79,7 @@ permalink: /dojo
 
 <section class="work_with_us" id="contact">
   <h2 class="landing_header">Work with us</h2>
+  <hr><br>
 
   <div class="work_with_us_content">
     <div class="padding-right-large work_with_us_content_el_1">

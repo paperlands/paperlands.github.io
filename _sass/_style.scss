@@ -125,8 +125,7 @@ hr {
     height: 2px;
 }
 hr:after {
-    content: '☙ ——— ›– ✧ –‹ ——— ❧ ';
-    padding: 0 4px;
+    content: '☙ —— ›– ✧ –‹ —— ❧ ';
     position: relative;
     top: -14px;
     color: $color-core;
