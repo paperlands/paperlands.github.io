@@ -18,12 +18,13 @@ permalink: /stpat
 </h2>
 <hr><br>
 
-<p>At the end of the lesson, students should be able to:</p>
+<p>At the end of the lesson, students you should be able to:</p>
 <p>
     1. Understand the key components that goes into APIs<br>
     2. Search for and call simple APIs<br>
     3. Build a simple discord bot<br>
-    4. Incorporate APIs into their custom discord bots to enhance its utility
+    4. Incorporate APIs into their custom discord bots to enhance its utility<br>
+    5. Use computational thinking as a way to express their intent upon the real-world 
 </p>
 
 
@@ -47,9 +48,11 @@ permalink: /stpat
 <hr><br>
 
 <div class="img_holder">
+<a href="https://guru.paperland.in"  class="card-link">
 <img src="assets/lib/conquer.png" class="conquer" width="400px" />
+</a>
 </div>
-<a class="paper-btn" href="guru.paperland.in">Enter Now</a>
+<a class="paper-btn" href="https://guru.paperland.in">Enter Now</a>
 
 <style>
     div {
