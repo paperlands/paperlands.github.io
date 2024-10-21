@@ -1,0 +1,397 @@
+# Paperland - Conquer the Web
+
+```elixir
+Mix.install(
+  [
+    # Our JSON parser
+    {:jason, "~> 1.4"},
+    # Our HTTP Client 
+    {:req, "~> 0.5"},
+    {:kino, "~> 0.14.0"},
+    {:certifi, "~> 2.13"},
+    {:merquery, github: "paperlands/merquery"},
+    {:alchemy, "~> 0.7.0", hex: :discord_alchemy}
+  ])
+```
+
+## conq da web
+
+![](https://paperland.in/assets/lib/conquer.png)
+
+## Where the Web Began
+
+Today we conquer the web but first, let's take a moment to appreciate the forebearers that has led us to this point. Our journey begins in the 1960s, with visionaries who laid the groundwork for what would become the Internet and the world we will .
+
+### Key Concepts from the Early Days
+
+> The collection of people, hardware, and software-the multiaccess computer together with its local
+> community of users—will become a node in a geographically distributed computer network. Let us assume for a moment that such a network has been formed --- **J.C.R. Linklider and Robert W. Taylor**, [The Computer as a Communication Device](https://paperland.in/assets/lib/conquerweb/Licklider_Taylor_The-Computer-As-A-Communications-Device.pdf), April 1968
+
+#### What did the Web need to become?
+
+Creative, interactive communication requires a plastic or moldable medium that can be modeled, a dynamic medium in which premises will flow into consequences, and above all a common medium that can be contributed to and experimented with by all.
+
+| ![](https://paperland.in/assets/lib/conquerweb/monolith.png) | ![](https://paperland.in/assets/lib/conquerweb/nodes.png) |
+| :----------------------------------------------------------: | :-------------------------------------------------------: |
+| centralised                                                  | distributed                                               |
+
+1. **Distributed**: Moving away from monolithic systems towards talking to friends and friends of friends. Most software systems are created with the assumption that the entire system is under the control of one entity, or at least that all entities participating within a system are acting towards a common goal and not at cross-purposes. Such an assumption cannot be safely made when the system runs openly on the Web
+   ![](https://paperland.in/assets/lib/conquerweb/talk.png)
+
+2. **Resource Sharing**: Enabling access and sharing amongst many.
+
+![](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgH-i_1bv9Y-ROp_GuLgGkVJN48hVgCCcS3yT18ueP1IU0RvmFtaBVGosK_zQSm1AYK_COA5JUGSxBDRLk1lzlNFLkqX-9eHVOGZB6lPyGH6N4L-LDSkNBHkoZk69uY1SNgfyKB5CeOMoo/s400/mental_models.png)
+
+1. **Collaborate**: Supercharge communication and cooperation.
+
+![](https://paperland.in/assets/lib/conquerweb/dialogue.png)
+
+1. **Shared Protocols**: Developing common languages for computer communication to achieve human intents.
+
+### Time to Conquer
+
+As we set upon to conquer the web through our bots, let's keep in mind the spirit of the men and the shoulders of giants we stand upon.
+
+<!-- livebook:{"break_markdown":true} -->
+
+![](files/conquer.png)
+
+## APIs: or how we learn to talk in today's web
+
+APIs have become the receptionist of modern day web services, it's a way of thinking about how systems interact over the web. Interfaces that expose how resources are defined, accessed, and manipulated.
+
+### what is a resource?
+
+A resource can be anything that can be named, such as documents, images, or even services. Each resource is identified by a unique identifier, typically a URL. The interaction with these resources happens through queries expressed in parameters or represented through intermediate date such as JSON.
+
+To get a picture of what that means lets look at NASA's endpoint
+
+<!-- livebook:{"branch_parent_index":0} -->
+
+## Activity 1: Anatomy of one NASA endpoint
+
+### Astronomy Picture Of The Day
+
+The APOD is a good API to start with because it's easy to work with.
+
+### What it does
+
+The APOD call returns a JSON object containing an image or video, date, explanation, and additional metadata. It's our job to make the call and manipulate the received data however we want.
+
+### What gets sent to the server
+
+APOD uses a **GET HTTP request method** to request data from the NASA server. GET methods request data from a specified **request url**. The following shows the HTTP method and the request url.
+
+```
+GET https://api.nasa.gov/planetary/apod
+```
+
+We append parameters to the url to create a **query string** (parameter/value pairs) to tell the NASA server who's making the call (api_key parameter) and if we want something in return besides the defaults. The table below shows the query parameters.
+
+### APOD Query Parameters
+
+| Parameter | Type       | Default Value | Description                                    |
+| --------- | ---------- | ------------- | ---------------------------------------------- |
+| date      | YYYY-MM-DD | *today*       | The date of the APOD image to retrieve         |
+| hd        | bool       | False         | Retrieve the URL for the high resolution image |
+| api_key   | string     | DEMO_KEY      | api.nasa.gov key for expanded usage            |
+
+Here is an example query. It begins with the GET request url from above followed a `?` signifying the beginning of the query string. Follow the link to make the request!
+
+```
+https://api.nasa.gov/planetary/apod?api_key=hKQvCAXAXlNwGC7VNRpyjrtI1Zg7HTfOth5RgVjx
+```
+
+Here is an example request for the first ever APOD image. Append additional parameters to the querystring with with `&` and use `=` to create parameter/value pairs like before.
+
+```
+https://api.nasa.gov/planetary/apod?api_key=hKQvCAXAXlNwGC7VNRpyjrtI1Zg7HTfOth5RgVjx&date=1995-06-16
+```
+
+### What gets received
+
+The request returns information in JavaScript Object Notation (JSON). JSON is a syntax used herefor storing and exchanging data between a client (browser) and a server (NASA database). Here is the JSON returned from our last request:
+
+```json
+{
+  "date": "1995-06-16",
+  "explanation": "Today's Picture: ...",
+  "hdurl": "https://apod.nasa.gov/apod/image/e_lens.gif",
+  "media_type": "image",
+  "service_version": "v1",
+  "title": "Neutron Star Earth",
+  "url": "https://apod.nasa.gov/apod/image/e_lens.gif"
+}
+```
+
+Properties and values are in quotes `" "` and are separated with a colon `:`. This standard notation makes accessing and manipulating received data easy to work with and communicate about on the Web
+
+> [!REMEMBER] 🤔
+> ![](https://paperland.in/assets/lib/conquerweb/dialogue.png)
+> **Shared Protocols**: Developing common languages for computer communication to achieve human intent.
+
+<!-- livebook:{"attrs":"eyJxdWVyaWVzIjpbeyJhdXRoIjp7InNjaGVtZSI6Im5vbmUiLCJ0eXBlIjowLCJ2YWx1ZSI6IiJ9LCJib2R5Ijp7ImNvbnRlbnRUeXBlIjoiYXBwbGljYXRpb24vanNvbiIsImZvcm0iOltdLCJyYXciOiIifSwiaGVhZGVycyI6W10sIm9wdGlvbnMiOnsiY29udGVudFR5cGUiOiJlbGl4aXIiLCJyYXciOiIifSwicGFyYW1zIjpbXSwicGx1Z2lucyI6W3siYWN0aXZlIjpmYWxzZSwiZGVzY3JpcHRpb24iOiJBIGNvbGxlY3Rpb24gb2Ygc3RlcHMsIHVzYWJsZSB3aXRoIFJlcS4iLCJuYW1lIjoiQ3VybFJlcS5QbHVnaW4iLCJ2ZXJzaW9uIjpudWxsfV0sInJlcXVlc3RfdHlwZSI6InBvc3QiLCJzdGVwcyI6eyJlcnJvcl9zdGVwcyI6W3siYWN0aXZlIjp0cnVlLCJkb2MiOiJSZXRyaWVzIGEgcmVxdWVzdCBpbiBmYWNlIG9mIGVycm9ycy4iLCJuYW1lIjoicmV0cnkifV0sInJlcXVlc3Rfc3RlcHMiOlt7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiU2V0cyB0aGUgdXNlci1hZ2VudCBoZWFkZXIuIiwibmFtZSI6InB1dF91c2VyX2FnZW50In0seyJhY3RpdmUiOnRydWUsImRvYyI6IkFza3MgdGhlIHNlcnZlciB0byByZXR1cm4gY29tcHJlc3NlZCByZXNwb25zZS4iLCJuYW1lIjoiY29tcHJlc3NlZCJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJFbmNvZGVzIHRoZSByZXF1ZXN0IGJvZHkuIiwibmFtZSI6ImVuY29kZV9ib2R5In0seyJhY3RpdmUiOnRydWUsImRvYyI6IlNldHMgYmFzZSBVUkwgZm9yIGFsbCByZXF1ZXN0cy4iLCJuYW1lIjoicHV0X2Jhc2VfdXJsIn0seyJhY3RpdmUiOnRydWUsImRvYyI6IlNldHMgcmVxdWVzdCBhdXRoZW50aWNhdGlvbi4iLCJuYW1lIjoiYXV0aCJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJBZGRzIHBhcmFtcyB0byByZXF1ZXN0IHF1ZXJ5IHN0cmluZy4iLCJuYW1lIjoicHV0X3BhcmFtcyJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJVc2VzIGEgdGVtcGxhdGVkIHJlcXVlc3QgcGF0aC4iLCJuYW1lIjoicHV0X3BhdGhfcGFyYW1zIn0seyJhY3RpdmUiOnRydWUsImRvYyI6IlNldHMgdGhlIFwiUmFuZ2VcIiByZXF1ZXN0IGhlYWRlci4iLCJuYW1lIjoicHV0X3JhbmdlIn0seyJhY3RpdmUiOnRydWUsImRvYyI6IlBlcmZvcm1zIEhUVFAgY2FjaGluZyB1c2luZyBgaWYtbW9kaWZpZWQtc2luY2VgIGhlYWRlci4iLCJuYW1lIjoiY2FjaGUifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiU2V0cyBhZGFwdGVyIHRvIGBydW5fcGx1Zy8xYC4iLCJuYW1lIjoicHV0X3BsdWcifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiQ29tcHJlc3NlcyB0aGUgcmVxdWVzdCBib2R5LiIsIm5hbWUiOiJjb21wcmVzc19ib2R5In0seyJhY3RpdmUiOnRydWUsImRvYyI6IlNldHMgZXhwZWN0ZWQgcmVzcG9uc2UgYm9keSBjaGVja3N1bS4iLCJuYW1lIjoiY2hlY2tzdW0ifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiU2lnbnMgcmVxdWVzdCB3aXRoIEFXUyBTaWduYXR1cmUgVmVyc2lvbiA0LiIsIm5hbWUiOiJwdXRfYXdzX3NpZ3Y0In1dLCJyZXNwb25zZV9zdGVwcyI6W3siYWN0aXZlIjp0cnVlLCJkb2MiOiJSZXRyaWVzIGEgcmVxdWVzdCBpbiBmYWNlIG9mIGVycm9ycy4iLCJuYW1lIjoicmV0cnkifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiSGFuZGxlcyBIVFRQIDR4eC81eHggZXJyb3IgcmVzcG9uc2VzLiIsIm5hbWUiOiJoYW5kbGVfaHR0cF9lcnJvcnMifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiRm9sbG93cyByZWRpcmVjdHMuIiwibmFtZSI6InJlZGlyZWN0In0seyJhY3RpdmUiOnRydWUsImRvYyI6IkRlY29tcHJlc3NlcyB0aGUgcmVzcG9uc2UgYm9keSBiYXNlZCBvbiB0aGUgYGNvbnRlbnQtZW5jb2RpbmdgIGhlYWRlci4iLCJuYW1lIjoiZGVjb21wcmVzc19ib2R5In0seyJhY3RpdmUiOnRydWUsImRvYyI6IlZlcmlmaWVzIHRoZSByZXNwb25zZSBib2R5IGNoZWNrc3VtLiIsIm5hbWUiOiJ2ZXJpZnlfY2hlY2tzdW0ifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiRGVjb2RlcyByZXNwb25zZSBib2R5IGJhc2VkIG9uIHRoZSBkZXRlY3RlZCBmb3JtYXQuIiwibmFtZSI6ImRlY29kZV9ib2R5In0seyJhY3RpdmUiOnRydWUsImRvYyI6bnVsbCwibmFtZSI6Im91dHB1dCJ9XX0sInVybCI6IiIsInZhcmlhYmxlIjoicmVzcCIsInZlcmJzIjpbImdldCIsInBvc3QiLCJwdXQiLCJwYXRjaCIsImRlbGV0ZSIsImhlYWQiLCJvcHRpb25zIl19XSwicXVlcnlJbmRleCI6MH0","chunks":null,"kind":"Elixir.Merquery.SmartCell","livebook_object":"smart_cell"} -->
+
+```elixir
+req = Req.new(method: :get, url: "", headers: %{}, params: %{})
+req = Req.merge(req, [])
+{req, resp} = Req.request(req)
+resp
+```
+
+```elixir
+image = resp.body["hdurl"]
+# Remember URLS are just paths to resource so we have to call GET the data behind the path
+resp = Req.get!(image)
+resp.body
+```
+
+<!-- livebook:{"branch_parent_index":0} -->
+
+## Activity 2: Make your own meme!
+
+Now its time POST some memes
+![](https://c.tenor.com/Z14XnPnw_JAAAAAd/tenor.gif)
+
+### POST /images/custom
+
+Creates a custom meme using a provided background image and text.
+
+#### Request Body
+
+| Field        | Type              | Description                                     |
+| ------------ | ----------------- | ----------------------------------------------- |
+| `background` | string            | URL of the background image to use for the meme |
+| `text`       | array of strings  | Array of text strings to add to the meme        |
+| `redirect`   | boolean           | If true, redirects to the generated image       |
+| `style`      | string (optional) | Style of the meme                               |
+| `layout`     | string (optional) | Layout of the text on the image                 |
+| `font`       | string (optional) | Font to use for the text                        |
+| `extension`  | string (optional) | File extension for the output image             |
+
+#### Example Request
+
+```json
+{
+  "background": "https://media.discordapp.net/attachments/1296055209423798275/1296297673678258197/Z.png?ex=6711c6c9&is=67107549&hm=a7bcfd4b8fd21efcc39abf2d3b9ff516c264b2b89512a9e21bb692f921ebecd8&=&format=webp&quality=lossless&width=664&height=442",
+  "text": ["hello", "there"],
+  "redirect": true
+}
+```
+
+#### Responses
+
+##### 201 Created
+
+Successfully created a meme from a custom image.
+
+###### Response Body
+
+```json
+{
+  "url": "string"
+}
+```
+
+The `url` field contains the URL of the generated meme image.
+
+```elixir
+req =
+  Req.new(
+    method: :post,
+    url: "https://api.memegen.link/images/custom",
+    headers: %{},
+    params: %{},
+    json:
+      %{"background" => "https://media.discordapp.net/attachments/1296055209423798275/1296297673678258197/Z.png?ex=6711c6c9&is=67107549&hm=a7bcfd4b8fd21efcc39abf2d3b9ff516c264b2b89512a9e21bb692f921ebecd8&=&format=webp&quality=lossless&width=664&height=442",
+        "redirect" => true,
+        "text" => ["hello", "there"]}
+  )
+req = Req.merge(req, [])
+{req, resp} = Req.request(req)
+resp.body
+```
+
+## Why we are conquering it or Now we prototype
+
+![](https://images.ctfassets.net/spoqsaf9291f/2Muk4ZS75YqQ8R8tW6q3Yf/fc96e969b4b09e1916ad0fdc10bb706d/hrb6sf8wnohjctdr7ejregzyny4.jpeg)
+
+The beauty of the Discord bot it basically says: don't wait, just start building. You don't need a perfect idea, a complete business plan, or even advanced coding skills. All you need is a problem you want to solve for your friends and the willingness to jump in and start hacking away at it.
+
+1. Go to https://discord.com/developers/applications and sign in.
+2. Create a new application by clicking the "New Application". (the name u choose will be the name of your discord bot e.g guitar_club_bot)
+3. Go into your newly created application.
+4. Select "OAuth2" on the left panel.
+5. Tick the checkbox "bot".
+6. Tick all checkboxes in the text permissions.
+7. Copy the generated URL at the bottom and paste it in a new tab.
+8. Select the channel "StPats X Paperland" and authorise.
+
+<!-- livebook:{"branch_parent_index":5} -->
+
+## Activity 3: Deploy your first agent on the Web
+
+### Alchemy.Cogs
+
+The `Alchemy.Cogs` module provides a set of macros that simplify the process of registering commands in your Discord bot. It models it as one would talking commands to a pet and waiting for a response
+
+### Usage
+
+To use the macros provided by this module, you need to `use` it in your command module. This action also defines a `__using__` macro, allowing these commands to be easily loaded into your main application
+
+### Explanation
+
+1. The `ping` command is straightforward. When a user types `!ping`, the bot responds with "pong".
+
+2. The `echo` command demonstrates argument handling:
+
+   * Without arguments: It prompts the user to provide a word.
+   * With an "word" argument: It echoes back the provided word.
+
+### Echo after me ah
+
+The `echo` command showcases how to handle different argument scenarios:
+
+1. `Cogs.def echo do`: Handles the case when no argument is provided.
+2. `Cogs.def echo(word) do`: Handles the case when one argument is provided.
+
+This approach allows for flexible command handling and provides a way to give useful feedback to users when they don't provide the expected input.
+
+```elixir
+token = "bot_token_here!"
+
+defmodule Commands do
+    use Alchemy.Cogs
+  
+    # TODO: you can run your code here!
+  
+    # Sample function 1
+  Cogs.def ping do
+    Cogs.say "pong"
+  end
+
+  Cogs.def echo do
+    Cogs.say "please give me a word to echo"
+  end
+  Cogs.def echo(word) do
+    Cogs.say word
+  end
+
+    # Sample function 2
+    Cogs.def expectation_reality(image_url) do
+      req =
+        Req.new(
+          method: :post,
+          url: "https://api.memegen.link/images/custom",
+          headers: %{},
+          params: %{},
+          json: %{
+            "background" => image_url,
+            "text" => ["Expectation", "Reality"]
+          }
+        )
+
+      req = Req.merge(req, [])
+      {_req, resp} = Req.request(req)
+      IO.inspect(resp)
+      
+      Cogs.say(resp.body["url"])
+    end
+
+end
+```
+
+### How we weaved the MEME in
+
+Creates a meme using the provided image URL with "Expectation" and "Reality" text overlay.
+
+**Usage:**
+
+```
+!expectation_reality [image_url]
+```
+
+**Functionality:**
+
+1. Takes an image URL as an argument.
+2. Sends a POST request to the `api.memegen.link` service.
+3. Creates a meme with "Expectation" and "Reality" text.
+4. Returns the URL of the generated meme.
+
+**Response:**
+The bot will respond with the URL of the generated meme image.
+
+The `expectation_reality` command demonstrates how to integrate with an external API (in this case, our Meme Generator API) using the `Req` library for HTTP requests.
+
+```elixir
+defmodule MemeBot do
+  use Application
+  alias Alchemy.Client
+
+  def start(_type, %{token: token}) do
+    run = Client.start(token)
+    use Commands
+    run
+  end
+end
+
+MemeBot.start(Meme, %{token: token})
+```
+
+## Let the games begin..
+
+Your mission is to build a **discord_bot** your classmates will want to use.
+
+1. breakup into pairs
+
+2. set a group name that can be reserved as discord bot
+
+3. Pick your API
+
+4. introduce your bot to the channel
+
+5. 3mins blitz presentation at the end
+
+   * Why would your classmates use this bot?
+   * What does the bot aim to do and does it achieve it?
+   * What is one idea (implementation or otherwise) you want to steal from another group?
+
+### YOU HAVE 1 HOUR!
+
+![](https://media.tenor.com/7hJpFtl63HQAAAAM/sanic-the-hedgehob.gif)
+
+## Reflection
+
+### Self Reflection
+
+#### What key lessons did I learn from Paperland?
+
+* 
+
+#### Which challenged me the most?
+
+* 
+
+#### What can I do tomorrow with what I have learnt?
+
+*
+
+---
+
+### Workshop Feedback
+
+#### What went well for me in Paperland?
+
+* 
+
+#### What did not go so well for me in Paperland?
+
+* 
+
+#### How can Paperland be improved?
+
+*
+
+<!-- livebook:{"break_markdown":true} -->
+
+> The question is not, ‘What is the answer?’ The question is, ‘What is the question?
