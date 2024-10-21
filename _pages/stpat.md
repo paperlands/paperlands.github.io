@@ -27,6 +27,12 @@ permalink: /stpat
     5. Use computational thinking as a way to express their intent upon the real-world 
 </p>
 
+<br>
+<br>
+
+## RUN IT LOCALLY
+
+<a class="paper-btn" href="https://livebook.dev/run?url=https%3A%2F%2Fpaperland.in%2Fassets%2Flib%2Fconquerweb%2Fconqdaweb.livemd">Self Host</a>
 
 <br>
 <br>
