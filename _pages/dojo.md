@@ -2,6 +2,7 @@
 layout: page
 title: Dojo
 permalink: /dojo
+redirect_from: /turtle
 ---
 
 <div class="my-24 text-center sm:my-36">

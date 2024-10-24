@@ -26,6 +26,7 @@ plugins:
   - jekyll-last-modified-at
   - jekyll-sitemap
   - jekyll-tailwind
+  - jekyll-redirect-from
 
 sass:
   sass_dir:          _sass

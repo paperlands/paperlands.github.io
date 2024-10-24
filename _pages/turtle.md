@@ -4,6 +4,7 @@ title: Turtle
 id: turtle
 permalink: /turtle
 ---
+<!-- ! This page has been redirected to /dojo -->
 
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" height="200" style="float: right; " > 
 <image xlink:href="/assets/logo.svg" width="50" height="50"/>
