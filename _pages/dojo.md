@@ -58,7 +58,6 @@ redirect_from: /turtle
 <section>
     <h2>Student Reviews</h2>
     <hr><br>
-
     <div class="grid-container">
         {% include quotes.html 
             text="I like the workshop and it’s the right level of difficulty, having limited prior experience with coding, it can pose as a little challenge to me and I appreciate the exposure to the workshop :)"
@@ -78,12 +77,12 @@ redirect_from: /turtle
 </section>
 
 
-<section class="work_with_us" id="contact">
+<section class="work-with-us" id="contact">
   <h2 class="landing_header">Work with us</h2>
   <hr><br>
 
-  <div class="work_with_us_content">
-    <div class="padding-right-large work_with_us_content_el_1">
+  <div class="work-with-us__content">
+    <div class="padding-right-large work-with-us__content-el1">
       <p>Looking for unconventional ways to learn how technology works?</p>
       <p>Looking for a better way to learn about programming?</p>
       <p>Looking for computational thinking workshops?</p>
@@ -125,22 +124,22 @@ redirect_from: /turtle
         border-radius: 10px;
     }
 
-    .work_with_us {
+    .work-with-us {
         padding-bottom: 100px;
-        
-        .work_with_us_content {
-            text-align: left;
-            display: flex;
-            justify-content: center;
+    }
 
-            @media (max-width: 768px) {
-                flex-direction: column;
-            }
+    .work-with-us .work-with-us__content {
+        text-align: left;
+        display: flex;
+        justify-content: center;
 
-            .work_with_us_content_el_1 {
-                flex-basis: 60%;
-                text-align: left;
-            }
+        @media (max-width: 768px) {
+            flex-direction: column;
         }
+    }    
+
+    .work-with-us .work-with-us__content .work-with-us__content-el1 {
+        flex-basis: 60%;
+        text-align: left;
     }
 </style>

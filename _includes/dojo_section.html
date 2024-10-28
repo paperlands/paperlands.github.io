@@ -1,17 +1,17 @@
 <!-- Show Group A on screens wider than 768px -->
-<div class="dojo_section">
+<div class="dojo-section">
   <h2 class="">{{ include.title }}</h2>
   <hr><br>
   <p>{{ include.text_top }}
     <br>{{ include.text_mid }}</p>
   
-  <div class="inner_card_holder">
-    <div class="inner_card border">
+  <div class="images-container">
+    <div class="images-container__card border">
       <img src="{{ include.first_image_path }}" alt="{{ include.first_image_alt }}">
       <div>{{ include.first_image_caption }}</div>
     </div>
     
-    <div class="inner_card border">
+    <div class="images-container__card border">
       <img src="{{ include.second_image_path }}" alt="{{ include.second_image_alt }}">
       <div>{{ include.second_image_caption }}</div>
     </div>
@@ -22,19 +22,19 @@
 
 
 <!-- Show Group B on screens narrower than 768px -->
-<div class="dojo_section_small ">
+<div class="dojo-section__small ">
   <h2 class="">{{ include.title }}</h2>
   <hr><br>
   <p>{{ include.text_top }}</p>
   
-  <div class="inner_card border">
+  <div class="images-container__card border">
     <img src="{{ include.first_image_path }}" alt="{{ include.first_image_alt }}">
     <div class="image_caption">{{ include.first_image_caption }}</div>
   </div>
 
   <p>{{ include.text_mid }}</p>
   
-  <div class="inner_card border">
+  <div class="images-container__card border">
     <img src="{{ include.second_image_path }}" alt="{{ include.second_image_alt }}">
     <div class="image_caption">{{ include.second_image_caption }}</div>
   </div>
@@ -46,13 +46,13 @@
 
 <style>
   /* Base styles (apply to all screen sizes) */
-  .dojo_section, .dojo_section_small {
+  .dojo-section, .dojo-section__small {
     display: none;
   }
 
   /* Show Group A on screens wider than 768px */
   @media (min-width: 768px) {
-    .dojo_section {
+    .dojo-section {
       display: block;
       margin-bottom: 10vh;
 
@@ -61,26 +61,23 @@
       flex-direction: column;
       justify-content: center;
       align-items: center; 
-
-      .inner_card_holder {
-        display: flex;
-      }
-
-      .inner_card {
-        padding: 1em;
-        width: 40vw;
-        margin: 2em;
-      }
-
-      div {
-        font-size: x-small;
-      }
+    }
+    .dojo-section .images-container {
+      display: flex;
+    }
+    .dojo-section .images-container__card {
+      padding: 1em;
+      width: 40vw;
+      margin: 2em;
+    }
+    .dojo-section div {
+      font-size: x-small;
     }
   }
 
   /* Show Group B on screens narrower than 768px */
   @media (max-width: 767px) {
-    .dojo_section_small {
+    .dojo-section__small {
       display: block;
       margin: 5vh 0;
 
@@ -89,19 +86,16 @@
       flex-direction: column;
       justify-content: center;
       align-items: center; 
-
-      .inner_card {
-        padding: 1em;
-        width: 70vw;
-      }
-
-      .image_caption {
-        margin: 0 5vw 0;
-      }
-
-      div {
-        font-size: x-small;
-      }
+    }
+    .dojo-section__small .images-container__card {
+      padding: 1em;
+      width: 70vw;
+    } 
+    .dojo-section__small .image_caption {
+      margin: 0 5vw 0;
+    }
+    .dojo-section__small div {
+      font-size: x-small;
     }
   }
 

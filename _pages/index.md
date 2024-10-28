@@ -4,7 +4,7 @@ title: Home
 id: home
 permalink: /
 ---
-<div class="hero_text">
+<div class="hero-text">
   <h1>Paperland.</h1>
   <div>
     <h3>designing new patterns of <span class="fancy">Learning!</span></h3>
@@ -13,10 +13,10 @@ permalink: /
 
 <section class="projects" id="projects">
   <!-- header -->
-  <h2 class="landing_header">Projects</h2>
+  <h2 class="landing-header">Projects</h2>
   <hr><br>
 
-  <div class="projects_layout">
+  <div class="projects__layout">
     <!-- Project cards -->
     {% include card.html
       title="Workshop Dojo"
@@ -37,25 +37,23 @@ permalink: /
 
 
 
-<section class="our_why">
-  <h2 class="landing_header">Why Paperland?</h2>
+<section class="our-why">
+  <h2 class="landing-header">Why Paperland?</h2>
   <hr><br>
 
-  <div class="our_why_content">
+  <div class="our-why__content">
     <div>
       <p>We believe that the world would be a better place if the processes we shape and weave illuminates and uplifts the spirit of fellowship and belonging.</p>
-
       <p>We want to build the tools, the environment, the incentives that will lead to better patterns of teaching for the builders of tomorrow.</p>
     </div>
-
     <img src="/assets/lib/landing/castle_sun_1x1.png">
   </div>
 </section>
 
 
 
-<section class="our_blog" id="blog">
-  <h2 class="landing_header">Our blog</h2>
+<section class="our-blog" id="blog">
+  <h2 class="landing-header">Our blog</h2>
   <hr><br>
 
   <ul>
@@ -72,12 +70,12 @@ permalink: /
 
 
 
-<section class="work_with_us" id="contact">
-  <h2 class="landing_header">Work with us</h2>
+<section class="work-with-us" id="contact">
+  <h2 class="landing-header">Work with us</h2>
   <hr><br>
 
-  <div class="work_with_us_content">
-    <div class="padding-right-large work_with_us_content_el_1">
+  <div class="work-with-us__content">
+    <div class="padding-right-large work-with-us__content_el1">
       <p>Want to redesign your system from first principles?</p>
       <p>Want to augment your class with better programming tools?</p>
       <p>Want to improve how your technology is communicated to beginners?</p>
@@ -106,18 +104,19 @@ permalink: /
     padding-bottom: 10vh;
   }
   
-  .hero_text {
+  .hero-text {
     text-align: center;
     margin: 22vh 0 10vh;
     @media (max-width: 768px) {
       margin: 25vh 0 5vh;
     }
 
-    div {
-      margin: 0 3vw 0;
-      position: relative;
-      bottom: 5vh;
-    }
+  }
+
+  .hero-text div {
+    margin: 0 3vw 0;
+    position: relative;
+    bottom: 5vh;
   }
 
   .fancy {
@@ -157,78 +156,67 @@ permalink: /
     }
   }
 
-  .landing_header {
+  .landing-header {
     text-align: center;
   }
 
-  .projects .projects_layout {
+  .projects .projects__layout {
     display: flex;
     @media (max-width: 640px) {
       flex-direction: column;
     }
   }
 
-  body.night-mode {
-    .projects {
-      .card {
-        .card-text {
-          color: #ccc; 
-        }
-      }
-    }
-  }
-
-  .our_why {
+  .our-why {
     padding-left: 20%; 
     padding-right: 20%; 
     @media (max-width: 1048px) {
       padding-left: 5%; 
       padding-right: 5%; 
     }
+  }
+
     
-    .our_why_content {
-      display: flex;
-      @media (max-width: 768px) {
-        flex-direction: column;
-      }
-
-      div {
-        margin: 0 5%;
-        @media (max-width: 768px) {
-          margin: 0;
-        }
-      }
-
-      img {
-        width: 20vw;
-        height: 20vw;
-        @media (max-width: 768px) {
-          width: 100vw;
-          height: auto;
-        }
-      }
-
+  .our-why .our-why__content {
+    display: flex;
+    @media (max-width: 768px) {
+      flex-direction: column;
     }
   }
 
-  .our_blog {
+  .our-why .our-why__content div {
+    margin: 0 5%;
+    @media (max-width: 768px) {
+      margin: 0;
+    }
+  }
+
+  .our-why .our-why__content img {
+    width: 20vw;
+    height: 20vw;
+    @media (max-width: 768px) {
+      width: 100vw;
+      height: auto;
+    }
+  }
+
+  .our-blog {
     padding-bottom: 100px; 
   }
 
-  .work_with_us {
+  .work-with-us {
     padding-bottom: 100px;
-    
-    .work_with_us_content {
-      display: flex;
-      justify-content: center;
+  }
 
-      @media (max-width: 768px) {
-        flex-direction: column;
-      }
-
-      .work_with_us_content_el_1 {
-        flex-basis: 60%;
-      }
+  .work-with-us .work-with-us__content {
+    display: flex;
+    justify-content: center;
+    @media (max-width: 768px) {
+      flex-direction: column;
     }
+  }
+
+  .work-with-us .work-with-us__content .work-with-us__content_el1 {
+    flex-basis: 60%;
   }
 </style>

@@ -4,7 +4,7 @@ title: guru
 permalink: /stpat
 ---
 
-<div class="stpat_paperland">
+<div class="stpat-paperland">
     <img src="assets/lib/stpats_logo_1x1.png" width="125" height="125" class="no-responsive no-border"/>
     <!-- <img src="assets/lib/stpats_logo_1x1.png" class="no-border"/> -->
     <p>x</p>
@@ -65,15 +65,16 @@ permalink: /stpat
         text-align: center;
     }
 
-    .stpat_paperland {
+    .stpat-paperland {
         display: flex;
         justify-content: center;
         align-items: center;
         margin: 20vh 5vw;
-        p {
-            font-size: 100px;
-            margin: 0 5vw;
-        }
+    }
+
+    .stpat-paperland p {
+        font-size: 100px;
+        margin: 0 5vw;
     }
 
     .img_holder {
@@ -82,7 +83,6 @@ permalink: /stpat
     }
 
     .conquer {
-        /* height: 50vh; */
         margin: 0 0 3vh;
     }
 </style>
