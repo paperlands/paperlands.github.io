@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+
+  <link rel="canonical" href="https://paperland.in/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="description" content="~/paperland">
+
+  <link
+      rel="stylesheet"
+      href="assets/css/paper.min.css"
+    />
+
+  <meta property="og:site_name" content="~/paperland">
+
+  <link rel="icon" href="/favicon.ico" >
+
+
+  <link rel="stylesheet" href="/styles.css">
+
+  
+  <meta property="og:description" content="~/paperland"/>
+  
+
+  
+  <meta property="og:title" content="Home">
+  <meta property="og:type" content="article">
+  
+
+  
+
+  <meta property="og:url" content="https://paperland.in/" />
+
+  
+
+  <title>
+    
+      ~/paperland
+    
+  </title>
+</head>
+
+  <body>
+    <nav class="border fixed split-nav">
+    <div class="nav-brand">
+        <!-- <h4><a href="#">Paperland</a></h4> -->
+        <a href="/" >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" height="40"  >
+                <image xlink:href="/assets/logo.svg" width="40" height="40"/>
+            </svg>
+        </a>
+    </div>
+
+    <div class="collapsible">
+        <input id="collapsible1" type="checkbox" name="collapsible1">
+        <label for="collapsible1">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+        </label>
+        
+        <div class="collapsible-body">
+            <ul class="inline">
+                <li><a href="/#projects" id="scroll-link">Projects</a></li>
+                <li><a href="/#blog">Blog</a></li>
+                <li><a href="/#contact">Contact</a></li>
+                <li><a id="color-switcher" onclick="toggleTheme()">🌙</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<style>
+    nav {
+        background-color: #fff;
+    }
+    body.night-mode {
+        nav {
+            background-color: #222222;
+        }
+    }
+
+    nav .collapsible > label {
+        margin-right: 8vw
+    }
+    body.night-mode nav .collapsible > label {
+        margin-right: 8vw;
+        background-color: #222222;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+</style>
+
+    <div class="wrapper">
+      <main><content>
+  <html><body>
+<div class="hero-text">
+  <h1>Paperland.</h1>
+  <div>
+    <h3>designing new patterns of <span class="fancy">Learning!</span>
+</h3>
+  </div>
+</div>
+
+<section class="projects" id="projects">
+  <!-- header -->
+  <h2 class="landing-header">Projects</h2>
+  <hr>
+<br>
+
+  <div class="projects__layout">
+    <!-- Project cards -->
+    <div class="card border">
+  <a href="/dojo" target="_self" class="card-link">
+    <div class="card-body">
+      <h3 class="card-title">Workshop Dojo</h3>
+      <!-- <h5 class="card-subtitle">Nice looking subtitle.</h5> -->
+      <p class="card-text">We design workshops to help students discover the JOY of computation</p>
+      <div class="see-more">...... see more</div>
+    </div>
+
+    <img class="image-bottom" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt="Project Dojo students interacting with collaborative learning medium">
+  </a>
+</div>
+
+
+<style>
+  .card {
+    overflow: hidden;
+    margin: 20px;
+    width: 50%;
+    @media (max-width: 640px) {
+      width: 90%;
+    }
+  }
+
+  .card .card-text {
+    color: #333333;
+  }
+
+  .card .see-more {
+    text-align: right;
+  }
+</style>
+    
+    <div class="card border">
+  <a href="/" target="_self" class="card-link">
+    <div class="card-body">
+      <h3 class="card-title">Project Optic</h3>
+      <!-- <h5 class="card-subtitle">Nice looking subtitle.</h5> -->
+      <p class="card-text">We design INTUITIVE robotic interfaces for your non-techical folks!</p>
+      <div class="see-more">...... see more</div>
+    </div>
+
+    <img class="image-bottom" src="/assets/lib/landing/ivansutherland.jpeg" alt="Sutherland on Sketchpad">
+  </a>
+</div>
+
+
+<style>
+  .card {
+    overflow: hidden;
+    margin: 20px;
+    width: 50%;
+    @media (max-width: 640px) {
+      width: 90%;
+    }
+  }
+
+  .card .card-text {
+    color: #333333;
+  }
+
+  .card .see-more {
+    text-align: right;
+  }
+</style>
+
+  </div>
+</section>
+
+<section class="our-why">
+  <h2 class="landing-header">Why Paperland?</h2>
+  <hr>
+<br>
+
+  <div class="our-why__content">
+    <div>
+      <p>We believe that the world would be a better place if the processes we shape and weave illuminates and uplifts the spirit of fellowship and belonging.</p>
+      <p>We want to build the tools, the environment, the incentives that will lead to better patterns of teaching for the builders of tomorrow.</p>
+    </div>
+    <img src="/assets/lib/landing/castle_sun_1x1.png">
+  </div>
+</section>
+
+<section class="our-blog" id="blog">
+  <h2 class="landing-header">Our blog</h2>
+  <hr>
+<br>
+
+  <ul>
+    
+    
+      <li>
+        2024-09-25 — <a class="internal-link" href="/why-must-i-learn-this" data-tooltip="true">Why Must I Learn This?</a>
+      </li>
+    
+      <li>
+        2024-07-21 — <a class="internal-link" href="/beginnings" data-tooltip="true">Beginnings</a>
+      </li>
+    
+  </ul>
+
+  <!-- <button>read more</button> -->
+</section>
+
+<section class="work-with-us" id="contact">
+  <h2 class="landing-header">Work with us</h2>
+  <hr>
+<br>
+
+  <div class="work-with-us__content">
+    <div class="padding-right-large work-with-us__content_el1">
+      <p>Want to redesign your system from first principles?</p>
+      <p>Want to augment your class with better programming tools?</p>
+      <p>Want to improve how your technology is communicated to beginners?</p>
+      <p>If you have a learning opportunity, we would love to have a chat with you!</p>
+    </div>
+    
+    <!-- https://india.fly.dev/proxy/apps/guru/work -->
+<form id="lettertopaperland" class="col form-group card work-with-us__content_el2" accept-charset="UTF-8" action="https://india.fly.dev/proxy/apps/guru/work" method="POST">
+  <label for="name-input">Your Name *</label>
+  <input id="name-input" type="text" name="name" placeholder="Alan Kay">
+
+  <label for="email-input">Email *</label>
+  <input id="email-input" type="email" name="email" placeholder="alan@paperland.in">
+
+  <label for="company-input">Company/Org</label>
+  <input id="company-input" type="text" name="company" placeholder="Xerox Parc">
+  
+  <label for="message-input">Your message *</label>
+  <textarea id="message-input" name="message" rows="4" placeholder="There are more contexts than the one that we're in — the one that we think is reality"></textarea>
+  
+  <input type="hidden" name="return_url" value="https://paperland.in/">
+  <span>    </span>
+  <div class="h-captcha" data-sitekey="7688737e-8d00-4c1e-acdc-828ee1c02e08"></div>
+  <script src="https://js.hcaptcha.com/1/api.js" async="" defer></script>
+  <span>    </span>
+
+  <button type="submit">Submit</button>
+</form>
+
+<div class="toast" id="toast-good">
+  <i class="fa fa-check-circle"></i>
+  <input class="alert-state" id="toast-alert" type="checkbox">
+
+  <div class="alert alert-muted dismissible">
+    Sent! To the desks <a class="internal-link" href="/about"> <b>@paperland</b></a>
+    <label class="btn-close" for="toast-alert">X</label>
+  </div>
+</div>
+
+<div class="toast" id="toast-bad">
+  <i class="fa fa-check-circle"></i>
+  <input class="alert-state" id="toast-alert" type="checkbox">
+
+  <div class="alert alert-danger dismissible">
+    Check the I am human checkbox!
+    <label class="btn-close" for="toast-alert">X</label>
+  </div>
+</div>
+
+
+<style>
+  #paper_form {
+    text-align: center;
+  }
+  
+  .h-captcha{
+    position: relative;
+  }
+
+  .work-with-us__content_el2 {
+    flex-basis: 40%;
+    
+  }
+
+  .work-with-us__content_el2 label {
+    margin-bottom: 0;
+    margin-top: 10px;
+  }
+
+    
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    right: 0vh;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    display: none;
+    animation: fade-in 10s ease-in-out forwards;
+  }
+
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+      visibility: visible;
+      transform: translateX(0%) translateY(20px);
+    }
+    15% {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0%) translateY(0);
+    }
+    
+    90% {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(0%) translateY(0);
+    }
+    
+    100% {
+      opacity: 0;
+      display: none;
+      transform: translateX(0%) translateY(0);
+    }
+  }
+</style>
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search)
+  if (urlParams.get('sent') == "true"){
+    const element = document.getElementById('toast-good');
+    element.style.display = 'block'; // Show the element
+  }
+  else if (urlParams.get('sent') == "false") {
+    const element = document.getElementById('toast-bad');
+    element.style.display = 'block'; // Show the element
+  }
+</script>
+
+  </div>
+</section>
+
+<style>
+  h1 {
+    font-weight: bold;
+    font-size: 9em;
+    @media (max-width: 768px) {
+      font-size: 4em;
+    }
+  }
+
+  section {
+    padding-top: 10vh;
+    padding-bottom: 10vh;
+  }
+  
+  .hero-text {
+    text-align: center;
+    margin: 22vh 0 10vh;
+    @media (max-width: 768px) {
+      margin: 25vh 0 5vh;
+    }
+
+  }
+
+  .hero-text div {
+    margin: 0 3vw 0;
+    position: relative;
+    bottom: 5vh;
+  }
+
+  .fancy {
+    position: relative;
+    white-space: nowrap;
+    &:after {
+      --deco-height: 0.3125em;
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: calc(var(--deco-height) * -0.625);
+      height: var(--deco-height);
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='64' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23a)'%3E%3Cpath d='M-17 30.5C-1 22 72-4 54 13 37.9 28.2-2.5 57.5 16 55.5s72-29 104-40' stroke='%23000000' stroke-width='10'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='a'%3E%3Cpath fill='%23fff' d='M0 0h100v64H0z'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E%0A");
+      background-size: auto 100%;
+      background-repeat: round;
+      background-position: 0em;
+    }
+  }
+  body.night-mode {
+    .fancy {
+      position: relative;
+      white-space: nowrap;
+      &:after {
+        --deco-height: 0.3125em;
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: calc(var(--deco-height) * -0.625);
+        height: var(--deco-height);
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='64' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23a)'%3E%3Cpath d='M-17 30.5C-1 22 72-4 54 13 37.9 28.2-2.5 57.5 16 55.5s72-29 104-40' stroke='%23cccccc' stroke-width='10'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='a'%3E%3Cpath fill='%23fff' d='M0 0h100v64H0z'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E%0A");
+        background-size: auto 100%;
+        background-repeat: round;
+        background-position: 0em;
+      }
+    }
+  }
+
+  .landing-header {
+    text-align: center;
+  }
+
+  .projects .projects__layout {
+    display: flex;
+    @media (max-width: 640px) {
+      flex-direction: column;
+    }
+  }
+
+  .our-why {
+    padding-left: 20%; 
+    padding-right: 20%; 
+    @media (max-width: 1048px) {
+      padding-left: 5%; 
+      padding-right: 5%; 
+    }
+  }
+
+    
+  .our-why .our-why__content {
+    display: flex;
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+  }
+
+  .our-why .our-why__content div {
+    margin: 0 5%;
+    @media (max-width: 768px) {
+      margin: 0;
+    }
+  }
+
+  .our-why .our-why__content img {
+    width: 20vw;
+    height: 20vw;
+    @media (max-width: 768px) {
+      width: 100vw;
+      height: auto;
+    }
+  }
+
+  .our-blog {
+    padding-bottom: 100px; 
+  }
+
+  .work-with-us {
+    padding-bottom: 100px;
+  }
+
+  .work-with-us .work-with-us__content {
+    display: flex;
+    justify-content: center;
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+  }
+
+  .work-with-us .work-with-us__content .work-with-us__content_el1 {
+    flex-basis: 60%;
+  }
+</style>
+
+</body></html>
+</content>
+</main>
+      <footer> Written in <a class="internal-link" href="/about">Paperland</a>
+</footer>
+    </div>
+
+    <!-- That file is not particularly elegant. This will need a refactor at some point. -->
+<div class='tooltip-wrapper' style="opacity: 0; display: none;" id='tooltip-wrapper'>
+  <div id='tooltip-content'>
+  </div>
+</div>
+
+<iframe style="display: none; height: 0; width: 0;" id='link-preview-iframe' src="">
+</iframe>
+
+<script>
+  var opacityTimeout;
+  var contentTimeout;
+  var transitionDurationMs = 100;
+
+  var iframe = document.getElementById('link-preview-iframe')
+  var tooltipWrapper = document.getElementById('tooltip-wrapper')
+  var tooltipContent = document.getElementById('tooltip-content')
+
+  var linkHistories = {};
+
+  function hideTooltip() {
+    opacityTimeout = setTimeout(function() {
+      tooltipWrapper.style.opacity = 0;
+      contentTimeout = setTimeout(function() {
+        tooltipContent.innerHTML = '';
+        tooltipWrapper.style.display = 'none';
+      }, transitionDurationMs + 1);
+    }, transitionDurationMs)
+  }
+
+  function showTooltip(event) {
+    var elem = event.target;
+    var elem_props = elem.getClientRects()[elem.getClientRects().length - 1];
+    var top = window.pageYOffset || document.documentElement.scrollTop
+
+    if (event.target.host === window.location.host) {
+      if (!linkHistories[event.target.href]) {
+        iframe.src = event.target.href
+        iframe.onload = function() {
+          tooltipContentHtml = ''
+          tooltipContentHtml += '<div style="font-weight: bold;">' + iframe.contentWindow.document.querySelector('h1').innerHTML + '</div>'
+          tooltipContentHtml += iframe.contentWindow.document.querySelector('content').innerHTML
+
+          tooltipContent.innerHTML = tooltipContentHtml
+          linkHistories[event.target.href] = tooltipContentHtml
+
+          tooltipWrapper.style.display = 'block';
+          setTimeout(function() {
+            tooltipWrapper.style.opacity = 1;
+          }, 1)
+        } 
+      } else {
+        tooltipContent.innerHTML = linkHistories[event.target.href]
+        tooltipWrapper.style.display = 'block';
+        setTimeout(function() {
+          tooltipWrapper.style.opacity = 1;
+        }, 1)
+      }
+
+
+      tooltipWrapper.style.left = elem_props.left - (tooltipWrapper.offsetWidth / 2) + (elem_props.width / 2) + "px";
+      if ((window.innerHeight - elem_props.top) < (tooltipWrapper.offsetHeight)) {
+          tooltipWrapper.style.top = elem_props.top + top - tooltipWrapper.offsetHeight - 10 + "px";
+      } else if ((window.innerHeight - elem_props.top) > (tooltipWrapper.offsetHeight)) {
+          tooltipWrapper.style.top = elem_props.top + top + 35 + "px";
+      }
+
+      if ((elem_props.left + (elem_props.width / 2)) < (tooltipWrapper.offsetWidth / 2)) {
+          tooltipWrapper.style.left = "10px";
+      } else if ((document.body.clientWidth - elem_props.left - (elem_props.width / 2)) < (tooltipWrapper.offsetWidth / 2)) {
+          tooltipWrapper.style.left = document.body.clientWidth - tooltipWrapper.offsetWidth - 20 + "px";
+      }
+    }
+  }
+
+  function setupListeners(linkElement) {
+    linkElement.addEventListener('mouseleave', function(_event) {
+      hideTooltip();
+    });
+
+    tooltipWrapper.addEventListener('mouseleave', function(_event) {
+      hideTooltip();
+    });
+
+    linkElement.addEventListener('touchend', function(_event) {
+      hideTooltip();
+    });
+
+    tooltipWrapper.addEventListener('touchend', function(_event) {
+      hideTooltip();
+    });
+
+    linkElement.addEventListener('mouseenter', function(event) {
+      clearTimeout(opacityTimeout);
+      clearTimeout(contentTimeout);
+      showTooltip(event);
+    });
+
+    tooltipWrapper.addEventListener('mouseenter', function(event) {
+      clearTimeout(opacityTimeout);
+      clearTimeout(contentTimeout);
+    });
+  }
+
+  document.querySelectorAll('a[data-tooltip="true"]').forEach(setupListeners);
+</script>
+
+    <script>
+
+  function toggleTheme() {
+    if (document.body.classList.contains('night-mode')) {
+      setLightTheme();
+    } else {
+      setDarkTheme();
+    }
+  }
+
+  function setLightTheme() {
+    document.body.classList.remove('night-mode');
+    sessionStorage.setItem('night_mode', "false");
+    document.querySelector("#color-switcher").innerHTML = "🌙";
+  }
+
+  function setDarkTheme() {
+    document.body.classList.add('night-mode');
+    sessionStorage.setItem('night_mode', "true");
+    document.querySelector("#color-switcher").innerHTML = "☀️";
+  }
+
+  // Initialize theme based on session storage
+  document.addEventListener('DOMContentLoaded', (event) => {
+    if (sessionStorage.getItem('night_mode') === "true") {
+      setDarkTheme();
+    } else {
+      setLightTheme();
+    }
+  });
+    
+  // Source for the following three methods: https://stackoverflow.com/a/28344281
+  function hasClass(ele, cls) {
+    return !!ele.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
+  }
+
+  function addClass(ele, cls) {
+    if (!hasClass(ele, cls)) ele.className += " " + cls;
+  }
+
+  function removeClass(ele, cls) {
+    if (hasClass(ele, cls)) {
+      var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
+      ele.className = ele.className.replace(reg, ' ');
+    }
+  }
+</script>
+
+  </body>
+</html>

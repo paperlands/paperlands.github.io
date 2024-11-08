@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+
+  <link rel="canonical" href="https://paperland.in/dojo" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="description" content="~/paperland">
+
+  <link
+      rel="stylesheet"
+      href="assets/css/paper.min.css"
+    />
+
+  <meta property="og:site_name" content="~/paperland">
+
+  <link rel="icon" href="/favicon.ico" >
+
+
+  <link rel="stylesheet" href="/styles.css">
+
+  
+  <meta property="og:description" content="~/paperland"/>
+  
+
+  
+  <meta property="og:title" content="Dojo">
+  <meta property="og:type" content="article">
+  
+
+  
+
+  <meta property="og:url" content="https://paperland.in/dojo" />
+
+  
+
+  <title>
+    
+      Dojo &mdash; ~/paperland
+    
+  </title>
+</head>
+
+  <body>
+    <nav class="border fixed split-nav">
+    <div class="nav-brand">
+        <!-- <h4><a href="#">Paperland</a></h4> -->
+        <a href="/" >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" height="40"  >
+                <image xlink:href="/assets/logo.svg" width="40" height="40"/>
+            </svg>
+        </a>
+    </div>
+
+    <div class="collapsible">
+        <input id="collapsible1" type="checkbox" name="collapsible1">
+        <label for="collapsible1">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+        </label>
+        
+        <div class="collapsible-body">
+            <ul class="inline">
+                <li><a href="/#projects" id="scroll-link">Projects</a></li>
+                <li><a href="/#blog">Blog</a></li>
+                <li><a href="/#contact">Contact</a></li>
+                <li><a id="color-switcher" onclick="toggleTheme()">🌙</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<style>
+    nav {
+        background-color: #fff;
+    }
+    body.night-mode {
+        nav {
+            background-color: #222222;
+        }
+    }
+
+    nav .collapsible > label {
+        margin-right: 8vw
+    }
+    body.night-mode nav .collapsible > label {
+        margin-right: 8vw;
+        background-color: #222222;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+</style>
+
+    <div class="wrapper">
+      <main><content>
+  <html><body>
+<h1>Project Dojo</h1>
+<p>We design workshops to discover the joy of computing for all ages!</p>
+<p><a href="https://dojo.paperland.in/" class="paper-btn" target="_blank">Try Turtle Demo</a></p>
+
+<p><br>
+<br></p>
+
+<!-- Show Group A on screens wider than 768px -->
+<div class="dojo-section">
+  <h2 class="">School engagement</h2>
+  <hr>
+<br>
+  <p>From wetting your toes with building discord bots for fun ... 
+    <br> ... to exploring the mysteries of cellular automatons ... </p>
+  
+  <div class="images-container">
+    <div class="images-container__card border">
+      <img src="/assets/lib/landing/stpats_discord_bot_workshop_16x9.jpg" alt="Discord Bot Workshop">
+      <div>Discord Bot Workshop @ St. Patrick's School</div>
+    </div>
+    
+    <div class="images-container__card border">
+      <img src="/assets/lib/landing/ca_workshop_16x9.jpg" alt="Cellular Automaton Workshop">
+      <div>Computational Thinking Workshop @ Deus Ludum</div>
+    </div>
+  </div>
+
+  <p>Expect to get your hands dirty with hands-on activity within the first 15mins!</p>
+</div>
+
+<!-- Show Group B on screens narrower than 768px -->
+<div class="dojo-section__small ">
+  <h2 class="">School engagement</h2>
+  <hr>
+<br>
+  <p>From wetting your toes with building discord bots for fun ... </p>
+  
+  <div class="images-container__card border">
+    <img src="/assets/lib/landing/stpats_discord_bot_workshop_16x9.jpg" alt="Discord Bot Workshop">
+    <div class="image_caption">Discord Bot Workshop @ St. Patrick's School</div>
+  </div>
+
+  <p> ... to exploring the mysteries of cellular automatons ... </p>
+  
+  <div class="images-container__card border">
+    <img src="/assets/lib/landing/ca_workshop_16x9.jpg" alt="Cellular Automaton Workshop">
+    <div class="image_caption">Computational Thinking Workshop @ Deus Ludum</div>
+  </div>
+
+  <p>Expect to get your hands dirty with hands-on activity within the first 15mins!</p>
+</div>
+
+<style>
+  /* Base styles (apply to all screen sizes) */
+  .dojo-section, .dojo-section__small {
+    display: none;
+  }
+
+  /* Show Group A on screens wider than 768px */
+  @media (min-width: 768px) {
+    .dojo-section {
+      display: block;
+      margin-bottom: 10vh;
+
+      padding: 0 1em 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center; 
+    }
+    .dojo-section .images-container {
+      display: flex;
+    }
+    .dojo-section .images-container__card {
+      padding: 1em;
+      width: 40vw;
+      margin: 2em;
+    }
+    .dojo-section div {
+      font-size: x-small;
+    }
+  }
+
+  /* Show Group B on screens narrower than 768px */
+  @media (max-width: 767px) {
+    .dojo-section__small {
+      display: block;
+      margin: 5vh 0;
+
+      padding: 0 1em 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center; 
+    }
+    .dojo-section__small .images-container__card {
+      padding: 1em;
+      width: 70vw;
+    } 
+    .dojo-section__small .image_caption {
+      margin: 0 5vw 0;
+    }
+    .dojo-section__small div {
+      font-size: x-small;
+    }
+  }
+
+</style>
+
+<!-- Show Group A on screens wider than 768px -->
+<div class="dojo-section">
+  <h2 class="">Tertiary engagement</h2>
+  <hr>
+<br>
+  <p>From designing a children's card game ... 
+    <br> ... to learning to drawing mesmerising geometric shapes ... </p>
+  
+  <div class="images-container">
+    <div class="images-container__card border">
+      <img src="/assets/lib/landing/audacity_workshop_16x9.png" alt="Audacity Workshop">
+      <div>Design Innovation Workshop @ Audacity by Mistletoe</div>
+    </div>
+    
+    <div class="images-container__card border">
+      <img src="/assets/lib/landing/turtle_workshop_16x9.jpg" alt="Turtle Graphics Workshop">
+      <div>Turtle Graphics workshop @ SUTD</div>
+    </div>
+  </div>
+
+  <p>Expect to actively discuss, challenge and learn together with your peers!</p>
+</div>
+
+<!-- Show Group B on screens narrower than 768px -->
+<div class="dojo-section__small ">
+  <h2 class="">Tertiary engagement</h2>
+  <hr>
+<br>
+  <p>From designing a children's card game ... </p>
+  
+  <div class="images-container__card border">
+    <img src="/assets/lib/landing/audacity_workshop_16x9.png" alt="Audacity Workshop">
+    <div class="image_caption">Design Innovation Workshop @ Audacity by Mistletoe</div>
+  </div>
+
+  <p> ... to learning to drawing mesmerising geometric shapes ... </p>
+  
+  <div class="images-container__card border">
+    <img src="/assets/lib/landing/turtle_workshop_16x9.jpg" alt="Turtle Graphics Workshop">
+    <div class="image_caption">Turtle Graphics workshop @ SUTD</div>
+  </div>
+
+  <p>Expect to actively discuss, challenge and learn together with your peers!</p>
+</div>
+
+<style>
+  /* Base styles (apply to all screen sizes) */
+  .dojo-section, .dojo-section__small {
+    display: none;
+  }
+
+  /* Show Group A on screens wider than 768px */
+  @media (min-width: 768px) {
+    .dojo-section {
+      display: block;
+      margin-bottom: 10vh;
+
+      padding: 0 1em 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center; 
+    }
+    .dojo-section .images-container {
+      display: flex;
+    }
+    .dojo-section .images-container__card {
+      padding: 1em;
+      width: 40vw;
+      margin: 2em;
+    }
+    .dojo-section div {
+      font-size: x-small;
+    }
+  }
+
+  /* Show Group B on screens narrower than 768px */
+  @media (max-width: 767px) {
+    .dojo-section__small {
+      display: block;
+      margin: 5vh 0;
+
+      padding: 0 1em 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center; 
+    }
+    .dojo-section__small .images-container__card {
+      padding: 1em;
+      width: 70vw;
+    } 
+    .dojo-section__small .image_caption {
+      margin: 0 5vw 0;
+    }
+    .dojo-section__small div {
+      font-size: x-small;
+    }
+  }
+
+</style>
+
+<!-- Show Group A on screens wider than 768px -->
+<div class="dojo-section">
+  <h2 class="">Corporate engagement</h2>
+  <hr>
+<br>
+  <p>From learning to build a telegram bot for your business data communications ... 
+    <br> ... to designing a more wheelchair friendly corridor ... </p>
+  
+  <div class="images-container">
+    <div class="images-container__card border">
+      <img src="/assets/lib/landing/tele_bot_workshop_16x9.jpg" alt="Telegram Bot Workshop">
+      <div>Telegram Bot Workshop @ Geoworks by SLA</div>
+    </div>
+    
+    <div class="images-container__card border">
+      <img src="/assets/lib/landing/nyc_workshop_16x9.png" alt="Community Design Innovation Workshop">
+      <div>Community Design Innovation Workshop @ NYC Youth Council Mission</div>
+    </div>
+  </div>
+
+  <p>Expect to push the boundaries of how your learnings can be utilised and applied!</p>
+</div>
+
+<!-- Show Group B on screens narrower than 768px -->
+<div class="dojo-section__small ">
+  <h2 class="">Corporate engagement</h2>
+  <hr>
+<br>
+  <p>From learning to build a telegram bot for your business data communications ... </p>
+  
+  <div class="images-container__card border">
+    <img src="/assets/lib/landing/tele_bot_workshop_16x9.jpg" alt="Telegram Bot Workshop">
+    <div class="image_caption">Telegram Bot Workshop @ Geoworks by SLA</div>
+  </div>
+
+  <p> ... to designing a more wheelchair friendly corridor ... </p>
+  
+  <div class="images-container__card border">
+    <img src="/assets/lib/landing/nyc_workshop_16x9.png" alt="Community Design Innovation Workshop">
+    <div class="image_caption">Community Design Innovation Workshop @ NYC Youth Council Mission</div>
+  </div>
+
+  <p>Expect to push the boundaries of how your learnings can be utilised and applied!</p>
+</div>
+
+<style>
+  /* Base styles (apply to all screen sizes) */
+  .dojo-section, .dojo-section__small {
+    display: none;
+  }
+
+  /* Show Group A on screens wider than 768px */
+  @media (min-width: 768px) {
+    .dojo-section {
+      display: block;
+      margin-bottom: 10vh;
+
+      padding: 0 1em 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center; 
+    }
+    .dojo-section .images-container {
+      display: flex;
+    }
+    .dojo-section .images-container__card {
+      padding: 1em;
+      width: 40vw;
+      margin: 2em;
+    }
+    .dojo-section div {
+      font-size: x-small;
+    }
+  }
+
+  /* Show Group B on screens narrower than 768px */
+  @media (max-width: 767px) {
+    .dojo-section__small {
+      display: block;
+      margin: 5vh 0;
+
+      padding: 0 1em 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center; 
+    }
+    .dojo-section__small .images-container__card {
+      padding: 1em;
+      width: 70vw;
+    } 
+    .dojo-section__small .image_caption {
+      margin: 0 5vw 0;
+    }
+    .dojo-section__small div {
+      font-size: x-small;
+    }
+  }
+
+</style>
+
+<section>
+    <h2>Student Reviews</h2>
+    <hr>
+<br>
+    <div class="grid-container">
+        <div>
+  <div class="testimonial">
+    <p class="testimonial_text">
+      I like the workshop and it’s the right level of difficulty, having limited prior experience with coding, it can pose as a little challenge to me and I appreciate the exposure to the workshop :)
+    </p>
+    <div></div>
+    <p class="author">
+      Zhi Ying — Abstraction Workshop
+    </p>
+  </div>
+</div>
+
+
+
+<style>
+  div {
+    margin: 4px;
+  }
+  .testimonial .testimonial_text {
+    background: #efefef;
+    padding: 3em 2em;
+    position: relative;
+    border: none;
+    border-radius: 10px;
+    font-style: italic;
+    color: black;
+  }
+
+  .testimonial .testimonial_text:before,
+  .testimonial .testimonial_text:after {
+    content: "\201C";
+    position: absolute;
+    font-size: 120px;
+    line-height: 1;
+    color: #757f9a;
+    font-style: normal;
+  }
+
+  .testimonial .testimonial_text:before {
+    top: 25px;
+    left: 15px;
+  }
+
+  .testimonial .testimonial_text:after {
+    content: "\201D";
+    right: 15px;
+    bottom: -0.6em;
+  }
+
+  .testimonial div {
+    width: 0;
+    height: 0;
+    border-left: 0 solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 20px solid #efefef;
+    margin: 0 0 0 70px;
+  }
+
+  .testimonial p {
+    margin: 0 1em 0;
+    text-align: left;
+  }
+
+  .testimonial .author {
+    margin: 4px 2em 0;
+  }
+</style>
+        <div>
+  <div class="testimonial">
+    <p class="testimonial_text">
+      Thanks for conducting the workshop and for the tips on school! Appreciate it! 🙏🏻
+            The content covered was interesting, easy to follow and the pace was good. The idea of letting us view other participants’ work was cool too.
+    </p>
+    <div></div>
+    <p class="author">
+      Bryan — Turtle Graphics Workshop
+    </p>
+  </div>
+</div>
+
+
+
+<style>
+  div {
+    margin: 4px;
+  }
+  .testimonial .testimonial_text {
+    background: #efefef;
+    padding: 3em 2em;
+    position: relative;
+    border: none;
+    border-radius: 10px;
+    font-style: italic;
+    color: black;
+  }
+
+  .testimonial .testimonial_text:before,
+  .testimonial .testimonial_text:after {
+    content: "\201C";
+    position: absolute;
+    font-size: 120px;
+    line-height: 1;
+    color: #757f9a;
+    font-style: normal;
+  }
+
+  .testimonial .testimonial_text:before {
+    top: 25px;
+    left: 15px;
+  }
+
+  .testimonial .testimonial_text:after {
+    content: "\201D";
+    right: 15px;
+    bottom: -0.6em;
+  }
+
+  .testimonial div {
+    width: 0;
+    height: 0;
+    border-left: 0 solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 20px solid #efefef;
+    margin: 0 0 0 70px;
+  }
+
+  .testimonial p {
+    margin: 0 1em 0;
+    text-align: left;
+  }
+
+  .testimonial .author {
+    margin: 4px 2em 0;
+  }
+</style>
+        <div>
+  <div class="testimonial">
+    <p class="testimonial_text">
+      Heyy I really enjoyed the class! To the extent that I would come for other classes if yall do organise em (even though coding aint my fave 👀). 
+            I appreciate that the session started with hands on n I really enjoyed your points about the application as well coz it really tied the session for me (esp the biology part I was hooked).
+    </p>
+    <div></div>
+    <p class="author">
+      Rithika — Recursion Workshop
+    </p>
+  </div>
+</div>
+
+
+
+<style>
+  div {
+    margin: 4px;
+  }
+  .testimonial .testimonial_text {
+    background: #efefef;
+    padding: 3em 2em;
+    position: relative;
+    border: none;
+    border-radius: 10px;
+    font-style: italic;
+    color: black;
+  }
+
+  .testimonial .testimonial_text:before,
+  .testimonial .testimonial_text:after {
+    content: "\201C";
+    position: absolute;
+    font-size: 120px;
+    line-height: 1;
+    color: #757f9a;
+    font-style: normal;
+  }
+
+  .testimonial .testimonial_text:before {
+    top: 25px;
+    left: 15px;
+  }
+
+  .testimonial .testimonial_text:after {
+    content: "\201D";
+    right: 15px;
+    bottom: -0.6em;
+  }
+
+  .testimonial div {
+    width: 0;
+    height: 0;
+    border-left: 0 solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 20px solid #efefef;
+    margin: 0 0 0 70px;
+  }
+
+  .testimonial p {
+    margin: 0 1em 0;
+    text-align: left;
+  }
+
+  .testimonial .author {
+    margin: 4px 2em 0;
+  }
+</style>
+    </div>
+</section>
+
+<section class="work-with-us" id="contact">
+  <h2 class="landing_header">Work with us</h2>
+  <hr>
+<br>
+
+  <div class="work-with-us__content">
+    <div class="padding-right-large work-with-us__content-el1">
+      <p>Looking for unconventional ways to learn how technology works?</p>
+      <p>Looking for a better way to learn about programming?</p>
+      <p>Looking for computational thinking workshops?</p>
+      <p>Let's have a call to design the perfect lesson together!</p>
+    </div>
+    
+    <!-- https://india.fly.dev/proxy/apps/guru/work -->
+<form id="lettertopaperland" class="col form-group card work-with-us__content_el2" accept-charset="UTF-8" action="https://india.fly.dev/proxy/apps/guru/work" method="POST">
+  <label for="name-input">Your Name *</label>
+  <input id="name-input" type="text" name="name" placeholder="Alan Kay">
+
+  <label for="email-input">Email *</label>
+  <input id="email-input" type="email" name="email" placeholder="alan@paperland.in">
+
+  <label for="company-input">Company/Org</label>
+  <input id="company-input" type="text" name="company" placeholder="Xerox Parc">
+  
+  <label for="message-input">Your message *</label>
+  <textarea id="message-input" name="message" rows="4" placeholder="There are more contexts than the one that we're in — the one that we think is reality"></textarea>
+  
+  <input type="hidden" name="return_url" value="https://paperland.in/dojo">
+  <span>    </span>
+  <div class="h-captcha" data-sitekey="7688737e-8d00-4c1e-acdc-828ee1c02e08"></div>
+  <script src="https://js.hcaptcha.com/1/api.js" async="" defer></script>
+  <span>    </span>
+
+  <button type="submit">Submit</button>
+</form>
+
+<div class="toast" id="toast-good">
+  <i class="fa fa-check-circle"></i>
+  <input class="alert-state" id="toast-alert" type="checkbox">
+
+  <div class="alert alert-muted dismissible">
+    Sent! To the desks <a class="internal-link" href="/about"> <b>@paperland</b></a>
+    <label class="btn-close" for="toast-alert">X</label>
+  </div>
+</div>
+
+<div class="toast" id="toast-bad">
+  <i class="fa fa-check-circle"></i>
+  <input class="alert-state" id="toast-alert" type="checkbox">
+
+  <div class="alert alert-danger dismissible">
+    Check the I am human checkbox!
+    <label class="btn-close" for="toast-alert">X</label>
+  </div>
+</div>
+
+
+<style>
+  #paper_form {
+    text-align: center;
+  }
+  
+  .h-captcha{
+    position: relative;
+  }
+
+  .work-with-us__content_el2 {
+    flex-basis: 40%;
+    
+  }
+
+  .work-with-us__content_el2 label {
+    margin-bottom: 0;
+    margin-top: 10px;
+  }
+
+    
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    right: 0vh;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    display: none;
+    animation: fade-in 10s ease-in-out forwards;
+  }
+
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+      visibility: visible;
+      transform: translateX(0%) translateY(20px);
+    }
+    15% {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0%) translateY(0);
+    }
+    
+    90% {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(0%) translateY(0);
+    }
+    
+    100% {
+      opacity: 0;
+      display: none;
+      transform: translateX(0%) translateY(0);
+    }
+  }
+</style>
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search)
+  if (urlParams.get('sent') == "true"){
+    const element = document.getElementById('toast-good');
+    element.style.display = 'block'; // Show the element
+  }
+  else if (urlParams.get('sent') == "false") {
+    const element = document.getElementById('toast-bad');
+    element.style.display = 'block'; // Show the element
+  }
+</script>
+
+  </div>
+</section>
+
+<style>
+    div {
+        text-align: center;
+    }
+
+    h1 {
+        font-weight: bold;
+        font-size: 7em;
+        margin-top: 25vh;
+        @media (max-width: 768px) {
+            font-size: 3em;
+        }
+    }
+
+    section {
+        margin: 30vh 0;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 3 columns on larger screens */
+      
+        @media (max-width: 768px) {
+            grid-template-columns: 1fr; /* 1 column on smaller screens */
+            row-gap: 10vh;
+        }
+    }
+
+    .grid-item {
+        background-color: #3498db;
+        text-align: center;
+        font-size: 20rem;
+        border-radius: 10px;
+    }
+
+    .work-with-us {
+        padding-bottom: 100px;
+    }
+
+    .work-with-us .work-with-us__content {
+        text-align: left;
+        display: flex;
+        justify-content: center;
+
+        @media (max-width: 768px) {
+            flex-direction: column;
+        }
+    }    
+
+    .work-with-us .work-with-us__content .work-with-us__content-el1 {
+        flex-basis: 60%;
+        text-align: left;
+    }
+</style>
+
+</body></html>
+</content>
+</main>
+      <footer> Written in <a class="internal-link" href="/about">Paperland</a>
+</footer>
+    </div>
+
+    <!-- That file is not particularly elegant. This will need a refactor at some point. -->
+<div class='tooltip-wrapper' style="opacity: 0; display: none;" id='tooltip-wrapper'>
+  <div id='tooltip-content'>
+  </div>
+</div>
+
+<iframe style="display: none; height: 0; width: 0;" id='link-preview-iframe' src="">
+</iframe>
+
+<script>
+  var opacityTimeout;
+  var contentTimeout;
+  var transitionDurationMs = 100;
+
+  var iframe = document.getElementById('link-preview-iframe')
+  var tooltipWrapper = document.getElementById('tooltip-wrapper')
+  var tooltipContent = document.getElementById('tooltip-content')
+
+  var linkHistories = {};
+
+  function hideTooltip() {
+    opacityTimeout = setTimeout(function() {
+      tooltipWrapper.style.opacity = 0;
+      contentTimeout = setTimeout(function() {
+        tooltipContent.innerHTML = '';
+        tooltipWrapper.style.display = 'none';
+      }, transitionDurationMs + 1);
+    }, transitionDurationMs)
+  }
+
+  function showTooltip(event) {
+    var elem = event.target;
+    var elem_props = elem.getClientRects()[elem.getClientRects().length - 1];
+    var top = window.pageYOffset || document.documentElement.scrollTop
+
+    if (event.target.host === window.location.host) {
+      if (!linkHistories[event.target.href]) {
+        iframe.src = event.target.href
+        iframe.onload = function() {
+          tooltipContentHtml = ''
+          tooltipContentHtml += '<div style="font-weight: bold;">' + iframe.contentWindow.document.querySelector('h1').innerHTML + '</div>'
+          tooltipContentHtml += iframe.contentWindow.document.querySelector('content').innerHTML
+
+          tooltipContent.innerHTML = tooltipContentHtml
+          linkHistories[event.target.href] = tooltipContentHtml
+
+          tooltipWrapper.style.display = 'block';
+          setTimeout(function() {
+            tooltipWrapper.style.opacity = 1;
+          }, 1)
+        } 
+      } else {
+        tooltipContent.innerHTML = linkHistories[event.target.href]
+        tooltipWrapper.style.display = 'block';
+        setTimeout(function() {
+          tooltipWrapper.style.opacity = 1;
+        }, 1)
+      }
+
+
+      tooltipWrapper.style.left = elem_props.left - (tooltipWrapper.offsetWidth / 2) + (elem_props.width / 2) + "px";
+      if ((window.innerHeight - elem_props.top) < (tooltipWrapper.offsetHeight)) {
+          tooltipWrapper.style.top = elem_props.top + top - tooltipWrapper.offsetHeight - 10 + "px";
+      } else if ((window.innerHeight - elem_props.top) > (tooltipWrapper.offsetHeight)) {
+          tooltipWrapper.style.top = elem_props.top + top + 35 + "px";
+      }
+
+      if ((elem_props.left + (elem_props.width / 2)) < (tooltipWrapper.offsetWidth / 2)) {
+          tooltipWrapper.style.left = "10px";
+      } else if ((document.body.clientWidth - elem_props.left - (elem_props.width / 2)) < (tooltipWrapper.offsetWidth / 2)) {
+          tooltipWrapper.style.left = document.body.clientWidth - tooltipWrapper.offsetWidth - 20 + "px";
+      }
+    }
+  }
+
+  function setupListeners(linkElement) {
+    linkElement.addEventListener('mouseleave', function(_event) {
+      hideTooltip();
+    });
+
+    tooltipWrapper.addEventListener('mouseleave', function(_event) {
+      hideTooltip();
+    });
+
+    linkElement.addEventListener('touchend', function(_event) {
+      hideTooltip();
+    });
+
+    tooltipWrapper.addEventListener('touchend', function(_event) {
+      hideTooltip();
+    });
+
+    linkElement.addEventListener('mouseenter', function(event) {
+      clearTimeout(opacityTimeout);
+      clearTimeout(contentTimeout);
+      showTooltip(event);
+    });
+
+    tooltipWrapper.addEventListener('mouseenter', function(event) {
+      clearTimeout(opacityTimeout);
+      clearTimeout(contentTimeout);
+    });
+  }
+
+  document.querySelectorAll('a[data-tooltip="true"]').forEach(setupListeners);
+</script>
+
+    <script>
+
+  function toggleTheme() {
+    if (document.body.classList.contains('night-mode')) {
+      setLightTheme();
+    } else {
+      setDarkTheme();
+    }
+  }
+
+  function setLightTheme() {
+    document.body.classList.remove('night-mode');
+    sessionStorage.setItem('night_mode', "false");
+    document.querySelector("#color-switcher").innerHTML = "🌙";
+  }
+
+  function setDarkTheme() {
+    document.body.classList.add('night-mode');
+    sessionStorage.setItem('night_mode', "true");
+    document.querySelector("#color-switcher").innerHTML = "☀️";
+  }
+
+  // Initialize theme based on session storage
+  document.addEventListener('DOMContentLoaded', (event) => {
+    if (sessionStorage.getItem('night_mode') === "true") {
+      setDarkTheme();
+    } else {
+      setLightTheme();
+    }
+  });
+    
+  // Source for the following three methods: https://stackoverflow.com/a/28344281
+  function hasClass(ele, cls) {
+    return !!ele.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
+  }
+
+  function addClass(ele, cls) {
+    if (!hasClass(ele, cls)) ele.className += " " + cls;
+  }
+
+  function removeClass(ele, cls) {
+    if (hasClass(ele, cls)) {
+      var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
+      ele.className = ele.className.replace(reg, ' ');
+    }
+  }
+</script>
+
+  </body>
+</html>
