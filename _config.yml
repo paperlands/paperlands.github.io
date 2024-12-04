@@ -25,6 +25,7 @@ relative_permalinks: false
 plugins:
   - jekyll-last-modified-at
   - jekyll-sitemap
+  - jekyll-tailwind
 
 sass:
   sass_dir:          _sass
