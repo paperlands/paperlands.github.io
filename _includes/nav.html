@@ -1,51 +1,91 @@
-<nav class="border fixed split-nav">
-    <div class="nav-brand">
-        <!-- <h4><a href="#">Paperland</a></h4> -->
-        <a href="{{ site.baseurl }}/" >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" height="40"  >
-                <image xlink:href="/assets/logo.svg" width="40" height="40"/>
+<nav class="bg-background">
+    <div class="px-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
+      <div class="relative flex items-center justify-between h-16">
+        <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+          <!-- Mobile menu button-->
+          <button type="button" class="relative inline-flex items-center justify-center p-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+            <span class="absolute -inset-0.5"></span>
+            <span class="sr-only">Open main menu</span>
+            <!--
+              Icon when menu is closed.
+  
+              Menu open: "hidden", Menu closed: "block"
+            -->
+            <svg class="block size-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true" data-slot="icon">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>
-        </a>
-    </div>
-
-    <div class="collapsible">
-        <input id="collapsible1" type="checkbox" name="collapsible1">
-        <label for="collapsible1">
-            <div class="bar1"></div>
-            <div class="bar2"></div>
-            <div class="bar3"></div>
-        </label>
-        
-        <div class="collapsible-body">
-            <ul class="inline">
-                <li><a href="/#projects" id="scroll-link">Projects</a></li>
-                <li><a href="/#blog">Blog</a></li>
-                <li><a href="/#contact">Contact</a></li>
-                <li><a id="color-switcher" onclick="toggleTheme()">🌙</a></li>
-            </ul>
+            <!--
+              Icon when menu is open.
+  
+              Menu open: "block", Menu closed: "hidden"
+            -->
+            <svg class="hidden size-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true" data-slot="icon">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
+        <div class="flex items-center justify-center flex-1">
+          <!-- Logo -->
+          <div class="flex items-center shrink-0">
+            <a href="{{ site.baseurl }}/" >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" height="50"  >
+                  <image xlink:href="/assets/logo.svg" width="50" height="50"/>
+              </svg>
+            </a>
+          </div>
+          <div class="hidden sm:ml-6 sm:block">
+            <div class="flex space-x-4">
+              <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+              <a href="/#projects" class="px-3 py-2 text-sm font-medium rounded-md text-text-light ho-ltext-text-light-gray-700 hover:text-white">Our Work</a>
+              <a href="/#blog" class="px-3 py-2 text-sm font-medium rounded-md text-text-light ho-ltext-text-light-gray-700 hover:text-white">Blog</a>
+              <a href="/#contact" class="px-3 py-2 text-sm font-medium rounded-md text-text-light ho-ltext-text-light-gray-700 hover:text-white">Contact Us</a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-</nav>
+  
+    <!-- Mobile menu, show/hide based on menu state. -->
+    <div class="w-1/2 rounded-md sm:hidden bg-primary-light" id="mobile-menu">
+      <div class="px-2 pt-2 pb-3 space-y-1">
+        <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+        <a href="/#projects" class="block px-3 py-2 text-base font-medium rounded-md text-text-light hover:bg-gray-700 hover:text-white">Our Work</a>
+        <a href="/#blog" class="block px-3 py-2 text-base font-medium rounded-md text-text-light hover:bg-gray-700 hover:text-white">Blog</a>
+        <a href="/#contact" class="block px-3 py-2 text-base font-medium rounded-md text-text-light hover:bg-gray-700 hover:text-white">Contact Us</a>
+      </div>
+    </div>
+  </nav>
+  
 
-<style>
-    nav {
-        background-color: #fff;
-    }
-    body.night-mode {
-        nav {
-            background-color: #222222;
-        }
-    }
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const mobileMenu = document.getElementById("mobile-menu");
+      const menuButton = document.querySelector('[aria-controls="mobile-menu"]');
 
-    nav .collapsible > label {
-        margin-right: 8vw
-    }
-    body.night-mode nav .collapsible > label {
-        margin-right: 8vw;
-        background-color: #222222;
-    }
+      // Ensure the mobile menu is hidden by default
+      mobileMenu.classList.add("hidden");
+      menuButton.setAttribute("aria-expanded", "false");
 
-    html {
-        scroll-behavior: smooth;
-    }
-</style>
+      // Function to toggle mobile menu
+      const toggleMenu = () => {
+          const isExpanded = menuButton.getAttribute("aria-expanded") === "true";
+          menuButton.setAttribute("aria-expanded", !isExpanded);
+          mobileMenu.classList.toggle("hidden", isExpanded);
+      };
+
+      // Ensure menu visibility aligns with screen size
+      const handleResize = () => {
+          if (window.innerWidth >= 640) { // Matches Tailwind's "sm" breakpoint
+          mobileMenu.classList.add("hidden"); // Always hide menu on larger screens
+          menuButton.setAttribute("aria-expanded", "false");
+          }
+      };
+
+      // Event listeners
+      menuButton.addEventListener("click", toggleMenu);
+      window.addEventListener("resize", handleResize);
+
+      // Initial setup
+      handleResize();
+    });
+</script>
