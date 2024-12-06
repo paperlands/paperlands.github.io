@@ -5,3 +5,8 @@
 @import "../_sass/code";
 @import "../_sass/style";
 @import "../_sass/night-mode";
+
+// Set the font-family globally
+body {
+  font-family: 'Noto Serif Grantha', serif;
+}
