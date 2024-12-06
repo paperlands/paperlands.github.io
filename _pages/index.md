@@ -13,27 +13,27 @@ permalink: /
 <section class="max-w-6xl px-4 py-8 mx-auto sm:px-6 lg:px-4" id="projects">
   <h2 class="my-8 text-4xl text-center">Our Work</h2><hr>
   <div class="grid grid-cols-1 gap-6 my-12 sm:grid-cols-2">
-      <div class="flex flex-col items-center justify-center w-full overflow-hidden rounded-lg bg-secondary-light">
-        <a href="/dojo" target="_self" class="card-link">
-          <div>
-              <img class="object-cover object-center w-full h-auto" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt="Project Dojo students interacting with collaborative learning medium">
-          </div>
-          <div class="py-8 text-center sm:py-6">
-              <p class="mb-2 text-xl font-bold text-text">Workshop Dojo</p>
-              <p class="px-8 text-base sm:px-16 text-text ">We design workshops to help students discover the JOY of computation</p>
-          </div>
-        </a>
-      </div>
-      <div class="flex flex-col items-center justify-center w-full overflow-hidden rounded-lg bg-secondary-light">
-          <div>
-              <img class="object-cover object-center w-full h-auto" src="/assets/lib/landing/ivansutherland.jpeg" alt="Sutherland on Sketchpad">
-          </div>
-          <div class="py-8 text-center sm:py-6">
-              <p class="mb-2 text-xl font-bold text-text">Project Optic</p>
-              <p class="px-8 text-base sm:px-16 text-text ">We design INTUITIVE robotic interfaces for your non-techical folks!</p>
-          </div>
-      </div>
+    <div class="flex flex-col items-center justify-center w-full overflow-hidden rounded-lg bg-secondary-light">
+      <a href="/dojo" target="_self" class="card-link">
+        <div>
+            <img class="object-cover object-center w-full h-auto" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt="Project Dojo students interacting with collaborative learning medium">
+        </div>
+        <div class="py-8 text-center sm:py-6">
+            <p class="mb-2 text-xl font-bold text-text">Workshop Dojo</p>
+            <p class="px-8 text-base sm:px-16 text-text ">We design workshops to help students discover the JOY of computation</p>
+        </div>
+      </a>
     </div>
+    <div class="flex flex-col items-center justify-center w-full overflow-hidden rounded-lg bg-secondary-light">
+        <div>
+            <img class="object-cover object-center w-full h-auto" src="/assets/lib/landing/ivansutherland.jpeg" alt="Sutherland on Sketchpad">
+        </div>
+        <div class="py-8 text-center sm:py-6">
+            <p class="mb-2 text-xl font-bold text-text">Project Optic</p>
+            <p class="px-8 text-base sm:px-16 text-text ">We design INTUITIVE robotic interfaces for your non-techical folks!</p>
+        </div>
+    </div>
+  </div>
 </section>
 
 

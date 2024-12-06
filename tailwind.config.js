@@ -11,6 +11,7 @@ module.exports = {
   ],
   theme: {
     extend: {
+      brightness: {},
       fontFamily: {
         sans: ["Noto Serif Grantha", ...defaultTheme.fontFamily.sans],
       },
