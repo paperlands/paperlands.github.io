@@ -3,17 +3,14 @@ layout: page
 title: Dojo
 permalink: /dojo
 ---
-<br>
-<br>
-<br>
-<br>
 
-<h2>Project Dojo</h2>
-<p>We design workshops to discover the joy of computing for all ages</p>
-<a href="https://dojo.paperland.in/" class="paper-btn">Try Turtle Demo</a>
-
-<br>
-<br>
+<div class="my-24 text-center sm:my-36">
+    <h1 class="mb-8 text-6xl tracking-tighter sm:text-9xl">Project Dojo</h1>
+    <div class="">We design workshops to discover the joy of computing for all ages</div>
+    <div class="my-12">
+        <a class="p-4 rounded-md bg-primary" href="https://dojo.paperland.in/">Turtle Demo</a>
+    </div>
+</div>
 
 {% include dojo_section.html 
     title="School engagement"
@@ -55,10 +52,8 @@ permalink: /dojo
 %}
 
 <section>
-    <h2>Student Reviews</h2>
-    <hr><br>
-
-    <div class="grid-container">
+    <h2 class="my-8 text-4xl text-center">Student Reviews</h2><hr>
+    <div class="mt-8 grid-container">
         {% include quotes.html 
             text="I like the workshop and it’s the right level of difficulty, having limited prior experience with coding, it can pose as a little challenge to me and I appreciate the exposure to the workshop :)"
             author="Zhi Ying &mdash; Abstraction Workshop"
@@ -78,19 +73,15 @@ permalink: /dojo
 
 
 <section class="work_with_us" id="contact">
-  <h2 class="landing_header">Work with us</h2>
-  <hr><br>
-
-  <div class="work_with_us_content">
-    <div class="padding-right-large work_with_us_content_el_1">
-      <p>Looking for unconventional ways to learn how technology works?</p>
-      <p>Looking for a better way to learn about programming?</p>
-      <p>Looking for computational thinking workshops?</p>
-      <p>Let's have a call to design the perfect lesson together!</p>
-    </div>
-    
-    {% include contact_form.html
-      href="/dojo" %}
+    <h2 class="my-8 text-4xl text-center">Work with us</h2><hr>
+    <div class="mt-8 work_with_us_content">
+        <div class="padding-right-large work_with_us_content_el_1">
+            <p>Looking for unconventional ways to learn how technology works?</p>
+            <p>Looking for a better way to learn about programming?</p>
+            <p>Looking for computational thinking workshops?</p>
+            <p>Let's have a call to design the perfect lesson together!</p>
+        </div>
+        {% include contact_form.html href="/dojo" %}
   </div>
 </section>
 

@@ -1,17 +1,16 @@
 <!-- Show Group A on screens wider than 768px -->
 <div class="dojo_section">
-  <h2 class="">{{ include.title }}</h2>
-  <hr><br>
-  <p>{{ include.text_top }}
-    <br>{{ include.text_mid }}</p>
+  <h2 class="my-8 text-4xl text-center">{{ include.title }}</h2><hr>
+  <p class="mt-8">{{ include.text_top }}
+  <br>{{ include.text_mid }}</p>
   
   <div class="inner_card_holder">
-    <div class="inner_card border">
+    <div class="border inner_card">
       <img src="{{ include.first_image_path }}" alt="{{ include.first_image_alt }}">
       <div>{{ include.first_image_caption }}</div>
     </div>
     
-    <div class="inner_card border">
+    <div class="border inner_card">
       <img src="{{ include.second_image_path }}" alt="{{ include.second_image_alt }}">
       <div>{{ include.second_image_caption }}</div>
     </div>
@@ -23,18 +22,17 @@
 
 <!-- Show Group B on screens narrower than 768px -->
 <div class="dojo_section_small ">
-  <h2 class="">{{ include.title }}</h2>
-  <hr><br>
-  <p>{{ include.text_top }}</p>
+  <h2 class="my-8 text-4xl text-center">{{ include.title }}</h2><hr>
+  <p class="mt-8">{{ include.text_top }}</p>
   
-  <div class="inner_card border">
+  <div class="border inner_card">
     <img src="{{ include.first_image_path }}" alt="{{ include.first_image_alt }}">
     <div class="image_caption">{{ include.first_image_caption }}</div>
   </div>
 
   <p>{{ include.text_mid }}</p>
   
-  <div class="inner_card border">
+  <div class="border inner_card">
     <img src="{{ include.second_image_path }}" alt="{{ include.second_image_alt }}">
     <div class="image_caption">{{ include.second_image_caption }}</div>
   </div>
