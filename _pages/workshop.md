@@ -120,7 +120,7 @@ permalink: /workshop
 </div>
 
 <!-- Form -->
-<form id="lettertopaperland" class="flex flex-col p-6 my-8 space-y-4 rounded-lg shadow-lg bg-primary-light" accept-charset="UTF-8" action="https://india.fly.dev/proxy/apps/guru/work" method="POST">
+<form id="lettertopaperland" class="flex flex-col p-6 my-8 space-y-4 rounded-lg shadow-lg bg-primary-light" accept-charset="UTF-8" action="https://india.fly.dev/proxy/apps/guru/workshop" method="POST">
     <!-- Name -->
     <label for="name-input" class="font-medium text-gray-700">Name*</label>
     <input id="name-input" type="text" name="name" placeholder="Alan Kay" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" />
