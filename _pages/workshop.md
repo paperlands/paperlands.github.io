@@ -5,33 +5,39 @@ permalink: /workshop
 ---
 
 <!-- Hero image -->
-<img class="absolute top-0 left-0 w-screen h-[36vh] object-cover brightness-50 -z-10 sm:h-[60vh]" src="/assets/lib/landing/knowledge_park_16x9.webp" alt="Project Dojo students interacting with collaborative learning medium">
+<img class="absolute top-0 left-0 w-screen h-[44vh] object-cover brightness-50 -z-10 sm:h-[60vh]" src="/assets/lib/landing/knowledge_park_16x9.webp" alt="Project Dojo students interacting with collaborative learning medium">
 <!-- Hero text -->
-<h1 class="text-5xl font-bold tracking-tighter lg:text-9xl">Math X Coding</h1>
+<h1 class="text-5xl font-bold tracking-tighter lg:text-9xl">Math x Coding</h1>
 <p class="ml-2 text-white">Holiday Workshops</p>
 <p class="mt-4 ml-2 text-white">Near Beauty World MRT</p>
 <p class="ml-2 text-white">9.30am-12.30pm</p>
 <p class="ml-2 text-white">16-22nd Dec</p>
+<br>
+<a href="/workshop/#register" class="px-4 py-2 ml-2 rounded-md bg-primary internal-link">Our Work</a>
+
 
 
 
 <!-- Tree section -->
-<section class="my-20 lg:mt-48">
+<section class="my-28 lg:mt-48">
+
+<img class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/tree.gif" alt="Project Dojo students interacting with collaborative learning medium">
+
 <h2 class="my-8 text-3xl lg:text-4xl">“Math is hidden everywhere for us to discover”</h2>
 
 <div class="text-text">We often think learning math is just memorising formulas.</div>
 <div class="text-text">That’s wrong!</div>
 <div class="text-text">It’s much more than that!</div>
 <div class="text-text">It’s about studying patterns in our everyday lives.</div>
-
-<img class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/tree.gif" alt="Project Dojo students interacting with collaborative learning medium">
 </section>
 
 
 
 
 <!-- Knowledge Park section -->
-<section class="my-20">
+<section class="my-32">
+<img class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/knowledge_park.gif" alt="Project Dojo students interacting with collaborative learning medium">
+
 <h2 class="my-8 text-3xl lg:text-4xl">"Play around to find out!"</h2>
 
 <div class="text-text">True understanding of the beauty of maths arises from personal involvement. Students form their own connections and rediscover for themselves the theorems underlying the geometrical world.</div>
@@ -40,15 +46,14 @@ permalink: /workshop
 <div class="text-text">The computer allows them to discover math, showing harmony in unexpected places. </div>
 <div class="text-text">A tool for formulating original hypotheses and modelling the world around them and testing the intuitions within them. All while sharing and expressing it amongst their peers.</div>
 
-<img class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/knowledge_park.gif" alt="Project Dojo students interacting with collaborative learning medium">
 </section>
 
 
 
 
 
-
-<section class="my-20">
+<!-- Feedback -->
+<section class="my-32">
 <h2 class="my-8 text-3xl lg:text-4xl">Feedbacks</h2>
 <div class="mt-8 grid-container">
     {% include quotes.html 
@@ -66,7 +71,7 @@ permalink: /workshop
 
 
 <!-- FAQ -->
-<section class="my-20">
+<section class="my-32">
 <h2 class="my-8 text-3xl lg:text-4xl">FAQ</h2>
 <div class="max-w-xl space-y-4 sm:mx-auto lg:max-w-2xl">
     <!-- Question -->
@@ -106,14 +111,17 @@ permalink: /workshop
 
 
 
-<!-- Form section -->
-<section class="my-20">
-<h2 class="my-8 text-3xl lg:text-4xl">Register Now!</h2>
-<p class="my-8">What are you waiting for? Sign up now!</p>
-<!-- Senang -->
-<img class="object-cover w-full h-full rounded-md" src="/assets/lib/landing/senang_16x9.webp" alt="Project Dojo students interacting with collaborative learning medium">
 
-<!-- Register Form -->
+<!-- Form section -->
+<section class="my-32 lg:mx-24 lg:flex lg:justify-center" id="register">
+<div class="my-8">
+    <!-- Senang -->
+    <img class="object-cover w-full h-full rounded-md lg:h-1/4 lg:w-5/6" src="/assets/lib/landing/senang_16x9.webp" alt="Project Dojo students interacting with collaborative learning medium">
+    <h2 class="my-8 text-3xl lg:text-4xl">Register Now!</h2>
+    <p class="my-8">What are you waiting for? Sign up now!</p>
+</div>
+
+<!-- Form -->
 <form id="lettertopaperland" class="flex flex-col p-6 my-8 space-y-4 rounded-lg shadow-lg bg-primary-light" accept-charset="UTF-8" action="https://india.fly.dev/proxy/apps/guru/work" method="POST">
     <!-- Name -->
     <label for="name-input" class="font-medium text-gray-700">Name*</label>
