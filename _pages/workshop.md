@@ -7,7 +7,7 @@ permalink: /workshop
 <!-- Hero image -->
 <img class="absolute top-0 left-0 w-screen h-[36vh] object-cover brightness-50 -z-10 sm:h-[60vh]" src="/assets/lib/landing/knowledge_park_16x9.webp" alt="Project Dojo students interacting with collaborative learning medium">
 <!-- Hero text -->
-<h1 class="text-5xl font-bold tracking-tighter sm:text-9xl">Math X Coding</h1>
+<h1 class="text-5xl font-bold tracking-tighter lg:text-9xl">Math X Coding</h1>
 <p class="ml-2 text-white">Holiday Workshops</p>
 <p class="mt-4 ml-2 text-white">Near Beauty World MRT</p>
 <p class="ml-2 text-white">9.30am-12.30pm</p>
@@ -16,8 +16,8 @@ permalink: /workshop
 
 
 <!-- Tree section -->
-<section class="my-20">
-<h2 class="my-8 text-3xl">“Math is hidden everywhere for us to discover”</h2>
+<section class="my-20 lg:mt-48">
+<h2 class="my-8 text-3xl lg:text-4xl">“Math is hidden everywhere for us to discover”</h2>
 
 <div class="text-text">We often think learning math is just memorising formulas.</div>
 <div class="text-text">That’s wrong!</div>
@@ -32,7 +32,7 @@ permalink: /workshop
 
 <!-- Knowledge Park section -->
 <section class="my-20">
-<h2 class="my-8 text-3xl">"Play around to find out!"</h2>
+<h2 class="my-8 text-3xl lg:text-4xl">"Play around to find out!"</h2>
 
 <div class="text-text">True understanding of the beauty of maths arises from personal involvement. Students form their own connections and rediscover for themselves the theorems underlying the geometrical world.</div>
 <div class="text-text">Look at the tree pattern above, it invites one to study it, understand how it comes about and what similar processes in nature results in this form. </div>
@@ -49,12 +49,13 @@ permalink: /workshop
 
 
 <section class="my-20">
-<h2 class="my-8 text-3xl">Feedbacks</h2>
+<h2 class="my-8 text-3xl lg:text-4xl">Feedbacks</h2>
 <div class="mt-8 grid-container">
     {% include quotes.html 
         text="I’ve not seen Adam sit down and work on something in class for so long before. I’m so happy to see him spending time and obsessing over building his own shapes. Good job to the instructors for achieving this!"
         author="Nancy"
     %}
+    <br>
     {% include quotes.html 
         text="My daughter was so excited to share with me how she made a heart shape on the computer. I was surprised to hear her telling me about how she played around with the angles to achieve that because math wasn’t something she was particularly interested in!"
         author="Mabia"
@@ -66,7 +67,7 @@ permalink: /workshop
 
 <!-- FAQ -->
 <section class="my-20">
-<h2 class="my-8 text-4xl">FAQ</h2>
+<h2 class="my-8 text-3xl lg:text-4xl">FAQ</h2>
 <div class="max-w-xl space-y-4 sm:mx-auto lg:max-w-2xl">
     <!-- Question -->
     <div class="border-b">
@@ -107,7 +108,7 @@ permalink: /workshop
 
 <!-- Form section -->
 <section class="my-20">
-<h2 class="my-8 text-4xl">Register Now!</h2>
+<h2 class="my-8 text-3xl lg:text-4xl">Register Now!</h2>
 <p class="my-8">What are you waiting for? Sign up now!</p>
 <!-- Senang -->
 <img class="object-cover w-full h-full rounded-md" src="/assets/lib/landing/senang_16x9.webp" alt="Project Dojo students interacting with collaborative learning medium">
