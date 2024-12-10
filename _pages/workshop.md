@@ -5,7 +5,7 @@ permalink: /workshop
 ---
 
 <!-- Hero image -->
-<img class="absolute top-0 left-0 w-screen h-[44vh] object-cover brightness-50 -z-10 sm:h-[60vh]" src="/assets/lib/landing/knowledge_park_16x9.webp" alt="Project Dojo students interacting with collaborative learning medium">
+<img class="absolute top-0 left-0 w-screen h-[44vh] object-cover brightness-50 -z-10 sm:h-[60vh]" src="/assets/lib/landing/knowledge_park_16x9.webp" alt="Code and Craft workshop">
 <!-- Hero text -->
 <h1 class="text-5xl font-bold tracking-tighter lg:text-9xl">Math x Coding</h1>
 <p class="ml-2 text-white">Holiday Workshops</p>
@@ -21,7 +21,7 @@ permalink: /workshop
 <!-- Tree section -->
 <section class="my-28 lg:mt-48">
 
-<img class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/tree.gif" alt="Project Dojo students interacting with collaborative learning medium">
+<img class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/tree.gif" alt="Turtle graphics tree">
 
 <h2 class="my-8 text-3xl lg:text-4xl">“Math is hidden everywhere for us to discover”</h2>
 
@@ -36,7 +36,7 @@ permalink: /workshop
 
 <!-- Knowledge Park section -->
 <section class="my-32">
-<img class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/knowledge_park.gif" alt="Project Dojo students interacting with collaborative learning medium">
+<img class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/knowledge_park.gif" alt="Math and Coding workshop with student care centers">
 
 <h2 class="my-8 text-3xl lg:text-4xl">"Play around to find out!"</h2>
 
@@ -116,7 +116,7 @@ permalink: /workshop
 <section class="my-32 lg:mx-24 lg:flex lg:justify-center" id="register">
 <div class="my-8">
     <!-- Senang -->
-    <img class="object-cover w-full h-full rounded-md lg:h-1/4 lg:w-5/6" src="/assets/lib/landing/senang_16x9.webp" alt="Project Dojo students interacting with collaborative learning medium">
+    <img class="object-cover w-full h-full rounded-md lg:h-1/4 lg:w-5/6" src="/assets/lib/landing/senang_16x9.webp" alt="Coding and laser engraving workshop with student care centers">
     <h2 class="my-8 text-3xl lg:text-4xl">Register Now!</h2>
     <p class="my-8">What are you waiting for? Sign up now!</p>
 </div>
