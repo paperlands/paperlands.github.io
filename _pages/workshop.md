@@ -23,12 +23,12 @@ permalink: /workshop
 
 <img class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/tree.gif" alt="Turtle graphics tree">
 
-<h2 class="my-8 text-3xl lg:text-4xl">“Math is hidden everywhere for us to discover”</h2>
+<h2 class="my-8 text-3xl lg:text-4xl">"Math is Everywhere – Waiting to Be Discovered!"</h2>
 
-<div class="text-text">We often think learning math is just memorising formulas.</div>
-<div class="text-text">That’s wrong!</div>
-<div class="text-text">It’s much more than that!</div>
-<div class="text-text">It’s about studying patterns in our everyday lives.</div>
+<div class="text-text">Math isn’t just about memorizing formulas.</div>
+<div class="text-text">It’s about <strong>uncovering patterns</strong> in the world around us! </div>
+<div class="text-text">For example, look at the tree pattern above:</div>
+<div class="text-text">How did it grow this way? Why do other trees grow in similar fashion? What factors are acting upon it?</div>
 </section>
 
 
@@ -38,13 +38,11 @@ permalink: /workshop
 <section class="my-32">
 <img class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/knowledge_park.gif" alt="Math and Coding workshop with student care centers">
 
-<h2 class="my-8 text-3xl lg:text-4xl">"Play around to find out!"</h2>
+<h2 class="my-8 text-3xl lg:text-4xl">"Discover Through Play!"</h2>
 
-<div class="text-text">True understanding of the beauty of maths arises from personal involvement. Students form their own connections and rediscover for themselves the theorems underlying the geometrical world.</div>
-<div class="text-text">Look at the tree pattern above, it invites one to study it, understand how it comes about and what similar processes in nature results in this form. </div>
-<div class="text-text">What form of trees exhibit similar shape of growth? What urges it to grow in such a manner? What are the forces acting upon it?</div>
-<div class="text-text">The computer allows them to discover math, showing harmony in unexpected places. </div>
-<div class="text-text">A tool for formulating original hypotheses and modelling the world around them and testing the intuitions within them. All while sharing and expressing it amongst their peers.</div>
+<div class="text-text">The best way to learn math is by exploring and experimenting.</div>
+<div class="text-text">In our workshop, students will use computers to <strong>create</strong> their own patterns, <strong>test</strong> their ideas, and share their discoveries with classmates.</div>
+<div class="text-text">Through the computer, students will formulate original hypotheses, <strong>model</strong> the world around them and test how math shapes the world – making learning <strong>fun, interactive, and meaningful!</strong></div>
 
 </section>
 
