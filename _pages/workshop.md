@@ -143,7 +143,7 @@ In our workshop, students will program computers to <strong class="text-orange-5
         </tr>
         <tr>
           <td class="p-2 border">Location</td>
-          <td class="p-2 border">25 Lorong Kilat, 2 via, #02-03 staircase, no lift, 598126</td>
+          <td class="p-2 border">25 Lorong Kilat, 2 via, #02-03 staircase, Singapore 598126</td>
         </tr>
       </tbody>
     </table>
