@@ -49,9 +49,10 @@ permalink: /workshop
 
 
 
-
 <!-- Feedback -->
 <section class="my-32">
+<img class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/senang_16x9.webp" alt="Coding and laser engraving workshop with student care centers">
+
 <h2 class="my-8 text-3xl lg:text-4xl">Feedbacks</h2>
 <div class="mt-8 grid-container">
     {% include quotes.html 
@@ -114,7 +115,7 @@ permalink: /workshop
 <section class="my-32 lg:mx-24 lg:flex lg:justify-center" id="register">
 <div class="my-8">
     <!-- Senang -->
-    <img class="object-cover w-full h-full rounded-md lg:h-1/4 lg:w-5/6" src="/assets/lib/landing/senang_16x9.webp" alt="Coding and laser engraving workshop with student care centers">
+    <img class="object-cover w-full h-full rounded-md lg:h-1/4 lg:w-5/6" src="/assets/lib/landing/ananias_16x9.webp" alt="Coding and laser engraving workshop with student care centers">
     <h2 class="my-8 text-3xl lg:text-4xl">Register Now!</h2>
     <p class="my-8">What are you waiting for? Sign up now!</p>
 </div>
