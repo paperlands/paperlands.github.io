@@ -19,16 +19,13 @@ permalink: /workshop
 
 
 <!-- Tree section -->
-<section class="my-28 lg:mt-48">
-
-<img class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/tree.gif" alt="Turtle graphics tree">
-
-<h2 class="my-8 text-3xl lg:text-4xl">"Math is Everywhere – Waiting to Be Discovered!"</h2>
+<section class="my-20">
+<h2 class="my-8 text-2xl lg:text-4xl">"Discover the math hidden around you!"</h2>
 
 Math is <strong > not </strong > just about memorizing formulas.
 <br>
 <br>
-For example, look at the tree pattern above:
+For example, look at the tree pattern below:
 <br>
 Why did it grow this way?
  <br>
@@ -38,24 +35,27 @@ Why did it grow this way?
   
   <br><br>
 The beauty of mathematics is revealed by <strong class="text-orange-500">uncovering patterns and asking questions </strong> about the world around us!
+
+<img class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/tree.gif" alt="Turtle graphics tree">
+
 </section>
 
 
 
 <!-- Knowledge Park section -->
 <section class="my-32">
-<img class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/knowledge_park.gif" alt="Math and Coding workshop with student care centers">
-
 <h2 class="my-8 text-3xl lg:text-4xl">"Discover Through Code & Play!"</h2>
 
 The best way to learn math is by <strong class="text-orange-500">exploring and experimenting. </strong>
 <br>
 <br>
-In our workshop, students will program computers to <strong class="text-orange-500">create</strong> their own patterns, <strong class="text-orange-500">test</strong> their ideas, and <strong class="text-orange-500">communicate</strong> their discoveries with classmates.
+In our workshop, students will program computers to <strong class="text-orange-500">create</strong> their own patterns and <strong class="text-orange-500">communicate</strong> their discoveries with classmates.
 <br>
 <br>
- While teaching the computer how to act or "think", students begin to<strong class="text-orange-500"> reflect on their own actions and thinking </strong> .
- They will  formulate original hypotheses, modelthe world around them and test how math shapes the world – making learning <strong class="text-orange-500">fun, interactive, and meaningful!</strong>
+ As students teach the computer how to act, they begin to<strong class="text-orange-500"> reflect on their own actions and thinking</strong>.
+ They will formulate original hypotheses, model the world around them and test how math shapes the world – making learning <strong class="text-orange-500">fun, interactive, and meaningful!</strong>
+
+<img class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/knowledge_park.gif" alt="Math and Coding workshop with student care centers">
 
 </section>
 
@@ -64,10 +64,9 @@ In our workshop, students will program computers to <strong class="text-orange-5
 
 <!-- Feedback -->
 <section class="my-32">
+<h2 class="my-8 text-3xl lg:text-4xl">Testimonials</h2>
 
 <img class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/senang_16x9.webp" alt="Coding and laser engraving workshop with student care centers">
-
-<h2 class="my-8 text-3xl lg:text-4xl">Testimonials</h2>
 
 <div class="mt-8 grid-container">
     {% include quotes.html 
@@ -132,7 +131,22 @@ In our workshop, students will program computers to <strong class="text-orange-5
     <!-- Senang -->
     <img class="object-cover w-full h-full rounded-md lg:h-1/4 lg:w-5/6" src="/assets/lib/landing/ananias_16x9.webp" alt="Coding and laser engraving workshop with student care centers">
     <h2 class="my-8 text-3xl lg:text-4xl">Register Now!</h2>
-    <p class="my-8">What are you waiting for? Sign up now!</p>
+    <table class="table-auto lg:mr-8">
+      <tbody>
+        <tr>
+          <td class="p-2 border">Price</td>
+          <td class="p-2 border">$89 <s>(U.P $125)</s></td>
+        </tr>
+        <tr>
+          <td class="p-2 border">Time</td>
+          <td class="p-2 border">9.30am-12.30pm (3hours)</td>
+        </tr>
+        <tr>
+          <td class="p-2 border">Location</td>
+          <td class="p-2 border">25 Lorong Kilat, 2 via, #02-03 staircase, no lift, 598126</td>
+        </tr>
+      </tbody>
+    </table>
 </div>
 
 <!-- Form -->
