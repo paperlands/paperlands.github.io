@@ -25,12 +25,20 @@ permalink: /workshop
 
 <h2 class="my-8 text-3xl lg:text-4xl">"Math is Everywhere – Waiting to Be Discovered!"</h2>
 
-<div class="text-text">Math isn’t just about memorizing formulas.</div>
-<div class="text-text">It’s about <strong>uncovering patterns</strong> in the world around us! </div>
-<div class="text-text">For example, look at the tree pattern above:</div>
-<div class="text-text">How did it grow this way? Why do other trees grow in similar fashion? What factors are acting upon it?</div>
+Math is <strong > not </strong > just about memorizing formulas.
+<br>
+<br>
+For example, look at the tree pattern above:
+<br>
+Why did it grow this way?
+ <br>
+  How else does it grow?
+  <br>
+  What other factors are acting upon it?
+  
+  <br><br>
+The beauty of mathematics is revealed by <strong class="text-orange-500">uncovering patterns and asking questions </strong> about the world around us!
 </section>
-
 
 
 
@@ -38,11 +46,16 @@ permalink: /workshop
 <section class="my-32">
 <img class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/knowledge_park.gif" alt="Math and Coding workshop with student care centers">
 
-<h2 class="my-8 text-3xl lg:text-4xl">"Discover Through Play!"</h2>
+<h2 class="my-8 text-3xl lg:text-4xl">"Discover Through Code & Play!"</h2>
 
-<div class="text-text">The best way to learn math is by exploring and experimenting.</div>
-<div class="text-text">In our workshop, students will use computers to <strong>create</strong> their own patterns, <strong>test</strong> their ideas, and share their discoveries with classmates.</div>
-<div class="text-text">Through the computer, students will formulate original hypotheses, <strong>model</strong> the world around them and test how math shapes the world – making learning <strong>fun, interactive, and meaningful!</strong></div>
+The best way to learn math is by <strong class="text-orange-500">exploring and experimenting. </strong>
+<br>
+<br>
+In our workshop, students will program computers to <strong class="text-orange-500">create</strong> their own patterns, <strong class="text-orange-500">test</strong> their ideas, and <strong class="text-orange-500">communicate</strong> their discoveries with classmates.
+<br>
+<br>
+ While teaching the computer how to act or "think", students begin to<strong class="text-orange-500"> reflect on their own actions and thinking </strong> .
+ They will  formulate original hypotheses, modelthe world around them and test how math shapes the world – making learning <strong class="text-orange-500">fun, interactive, and meaningful!</strong>
 
 </section>
 
@@ -52,7 +65,7 @@ permalink: /workshop
 
 <!-- Feedback -->
 <section class="my-32">
-<h2 class="my-8 text-3xl lg:text-4xl">Feedbacks</h2>
+<h2 class="my-8 text-3xl lg:text-4xl">Testimonials</h2>
 <div class="mt-8 grid-container">
     {% include quotes.html 
         text="I’ve not seen Adam sit down and work on something in class for so long before. I’m so happy to see him spending time and obsessing over building his own shapes. Good job to the instructors for achieving this!"

@@ -5,7 +5,7 @@ id: home
 permalink: /
 ---
 <div class="my-24 text-center sm:my-36">
-  <h1 class="mb-8 text-6xl tracking-tighter sm:text-9xl">Paperland.</h1>
+  <h1 class="mb-8 text-6xl tracking-tighter sm:text-9xl">PaperLand.</h1>
   <div class="">Designing new patterns of learning!</div>
 </div>
 
@@ -19,19 +19,21 @@ permalink: /
             <img class="object-cover object-center w-full h-auto" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt="Project Dojo students interacting with collaborative learning medium">
         </div>
         <div class="py-8 text-center sm:py-6">
-            <p class="mb-2 text-xl font-bold text-text">Workshop Dojo</p>
+            <p class="mb-2 text-xl font-bold text-text">Dojo</p>
             <p class="px-8 text-base sm:px-16 text-text ">We design workshops to help students discover the JOY of computation</p>
         </div>
       </a>
     </div>
     <div class="flex flex-col items-center justify-center w-full overflow-hidden rounded-lg bg-secondary-light">
+    <a href="/workshop" target="_self" class="card-link">
         <div>
             <img class="object-cover object-center w-full h-auto" src="/assets/lib/landing/ivansutherland.jpeg" alt="Sutherland on Sketchpad">
         </div>
         <div class="py-8 text-center sm:py-6">
-            <p class="mb-2 text-xl font-bold text-text">Project Optic</p>
-            <p class="px-8 text-base sm:px-16 text-text ">We design INTUITIVE robotic interfaces for your non-techical folks!</p>
+            <p class="mb-2 text-xl font-bold text-text">Mathland</p>
+            <p class="px-8 text-base sm:px-16 text-text ">We discover the BEAUTY of math through code together</p>
         </div>
+    </a>
     </div>
   </div>
 </section>
@@ -42,6 +44,7 @@ permalink: /
   <div class="sm:flex sm:justify-center">
     <div class="m-8 sm:w-5/12 sm:h-5/12">
       <p>We believe that the world would be a better place if the processes we shape and weave illuminates and uplifts the spirit of fellowship and belonging.</p>
+      <br>
       <p>We want to build the tools, the environment, the incentives that will lead to better patterns of teaching for the builders of tomorrow.</p>
     </div>
     <div class="m-8 sm:w-1/4 sm:h-1/4">
