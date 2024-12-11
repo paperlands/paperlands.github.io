@@ -8,10 +8,11 @@ gem "jekyll", "~> 4.3"
 group :jekyll_plugins do
   gem "jekyll-last-modified-at"
   gem "jekyll-sitemap"
-  gem 'jekyll-tailwind', path: 'vendor/jekyll-tailwind'
+  gem 'jekyll-tailwind'
 end
 gem "webrick", "~> 1.8"
 gem "nokogiri"
 gem "jekyll-redirect-from"
+
 
 gem "tailwindcss-ruby", "~> 3.4"
