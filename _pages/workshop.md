@@ -62,10 +62,13 @@ In our workshop, students will program computers to <strong class="text-orange-5
 
 
 
-
 <!-- Feedback -->
 <section class="my-32">
+
+<img class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/senang_16x9.webp" alt="Coding and laser engraving workshop with student care centers">
+
 <h2 class="my-8 text-3xl lg:text-4xl">Testimonials</h2>
+
 <div class="mt-8 grid-container">
     {% include quotes.html 
         text="I’ve not seen Adam sit down and work on something in class for so long before. I’m so happy to see him spending time and obsessing over building his own shapes. Good job to the instructors for achieving this!"
@@ -127,7 +130,7 @@ In our workshop, students will program computers to <strong class="text-orange-5
 <section class="my-32 lg:mx-24 lg:flex lg:justify-center" id="register">
 <div class="my-8">
     <!-- Senang -->
-    <img class="object-cover w-full h-full rounded-md lg:h-1/4 lg:w-5/6" src="/assets/lib/landing/senang_16x9.webp" alt="Coding and laser engraving workshop with student care centers">
+    <img class="object-cover w-full h-full rounded-md lg:h-1/4 lg:w-5/6" src="/assets/lib/landing/ananias_16x9.webp" alt="Coding and laser engraving workshop with student care centers">
     <h2 class="my-8 text-3xl lg:text-4xl">Register Now!</h2>
     <p class="my-8">What are you waiting for? Sign up now!</p>
 </div>
