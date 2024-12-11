@@ -1,12 +1,12 @@
 name: To the Moon 🌙
 
 on:
- pull_request:
-    branches: [ staging ]
+  pull_request:
+    branches: [staging]
   push:
     branches:
       - master
-  workflow_call:
+  workflow_call
 
 permissions:
   contents: read
