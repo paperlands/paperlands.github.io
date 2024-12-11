@@ -5,13 +5,13 @@
   <br>{{ include.text_mid }}</p>
   
   <div class="inner_card_holder">
-    <div class="border inner_card">
-      <img src="{{ include.first_image_path }}" alt="{{ include.first_image_alt }}">
+    <div class="inner_card">
+      <img src="{{ include.first_image_path }}" alt="{{ include.first_image_alt }}" class="rounded-md">
       <div>{{ include.first_image_caption }}</div>
     </div>
     
-    <div class="border inner_card">
-      <img src="{{ include.second_image_path }}" alt="{{ include.second_image_alt }}">
+    <div class="inner_card">
+      <img src="{{ include.second_image_path }}" alt="{{ include.second_image_alt }}" class="rounded-md">
       <div>{{ include.second_image_caption }}</div>
     </div>
   </div>
@@ -25,15 +25,15 @@
   <h2 class="my-8 text-4xl text-center">{{ include.title }}</h2><hr>
   <p class="mt-8">{{ include.text_top }}</p>
   
-  <div class="border inner_card">
-    <img src="{{ include.first_image_path }}" alt="{{ include.first_image_alt }}">
+  <div class="inner_card">
+    <img src="{{ include.first_image_path }}" alt="{{ include.first_image_alt }}" class="rounded-md">
     <div class="image_caption">{{ include.first_image_caption }}</div>
   </div>
 
   <p>{{ include.text_mid }}</p>
   
-  <div class="border inner_card">
-    <img src="{{ include.second_image_path }}" alt="{{ include.second_image_alt }}">
+  <div class="inner_card">
+    <img src="{{ include.second_image_path }}" alt="{{ include.second_image_alt }}" class="rounded-md">
     <div class="image_caption">{{ include.second_image_caption }}</div>
   </div>
 
