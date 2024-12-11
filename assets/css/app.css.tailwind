@@ -4,3 +4,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+layer base {
+  @font-face {
+      font-family: "paperLang";
+      src: url("/assets/fonts/paperLang.ttf") format("truetype"),
+      font-weight: 600;
+      font-style: normal
+  }
+}

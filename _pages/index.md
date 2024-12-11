@@ -5,8 +5,8 @@ id: home
 permalink: /
 ---
 <div class="my-24 text-center sm:my-36">
-  <h1 class="mb-8 text-6xl tracking-tighter sm:text-9xl">PaperLand.</h1>
-  <div class="">Designing new patterns of learning!</div>
+  <h1 class="mb-8 font-paperlang text-6xl tracking-tighter sm:text-9xl">paperLand.</h1>
+  <div class="text-2xl font-paperlang">Designing new patterns of learning!</div>
 </div>
 
 
