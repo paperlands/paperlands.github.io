@@ -13,3 +13,6 @@ end
 gem "webrick", "~> 1.8"
 gem "nokogiri"
 gem "jekyll-redirect-from"
+
+
+gem "tailwindcss-ruby", "~> 3.4"
