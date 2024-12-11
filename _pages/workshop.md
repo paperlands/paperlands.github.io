@@ -60,8 +60,8 @@ permalink: /workshop
     %}
     <br>
     {% include quotes.html 
-        text="My daughter was so excited to share with me how she made a heart shape on the computer. I was surprised to hear her telling me about how she played around with the angles to achieve that because math wasn’t something she was particularly interested in!"
-        author="Mabia"
+        text="My daughter was so excited to share with me how she made a heart shape on the computer. I was surprised to hear her telling me about how she played around with the angles to achieve that because she was struggling with angles in school!"
+        author="Madeline"
     %}
 </div>
 </section>
@@ -78,7 +78,7 @@ permalink: /workshop
             <p class="text-left">Does my child need to know how to code before coming for class?</p>
             <svg viewBox="0 0 24 24" class="w-3 text-gray-600 transition-transform duration-200"><polyline fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" points="2,7 12,17 22,7" stroke-linejoin="round"></polyline></svg>
         </button>
-        <div class="hidden p-4 pt-0"><p class="text-gray-700">NOPE! Our workshops are beginner friendly.</p></div>
+        <div class="hidden p-4 pt-0"><p class="text-gray-700">NOPE! Our workshops are beginner friendly :D</p></div>
     </div>
     <!-- Question -->
     <div class="border-b">
@@ -86,7 +86,7 @@ permalink: /workshop
             <p class="text-left">What is the student-to-instructor ratio?</p>
             <svg viewBox="0 0 24 24" class="w-3 text-gray-600 transition-transform duration-200"><polyline fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" points="2,7 12,17 22,7" stroke-linejoin="round"></polyline></svg>
         </button>
-        <div class="hidden p-4 pt-0"><p class="text-gray-700">Maximum will be 1 instructor : 6 students</p></div>
+        <div class="hidden p-4 pt-0"><p class="text-gray-700">1 instructor is to 6 students</p></div>
     </div>
     <!-- Question -->
     <div class="border-b">
@@ -94,7 +94,7 @@ permalink: /workshop
             <p class="text-left">What should my child bring to the workshop?</p>
             <svg viewBox="0 0 24 24" class="w-3 text-gray-600 transition-transform duration-200"><polyline fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" points="2,7 12,17 22,7" stroke-linejoin="round"></polyline></svg>
         </button>
-        <div class="hidden p-4 pt-0"><p class="text-gray-700">Students are encouraged to bring their own laptop along. Otherwise, please inform us prior.</p></div>
+        <div class="hidden p-4 pt-0"><p class="text-gray-700">Students are encouraged to bring their own laptops along. Otherwise, please inform us prior.</p></div>
     </div>
     <!-- Question -->
     <div class="border-b">
@@ -122,67 +122,67 @@ permalink: /workshop
 <!-- Form -->
 <form id="lettertopaperland" class="flex flex-col p-6 my-8 space-y-4 rounded-lg shadow-lg bg-primary-light" accept-charset="UTF-8" action="https://india.fly.dev/proxy/apps/guru/workshop" method="POST">
     <!-- Name -->
-    <label for="name-input" class="font-medium text-gray-700">Name*</label>
+    <label for="name-input" class="font-medium text-text">Name*</label>
     <input id="name-input" type="text" name="name" placeholder="Alan Kay" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" />
     <!-- Phone number -->
-    <label for="phone-input" class="font-medium text-gray-700">Phone Number*</label>
+    <label for="phone-input" class="font-medium text-text">Phone Number*</label>
     <input id="phone-input" type="tel" name="phone" placeholder="+65 91234567" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" required />
     <!-- Multiple Date Selection -->
-    <label class="font-medium text-gray-700">Your Available Dates (allow multiple):</label>
+    <label class="font-medium text-text">Select Preferred Dates:</label>
     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2" id="date-selection-container">
         <!-- Monday -->
         <button 
           type="button" 
-          class="p-3 text-center text-gray-800 bg-white border rounded-md hover:bg-gray-200 focus:outline-none focus:ring focus:ring-gray-300"
-          onclick="toggleDate(this, 'Monday (16th)')"
+          class="p-3 text-center text-gray-800 bg-white border rounded-md"
+          onclick="this.blur(); toggleDate(this, 'Monday (16th)')"
         >
           Monday (16th)
         </button>
         <!-- Tuesday -->
         <button 
           type="button" 
-          class="p-3 text-center text-gray-800 bg-white border rounded-md hover:bg-gray-200 focus:outline-none focus:ring focus:ring-gray-300"
-          onclick="toggleDate(this, 'Tuesday (17th)')"
+          class="p-3 text-center text-gray-800 bg-white border rounded-md"
+          onclick="this.blur(); toggleDate(this, 'Tuesday (17th)')"
         >
           Tuesday (17th)
         </button>
         <!-- Wednesday -->
         <button 
           type="button" 
-          class="p-3 text-center text-gray-800 bg-white border rounded-md hover:bg-gray-200 focus:outline-none focus:ring focus:ring-gray-300"
-          onclick="toggleDate(this, 'Wednesday (18th)')"
+          class="p-3 text-center text-gray-800 bg-white border rounded-md"
+          onclick="this.blur(); toggleDate(this, 'Wednesday (18th)')"
         >
           Wednesday (18th)
         </button>
         <!-- Thursday -->
         <button 
           type="button" 
-          class="p-3 text-center text-gray-800 bg-white border rounded-md hover:bg-gray-200 focus:outline-none focus:ring focus:ring-gray-300"
-          onclick="toggleDate(this, 'Thursday (19th)')"
+          class="p-3 text-center text-gray-800 bg-white border rounded-md"
+          onclick="this.blur(); toggleDate(this, 'Thursday (19th)')"
         >
           Thursday (19th)
         </button>
         <!-- Friday -->
         <button 
           type="button" 
-          class="p-3 text-center text-gray-800 bg-white border rounded-md hover:bg-gray-200 focus:outline-none focus:ring focus:ring-gray-300"
-          onclick="toggleDate(this, 'Friday (20th)')"
+          class="p-3 text-center text-gray-800 bg-white border rounded-md"
+          onclick="this.blur(); toggleDate(this, 'Friday (20th)')"
         >
           Friday (20th)
         </button>
         <!-- Saturday -->
         <button 
           type="button" 
-          class="p-3 text-center text-gray-800 bg-white border rounded-md hover:bg-gray-200 focus:outline-none focus:ring focus:ring-gray-300"
-          onclick="toggleDate(this, 'Saturday (21st)')"
+          class="p-3 text-center text-gray-800 bg-white border rounded-md"
+          onclick="this.blur(); toggleDate(this, 'Saturday (21st)')"
         >
           Saturday (21st)
         </button>
         <!-- Sunday -->
         <button 
           type="button" 
-          class="p-3 text-center text-gray-800 bg-white border rounded-md hover:bg-gray-200 focus:outline-none focus:ring focus:ring-gray-300"
-          onclick="toggleDate(this, 'Sunday (22nd)')"
+          class="p-3 text-center text-gray-800 bg-white border rounded-md"
+          onclick="this.blur(); toggleDate(this, 'Sunday (22nd)')"
         >
           Sunday (22nd)
         </button>
@@ -240,11 +240,11 @@ permalink: /workshop
     function toggleDate(button, date) {
     if (selectedDates.has(date)) {
       selectedDates.delete(date);
-      button.classList.remove("bg-gray-300");
+      button.classList.remove("bg-primary");
       button.classList.add("bg-white", "text-gray-800");
     } else {
       selectedDates.add(date);
-      button.classList.add("bg-gray-300");
+      button.classList.add("bg-primary");
       button.classList.remove("bg-white", "text-gray-800");
     }
 
