@@ -47,7 +47,7 @@ defaults:
     values:
       layout: "note"
 
-tailwind:
-  config: tailwind.config.js
-  input: "assets/css/app.css"
-  output: _site/assets/css/app.css
+# tailwind:
+#   config: tailwind.config.js
+#   input: "assets/css/app.css"
+#   output: _site/assets/css/app.css
