@@ -1,6 +1,8 @@
 name: To the Moon 🌙
 
 on:
+  pull_request:
+    branches: [ staging ]
   push:
     branches:
       - master
@@ -20,7 +22,7 @@ jobs:
             ${{ runner.os }}-gems-
 
       # Use GitHub Deploy Action to build and deploy to Github
-      - uses: jeffreytse/jekyll-deploy-action@v0.6.0
+      - uses: ks0m1c/tailwind-jekyll-deploy-action@v0.1.0
         with:
           provider: 'github'
           token: ${{ secrets.GH_TOKEN }} # It's your Personal Access Token(PAT)
