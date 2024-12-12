@@ -29,7 +29,7 @@ For example, look at the tree pattern below:
 <br>
 Why did it grow this way?
  <br>
-  How else does it grow?
+  How else can it grow?
   <br>
   What other factors are acting upon it?
   
@@ -127,9 +127,9 @@ In our workshop, students will program computers to <strong class="text-orange-5
 
 <!-- Form section -->
 <section class="my-32 lg:mx-24 lg:flex lg:justify-center" id="register">
-<div class="my-8">
+<div class="my-8 lg:h-1/4 lg:w-1/2 lg:mr-20">
     <!-- Senang -->
-    <img class="object-cover w-full h-full rounded-md lg:h-1/4 lg:w-5/6" src="/assets/lib/landing/ananias_16x9.webp" alt="Coding and laser engraving workshop with student care centers">
+    <img class="object-cover w-full h-full rounded-md" src="/assets/lib/landing/ananias_16x9.webp" alt="Coding and laser engraving workshop with student care centers">
     <h2 class="my-8 text-3xl lg:text-4xl">Register Now!</h2>
     <table class="table-auto lg:mr-8">
       <tbody>
@@ -143,14 +143,16 @@ In our workshop, students will program computers to <strong class="text-orange-5
         </tr>
         <tr>
           <td class="p-2 border">Location</td>
-          <td class="p-2 border">25 Lorong Kilat, 2 via, #02-03 staircase, Singapore 598126</td>
+          <td class="p-2 border">
+          <a href="https://maps.app.goo.gl/5v3MjQVbC2U2uQ6q9">25 Lorong Kilat, 2 via, #02-03,<br>
+            Singapore 598126 </a></td>
         </tr>
       </tbody>
     </table>
 </div>
 
 <!-- Form -->
-<form id="lettertopaperland" class="flex flex-col p-6 my-8 space-y-4 rounded-lg shadow-lg bg-primary-light" accept-charset="UTF-8" action="https://india.fly.dev/proxy/apps/guru/workshop" method="POST">
+<form id="lettertopaperland" class="flex flex-col p-6 my-8 space-y-4 rounded-lg w-full shadow-lg bg-primary-light" accept-charset="UTF-8" action="https://india.fly.dev/proxy/apps/guru/workshop" method="POST">
     <!-- Name -->
     <label for="name-input" class="font-medium text-text">Name*</label>
     <input id="name-input" type="text" name="name" placeholder="Alan Kay" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" />
@@ -222,8 +224,10 @@ In our workshop, students will program computers to <strong class="text-orange-5
 <input type="hidden" name="return_url" value="{{ page.url | absolute_url }}" />
 
 <div class="flex justify-center">
-    <div class="h-captcha" data-sitekey="7688737e-8d00-4c1e-acdc-828ee1c02e08"></div>
-    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+ <label for="message-input" class="font-medium text-text">Message:</label>
+  <textarea id="message-input" name="message" rows="2" placeholder="Leave any message or questions you may have.." class="ml-5 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+    <!-- <div class="h-captcha" data-sitekey="7688737e-8d00-4c1e-acdc-828ee1c02e08"></div> -->
+    <!-- <script src="https://js.hcaptcha.com/1/api.js" async defer></script> -->
 </div>
 
 <button type="submit" class="px-4 py-2 text-white rounded-md bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary">Submit</button>

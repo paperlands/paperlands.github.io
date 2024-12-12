@@ -1,3 +1,4 @@
+@use "sass:color";
 $color-primary: hsl(0, 0%, 10%);
 $color-text: hsl(0, 0%, 20%);
 $color-subtext: hsl(0, 0%, 30%);
@@ -93,7 +94,7 @@ time {
 footer {
   margin: 2em 0;
   font-size: 0.8em;
-  color: mix($color-text, white, 80%);
+  color: color.mix($color-text, white, 80%);
   padding-top: 1em;
 }
 

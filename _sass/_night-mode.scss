@@ -1,10 +1,11 @@
+@use "sass:color";
 // Define night mode colors
 $color-primary-night: hsl(0, 0%, 90%);
 $color-text-night: hsl(0, 0%, 80%);
 $color-subtext-night: hsl(0, 0%, 70%);
 $color-core: rgb(255, 153, 51);
 $color-border-night: hsl(0, 0%, 60%);
-$color-box-background-night: mix($color-primary-night, black, 10%);
+$color-box-background-night: color.mix($color-primary-night, black, 10%);
 $border-radius: 4px;
 $font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
  sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
@@ -94,7 +95,7 @@ time.night-mode {
 footer.night-mode {
  margin: 2em 0;
  font-size: 0.8em;
- color: mix($color-text-night, black, 80%);
+ color: color.mix($color-text-night, black, 80%);
  padding-top: 1em;
 }
 
