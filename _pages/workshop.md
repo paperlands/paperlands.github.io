@@ -5,7 +5,7 @@ permalink: /workshop
 ---
 
 <!-- Hero image -->
-<img class="absolute top-0 left-0 w-screen h-[44vh] object-cover brightness-50 -z-10 sm:h-[60vh]" src="/assets/lib/landing/knowledge_park_16x9.webp" alt="Code and Craft workshop">
+<img rel="preload" class="absolute top-0 left-0 w-screen h-[44vh] object-cover brightness-50 -z-10 sm:h-[60vh]" src="/assets/lib/landing/knowledge_park_16x9.webp" alt="Code and Craft workshop">
 <!-- Hero text -->
 <h1 class="text-5xl font-bold tracking-tighter lg:text-9xl">Math x Coding</h1>
 <p class="ml-2 text-white">Holiday Workshops</p>
@@ -36,8 +36,7 @@ Why did it grow this way?
   <br><br>
 The beauty of mathematics is revealed by <strong class="text-orange-500">uncovering patterns and asking questions </strong> about the world around us!
 
-<img class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/tree.gif" alt="Turtle graphics tree">
-
+<video class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/tree.webm" alt="Turtle graphics tree" autoplay loop muted />
 </section>
 
 
@@ -55,7 +54,7 @@ In our workshop, students will program computers to <strong class="text-orange-5
  As students teach the computer how to act, they begin to<strong class="text-orange-500"> reflect on their own actions and thinking</strong>.
  They will formulate original hypotheses, model the world around them and test how math shapes the world – making learning <strong class="text-orange-500">fun, interactive, and meaningful!</strong>
 
-<img class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/knowledge_park.gif" alt="Math and Coding workshop with student care centers">
+<video class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/knowledge_park.webm" alt="Math and Coding workshop with student care centers" autoplay loop muted />
 
 </section>
 
