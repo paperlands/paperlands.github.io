@@ -36,7 +36,7 @@ Why did it grow this way?
   <br><br>
 The beauty of mathematics is revealed by <strong class="text-orange-500">uncovering patterns and asking questions </strong> about the world around us!
 
-<video class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/tree.webm" alt="Turtle graphics tree" autoplay loop muted />
+<video class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/tree.webm" alt="Turtle graphics tree" autoplay loop muted playsinline />
 </section>
 
 
@@ -54,7 +54,7 @@ In our workshop, students will program computers to <strong class="text-orange-5
  As students teach the computer how to act, they begin to<strong class="text-orange-500"> reflect on their own actions and thinking</strong>.
  They will formulate original hypotheses, model the world around them and test how math shapes the world – making learning <strong class="text-orange-500">fun, interactive, and meaningful!</strong>
 
-<video class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/knowledge_park.webm" alt="Math and Coding workshop with student care centers" autoplay loop muted />
+<video class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/knowledge_park.webm" alt="Math and Coding workshop with student care centers" autoplay loop muted playsinline />
 
 </section>
 
