@@ -36,7 +36,7 @@ Why did it grow this way?
   <br><br>
 The beauty of mathematics is revealed by <strong class="text-orange-500">uncovering patterns and asking questions </strong> about the world around us!
 
-<video class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/tree.webm" alt="Turtle graphics tree" autoplay loop muted playsinline />
+<video class="object-cover w-full h-full mt-8 rounded-md"  src="/assets/lib/landing/tree.mp4"   alt="Turtle graphics tree" autoplay loop muted playsinline />
 </section>
 
 
@@ -54,7 +54,7 @@ In our workshop, students will program computers to <strong class="text-orange-5
  As students teach the computer how to act, they begin to<strong class="text-orange-500"> reflect on their own actions and thinking</strong>.
  They will formulate original hypotheses, model the world around them and test how math shapes the world – making learning <strong class="text-orange-500">fun, interactive, and meaningful!</strong>
 
-<video class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/knowledge_park.webm" alt="Math and Coding workshop with student care centers" autoplay loop muted playsinline />
+<video class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/knowledge_park.mp4" alt="Math and Coding workshop with student care centers" autoplay loop muted playsinline />
 
 </section>
 
@@ -224,7 +224,7 @@ In our workshop, students will program computers to <strong class="text-orange-5
 
 <div class="flex justify-center">
  <label for="message-input" class="font-medium text-text">Message:</label>
-  <textarea id="message-input" name="message" rows="2" placeholder="Leave any message or questions you may have.." class="ml-5 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+  <textarea id="message-input" name="message" rows="3" placeholder="Leave any message or questions you may have.." class="ml-5 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
     <!-- <div class="h-captcha" data-sitekey="7688737e-8d00-4c1e-acdc-828ee1c02e08"></div> -->
     <!-- <script src="https://js.hcaptcha.com/1/api.js" async defer></script> -->
 </div>
