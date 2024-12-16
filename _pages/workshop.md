@@ -13,7 +13,7 @@ permalink: /workshop
 <p class="ml-2 text-white">9.30am-12.30pm</p>
 <p class="ml-2 text-white">27th Dec (fri) left</p>
 <br>
-<a href="/workshop/#register" class="px-4 py-2 ml-2 rounded-md bg-primary internal-link">Sign up now!</a>
+<a href="/workshop#register" class="px-4 py-2 ml-2 rounded-md bg-primary internal-link">Sign up now!</a>
 
 
 
