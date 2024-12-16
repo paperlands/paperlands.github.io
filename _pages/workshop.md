@@ -11,7 +11,7 @@ permalink: /workshop
 <p class="ml-2 text-white">Holiday Workshops</p>
 <p class="mt-4 ml-2 text-white">Near Beauty World MRT</p>
 <p class="ml-2 text-white">9.30am-12.30pm</p>
-<p class="ml-2 text-white">16-22nd Dec</p>
+<p class="ml-2 text-white">27th Dec (fri) left</p>
 <br>
 <a href="/workshop/#register" class="px-4 py-2 ml-2 rounded-md bg-primary internal-link">Sign up now!</a>
 
@@ -126,7 +126,7 @@ In our workshop, students will program computers to <strong class="text-orange-5
 
 <!-- Form section -->
 <section class="my-32 lg:mx-24 lg:flex lg:justify-center" id="register">
-<div class="my-8 lg:h-1/4 lg:w-1/2 lg:mr-20">
+<div class="my-8 lg:h-1/4 lg:w-5/6 lg:mr-20">
     <!-- Senang -->
     <img class="object-cover w-full h-full rounded-md" src="/assets/lib/landing/ananias_16x9.webp" alt="Coding and laser engraving workshop with student care centers">
     <h2 class="my-8 text-3xl lg:text-4xl">Register Now!</h2>
@@ -151,84 +151,45 @@ In our workshop, students will program computers to <strong class="text-orange-5
 </div>
 
 <!-- Form -->
-<form id="lettertopaperland" class="flex flex-col p-6 my-8 space-y-4 rounded-lg w-full shadow-lg bg-primary-light" accept-charset="UTF-8" action="https://india.fly.dev/proxy/apps/guru/workshop" method="POST">
+<form id="lettertopaperland" class="flex flex-col w-full p-6 my-8 space-y-4 rounded-lg shadow-lg bg-primary-light" accept-charset="UTF-8" action="https://india.fly.dev/proxy/apps/guru/workshop" method="POST">
     <!-- Name -->
     <label for="name-input" class="font-medium text-text">Name*</label>
     <input id="name-input" type="text" name="name" placeholder="Alan Kay" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" />
     <!-- Phone number -->
     <label for="phone-input" class="font-medium text-text">Phone Number*</label>
     <input id="phone-input" type="tel" name="phone" placeholder="+65 91234567" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" required />
+    <!-- Age -->
+    <label for="age-input" class="font-medium text-text">Age*</label>
+    <input id="age-input" type="number" name="age" placeholder="12" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" required />
     <!-- Multiple Date Selection -->
     <label class="font-medium text-text">Select Preferred Dates:</label>
     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2" id="date-selection-container">
-        <!-- Monday -->
-        <button 
-          type="button" 
-          class="p-3 text-center text-gray-800 bg-white border rounded-md"
-          onclick="this.blur(); toggleDate(this, 'Monday (16th)')"
+        <!-- Old dates -->
+        <div 
+          class="py-3 text-center text-gray-800 bg-gray-500 border rounded-md"
         >
-          Monday (16th)
-        </button>
-        <!-- Tuesday -->
-        <button 
-          type="button" 
-          class="p-3 text-center text-gray-800 bg-white border rounded-md"
-          onclick="this.blur(); toggleDate(this, 'Tuesday (17th)')"
-        >
-          Tuesday (17th)
-        </button>
-        <!-- Wednesday -->
-        <button 
-          type="button" 
-          class="p-3 text-center text-gray-800 bg-white border rounded-md"
-          onclick="this.blur(); toggleDate(this, 'Wednesday (18th)')"
-        >
-          Wednesday (18th)
-        </button>
-        <!-- Thursday -->
-        <button 
-          type="button" 
-          class="p-3 text-center text-gray-800 bg-white border rounded-md"
-          onclick="this.blur(); toggleDate(this, 'Thursday (19th)')"
-        >
-          Thursday (19th)
-        </button>
+          <s>16th-22nd</s> (full)
+        </div>
         <!-- Friday -->
         <button 
           type="button" 
-          class="p-3 text-center text-gray-800 bg-white border rounded-md"
-          onclick="this.blur(); toggleDate(this, 'Friday (20th)')"
+          class="py-3 text-center text-gray-800 bg-white border-2 border-gray-300 rounded-md "
+          onclick="this.blur(); toggleDate(this, 'Friday (27th)')"
         >
-          Friday (20th)
-        </button>
-        <!-- Saturday -->
-        <button 
-          type="button" 
-          class="p-3 text-center text-gray-800 bg-white border rounded-md"
-          onclick="this.blur(); toggleDate(this, 'Saturday (21st)')"
-        >
-          Saturday (21st)
-        </button>
-        <!-- Sunday -->
-        <button 
-          type="button" 
-          class="p-3 text-center text-gray-800 bg-white border rounded-md"
-          onclick="this.blur(); toggleDate(this, 'Sunday (22nd)')"
-        >
-          Sunday (22nd)
+          Friday (27th)
         </button>
     </div>
 
 <input type="hidden" name="selected_dates" id="selected-dates" />
 <input type="hidden" name="return_url" value="{{ page.url | absolute_url }}" />
 
-<div class="flex justify-center">
- <label for="message-input" class="font-medium text-text">Message:</label>
-  <textarea id="message-input" name="message" rows="3" placeholder="Leave any message or questions you may have.." class="ml-5 w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
-    <!-- <div class="h-captcha" data-sitekey="7688737e-8d00-4c1e-acdc-828ee1c02e08"></div> -->
-    <!-- <script src="https://js.hcaptcha.com/1/api.js" async defer></script> -->
+<!-- Input message -->
+<div class="">
+  <label for="message-input" class="font-medium text-text">Message:</label>
+  <textarea id="message-input" name="message" rows="3" placeholder="Leave any message or questions you may have.." class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
 </div>
 
+<!-- Form submit button -->
 <button type="submit" class="px-4 py-2 text-white rounded-md bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary">Submit</button>
 </form>
 
@@ -250,8 +211,6 @@ In our workshop, students will program computers to <strong class="text-orange-5
   </div>
 </div>
 </section>
-
-
 
 
 
