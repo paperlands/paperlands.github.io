@@ -1,7 +1,7 @@
 ---
 layout: landing
 title: MathXCode
-permalink: /workshop
+permalink: /workshop/mathxcodestars
 ---
 
 <!-- Hero image -->
@@ -20,23 +20,23 @@ permalink: /workshop
 
 <!-- Tree section -->
 <section class="my-20">
-<h2 class="my-8 text-2xl font-bold lg:text-4xl">"Discover the math hidden around you!"</h2>
+<h2 class="my-8 text-2xl font-bold lg:text-4xl">"Discover the math hidden around us!"</h2>
 
 Math is <strong > not </strong > just about memorizing formulas.
 <br>
 <br>
-For example, look at the tree pattern below:
 <br>
-Why did it grow this way?
- <br>
-  How else can it grow?
-  <br>
-  What other factors are acting upon it?
-  
+For example, look at the night sky below:
+<br>
+Why do the stars appear this way?
+<br>
+Do they act upon each other?
+<br>
+Is it random?
   <br><br>
-The beauty of mathematics is revealed by <strong class="text-orange-500">uncovering patterns and asking questions </strong> about the world around us!
+The beauty of mathematics is revealed by <strong class="text-orange-500">uncovering patterns and asking questions </strong> about the world around us and above us!
 
-<video class="object-cover w-full h-full mt-8 rounded-md"  src="/assets/lib/landing/tree.mp4"   alt="Turtle graphics tree" autoplay loop muted playsinline />
+<video class="object-cover w-full h-full mt-8 rounded-md"  src="/assets/lib/landing/stars.mp4"   alt="Turtle graphics tree" autoplay loop muted playsinline />
 </section>
 
 
@@ -260,3 +260,4 @@ In our workshop, students will program computers to <strong class="text-orange-5
         }
     }
 </script>
+
