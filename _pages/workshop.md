@@ -1,6 +1,8 @@
 ---
 layout: landing
-title: MathXCode
+title: MathxCode Paperland Workshop
+excerpt: Discover the math hidden around us!
+image: /assets/lib/geometry_workshop.png
 permalink: /workshop
 ---
 
@@ -20,7 +22,7 @@ permalink: /workshop
 
 <!-- Tree section -->
 <section class="my-20">
-<h2 class="my-8 text-2xl font-bold lg:text-4xl">"Discover the math hidden around you!"</h2>
+<h2 class="my-8 text-2xl font-bold lg:text-4xl">"Discover the math hidden around us!"</h2>
 
 Math is <strong > not </strong > just about memorizing formulas.
 <br>
