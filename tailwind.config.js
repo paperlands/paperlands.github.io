@@ -14,7 +14,7 @@ module.exports = {
       brightness: {},
       fontFamily: {
         sans: ["Noto Serif Grantha", ...defaultTheme.fontFamily.sans],
-        paperlang: ['paperLang'],
+        paperlang: ["paperLang", "Noto Serif Grantha"],
       },
       colors: {
         primary: {
