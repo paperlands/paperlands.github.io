@@ -8,7 +8,9 @@
 layer base {
   @font-face {
       font-family: "paperLang";
-      src: url("/assets/fonts/paperLang.ttf") format("truetype"),
+      src: url('/assets/fonts/paperLang.woff2') format('woff2'),
+      url('/assets/fonts/paperLang.woff') format('woff'),
+      url("/assets/fonts/paperLang.ttf") format("ttf"),
       font-weight: 600;
       font-style: normal
   }
