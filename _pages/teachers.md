@@ -11,33 +11,27 @@ permalink: /teachers
 
   <div class="flex flex-col items-center justify-center">
     <h1 class="text-6xl tracking-tighter text-center font-paperlang lg:text-9xl">PaperLand.</h1>
-    <div class="my-8 text-center text-white">Bringing Computation to Mathematics</div>
+    <div class="my-8 text-center text-white">Discover Mathematics through Computation</div>
+    <br>
     <a href="/teachers#register" class="px-4 py-2 ml-2 rounded-md bg-primary internal-link">Enquire now</a>
   </div>
 </section>
 
-<!-- Knowledge Park section -->
 <section class="mt-0 mb-8 lg:mx-60">
-<h2 class="my-8 text-3xl font-bold lg:text-4xl">Explorers of Mathematics</h2>
+<h2 class="my-8 text-3xl font-bold lg:text-4xl">Explorers Mathematics</h2>
 
-Computation is more than just using a calculator to crunch number problems.<br>
+The best way to learn math is by  <strong class="text-orange-600">exploring and experimenting. </strong>
 <br>
-
-Computation allows us to:<br>
-<div class="ml-5">
-create a rich medium to engage with mathematical ideas.<br>
-explore concepts for ourselves.<br>
-discover hidden patterns along the way.<br>
-visualise the abstract.<br>
-create beautiful works of art with math.<br>
-</div>
+<br> 
+Students <strong class="text-orange-600">create</strong> their own computational objects and <strong class="text-orange-600">investigate</strong>  hidden mathematical patterns and <strong class="text-orange-600">communicate</strong> their discoveries with classmates.
 <br>
-
-Instead of seeing math as a list of rules to follow, students become explorers! <br>
-Explorers who experiment and discover new ideas for themselves.<br>
 <br>
-
-Here at PaperLand, we are building the computational approach to foster more math explorers!
+ As students teach the computer how to act, they begin to<strong class="text-orange-600"> reflect on their own actions and thinking</strong>.
+ 
+ They will formulate original hypotheses, model the world around them and test how math shapes the world – making learning <strong class="text-orange-600">fun, interactive, and meaningful!</strong>
+<br>
+<br>
+Here at <strong class="text-orange-600">PaperLand</strong>, we are building the computational approach to foster more math explorers!
 </section>
 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
     <div class="grid gap-4">
@@ -70,15 +64,15 @@ Here at PaperLand, we are building the computational approach to foster more mat
 <section class="mb-8 mt-36 lg:mx-60">
 <h2 class="my-8 text-3xl font-bold lg:text-4xl">From 1st Principles</h2>
 
-We are designing our lessons around concepts learned in school, but from a 1st principles perspective.<br>
+We are designing our lessons around concepts learned in school, but from a <strong class="text-orange-600">1st principles</strong> perspective.<br>
 <br>
 
-From discovering how the formula for "exterior angle of polygon" is created,<br>
-to rediscovering "calculus" from a geometric perspective by creating the unit circle,<br>
-to using "algebra" and "abstraction" to create faces with their friends.<br>
+From uncovering where the "sum of exterior angles" in polygons in <strong class="text-orange-600">geometry</strong> comes from,<br>
+to rediscovering <strong class="text-orange-600">calculus</strong> from a geometric perspective by creating the unit circle,<br>
+to using <strong class="text-orange-600">algebra</strong> and <strong class="text-orange-600">abstraction</strong> to create faces with their friends.<br>
 <br>
 
-The world of computation is very rich and we have only just scratched the surface!
+The world of computation and mathematics is very deep and we have only just scratched the surface!
 </section>
 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
     <div class="hidden sm:grid sm:gap-4">
@@ -132,6 +126,15 @@ From symmetries to fractals, there are infinite ways to create unique patterns f
 </div>
 <br>
 
+4. Communication & Collaboration: <br>
+<div class="ml-5">
+Students work shoulder to shoulder in a shared collaborative coding environment that allows them to look over their shoulder, push each other, and reason against their classmates' approaches. By sharing their own perspective it becomes the class' shared perspective. 
+</div>
+<div class="ml-5">
+
+</div>
+<br>
+
 <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/21cc.png" alt="21st century competencies">
 
 
@@ -180,16 +183,23 @@ We customise every engagement with each schools. Here are some ways we can kicks
 
 <!-- Form section -->
 <section class="my-32 lg:mx-60" id="register">
-<h2 class="my-8 text-3xl font-bold lg:text-4xl">Bring computation to your students today!</h2>
-Experience the power of computation yourself and book a demo now!
+<h2 class="my-8 text-3xl font-bold lg:text-4xl">Bring us to your classrooms today!</h2>
+
+Experience the power of computation to discover mathematics for yourself and book a demo now!
 
 <!-- Form -->
-<form id="lettertopaperland" class="flex flex-col w-full p-6 my-8 space-y-4 rounded-lg shadow-lg bg-primary-light" accept-charset="UTF-8" action="https://india.fly.dev/proxy/apps/guru/workshop" method="POST">
+<form id="lettertopaperland" class="flex flex-col w-full p-6 my-8 space-y-4 rounded-lg shadow-lg bg-primary-light" accept-charset="UTF-8" action="https://india.fly.dev/proxy/apps/guru/teachers" method="POST">
   <!-- Name -->
   <label for="name-input" class="font-medium text-text">Name*</label>
   <input id="name-input" type="text" name="name" placeholder="Alan Kay" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" />
-
+  <label for="email-input" class="font-medium text-gray-700">Email*</label>
+  <input id="email-input" type="email" name="email" placeholder="alan@schools.gov.sg" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" />
+  <input type="hidden" name="return_url" value="{{ page.url | absolute_url }}" />
+  <input type="hidden" name="permalink" value="register" />
   <!-- Form submit button -->
+  <div class="flex justify-center">
+      <div class="h-captcha" data-sitekey="7688737e-8d00-4c1e-acdc-828ee1c02e08"></div>
+  </div>
   <button type="submit" class="px-4 py-2 text-white rounded-md bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary">Submit</button>
 </form>
 

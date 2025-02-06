@@ -8,10 +8,10 @@ permalink: /workshop/mathxcodestars
 <img rel="preload" class="absolute top-0 left-0 w-screen h-[44vh] object-cover brightness-50 -z-10 sm:h-[60vh]" src="/assets/lib/landing/knowledge_park_16x9.webp" alt="Code and Craft workshop">
 <!-- Hero text -->
 <h1 class="text-5xl font-bold tracking-tighter lg:text-9xl">Math x Coding</h1>
-<p class="ml-2 text-white">Holiday Workshops</p>
-<p class="mt-4 ml-2 text-white">Near Beauty World MRT</p>
-<p class="ml-2 text-white">9.30am-12.30pm</p>
-<p class="ml-2 text-white">27th Dec (fri) left</p>
+<p class="ml-2 text-white">Discover mathematics through computation</p>
+<p class="mt-4 ml-2 text-white">Block 71</p>
+<p class="ml-2 text-white">6.30pm-8pm</p>
+<p class="ml-2 text-white">Every Friday</p>
 <br>
 <a href="/workshop#register" class="px-4 py-2 ml-2 rounded-md bg-primary internal-link">Sign up now!</a>
 
