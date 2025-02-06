@@ -11,9 +11,7 @@ permalink: /teachers
 
   <div class="flex flex-col items-center justify-center">
     <h1 class="text-6xl tracking-tighter text-center font-paperlang lg:text-9xl">PaperLand.</h1>
-    <br>
-    <div class="text-center text-white">Bringing Computation to Mathematics</div>
-    <br>
+    <div class="my-8 text-center text-white">Bringing Computation to Mathematics</div>
     <a href="/teachers#register" class="px-4 py-2 ml-2 rounded-md bg-primary internal-link">Enquire now</a>
   </div>
 </section>
@@ -44,24 +42,24 @@ Here at PaperLand, we are building the computational approach to foster more mat
 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
     <div class="grid gap-4">
         <div>
-            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt="">
+            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt="abstraction workshop">
         </div>
         <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/tree.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
+            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/tree.mp4" alt="tree animation" autoplay loop muted playsinline />
         </div>
         <div>
-            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/knowledge_park_16x9.webp" alt="">
+            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/knowledge_park_16x9.webp" alt="student care center workshop">
         </div>
     </div>
     <div class="hidden sm:grid sm:gap-4">
         <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/shell.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
+            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/shell.mp4" alt="shell animation" autoplay loop muted playsinline />
         </div>
         <div>
-            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/senang_16x9.webp" alt="">
+            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/senang_16x9.webp" alt="student care center workshop">
         </div>
         <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/polygon.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
+            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/polygon.mp4" alt="polygon animation" autoplay loop muted playsinline />
         </div>
     </div>
 </div>
@@ -85,24 +83,24 @@ The world of computation is very rich and we have only just scratched the surfac
 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
     <div class="hidden sm:grid sm:gap-4">
         <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/benz.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
+            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/benz.mp4" alt="benz animation" autoplay loop muted playsinline />
         </div>
         <div>
-            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/SUTD_calculus_16x9.jpg" alt="">
+            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/SUTD_calculus_16x9.jpg" alt="calculus workshop">
         </div>
         <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/xsinx.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
+            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/xsinx.mp4" alt="xsin(x) animation" autoplay loop muted playsinline />
         </div>
     </div>
     <div class="grid gap-4">
         <div>
-            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/ca_workshop_16x9.jpg" alt="">
+            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/ca_workshop_16x9.jpg" alt="cellular automaton workshop">
         </div>
         <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/unit_circle.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
+            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/unit_circle.mp4" alt="trigo unit circle animation" autoplay loop muted playsinline />
         </div>
         <div>
-            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/stpats_discord_bot_workshop_16x9.jpg" alt="">
+            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/stpats_discord_bot_workshop_16x9.jpg" alt="stpats workshop">
         </div>
     </div>
 </div>
@@ -134,7 +132,7 @@ From symmetries to fractals, there are infinite ways to create unique patterns f
 </div>
 <br>
 
-<img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/21cc.png" alt="">
+<img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/21cc.png" alt="21st century competencies">
 
 
 </section>
