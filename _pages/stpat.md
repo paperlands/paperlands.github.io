@@ -5,7 +5,7 @@ permalink: /stpat
 ---
 
 <div class="stpat_paperland">
-    <img src="assets/lib/stpats_logo_1x1.png" width="125" height="125" class="no-responsive no-border"/>
+    <img src="assets/lib/school_logos/stpats_logo_1x1.png" width="125" height="125" class="no-responsive no-border"/>
     <!-- <img src="assets/lib/stpats_logo_1x1.png" class="no-border"/> -->
     <p>x</p>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150" height="150px"><image xlink:href="/assets/logo.svg" width="150" height="150"/></svg>
