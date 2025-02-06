@@ -6,22 +6,20 @@ image: /assets/lib/geometry_workshop.png
 permalink: /teachers
 ---
 
-<!-- Hero video -->
-<video class="absolute top-0 left-0 w-screen h-[44vh] object-cover brightness-[40%] -z-10 sm:h-[56vh]" src="/assets/lib/landing/hero_video.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
+<section class="h-[44vh] sm:h-[56vh]">
+  <video class="absolute top-0 left-0 w-screen h-[44vh] object-cover brightness-[40%] -z-10 sm:h-[56vh]" src="/assets/lib/landing/hero_video.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
 
-<!-- Hero text -->
-<div class="flex flex-col items-center justify-center">
-  <h1 class="text-6xl tracking-tighter text-center font-paperlang lg:text-9xl">PaperLand.</h1>
-  <br>
-  <p class="text-center text-white">Bringing Computation to Mathematics</p>
-  <br>
-  <a href="/teachers#register" class="px-4 py-2 ml-2 rounded-md bg-primary internal-link">Enquire now</a>
-</div>
-
-
+  <div class="flex flex-col items-center justify-center">
+    <h1 class="text-6xl tracking-tighter text-center font-paperlang lg:text-9xl">PaperLand.</h1>
+    <br>
+    <div class="text-center text-white">Bringing Computation to Mathematics</div>
+    <br>
+    <a href="/teachers#register" class="px-4 py-2 ml-2 rounded-md bg-primary internal-link">Enquire now</a>
+  </div>
+</section>
 
 <!-- Knowledge Park section -->
-<section class="mb-8 mt-36 lg:mx-60">
+<section class="mt-0 mb-8 lg:mx-60">
 <h2 class="my-8 text-3xl font-bold lg:text-4xl">Explorers of Mathematics</h2>
 
 Computation is more than just using a calculator to crunch number problems.<br>
