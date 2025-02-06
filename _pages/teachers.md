@@ -21,34 +21,57 @@ permalink: /teachers
 
 
 <!-- Knowledge Park section -->
-<section class="my-36 lg:mx-60">
+<section class="mb-8 mt-36 lg:mx-60">
 <h2 class="my-8 text-3xl font-bold lg:text-4xl">Explorers of Mathematics</h2>
 
 Computation is more than just using a calculator to crunch number problems.<br>
 <br>
 
 Computation allows us to:<br>
-- create a rich medium to engage with mathematical ideas.<br>
-- explore concepts for ourselves.<br>
-- discover hidden patterns along the way.<br>
-- visualise the abstract.<br>
-- create beautiful works of art with math.<br>
+<div class="ml-5">
+create a rich medium to engage with mathematical ideas.<br>
+explore concepts for ourselves.<br>
+discover hidden patterns along the way.<br>
+visualise the abstract.<br>
+create beautiful works of art with math.<br>
+</div>
 <br>
 
 Instead of seeing math as a list of rules to follow, students become explorers! <br>
 Explorers who experiment and discover new ideas for themselves.<br>
 <br>
 
-Here at PaperLand, we are building the computational approach to foster more math explorers!<br>
-
-<video class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/knowledge_park.mp4" alt="Math and Coding workshop with student care centers" autoplay loop muted playsinline />
-
+Here at PaperLand, we are building the computational approach to foster more math explorers!
 </section>
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <div class="grid gap-4">
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt="">
+        </div>
+        <div>
+            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/tree.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
+        </div>
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/knowledge_park_16x9.webp" alt="">
+        </div>
+    </div>
+    <div class="hidden sm:grid sm:gap-4">
+        <div>
+            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/shell.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
+        </div>
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/senang_16x9.webp" alt="">
+        </div>
+        <div>
+            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/polygon.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
+        </div>
+    </div>
+</div>
 
 
 
 <!-- Knowledge Park section -->
-<section class="my-36 lg:mx-60">
+<section class="mb-8 mt-36 lg:mx-60">
 <h2 class="my-8 text-3xl font-bold lg:text-4xl">From 1st Principles</h2>
 
 We are designing our lessons around concepts learned in school, but from a 1st principles perspective.<br>
@@ -59,12 +82,32 @@ to rediscovering "calculus" from a geometric perspective by creating the unit ci
 to using "algebra" and "abstraction" to create faces with their friends.<br>
 <br>
 
-The world of computation is very rich and we have only just scratched the surface!<br>
-
-<video class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/knowledge_park.mp4" alt="Math and Coding workshop with student care centers" autoplay loop muted playsinline />
-
+The world of computation is very rich and we have only just scratched the surface!
 </section>
-
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <div class="hidden sm:grid sm:gap-4">
+        <div>
+            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/benz.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
+        </div>
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/SUTD_calculus_16x9.jpg" alt="">
+        </div>
+        <div>
+            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/xsinx.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
+        </div>
+    </div>
+    <div class="grid gap-4">
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/ca_workshop_16x9.jpg" alt="">
+        </div>
+        <div>
+            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/unit_circle.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
+        </div>
+        <div>
+            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/stpats_discord_bot_workshop_16x9.jpg" alt="">
+        </div>
+    </div>
+</div>
 
 
 
@@ -76,49 +119,61 @@ A computational approach pushes students to develop critical, adaptive and inven
 <br>
 
 1. Critical thinking: <br>
-- Computation transforms abstract math concepts into interactive problem-solving challenges. Instead of simply memorizing formulas, students must break down geometric patterns into logical steps, anticipate outcomes, and debug errors when results don’t match expectations.
+<div class="ml-5">
+Computation transforms abstract math concepts into interactive problem-solving challenges. Instead of simply memorizing formulas, students must break down geometric patterns into logical steps, anticipate outcomes, and debug errors when results don’t match expectations.
+</div>
 <br>
 
 2. Adaptive thinking: <br>
-- Students will encounter unexpected outcomes when programming, requiring them to adapt their approach. Students will be using math they've learned in school and apply it to a completely new context, serving as a formative test of their understanding. (e.g using exterior angles to make floor tiles)
+<div class="ml-5">
+Students will encounter unexpected outcomes when programming, requiring them to adapt their approach. Students will be using math they've learned in school and apply it to a completely new context, serving as a formative test of their understanding. (e.g using exterior angles to make floor tiles)
+</div>
 <br>
 
 3. Inventive thinking: <br>
-- From symmetries to fractals, there are infinite ways to create unique patterns for study computationally. The very act of creating something new with math forces students to think out of the box.
+<div class="ml-5">
+From symmetries to fractals, there are infinite ways to create unique patterns for study computationally. The very act of creating something new with math forces students to think out of the box.
+</div>
 <br>
 
-<video class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/knowledge_park.mp4" alt="Math and Coding workshop with student care centers" autoplay loop muted playsinline />
+<img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/21cc.png" alt="">
+
 
 </section>
 
 
 
 
-
 <!-- Knowledge Park section -->
-<section class="my-36 lg:mx-60">
-<div class="grid grid-cols-5 gap-2">
+<div class="grid grid-cols-5 gap-2 mt-48">
   <img src="assets/lib/school_logos/sst_logo_1x1_grayscale.png" class="h-16 mx-auto lg:h-32 lg:w-32 no-border"/>
   <img src="assets/lib/school_logos/stpats_logo_1x1_grayscale.png" class="h-16 mx-auto lg:h-32 lg:w-32 no-border"/>
   <img src="assets/lib/school_logos/CHIJKC_logo_1x1_grayscale.jpg" class="h-16 mx-auto lg:h-32 lg:w-32 no-border"/>
   <img src="assets/lib/school_logos/cck_logo_1x1_grayscale.jpg" class="h-16 mx-auto lg:h-32 lg:w-32 no-border"/>
-  <img src="assets/lib/school_logos/sutd_logo_grayscale.png" class="h-16 mx-auto lg:h-32 lg:w-32 no-border"/>
+  <img src="assets/lib/school_logos/sutd_logo_grayscale.png" class="h-16 py-4 mx-auto lg:h-32 lg:w-32 no-border"/>
 </div>
+<section class=" lg:mx-60">
 <h2 class="my-8 text-3xl font-bold lg:text-4xl">School Engagement Modes</h2>
 
 We customise every engagement with each schools. Here are some ways we can kickstart this collaboration with you too:<br>
 <br>
 
 1. Workshop series: <br>
+<div class="ml-5">
 - We tailor our workshops for a variety of student profiles. Some students are faster while others need more support. One beautiful aspect about learning through computation is that it's flexible enough to accomodate all.<br>
+</div>
 <br>
 
 2. Student-Initiated-Learning: <br>
+<div class="ml-5">
 - We designed a series of 1hr online lessons to engage students in mathematical exploration. Since we are exploring concepts from a geometrical perspective, students naturally explore ways to build elaborate works of art. The SIL program ends with us laser engraving out the mathematical work of art the students make in the final lesson.<br>
+</div>
 <br>
 
 3. Lesson Co-designing: <br>
+<div class="ml-5">
 - Some math teachers are really inspired by the computation approach and want to explore how they can use it in their classrooms during curriculum time. We work with them to co-design lesson plans for these classes. These are super exciting as we push the frontier of math education.<br>
+</div>
 <br>
 
 </section>
