@@ -10,10 +10,10 @@ permalink: /workshop
 <img rel="preload" class="absolute top-0 left-0 w-screen h-[44vh] object-cover brightness-50 -z-10 sm:h-[60vh]" src="/assets/lib/landing/knowledge_park_16x9.webp" alt="Code and Craft workshop">
 <!-- Hero text -->
 <h1 class="text-5xl font-bold tracking-tighter lg:text-9xl">Math x Coding</h1>
-<p class="ml-2 text-white">Holiday Workshops</p>
-<p class="mt-4 ml-2 text-white">Near Beauty World MRT</p>
-<p class="ml-2 text-white">9.30am-12.30pm</p>
-<p class="ml-2 text-white">27th Dec (fri) left</p>
+<p class="ml-2 text-white">Discover mathematics through computation</p>
+<p class="mt-4 ml-2 text-white">Block 71</p>
+<p class="ml-2 text-white">6.30pm-8.30pm</p>
+<p class="ml-2 text-white">Every Friday</p>
 <br>
 <a href="/workshop#register" class="px-4 py-2 ml-2 rounded-md bg-primary internal-link">Sign up now!</a>
 
@@ -140,13 +140,13 @@ In our workshop, students will program computers to <strong class="text-orange-5
         </tr>
         <tr>
           <td class="p-2 border">Time</td>
-          <td class="p-2 border">9.30am-12.30pm (3hours)</td>
+          <td class="p-2 border">6.30pm-8.30pm (2hours)</td>
         </tr>
         <tr>
           <td class="p-2 border">Location</td>
           <td class="p-2 border">
-          <a href="https://maps.app.goo.gl/5v3MjQVbC2U2uQ6q9">25 Lorong Kilat, 2 via, #02-03,<br>
-            Singapore 598126 </a></td>
+          <a href="https://maps.app.goo.gl/QtTiYx6bRrHUQZCMA">Block 71, Ayer Rajah Crescent, Level 4<br>
+            Singapore 139951 </a></td>
         </tr>
       </tbody>
     </table>
@@ -164,23 +164,23 @@ In our workshop, students will program computers to <strong class="text-orange-5
     <label for="age-input" class="font-medium text-text">Age*</label>
     <input id="age-input" type="number" name="age" placeholder="12" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" required />
     <!-- Multiple Date Selection -->
-    <label class="font-medium text-text">Select Preferred Dates:</label>
-    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2" id="date-selection-container">
-        <!-- Old dates -->
-        <div 
-          class="py-3 text-center text-gray-800 bg-gray-500 border rounded-md"
-        >
-          <s>16th-22nd</s> (full)
-        </div>
-        <!-- Friday -->
-        <button 
-          type="button" 
-          class="py-3 text-center text-gray-800 bg-white border-2 border-gray-300 rounded-md "
-          onclick="this.blur(); toggleDate(this, 'Friday (27th)')"
-        >
-          Friday (27th)
-        </button>
-    </div>
+    <!-- <label class="font-medium text-text">Select Preferred Dates:</label> -->
+    <!-- <div class="grid grid-cols-1 gap-3 sm:grid-cols-2" id="date-selection-container"> -->
+    <!--     <\!-- Old dates -\-> -->
+    <!--     <div  -->
+    <!--       class="py-3 text-center text-gray-800 bg-gray-500 border rounded-md" -->
+    <!--     > -->
+    <!--       <s>16th-22nd</s> (full) -->
+    <!--     </div> -->
+    <!--     <\!-- Friday -\-> -->
+    <!--     <button  -->
+    <!--       type="button"  -->
+    <!--       class="py-3 text-center text-gray-800 bg-white border-2 border-gray-300 rounded-md " -->
+    <!--       onclick="this.blur(); toggleDate(this, 'Friday (27th)')" -->
+    <!--     > -->
+    <!--       Friday (27th) -->
+    <!--     </button> -->
+    <!-- </div> -->
 
 <input type="hidden" name="selected_dates" id="selected-dates" />
 <input type="hidden" name="return_url" value="{{ page.url | absolute_url }}" />
