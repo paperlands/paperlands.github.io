@@ -18,20 +18,21 @@ permalink: /teachers
 </section>
 
 <section class="mt-0 mb-8 lg:mx-60">
-<h2 class="my-8 text-3xl font-bold lg:text-4xl">Explorers Mathematics</h2>
-
-The best way to learn math is by  <strong class="text-orange-600">exploring and experimenting. </strong>
+<h2 class="my-8 text-3xl font-bold lg:text-4xl">Discovering Mathematics</h2>
+Learning mathematics can be much more than a path to be followed, it can be a  <strong class="text-orange-600">journey of personal discovery</strong>.
 <br>
 <br> 
-Students <strong class="text-orange-600">create</strong> their own computational objects and <strong class="text-orange-600">investigate</strong>  hidden mathematical patterns and <strong class="text-orange-600">communicate</strong> their discoveries with classmates.
+Students <strong class="text-orange-600">create</strong> their own computational objects,  <strong class="text-orange-600">investigate</strong> hidden mathematical patterns and <strong class="text-orange-600">share</strong> their discoveries together with their classmates.
 <br>
 <br>
- As students teach the computer how to act, they begin to<strong class="text-orange-600"> reflect on their own actions and thinking</strong>.
+ As students teach the computer how to act and <strong class="text-orange-600">debug</strong> its behaviour, they begin to<strong class="text-orange-600"> reflect on their own actions and understanding</strong>.
  
- They will formulate original hypotheses, model the world around them and test how math shapes the world – making learning <strong class="text-orange-600">fun, interactive, and meaningful!</strong>
+ They will reformulate original hypotheses, model the world around them and validate how math shapes the world – making learning <strong class="text-orange-600">fun, interactive, and meaningful!</strong> 
 <br>
 <br>
 Here at <strong class="text-orange-600">PaperLand</strong>, we are building the computational approach to foster more math explorers!
+<br>
+
 </section>
 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
     <div class="grid gap-4">
@@ -68,8 +69,8 @@ We are designing our lessons around concepts learned in school, but from a <stro
 <br>
 
 From uncovering where the "sum of exterior angles" in polygons in <strong class="text-orange-600">geometry</strong> comes from,<br>
-to rediscovering <strong class="text-orange-600">calculus</strong> from a geometric perspective by creating the unit circle,<br>
-to using <strong class="text-orange-600">algebra</strong> and <strong class="text-orange-600">abstraction</strong> to create faces with their friends.<br>
+to rediscovering <strong class="text-orange-600">calculus</strong> from a geometric perspective by observing change across the unit circle,<br>
+to using <strong class="text-orange-600">algebra</strong> and <strong class="text-orange-600">abstraction</strong> to form faces that composes proportionally with their friends' eye.<br>
 <br>
 
 The world of computation and mathematics is very deep and we have only just scratched the surface!
@@ -144,17 +145,19 @@ Students work shoulder to shoulder in a shared collaborative coding environment 
 
 
 <!-- Knowledge Park section -->
-<div class="grid grid-cols-5 gap-2 mt-48">
-  <img src="assets/lib/school_logos/sst_logo_1x1_grayscale.png" class="h-16 mx-auto lg:h-32 lg:w-32 no-border"/>
-  <img src="assets/lib/school_logos/stpats_logo_1x1_grayscale.png" class="h-16 mx-auto lg:h-32 lg:w-32 no-border"/>
-  <img src="assets/lib/school_logos/CHIJKC_logo_1x1_grayscale.jpg" class="h-16 mx-auto lg:h-32 lg:w-32 no-border"/>
-  <img src="assets/lib/school_logos/cck_logo_1x1_grayscale.jpg" class="h-16 mx-auto lg:h-32 lg:w-32 no-border"/>
-  <img src="assets/lib/school_logos/sutd_logo_grayscale.png" class="h-16 py-4 mx-auto lg:h-32 lg:w-32 no-border"/>
+<div class="grid grid-cols-6 gap-22 mt-48 max-w-screen animate-marquee2 whitespace-nowrap max-">
+  <img src="assets/lib/school_logos/sst_logo_1x1_grayscale.png" class="h-16 mx-auto lg:h-32  no-border"/>
+  <img src="assets/lib/school_logos/stpats_logo_1x1_grayscale.png" class="h-16 mx-auto lg:h-32  no-border"/>
+  <img src="assets/lib/school_logos/CHIJKC_logo_1x1_grayscale.jpg" class="h-16 mx-auto lg:h-32  no-border"/>
+  <img src="assets/lib/school_logos/swiss_cottage_grayscale.png" class="h-16 py-4 mx-auto lg:h-32  no-border"/>
+  <img src="assets/lib/school_logos/cck_logo_1x1_grayscale.jpg" class="h-16 mx-auto lg:h-32  no-border"/>
+  <img src="assets/lib/school_logos/sutd_logo_grayscale.png" class="h-16 py-4 mx-auto lg:h-32  no-border"/>
+  
 </div>
 <section class=" lg:mx-60">
 <h2 class="my-8 text-3xl font-bold lg:text-4xl">School Engagement Modes</h2>
 
-We customise every engagement with each schools. Here are some ways we can kickstart this collaboration with you too:<br>
+We adapt every engagement to fit the context and student profile of each school. Here are some ways we can kickstart this collaboration with you too:<br>
 <br>
 
 1. Workshop series: <br>
@@ -163,7 +166,7 @@ We customise every engagement with each schools. Here are some ways we can kicks
 </div>
 <br>
 
-2. Student-Initiated-Learning: <br>
+2. Student-Initiated Learning: <br>
 <div class="ml-5">
 - We designed a series of 1hr online lessons to engage students in mathematical exploration. Since we are exploring concepts from a geometrical perspective, students naturally explore ways to build elaborate works of art. The SIL program ends with us laser engraving out the mathematical work of art the students make in the final lesson.<br>
 </div>
@@ -183,7 +186,7 @@ We customise every engagement with each schools. Here are some ways we can kicks
 
 <!-- Form section -->
 <section class="my-32 lg:mx-60" id="register">
-<h2 class="my-8 text-3xl font-bold lg:text-4xl">Bring us to your classrooms today!</h2>
+<h2 class="my-8 text-3xl font-bold lg:text-4xl">Discover mathematics in your classrooms with us!</h2>
 
 Experience the power of computation to discover mathematics for yourself and book a demo now!
 
