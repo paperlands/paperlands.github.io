@@ -12,20 +12,20 @@ module.exports = {
   theme: {
     extend: {
       animation: {
-      marquee: 'marquee 25s linear infinite',
-      marquee2: 'marquee2 25s linear infinite',
-    },
-    keyframes: {
-      marquee: {
-        '0%': { transform: 'translateX(0%)' },
-        '100%': { transform: 'translateX(-100%)' },
+        marquee: "marquee 25s linear infinite",
+        marquee2: "marquee2 25s linear infinite",
       },
-      marquee2: {
-        '0%': { transform: 'translateX(150%)' },
-        '50': { transform: 'translateX(0%)' },
-        '100%': { transform: 'translateX(-150%)' },
+      keyframes: {
+        marquee: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-100%)" },
+        },
+        marquee2: {
+          "0%": { transform: "translateX(150%)" },
+          50: { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-150%)" },
+        },
       },
-    },
       brightness: {},
       fontFamily: {
         sans: ["Noto Serif Grantha", ...defaultTheme.fontFamily.sans],
@@ -312,6 +312,7 @@ module.exports = {
           700: "#f57c00",
           800: "#ef6c00",
           900: "#e65100",
+          950: "#D14900",
           "accent-100": "#ffd180",
           "accent-200": "#ffab40",
           "accent-400": "#ff9100",

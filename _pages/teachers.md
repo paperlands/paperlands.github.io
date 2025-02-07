@@ -19,18 +19,18 @@ permalink: /teachers
 
 <section class="mt-0 mb-8 lg:mx-60">
 <h2 class="my-8 text-3xl font-bold lg:text-4xl">Discovering Mathematics</h2>
-Learning mathematics can be much more than a path to be followed, it can be a  <strong class="text-orange-600">journey of personal discovery</strong>.
+Learning mathematics can be much more than a path to be followed, it can be a  <strong class="text-orange-950">journey of personal discovery</strong>.
 <br>
 <br> 
-Students <strong class="text-orange-600">create</strong> their own computational objects,  <strong class="text-orange-600">investigate</strong> hidden mathematical patterns and <strong class="text-orange-600">share</strong> their discoveries together with their classmates.
+Students <strong class="text-orange-950">create</strong> their own computational objects,  <strong class="text-orange-950">investigate</strong> hidden mathematical patterns and <strong class="text-orange-950">share</strong> their discoveries together with their classmates.
 <br>
 <br>
- As students teach the computer how to act and <strong class="text-orange-600">debug</strong> its behaviour, they begin to<strong class="text-orange-600"> reflect on their own actions and understanding</strong>.
+ As students teach the computer how to act and <strong class="text-orange-950">debug</strong> its behaviour, they begin to<strong class="text-orange-950"> reflect on their own actions and understanding</strong>.
  
- They will reformulate original hypotheses, model the world around them and validate how math shapes the world – making learning <strong class="text-orange-600">fun, interactive, and meaningful!</strong> 
+ They will reformulate original hypotheses, model the world around them and validate how math shapes the world – making learning <strong class="text-orange-950">fun, interactive, and meaningful!</strong> 
 <br>
 <br>
-Here at <strong class="text-orange-600">PaperLand</strong>, we are building the computational approach to foster more math explorers!
+Here at <strong class="text-orange-950">PaperLand</strong>, we are building the computational approach to foster more math explorers!
 <br>
 
 </section>
@@ -65,12 +65,12 @@ Here at <strong class="text-orange-600">PaperLand</strong>, we are building the 
 <section class="mb-8 mt-36 lg:mx-60">
 <h2 class="my-8 text-3xl font-bold lg:text-4xl">From 1st Principles</h2>
 
-We are designing our lessons around concepts learned in school, but from a <strong class="text-orange-600">1st principles</strong> perspective.<br>
+We are designing our lessons around concepts learned in school, but from a <strong class="text-orange-950">1st principles</strong> perspective.<br>
 <br>
 
-From uncovering where the "sum of exterior angles" in polygons in <strong class="text-orange-600">geometry</strong> comes from,<br>
-to rediscovering <strong class="text-orange-600">calculus</strong> from a geometric perspective by observing change across the unit circle,<br>
-to using <strong class="text-orange-600">algebra</strong> and <strong class="text-orange-600">abstraction</strong> to form faces that composes proportionally with their friends' eye.<br>
+From uncovering where the "sum of exterior angles" in polygons in <strong class="text-orange-950">geometry</strong> comes from,<br>
+to rediscovering <strong class="text-orange-950">calculus</strong> from a geometric perspective by observing change across the unit circle,<br>
+to using <strong class="text-orange-950">algebra</strong> and <strong class="text-orange-950">abstraction</strong> to form faces that composes proportionally with their friends' eye.<br>
 <br>
 
 The world of computation and mathematics is very deep and we have only just scratched the surface!
@@ -106,30 +106,30 @@ The world of computation and mathematics is very deep and we have only just scra
 <section class="my-36 lg:mx-60">
 <h2 class="my-8 text-3xl font-bold lg:text-4xl">21st Century Competencies</h2>
 
-A computational approach pushes students to develop critical, adaptive and inventive thinking (CAIT) skills.<br>
+A computational approach pushes students to develop critical, adaptive and inventive thinking (<strong class="text-orange-950">CAIT</strong>) skills.<br>
 <br>
 
-1. Critical thinking: <br>
+<strong class="text-orange-950">1. Critical thinking:</strong><br>
 <div class="ml-5">
-Computation transforms abstract math concepts into interactive problem-solving challenges. Instead of simply memorizing formulas, students must break down geometric patterns into logical steps, anticipate outcomes, and debug errors when results don’t match expectations.
+Computation transforms abstract math concepts into interactive problem-solving challenges. Instead of simply memorizing formulas, students must <strong class="text-orange-950">break down</strong> geometric patterns into <strong class="text-orange-950">logical steps</strong>, anticipate outcomes, and <strong class="text-orange-950">debug errors</strong> when results don’t match expectations.
 </div>
 <br>
 
-2. Adaptive thinking: <br>
+<strong class="text-orange-950">2. Adaptive thinking:</strong><br>
 <div class="ml-5">
-Students will encounter unexpected outcomes when programming, requiring them to adapt their approach. Students will be using math they've learned in school and apply it to a completely new context, serving as a formative test of their understanding. (e.g using exterior angles to make floor tiles)
+Students will encounter unexpected outcomes when programming, requiring them to adapt their approach. Students will be using math they've learned in school and apply it to a completely <strong class="text-orange-950">new context</strong>, serving as a formative test of their understanding. (e.g using exterior angles to make floor tiles)
 </div>
 <br>
 
-3. Inventive thinking: <br>
+<strong class="text-orange-950">3. Inventive thinking:</strong><br>
 <div class="ml-5">
-From symmetries to fractals, there are infinite ways to create unique patterns for study computationally. The very act of creating something new with math forces students to think out of the box.
+From symmetries to fractals, there are infinite ways to <strong class="text-orange-950">create unique patterns</strong> for study computationally. The very act of creating something new with math forces students to think out of the box.
 </div>
 <br>
 
-4. Communication & Collaboration: <br>
+<strong class="text-orange-950">4. Communication & Collaboration:</strong><br>
 <div class="ml-5">
-Students work shoulder to shoulder in a shared collaborative coding environment that allows them to look over their shoulder, push each other, and reason against their classmates' approaches. By sharing their own perspective it becomes the class' shared perspective. 
+Students work shoulder to shoulder in a shared collaborative coding environment that allows them to look over their shoulder, push each other, and reason against their classmates' approaches. By sharing their own perspective it becomes the class' <strong class="text-orange-950">shared perspective</strong>.
 </div>
 <div class="ml-5">
 
@@ -145,13 +145,13 @@ Students work shoulder to shoulder in a shared collaborative coding environment 
 
 
 <!-- Knowledge Park section -->
-<div class="grid grid-cols-6 gap-22 mt-48 max-w-screen animate-marquee2 whitespace-nowrap max-">
-  <img src="assets/lib/school_logos/sst_logo_1x1_grayscale.png" class="h-16 mx-auto lg:h-32  no-border"/>
-  <img src="assets/lib/school_logos/stpats_logo_1x1_grayscale.png" class="h-16 mx-auto lg:h-32  no-border"/>
-  <img src="assets/lib/school_logos/CHIJKC_logo_1x1_grayscale.jpg" class="h-16 mx-auto lg:h-32  no-border"/>
-  <img src="assets/lib/school_logos/swiss_cottage_grayscale.png" class="h-16 py-4 mx-auto lg:h-32  no-border"/>
-  <img src="assets/lib/school_logos/cck_logo_1x1_grayscale.jpg" class="h-16 mx-auto lg:h-32  no-border"/>
-  <img src="assets/lib/school_logos/sutd_logo_grayscale.png" class="h-16 py-4 mx-auto lg:h-32  no-border"/>
+<div class="grid grid-cols-6 mt-48 gap-22 max-w-screen animate-marquee2 whitespace-nowrap max-">
+  <img src="assets/lib/school_logos/sst_logo_1x1_grayscale.png" class="h-16 mx-auto lg:h-32 no-border"/>
+  <img src="assets/lib/school_logos/stpats_logo_1x1_grayscale.png" class="h-16 mx-auto lg:h-32 no-border"/>
+  <img src="assets/lib/school_logos/CHIJKC_logo_1x1_grayscale.jpg" class="h-16 mx-auto lg:h-32 no-border"/>
+  <img src="assets/lib/school_logos/swiss_cottage_grayscale.png" class="h-16 py-4 mx-auto lg:h-32 no-border"/>
+  <img src="assets/lib/school_logos/cck_logo_1x1_grayscale.jpg" class="h-16 mx-auto lg:h-32 no-border"/>
+  <img src="assets/lib/school_logos/sutd_logo_grayscale.png" class="h-16 py-4 mx-auto lg:h-32 no-border"/>
   
 </div>
 <section class=" lg:mx-60">
@@ -160,21 +160,21 @@ Students work shoulder to shoulder in a shared collaborative coding environment 
 We adapt every engagement to fit the context and student profile of each school. Here are some ways we can kickstart this collaboration with you too:<br>
 <br>
 
-1. Workshop series: <br>
+<strong class="text-orange-950">1. Workshop series:</strong><br>
 <div class="ml-5">
-- We tailor our workshops for a variety of student profiles. Some students are faster while others need more support. One beautiful aspect about learning through computation is that it's flexible enough to accomodate all.<br>
+We tailor our workshops for a variety of student profiles. Some students are faster while others need more support. One beautiful aspect about learning through computation is that it's <strong class="text-orange-950">flexible</strong> enough to accomodate all.<br>
 </div>
 <br>
 
-2. Student-Initiated Learning: <br>
+<strong class="text-orange-950">2. Student-Initiated Learning:</strong><br>
 <div class="ml-5">
-- We designed a series of 1hr online lessons to engage students in mathematical exploration. Since we are exploring concepts from a geometrical perspective, students naturally explore ways to build elaborate works of art. The SIL program ends with us laser engraving out the mathematical work of art the students make in the final lesson.<br>
+We designed a series of 1hr <strong class="text-orange-950">online lessons</strong> to engage students in mathematical exploration. Since we are exploring concepts from a geometrical perspective, students naturally explore ways to <strong class="text-orange-950">build</strong> elaborate works of art. The SIL program ends with us laser engraving the mathematical works of art made by students in the final lesson.<br>
 </div>
 <br>
 
-3. Lesson Co-designing: <br>
+<strong class="text-orange-950">3. Lesson Co-designing:</strong><br>
 <div class="ml-5">
-- Some math teachers are really inspired by the computation approach and want to explore how they can use it in their classrooms during curriculum time. We work with them to co-design lesson plans for these classes. These are super exciting as we push the frontier of math education.<br>
+Some math teachers are really inspired by the computation approach and want to explore how they can use it in their classrooms during curriculum time. We work with them to <strong class="text-orange-950">co-design lesson plans</strong> for these classes. These are super exciting as we push the <strong class="text-orange-950">frontier</strong> of math education.<br>
 </div>
 <br>
 
@@ -203,7 +203,7 @@ Experience the power of computation to discover mathematics for yourself and boo
   <div class="flex justify-center">
       <div class="h-captcha" data-sitekey="7688737e-8d00-4c1e-acdc-828ee1c02e08"></div>
   </div>
-  <button type="submit" class="px-4 py-2 text-white rounded-md bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary">Submit</button>
+  <button type="submit" class="px-4 py-2 text-white rounded-md bg-primary hover:bg-orange-900 focus:outline-none focus:ring-2 focus:ring-orange-900">Submit</button>
 </form>
 
 <!-- Successful toast -->
@@ -237,39 +237,5 @@ Experience the power of computation to discover mathematics for yourself and boo
     } else if (urlParams.get('sent') == "false") {
         const element = document.getElementById('toast-bad');
         element.style.display = 'block'; // Show the element
-    }
-
-    // date selection script
-    const selectedDates = new Set();
-
-    function toggleDate(button, date) {
-    if (selectedDates.has(date)) {
-      selectedDates.delete(date);
-      button.classList.remove("bg-primary");
-      button.classList.add("bg-white", "text-gray-800");
-    } else {
-      selectedDates.add(date);
-      button.classList.add("bg-primary");
-      button.classList.remove("bg-white", "text-gray-800");
-    }
-
-    // Update the hidden input with selected dates
-    document.getElementById('selected-dates').value = Array.from(selectedDates).join(', ');
-  }
-
-    // Accordion Script
-    function toggleAccordion(button) {
-        const content = button.nextElementSibling;
-        const icon = button.querySelector('svg');
-
-        if (content.classList.contains('hidden')) {
-            // Open accordion
-            content.classList.remove('hidden');
-            icon.classList.add('rotate-180');
-        } else {
-            // Close accordion
-            content.classList.add('hidden');
-            icon.classList.remove('rotate-180');
-        }
     }
 </script>
