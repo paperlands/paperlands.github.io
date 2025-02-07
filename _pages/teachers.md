@@ -174,7 +174,7 @@ We designed a series of 1hr <strong class="text-orange-950">online lessons</stro
 
 <strong class="text-orange-950">3. Lesson Co-designing:</strong><br>
 <div class="ml-5">
-Some math teachers are really inspired by the computation approach and want to explore how they can use it in their classrooms during curriculum time. We work with them to <strong class="text-orange-950">co-design lesson plans</strong> for these classes. These are super exciting as we push the <strong class="text-orange-950">frontier</strong> of math education.<br>
+Some math teachers are really inspired by the computation approach and want to explore how they can use it in their classrooms during curriculum time. We work with them to <strong class="text-orange-950">co-design lesson plans</strong> according to their scheme of work for the year. These are super exciting as we are pushing the <strong class="text-orange-950">frontier</strong> of math education together.<br>
 </div>
 <br>
 
