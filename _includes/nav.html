@@ -1,4 +1,4 @@
-<nav class="bg-background">
+<nav class="bg-transparent ">
     <div class="px-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
       <div class="relative flex items-center justify-between h-16">
         <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -35,10 +35,8 @@
           </div>
           <div class="hidden sm:ml-6 sm:block">
             <div class="flex space-x-4">
-              <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-              <a href="/#projects" class="px-3 py-2 text-sm font-medium rounded-md text-text-light ho-ltext-text-light-gray-700 hover:text-white">Our Work</a>
-              <a href="/#blog" class="px-3 py-2 text-sm font-medium rounded-md text-text-light ho-ltext-text-light-gray-700 hover:text-white">Blog</a>
-              <a href="/#contact" class="px-3 py-2 text-sm font-medium rounded-md text-text-light ho-ltext-text-light-gray-700 hover:text-white">Contact Us</a>
+              <a href="/#blog" class="px-3 py-2 text-sm font-medium rounded-md {% if page.nav_color == 'white' %}text-white{% else %}text-black{% endif %}">Blog</a>
+              <a href="/#contact" class="px-3 py-2 text-sm font-medium rounded-md {% if page.nav_color == 'white' %}text-white{% else %}text-black{% endif %}">Contact Us</a>
             </div>
           </div>
         </div>
@@ -49,7 +47,6 @@
     <div class="w-1/2 rounded-md sm:hidden bg-primary-light" id="mobile-menu">
       <div class="px-2 pt-2 pb-3 space-y-1">
         <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-        <a href="/#projects" class="block px-3 py-2 text-base font-medium rounded-md text-text-light hover:bg-gray-700 hover:text-white">Our Work</a>
         <a href="/#blog" class="block px-3 py-2 text-base font-medium rounded-md text-text-light hover:bg-gray-700 hover:text-white">Blog</a>
         <a href="/#contact" class="block px-3 py-2 text-base font-medium rounded-md text-text-light hover:bg-gray-700 hover:text-white">Contact Us</a>
       </div>
