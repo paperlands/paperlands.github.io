@@ -5,7 +5,7 @@ excerpt: Bringing Computation into Mathematics
 image: /assets/lib/geometry_workshop.png
 permalink: /teachers
 ---
-
+<!-- hero section -->
 <section class="h-[44vh] sm:h-[56vh]">
   <video class="absolute top-0 left-0 w-screen h-[44vh] object-cover brightness-[40%] -z-10 sm:h-[56vh]" src="/assets/lib/landing/hero_video.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
 
@@ -17,7 +17,9 @@ permalink: /teachers
   </div>
 </section>
 
-<section class="mt-0 mb-8 lg:mx-60">
+
+<!-- Discovering mathematics section -->
+<section class="mb-8 lg:mx-60">
 <h2 class="my-8 text-3xl font-bold lg:text-4xl">Discovering Mathematics</h2>
 Learning mathematics can be much more than a path to be followed, it can be a  <strong class="text-orange-950">journey of personal discovery</strong>.
 <br>
@@ -61,7 +63,7 @@ Here at <strong class="text-orange-950">PaperLand</strong>, we are building the 
 
 
 
-<!-- Knowledge Park section -->
+<!-- 1st Principles section -->
 <section class="mb-8 mt-36 lg:mx-60">
 <h2 class="my-8 text-3xl font-bold lg:text-4xl">From 1st Principles</h2>
 
@@ -102,7 +104,7 @@ The world of computation and mathematics is very deep and we have only just scra
 
 
 
-<!-- Knowledge Park section -->
+<!-- 21st Century Competencies section -->
 <section class="my-36 lg:mx-60">
 <h2 class="my-8 text-3xl font-bold lg:text-4xl">21st Century Competencies</h2>
 
@@ -143,16 +145,28 @@ Students work shoulder to shoulder in a shared collaborative coding environment 
 
 
 
-
-<!-- Knowledge Park section -->
-<div class="grid grid-cols-6 mt-48 gap-22 max-w-screen animate-marquee2 whitespace-nowrap max-">
-  <img src="assets/lib/school_logos/sst_logo_1x1_grayscale.png" class="h-16 mx-auto lg:h-32 no-border"/>
-  <img src="assets/lib/school_logos/stpats_logo_1x1_grayscale.png" class="h-16 mx-auto lg:h-32 no-border"/>
-  <img src="assets/lib/school_logos/CHIJKC_logo_1x1_grayscale.jpg" class="h-16 mx-auto lg:h-32 no-border"/>
-  <img src="assets/lib/school_logos/swiss_cottage_grayscale.png" class="h-16 py-4 mx-auto lg:h-32 no-border"/>
-  <img src="assets/lib/school_logos/cck_logo_1x1_grayscale.jpg" class="h-16 mx-auto lg:h-32 no-border"/>
-  <img src="assets/lib/school_logos/sutd_logo_grayscale.png" class="h-16 py-4 mx-auto lg:h-32 no-border"/>
-  
+<!-- School Engagement Modes section -->
+<div class="relative w-full overflow-hidden">
+    <!-- Left Fade -->
+    <div class="absolute top-0 left-0 z-10 h-full pointer-events-none w-28 bg-gradient-to-r from-white to-transparent"></div>
+    <!-- marquee -->
+    <div class="flex space-x-8 animate-marquee whitespace-nowrap">
+        <img src="assets/lib/school_logos/sutd_logo_grayscale.png" class="h-8 lg:h-32 no-border "/>
+        <img src="assets/lib/school_logos/sst_logo_1x1_grayscale.png" class="h-16 lg:h-32 no-border"/>
+        <img src="assets/lib/school_logos/stpats_logo_1x1_grayscale.png" class="h-16 lg:h-32 no-border"/>
+        <img src="assets/lib/school_logos/CHIJKC_logo_1x1_grayscale.jpg" class="h-16 lg:h-32 no-border"/>
+        <img src="assets/lib/school_logos/swiss_cottage_grayscale.png" class="h-16 lg:h-32 no-border"/>
+        <img src="assets/lib/school_logos/cck_logo_1x1_grayscale.jpg" class="h-16 lg:h-32 no-border"/>
+        <!-- Duplicated to create "endless" loop effect -->
+        <img src="assets/lib/school_logos/sutd_logo_grayscale.png" class="h-8 lg:h-32 no-border "/>
+        <img src="assets/lib/school_logos/sst_logo_1x1_grayscale.png" class="h-16 lg:h-32 no-border"/>
+        <img src="assets/lib/school_logos/stpats_logo_1x1_grayscale.png" class="h-16 lg:h-32 no-border"/>
+        <img src="assets/lib/school_logos/CHIJKC_logo_1x1_grayscale.jpg" class="h-16 lg:h-32 no-border"/>
+        <img src="assets/lib/school_logos/swiss_cottage_grayscale.png" class="h-16 lg:h-32 no-border"/>
+        <img src="assets/lib/school_logos/cck_logo_1x1_grayscale.jpg" class="h-16 lg:h-32 no-border"/>
+    </div>
+    <!-- Right Fade -->
+    <div class="absolute top-0 right-0 h-full pointer-events-none w-28 bg-gradient-to-l from-white to-transparent"></div>
 </div>
 <section class=" lg:mx-60">
 <h2 class="my-8 text-3xl font-bold lg:text-4xl">School Engagement Modes</h2>

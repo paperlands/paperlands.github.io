@@ -12,8 +12,8 @@ module.exports = {
   theme: {
     extend: {
       animation: {
-        marquee: "marquee 25s linear infinite",
-        marquee2: "marquee2 25s linear infinite",
+        marquee: "marquee 50s linear infinite",
+        marquee2: "marquee2 50s linear infinite",
       },
       keyframes: {
         marquee: {
@@ -21,9 +21,9 @@ module.exports = {
           "100%": { transform: "translateX(-100%)" },
         },
         marquee2: {
-          "0%": { transform: "translateX(150%)" },
+          "0%": { transform: "translateX(100%)" },
           50: { transform: "translateX(0%)" },
-          "100%": { transform: "translateX(-150%)" },
+          "100%": { transform: "translateX(-100%)" },
         },
       },
       brightness: {},
