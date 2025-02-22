@@ -14,6 +14,8 @@ module.exports = {
       animation: {
         marquee: "marquee 50s linear infinite",
         marquee2: "marquee2 50s linear infinite",
+        fade: 'fadeIn 1s ease-in-out',
+        fadeout: 'fadeOut 5s forwards',
       },
       keyframes: {
         marquee: {
@@ -25,6 +27,14 @@ module.exports = {
           50: { transform: "translateX(0%)" },
           "100%": { transform: "translateX(-100%)" },
         },
+        fadeIn: {
+					from: { opacity: 0 },
+					to: { opacity: 1 },
+				},
+        fadeOut: {
+					from: { opacity: 1 },
+					to: { opacity: 0 },
+				},
       },
       brightness: {},
       fontFamily: {
