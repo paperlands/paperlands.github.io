@@ -3,7 +3,7 @@ import { Evaluator } from "./mafs/evaluate.js"
 import { Versor } from "./mafs/versors.js"
 import { RenderLoop } from "./renderer.js"
 import { Camera } from "./camera.js"
-import { seaBridge, cameraBridge } from "../bridged.js"
+import { seaBridge, cameraBridge } from "./bridged.js"
 
 export default class Turtle {
     constructor(canvas) {

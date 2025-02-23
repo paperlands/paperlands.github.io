@@ -4,7 +4,7 @@ author: princeton
 last_date: 25-09-2024
 ---
 
-## “Why” matters
+### The “Why” matters
 
 “Why must I learn this?"<br>
 I always asked this question as a kid. <br>

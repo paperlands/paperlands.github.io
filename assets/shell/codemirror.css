@@ -3,11 +3,10 @@
 .CodeMirror {
   /* Set height, width, borders, and global font properties here */
   font-family: monospace;
-  width: inherit;
-            height: inherit;
+  height: 80%;
+  margin: 8px;
   color: black;
   z-index: 2;
-  position: fixed;
   direction: ltr;
   background-color: rgba(255, 255, 255, .1)
 }
@@ -65,7 +64,7 @@
   z-index: 1;
 }
 .cm-fat-cursor .CodeMirror-line::selection,
-.cm-fat-cursor .CodeMirror-line > span::selection, 
+.cm-fat-cursor .CodeMirror-line > span::selection,
 .cm-fat-cursor .CodeMirror-line > span > span::selection { background: transparent; }
 .cm-fat-cursor .CodeMirror-line::-moz-selection,
 .cm-fat-cursor .CodeMirror-line > span::-moz-selection,
@@ -357,6 +356,31 @@ div.CodeMirror-dragcursors {
   cursor: pointer;
 }
 
+.CodeMirror-foldmarker {
+  text-shadow: #fff 1px 1px 2px, #b9f -1px -1px 2px, #b9f 1px -1px 2px, #b9f -1px 1px 2px;
+  line-height: .3;
+  cursor: pointer;
+  content: "❦";
+}
+.CodeMirror-foldgutter {
+width: 1em;
+}
+.CodeMirror-foldgutter-open,
+.CodeMirror-foldgutter-folded {
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: -5px
+  z-index: 5;
+}
+.CodeMirror-foldgutter-open:after {
+  content: "\25BE";
+
+}
+.CodeMirror-foldgutter-folded:after {
+  content: "\25B8";
+}
+
+
 li.CodeMirror-hint-active {
   background: #08f;
   color: white;
@@ -382,4 +406,3 @@ li.CodeMirror-hint-active {
 
 /* Help users use markselection to safely style text background */
 span.CodeMirror-selectedtext { background: none; }
-

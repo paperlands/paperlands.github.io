@@ -2,12 +2,15 @@
 //
 import Turtle from './turtling/turtle.js';
 import {parseProgram } from "./turtling/parse.js"
-var x = null
-var y = null
 
 // UI setup
 const canvas = document.getElementById('canvas');
+const output = document.getElementById('output');
 
+const turtle = new Turtle(canvas);
+const cachedVal = loadEditorContent()
+
+runCode(cachedVal, turtle, canvas)
 const editor = document.getElementById('editor');
 
 let shell = CodeMirror.fromTextArea(editor, {theme: "abbott",
@@ -49,25 +52,14 @@ let shell = CodeMirror.fromTextArea(editor, {theme: "abbott",
       };
     }, { completeSingle: true });
   }
-const output = document.getElementById('output');
 
-function runCode() {
+function runCode(code, turtle, canvas) {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-
-    const turtle = new Turtle(canvas);
-    const code = shell.getValue();
 
 
     try {
         const commands = parseProgram(code);
-
-        // Clear canvas
-        turtle.ctx.clearRect(0, 0, canvas.width, canvas.height);
-        turtle.reset();
-
-        // Execute all instructions
-        //turtle.executeBody(commands, {});
         turtle.draw(commands)
 
         // Display output
@@ -92,35 +84,39 @@ function debounce(func, wait) {
 }
 
 // Set up event listeners
-const debouncedRunCode = debounce(runCode, 300);
+const debouncedRunCode = debounce(runCode, 180);
 
 shell.setValue(loadEditorContent());
 
-function saveEditorContent() {
-  localStorage.setItem('@my.turtle', shell.getValue());
+function saveEditorContent(val) {
+  localStorage.setItem('@my.turtle', val);
 }
 
 function loadEditorContent() {
     return localStorage.getItem('@my.turtle') || `
-hd
-draw spiral size fo fi (
- beColour orange
- # arc begins
- for 360/[2*4] (
-  fw size
-  rt 2
- )
-  #fibonacci recurse
- spiral size*[fo+fi]/fi fi fi+fo
-)
-spiral 1 1 1`;
+draw hexagram curr prev do
+for 6 do
+  # triangles
+  for 3 do
+    fw curr
+    rt 120
+  end
+  rt 60
+  fw curr
+  end
+  rt 60
+  wait 0.1
+  jmp curr+prev/curr
+  hexagram curr+prev/curr curr
+end
+hexagram 100 100
+
+`
 }
 
 
 shell.on('change', function(cm, change) {
-    saveEditorContent();
-    debouncedRunCode()
+    const val = cm.getValue()
+    saveEditorContent(val);
+  debouncedRunCode(val, turtle, canvas)
 })
-
-// Run initial program
-runCode();
