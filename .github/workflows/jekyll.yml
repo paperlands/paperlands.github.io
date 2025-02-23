@@ -36,6 +36,17 @@ jobs:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
           cache-version: 0 # Increment this number if you need to re-download cached gems
 
+      - name: setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18
+      - run: npm ci
+
+      # Generates service worker
+      - name: generate sw
+        run: npx workbox generateSW workbox-config.js
+
+
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5

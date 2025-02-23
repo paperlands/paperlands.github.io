@@ -1,7 +1,7 @@
 // TurtleMonad class for managing state and commands'
 //
-import Turtle from './turtling/turtle.js';
-import {parseProgram } from "./turtling/parse.js"
+import Turtle from './turtle.js';
+import {parseProgram } from "./parse.js"
 
 // UI setup
 const canvas = document.getElementById('canvas');
