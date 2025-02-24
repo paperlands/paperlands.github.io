@@ -6,9 +6,9 @@ onlytailwind: true
 permalink: /turtle
 ---
 <!-- ! This page has been redirected to /dojo -->
-
+<canvas id="canvas" class="fixed w-full h-full animate-fade transition duration-200 bg-inherit"></canvas>
 <div id="runenv" class="fixed top-20 w-5/12 h-screen ">
-   <canvas id="canvas" class="fixed w-full h-full animate-fade transition duration-200 bg-inherit"></canvas>
+   
     <textarea 
       class="bg-transparent resize-none overflow-y-auto text-wrap no-scrollbar" 
       id="editor" 
