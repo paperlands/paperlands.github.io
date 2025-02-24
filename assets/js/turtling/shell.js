@@ -13,15 +13,18 @@ const cachedVal = loadEditorContent()
 runCode(cachedVal, turtle, canvas)
 const editor = document.getElementById('editor');
 
-let shell = CodeMirror.fromTextArea(editor, {theme: "abbott",
-                                               mode: "apl",
-                                             lineNumbers: true,
-                                             styleActiveLine: true,
-                                             autocorrect: true,
-                                             extraKeys: {
-                                                 "Ctrl-Space": function() {
-      snippet()
-    }}});
+let shell = CodeMirror.fromTextArea(editor, {theme: "abbott", mode: "plang", lineNumbers: true, lineWrapping: true,
+                styleActiveLine: {nonEmpty: true},
+                styleActiveSelected: true,
+            autocorrect: true,
+            foldGutter: true,
+            smartIndent: true,
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+
+            extraKeys: {
+                "Ctrl-Space": () => snippet(),
+                "Ctrl-/": (cm) => toggleComment(cm)
+            }});
 
  const snippets = [
     { text: 'fw 1', displayText: 'go forward 1 unit' },
@@ -52,6 +55,17 @@ let shell = CodeMirror.fromTextArea(editor, {theme: "abbott",
       };
     }, { completeSingle: true });
   }
+
+function toggleComment(cm) {
+        const selected = cm.getSelection();
+        if (selected) {
+            const lines = selected.split('\n');
+            const commented = lines.map(line => {
+                return line.startsWith('#') ? line.slice(1) : '# ' + line;
+            });
+            cm.replaceSelection(commented.join('\n'));
+        }
+    }
 
 function runCode(code, turtle, canvas) {
     canvas.width = window.innerWidth;

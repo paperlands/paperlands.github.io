@@ -7,7 +7,12 @@
 
   <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.title }}{% endif %}">
 
+{% if page.onlytailwind  %}
   <link rel="stylesheet" href="{{ "/assets/css/app.css" | relative_url }}">
+  {% else %}
+  <link rel="stylesheet" href="{{ "/assets/css/app.css" | relative_url }}">
+  <link rel="stylesheet" href="{{ site.baseurl }}/styles.css">
+{% endif %}
   <!-- <link
       rel="stylesheet"
       href="assets/css/paper.min.css"
@@ -26,8 +31,6 @@
   <script defer data-domain="paperland.in" src="https://odin.fly.dev/js/script.js"></script>
 
 
-
-  <link rel="stylesheet" href="{{ site.baseurl }}/styles.css">
 
   {% if page.excerpt %}
   <meta property="og:description" content="{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}"/>
