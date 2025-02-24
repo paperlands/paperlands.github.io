@@ -18,7 +18,7 @@
 }
 .CodeMirror pre.CodeMirror-line,
 .CodeMirror pre.CodeMirror-line-like {
-  padding: 0 4px; /* Horizontal padding of content */
+  padding: 0 12px; /* Horizontal padding of content */
 }
 
 .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
@@ -39,6 +39,7 @@
   text-align: left;
   color: #999;
   white-space: nowrap;
+  text-align: end;
 }
 
 .CodeMirror-guttermarker { color: black; }
