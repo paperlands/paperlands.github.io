@@ -6,16 +6,17 @@ image: /assets/lib/geometry_workshop.png
 permalink: /workshop
 ---
 
-<!-- Hero image -->
-<img rel="preload" class="absolute top-0 left-0 w-screen h-[44vh] object-cover brightness-50 -z-10 sm:h-[60vh]" src="/assets/lib/landing/knowledge_park_16x9.webp" alt="Code and Craft workshop">
-<!-- Hero text -->
-<h1 class="text-5xl font-bold tracking-tighter lg:text-9xl">Math x Coding</h1>
-<p class="ml-2 text-white">Discover mathematics through computation</p>
-<p class="mt-4 ml-2 text-white">Block 71</p>
-<p class="ml-2 text-white">6.30pm-8.30pm</p>
-<p class="ml-2 text-white">Every Friday</p>
-<br>
-<a href="/workshop#register" class="px-4 py-2 ml-2 rounded-md bg-primary internal-link">Sign up now!</a>
+<section class="h-[40vh] md:h-[48vh] lg:h-[52vh]">
+  <video class="absolute top-0 left-0 w-screen h-[48vh] object-cover brightness-[40%] -z-10 md:h-[56vh] lg:h-[60vh]" src="/assets/lib/landing/workshop_hero_video.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
+
+  <h1 class="text-5xl font-bold tracking-tighter lg:text-9xl">Math x Coding</h1>
+  <p class="ml-2 text-white">Discover mathematics through computation</p>
+  <p class="mt-4 ml-2 text-white">Beside Beauty World Mrt</p>
+  <p class="ml-2 text-white">9am-12pm</p>
+  <p class="ml-2 text-white">21st March (fri)</p>
+  <br>
+  <a href="/workshop#register" class="px-4 py-2 ml-2 rounded-md bg-primary internal-link">Sign up now!</a>
+</section>
 
 
 
@@ -45,7 +46,7 @@ The beauty of mathematics is revealed by <strong class="text-orange-500">uncover
 
 <!-- Knowledge Park section -->
 <section class="my-32">
-<h2 class="my-8 font-bold  text-3xl lg:text-4xl">"Discover Through Code & Play!"</h2>
+<h2 class="my-8 text-3xl font-bold lg:text-4xl">"Discover Through Code & Play!"</h2>
 
 The best way to learn math is by <strong class="text-orange-500">exploring and experimenting. </strong>
 <br>
@@ -140,13 +141,15 @@ In our workshop, students will program computers to <strong class="text-orange-5
         </tr>
         <tr>
           <td class="p-2 border">Time</td>
-          <td class="p-2 border">6.30pm-8.30pm (2hours)</td>
+          <td class="p-2 border">9am-12pm (3hours)</td>
         </tr>
         <tr>
           <td class="p-2 border">Location</td>
           <td class="p-2 border">
-          <a href="https://maps.app.goo.gl/QtTiYx6bRrHUQZCMA">Block 71, Ayer Rajah Crescent, Level 4<br>
-            Singapore 139951 </a></td>
+          <!-- <a href="https://maps.app.goo.gl/QtTiYx6bRrHUQZCMA">Block 71, Ayer Rajah Crescent, Level 4<br>
+            Singapore 139951 </a></td> -->
+          <a href="https://maps.app.goo.gl/2Gqxv1FnkXRw1zfw5">25 Lorong Kilat, #02-03<br>
+            Singapore 598126</a></td>
         </tr>
       </tbody>
     </table>
