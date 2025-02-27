@@ -13,12 +13,13 @@ layout: default
       {% endif %}
     </time>
   </div>
-  <div  class="prose prose-headings:underline lg:prose-lg w-full">
+  <div  class="prose prose-headings:text-orange-700   prose-headings:underline lg:prose-lg w-full">
     <content>
       {{ content }}
-      <div style="text-align: right; color: #f93;"> <i>~ {{ page.author }}</i></div>
-      <hr><br>
     </content>
+  </div>
+  <div style="text-align: right; color: #f93;"> <i>~ {{ page.author }}</i></div>
+      <hr><br>
 
     <side style="font-size: 0.9em">
       {% if page.backlinks.size > 0 %}
@@ -33,7 +34,6 @@ layout: default
       </div>
     </side>
       {% endif %}
-  </div>
 </article>
 
 

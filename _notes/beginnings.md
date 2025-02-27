@@ -8,14 +8,16 @@ last_date: 21-07-2024
 
 ## Thinking
 
-Thinking is often intertwined with the context in which it is done in and expressed with. 
-Even the tools used to express thought influences the thinking itself. 
+Thinking doesn't happen in empty space. 
+Our thinking carries the weight of its surroundings. 
+Bound to the context in which the thinking is being done in and what it is expressed with.
+This is especially true for the tools we use for expressing thought. 
 Two of the greatest of such tools have been writing and mathematical notation. 
-These tools help us scafold, adapt and even extend our thinking processes. 
-Such powerful tools need not only be notational or symbolic in nature. They can be physical too!
-For example, in the presence of an abacus, the human mind exploits it much like a scaffold around which to structure cognitive operations. 
-The abacus extends our thoughts from the human minds into the external world. 
-Since then, other computational environments have been at the forefront of this process of helping people and businesses reason about processes that they want to observe, intervene, model and share.
+These tools help us to remember, scaffold, adapt and even extend our thinking processes. 
+Such powerful tools need not only be symbolic in nature. They can be physical too!
+For example, in the presence of an abacus, the human mind exploits it much like a scaffold around which to structure thinking processes like adding. 
+The abacus extends our thoughts from the our inner minds into the external world. 
+Since then, other computational environments have been at the forefront of this process in helping people and businesses reason about processes that they observe, intervene, model and share.
 
 {% include figure image_path="assets/lib/kids.jpg" alt="" caption="Computational thinking is about formulating the thinking about processes with enough clarity, and in a systematic way that it can be firstly understood by people, and only incidentally to the extent that it can tell even a computer what to do" %}
 
@@ -33,18 +35,18 @@ However, with a computational environment,
 Seymour Papert called this process the microworld where all childen engage in creation of little pockets of reality, where they grow a sense of bearing and footing to feel at home in with a piece of knowledge (say counting but in counting using hands world or using coins world or using clocks world etc.). 
 He believed computers is the interactive tool through which the process of exploring these [microworlds](/assets/lib/microworlds.pdf){: .internal-link} suited for education becomes "a more natural and spontaneous one, similar to the way children learn language"
 {% endmargin %}
-interaction can take the place of instruction and the shared construction of a rich simulated world for example one of wolves eating sheeps or the spread of wildfires can easily help kids play around with "abstract concepts" like exponentials and decay functions simply by doing and manipulating simple parameters.
+interaction can take the place of instruction and the shared construction of a rich simulated world for example one of wolves eating sheeps or the spread of wildfires can easily help kids play around with "abstract concepts" like exponentials and decay functions simply by setting up and manipulating simple parameters.
 
 We need a process to support our thinking about other things around us.[^1] 
-"Computation" here is just a means of representation of just such a process - it is meant for trying out ideas with and get objective results as opposed to a situation where they could only think about it inside their heads, unable to bring those ideas out into the world and see the results. 
-
-We believe that computers are a means to enlarge and extend the reach of human thought itself.
+"Computation" here is just a means of representation of just such a process - it is meant for trying out ideas with and get objective results as opposed to a situation where they could only think about it inside their heads, unable to express and bring those ideas out into the world and see the results.
+ 
+We believe that computers are a means for children to express their inner learning processes to enlarge it and share it with others.
 
 
 
 ## Teaching
 
-Surprisingly, students are very comfortable with adapting new technologies. 
+Surprisingly, students are very comfortable with adapting to new ways of learning and thinking. 
 It is the teachers that serve as the gatekeepers to better thinking tools.
 To cultivate an environment that enables active learning, addressing the needs of the teacher is essential. 
 It is they who can relate and touch the chords that resonates with the experiences of the learners in classroom. 
@@ -53,7 +55,8 @@ Hence, the environment which the teacher introduces to the classroom has to feel
 Teachers need to feel confident in navigating and contextualising learning through the tool. 
 This would be in building the right scaffoldings for onramping teachers.  
 Classrooms time which would be the most fruitful of time to conduct such exploratory learning also happen to be the most scarce. 
-We need to facilitate their ability to moor the class and intervene with confidence when needed (e.g showcasing one of the learners work / debugging a gap in the mental picture of a student)
+We need to facilitate their ability to guide the classroom and intervene with confidence when needed. 
+This might express itself in how they showcasing one of the students work or bridge a gap in the mental picture of one student and relate it with others
  
 We believe that teaching computation should enable a lively process of co-discovery between teachers and students. 
  
@@ -61,27 +64,22 @@ We believe that teaching computation should enable a lively process of co-discov
 
 ## Together
   
+  
+A learner engages most when building in the open. Watch children with sandcastles on the beach or Lego bricks on the floor. They look over shoulders. They push at what others have made. They copy. They try their own thing. They take half an idea here, another half there. They show their work proudly. They build to try to express what they already see in their heads.
 
-The learner is most consciously engaged when building something in the open with others, whether it's a sand castle on the beach or clamping lego bricks together. 
-They look over each others shoulder, push around what their friends have done, try to copy what others are doing, or start something totally different from what others are doing, pick up half an idea here and another half from somewhere else, show off what they have done in their own way, express what they already see in their head.
+The fundamental aspects of collaboration, exploration, and building together are universal in learning.
 
-
-The fundamental aspects of collaboration, exploration, and building together are universal.
-
-
-Whether it’s children playing and learning through building and sharing ideas, or seasoned software developers working on projects together, the core principles of engagement, collaboration, and learning through doing are the same.
+Whether it’s chidlbren playing and learning through building and sharing ideas, or seasoned software developers working on projects together, the core principles of engagement, collaboration, and learning through doing are the same.
 
 The colloborative, cooperative and competitive behavior is what drives and brings momentum in learning to everything from sports to music. 
 
-Why then is our first programming class we start with a single player shell or notebook that we use on your own? 
+Then why does our first programming class put us alone with a single player shell or notebook? Any online multiplayer game knows better on how to get people to work toward shared goals together in real time.
 
-Any online multiplayer game seems to have a better idea what it means to colloborate to achieve shared objectives in realtime together.
+Seasoned programmers rely on purposeful asynchronous collaborative tools such as Git to achieve shared goals but what is its equivalent in a synchronous in-person classroom? 
 
-Seasoned programmers rely on purposeful asynchronous collaborative tools such as Git to achieve shared goals but what is its equivalent in a synchronous live classroom setting? 
+We believe that learning through computation should spur the spirit of conviviality and camraderie in us just as any street sport would.
 
-We believe that learning computation should spur the spirit of conviviality and camraderie in us just as any street sport would.
-
-In Paperland, we believe in bring people together in discovering the joy of the world through computation
+In Paperland, we believe in bringing people together in discovering the joy of the world through computation
 
 
 [^1]: "You can’t think about thinking without thinking about thinking about something. -- S.Papert" 
