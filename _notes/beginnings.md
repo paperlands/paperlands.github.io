@@ -8,21 +8,18 @@ last_date: 21-07-2024
 
 ## Thinking
 
-Thinking doesn't happen in empty space. 
-Our thinking carries the weight of its surroundings. 
-Bound to the context in which the thinking is being done in and what it is expressed with.
-This is especially true for the tools we use for expressing thought. 
-Two of the greatest of such tools have been writing and mathematical notation. 
-These tools help us to remember, scaffold, adapt and even extend our thinking processes. 
-Such powerful tools need not only be symbolic in nature. They can be physical too!
-For example, in the presence of an abacus, the human mind exploits it much like a scaffold around which to structure thinking processes like adding. 
-The abacus extends our thoughts from the our inner minds into the external world. 
-Since then, other computational environments have been at the forefront of this process in helping people and businesses reason about processes that they observe, intervene, model and share.
+
+Thinking never occurs in isolation. It is inextricably bound to its surroundings, shaped by the context in which it unfolds and the tools we use to give it form. Just as a river finds its path through a landscape, our thoughts are channeled and transformed by the environments and instruments that scaffold them. 
+
+Among the most profound of these tools are writing and mathematical notation - symbolic systems that we rely on to not only communicate ideas but also actively shape how we remember, refine, and expand our process of thinking.
+  
+Since the 20th Century, computational environments have taken the helm at the forefront of tools for thinking by helping people and businesses learn and reason about the processes that we have to observe, intervene in, model and share. 
+
+These could be an salesman playing around with a spreadsheet column, an architect in a computer aided design environemt or a film director making his final cuts on his favourite video editing software. At their best, these environments translate our inner intentions into malleable external objects for us to interact with, adapt and change fitting it to our larger vision. 
 
 {% include figure image_path="assets/lib/kids.jpg" alt="" caption="Computational thinking is about formulating the thinking about processes with enough clarity, and in a systematic way that it can be firstly understood by people, and only incidentally to the extent that it can tell even a computer what to do" %}
 
-The problem today is that computers are still being ill treated as modes for **instruction** in class when in fact, they are a far richer tool as modes for **interaction**. 
-It is still the child and the paper and the teacher, just that the paper has been substituted for the screen. 
+The problem today is that computational environments are not living up to their potential as tools for thinking in classrooms. There are often ill treated as modes for **instruction** in class when in fact, they are a far richer tool as modes for **interaction**.  It is still the child and the paper and the teacher, just that the paper has been substituted for the screen. 
 
 ## Interacting
 
@@ -52,11 +49,11 @@ To cultivate an environment that enables active learning, addressing the needs o
 It is they who can relate and touch the chords that resonates with the experiences of the learners in classroom. 
 Hence, the environment which the teacher introduces to the classroom has to feel familiar to them and gain their confidence.
 
-Teachers need to feel confident in navigating and contextualising learning through the tool. 
-This would be in building the right scaffoldings for onramping teachers.  
-Classrooms time which would be the most fruitful of time to conduct such exploratory learning also happen to be the most scarce. 
+ 
+Classrooms time which would be the most fruitful of time to conduct such exploratory learning also happen to be the most scarce.
+Teachers need to feel confident in navigating and contextualising learning through the tool.
 We need to facilitate their ability to guide the classroom and intervene with confidence when needed. 
-This might express itself in how they showcasing one of the students work or bridge a gap in the mental picture of one student and relate it with others
+This might express itself in how they might showcase one of the students work or bridge a missing part in the mental picture of one student and relate it with others in the class.
  
 We believe that teaching computation should enable a lively process of co-discovery between teachers and students. 
  
