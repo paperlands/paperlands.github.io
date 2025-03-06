@@ -39,7 +39,7 @@ permalink: /teachers_workshop
       </tr>
       <tr>
         <td class="p-2 border">Price</td>
-        <td class="p-2 border">$10 <s>(U.P $100)</s></td>
+        <td class="p-2 border">$10</td>
       </tr>
     </tbody>
   </table>
