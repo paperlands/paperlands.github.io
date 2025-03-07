@@ -25,18 +25,18 @@ nav_color: white
 <!-- Discovering mathematics section -->
 <section class="mb-8 lg:mx-60">
 <h2 class="my-8 text-3xl font-bold text-center lg:text-4xl">Discovering Mathematics</h2><hr class="mb-8">
-Learning mathematics can be much more than a path to be followed, it can be a  <strong class="text-orange-950">journey of personal discovery</strong>.
+Learning mathematics can be much more than a path to be followed, it can be a  <strong class="text-orange-850">journey of personal discovery</strong>.
 <br>
 <br> 
-Students <strong class="text-orange-950">create</strong> their own computational objects,  <strong class="text-orange-950">investigate</strong> hidden mathematical patterns and <strong class="text-orange-950">share</strong> their discoveries together with their classmates.
+Students <strong class="text-orange-850">create</strong> their own computational objects,  <strong class="text-orange-850">investigate</strong> hidden mathematical patterns and <strong class="text-orange-850">share</strong> their discoveries together with their classmates.
 <br>
 <br>
- As students teach the computer how to act and <strong class="text-orange-950">debug</strong> its behaviour, they begin to<strong class="text-orange-950"> reflect on their own actions and understanding</strong>.
+ As students teach the computer how to act and <strong class="text-orange-850">debug</strong> its behaviour, they begin to<strong class="text-orange-850"> reflect on their own actions and understanding</strong>.
  
- They will reformulate original hypotheses, model the world around them and validate how math shapes the world – making learning <strong class="text-orange-950">fun, interactive, and meaningful!</strong> 
+ They will reformulate original hypotheses, model the world around them and validate how math shapes the world – making learning <strong class="text-orange-850">fun, interactive, and meaningful!</strong> 
 <br>
 <br>
-Here at <strong class="text-orange-950">PaperLand</strong>, we are building the computational approach to foster more math explorers!
+Here at <strong class="text-orange-850">PaperLand</strong>, we are building the computational approach to foster more math explorers!
 <br>
 
 </section>
@@ -71,12 +71,12 @@ Here at <strong class="text-orange-950">PaperLand</strong>, we are building the 
 <section class="mb-8 mt-36 lg:mx-60">
 <h2 class="my-8 text-3xl font-bold text-center lg:text-4xl">From 1st Principles</h2><hr class="mb-8">
 
-We are designing our lessons around concepts learned in school, but from a <strong class="text-orange-950">1st principles</strong> perspective.<br>
+We are designing our lessons around concepts learned in school, but from a <strong class="text-orange-850">1st principles</strong> perspective.<br>
 <br>
 
-From uncovering where the "sum of exterior angles" in polygons in <strong class="text-orange-950">geometry</strong> comes from,<br>
-to rediscovering <strong class="text-orange-950">calculus</strong> from a geometric perspective by observing change across the unit circle,<br>
-to using <strong class="text-orange-950">algebra</strong> and <strong class="text-orange-950">abstraction</strong> to form faces that composes proportionally with their friends' eye.<br>
+From uncovering where the "sum of exterior angles" in polygons in <strong class="text-orange-850">geometry</strong> comes from,<br>
+to rediscovering <strong class="text-orange-850">calculus</strong> from a geometric perspective by observing change across the unit circle,<br>
+to using <strong class="text-orange-850">algebra</strong> and <strong class="text-orange-850">abstraction</strong> to form faces that composes proportionally with their friends' eye.<br>
 <br>
 
 The world of computation and mathematics is very deep and we have only just scratched the surface!
@@ -174,21 +174,21 @@ The world of computation and mathematics is very deep and we have only just scra
 We adapt every engagement to fit the context and student profile of each school. Here are some ways we can kickstart this collaboration with you too:<br>
 <br>
 
-<strong class="text-orange-950">1. Workshop series:</strong><br>
+<strong class="text-orange-850">1. Workshop series:</strong><br>
 <div class="ml-5">
-We tailor our workshops for a variety of student profiles. Some students are faster while others need more support. One beautiful aspect about learning through computation is that it's <strong class="text-orange-950">flexible</strong> enough to accomodate all.<br>
+We tailor our workshops for a variety of student profiles. Some students are faster while others need more support. One beautiful aspect about learning through computation is that it's <strong class="text-orange-850">flexible</strong> enough to accomodate all.<br>
 </div>
 <br>
 
-<strong class="text-orange-950">2. Student-Initiated Learning:</strong><br>
+<strong class="text-orange-850">2. Student-Initiated Learning:</strong><br>
 <div class="ml-5">
-We designed a series of 1hr <strong class="text-orange-950">online lessons</strong> to engage students in mathematical exploration. Since we are exploring concepts from a geometrical perspective, students naturally explore ways to <strong class="text-orange-950">build</strong> elaborate works of art. The SIL program ends with us laser engraving the mathematical works of art made by students in the final lesson.<br>
+We designed a series of 1hr <strong class="text-orange-850">online lessons</strong> to engage students in mathematical exploration. Since we are exploring concepts from a geometrical perspective, students naturally explore ways to <strong class="text-orange-850">build</strong> elaborate works of art. The SIL program ends with us laser engraving the mathematical works of art made by students in the final lesson.<br>
 </div>
 <br>
 
-<strong class="text-orange-950">3. Lesson Co-designing:</strong><br>
+<strong class="text-orange-850">3. Lesson Co-designing:</strong><br>
 <div class="ml-5">
-Some math teachers are really inspired by the computation approach and want to explore how they can use it in their classrooms during curriculum time. We work with them to <strong class="text-orange-950">co-design lesson plans</strong> according to their scheme of work for the year. These are super exciting as we are pushing the <strong class="text-orange-950">frontier</strong> of math education together.<br>
+Some math teachers are really inspired by the computation approach and want to explore how they can use it in their classrooms during curriculum time. We work with them to <strong class="text-orange-850">co-design lesson plans</strong> according to their scheme of work for the year. These are super exciting as we are pushing the <strong class="text-orange-850">frontier</strong> of math education together.<br>
 </div>
 <br>
 
