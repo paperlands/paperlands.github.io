@@ -46,7 +46,7 @@ Here at <strong class="text-orange-850">PaperLand</strong>, we are building the 
             <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt="abstraction workshop">
         </div>
         <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/tree.mp4" alt="tree animation" autoplay loop muted playsinline />
+            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/sine_curve.mp4" alt="sine curve animation" autoplay loop muted playsinline />
         </div>
         <div>
             <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/knowledge_park_16x9.webp" alt="student care center workshop">
@@ -54,13 +54,13 @@ Here at <strong class="text-orange-850">PaperLand</strong>, we are building the 
     </div>
     <div class="grid gap-4">
         <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/polygon.mp4" alt="shell animation" autoplay loop muted playsinline />
+            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/polygon.mp4" alt="polygon animation" autoplay loop muted playsinline />
         </div>
         <div>
             <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/senang_16x9.webp" alt="student care center workshop">
         </div>
         <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/shell.mp4" alt="polygon animation" autoplay loop muted playsinline />
+            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/prime_numbers.mp4" alt="prime numbers animation" autoplay loop muted playsinline />
         </div>
     </div>
 </div>
@@ -84,13 +84,13 @@ The world of computation and mathematics is very deep and we have only just scra
 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
     <div class="hidden sm:grid sm:gap-4">
         <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/xsinx.mp4" alt="benz animation" autoplay loop muted playsinline />
+            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/xsinx.mp4" alt="xsin(x) animation" autoplay loop muted playsinline />
         </div>
         <div>
             <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/SUTD_calculus_16x9.jpg" alt="calculus workshop">
         </div>
         <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/benz.mp4" alt="xsin(x) animation" autoplay loop muted playsinline />
+            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/tree.mp4" alt="tree animation" autoplay loop muted playsinline />
         </div>
     </div>
     <div class="grid gap-4">
