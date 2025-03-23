@@ -46,7 +46,7 @@ Here at <strong class="text-orange-850">PaperLand</strong>, we are building the 
             <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt="abstraction workshop">
         </div>
         <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/sine_curve.mp4" alt="sine curve animation" autoplay loop muted playsinline />
+            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/sine_curve.webm" alt="sine curve animation" autoplay loop muted playsinline />
         </div>
         <div>
             <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/knowledge_park_16x9.webp" alt="student care center workshop">
@@ -60,7 +60,7 @@ Here at <strong class="text-orange-850">PaperLand</strong>, we are building the 
             <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/senang_16x9.webp" alt="student care center workshop">
         </div>
         <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/prime_numbers.mp4" alt="prime numbers animation" autoplay loop muted playsinline />
+            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/prime_numbers.webm" alt="prime numbers animation" autoplay loop muted playsinline />
         </div>
     </div>
 </div>
