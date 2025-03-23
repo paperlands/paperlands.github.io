@@ -30,33 +30,6 @@ body {
     margin-right: auto;
 }
 
-figure, figure img.maincolumn { max-width: 55%;
-         position: relative;
-         -webkit-margin-start: 0;
-         -webkit-margin-end: 0;
-         margin-bottom: 3em; }
-
-figcaption { float: right;
-             clear: right;
-             margin-right: -75%;
-             position: absolute;
-             top: 10px;
-             right: 0px;
-             margin-top: 0;
-             margin-bottom: 0;
-             font-size: 1.0rem;
-             line-height: 1.6;
-             vertical-align: baseline;
-             max-width: 70%; }
-
-figure.fullwidth figcaption { float: left; margin-right: 0%; margin-left: 36%; }
-@media screen and (max-width: 1024px) {
-  figure { max-width: 90%; }
-  figcaption, figure.fullwidth figcaption { margin-right: 0%;
-                                              padding: 1em;
-
-                                            position: relative;
-                                            max-width: none; }}
 
 .tooltip-wrapper {
   background: white;

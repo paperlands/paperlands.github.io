@@ -1,12 +1,15 @@
-<figure class="{{ include.class }}">
-  <img src=
-    {% if include.image_path contains "://" %}
-      "{{ include.image_path }}"
-    {% else %}
-      "{{ include.image_path | absolute_url }}"
-    {% endif %}
-    alt="{% if include.alt %}{{ include.alt }}{% endif %}">
+<div class="relative {% if include.fullwidth %}w-full{% else %}w-4/5 md:w-[55%]{% endif %} mb-12 {{ include.class }}">
+  <figure class="p-0 border-0 m-0">
+    <img
+      src="{% if include.image_path contains '://' %}{{ include.image_path }}{% else %}{{ include.image_path | absolute_url }}{% endif %}"
+      alt="{% if include.alt %}{{ include.alt }}{% endif %}"
+      class="w-full h-auto"
+    >
+  </figure>
+
   {% if include.caption %}
-    <figcaption>{{ include.caption | markdownify | remove: "<p>" | remove: "</p>" }}</figcaption>
+    <div class="md:absolute md:top-0 md:right-0 md:w-[40%] md:-mr-[45%] mt-2 md:mt-0 font-serif text-gray-700 text-base leading-relaxed">
+      {{ include.caption | markdownify | remove: "<p>" | remove: "</p>" }}
+    </div>
   {% endif %}
-</figure>
+</div>

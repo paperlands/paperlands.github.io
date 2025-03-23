@@ -2,6 +2,7 @@
 title: Beginnings
 author: bala
 last_date: 21-07-2024
+heroimgurl: assets/lib/kids.jpg
 ---
 > "...[the computer] is a medium that can dynamically simulate the details of any other medium, including media that cannot exist physically ... it has degrees of freedom for representation and expression never before encountered and as yet barely investigated." <br>
 ––– Alan Kay, Sunrise Notes Number 2, June 1990, p.29

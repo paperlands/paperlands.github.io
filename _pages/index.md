@@ -23,7 +23,7 @@ nav_color: white
 
 
 <!-- Discovering mathematics section -->
-<section class="mb-8 lg:mx-60">
+<section class="mt-24 mb-8 lg:mx-32">
 <h2 class="my-8 text-3xl font-bold text-center lg:text-4xl">Discovering Mathematics</h2><hr class="mb-8">
 Learning mathematics can be much more than a path to be followed, it can be a  <strong class="text-orange-850">journey of personal discovery</strong>.
 <br>
@@ -68,7 +68,7 @@ Here at <strong class="text-orange-850">PaperLand</strong>, we are building the 
 
 
 <!-- 1st Principles section -->
-<section class="mb-8 mt-36 lg:mx-60">
+<section class="mb-8 mt-36 mx-auto lg:mx-32">
 <h2 class="my-8 text-3xl font-bold text-center lg:text-4xl">From 1st Principles</h2><hr class="mb-8">
 
 We are designing our lessons around concepts learned in school, but from a <strong class="text-orange-850">1st principles</strong> perspective.<br>
@@ -124,24 +124,50 @@ The world of computation and mathematics is very deep and we have only just scra
 
 
 
-<section id="blog" class="mt-36 lg:mx-60">
-  <h2 class="my-8 text-4xl text-center">Blog</h2><hr>
-  <div class="grid grid-cols-1 gap-4 my-8 sm:grid-cols-2">
+<section id="blog" class="mt-36 ">
+  <h2 class="my-8 text-4xl font-light tracking-tight text-center">Blog.</h2>
+  <hr>
+  <div class="grid grid-cols-1 gap-8 my-12 sm:grid-cols-2">
     {% assign recent_notes = site.notes | sort: "last_modified_at_timestamp" | reverse %}
-      {% for note in recent_notes limit: 5 %}
-          <div class="p-4 border rounded-lg bg-primary-light">
-            <!-- <img src="assets/lib/conquer.png" alt="Placeholder Image" class="object-cover rounded-md"> -->
-            <div class="px-1 py-4">
-              <a class="internal-link" href="{{ site.baseurl }}{{ note.url }}" data-tooltip="true">{{ note.title }}</a>
-              <p class="text-base text-gray-700">
-                {{ note.last_date | date: "%Y-%m-%d" }}
-              </p>
-            </div>
-          </div>
-      {% endfor %}
+    {% for note in recent_notes limit: 5 %}
+      <div class="group relative overflow-hidden rounded-lg transition-all duration-300 hover:shadow-md">
+      <a href="{{ site.baseurl }}{{ note.url }}" data-tooltip="true" >
+        <div class="relative h-64 overflow-hidden">
+          <img 
+            src="{{note.heroimgurl}}" 
+            alt="" 
+            class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105"
+          >
+          <!-- Hovering effect -->
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent opacity-100 transition-opacity duration-300 group-hover:from-amber-900/80"></div>
+        </div>
+        
+        <!-- Content that slides up on hover -->
+        <div class="absolute bottom-0 left-0 right-0 p-6 transform transition-transform duration-300 translate-y-8 group-hover:translate-y-0">
+          <!-- Date with minimal styling -->
+          <p class="text-xs font-light text-white/80 mb-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            {{ note.last_date | date: "%B %d, %Y" }}
+          </p>
+          
+          <!-- Title with emphasis -->
+          <div 
+            class="block text-xl font-medium text-white transition-colors duration-300" 
+          
+          >{{ note.title }}</div>
+          
+          <!-- Read more link that appears on hover -->
+          <p class="mt-3 inline-flex items-center text-sm text-white/90 opacity-0 transition-all duration-300 group-hover:opacity-100">
+            Learn more..
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </p>
+        </div>
+        </a>
+      </div>
+    {% endfor %}
   </div>
 </section>
-
 
 
 
@@ -188,7 +214,7 @@ We designed a series of 1hr <strong class="text-orange-850">online lessons</stro
 
 <strong class="text-orange-850">3. Lesson Co-designing:</strong><br>
 <div class="ml-5">
-Some math teachers are really inspired by the computation approach and want to explore how they can use it in their classrooms during curriculum time. We work with them to <strong class="text-orange-850">co-design lesson plans</strong> according to their scheme of work for the year. These are super exciting as we are pushing the <strong class="text-orange-850">frontier</strong> of math education together.<br>
+We explore how math teachers can bring  it in their classrooms during curriculum time. We work with them to <strong class="text-orange-850">co-design lesson plans</strong> according to their <strong class="text-orange-850">scheme of work</strong> for the year. These are super exciting as we are pushing the <strong class="text-orange-850">frontier</strong> of math education together.<br>
 </div>
 <br>
 

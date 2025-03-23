@@ -2,11 +2,10 @@
 title: Why Must I Learn This?
 author: princeton
 last_date: 25-09-2024
+heroimgurl: assets/lib/apprenticeship.jpg
 ---
 
-### The “Why” matters
 
-“Why must I learn this?"<br>
 I always asked this question as a kid. <br>
 The common replies are:<br>
 - "I don't really know"
@@ -17,6 +16,8 @@ The common replies are:<br>
 Honestly, these answers never really satisfied my curiosity.<br>
 Soon I stopped asking why.<br>
 Eventually I just followed mindlessly along.<br>
+
+### The “Why” matters
 
 Though, that nagging feeling that something was off always stayed with me.<br>
 Something about school just doesn’t quite resonate with real life.<br>

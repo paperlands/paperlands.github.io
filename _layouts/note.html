@@ -3,17 +3,22 @@ layout: default
 ---
 
 <article>
-  <div>
-    <h1>{{ page.title }}</h1>
-    <p style="font-size: 0.8em; float: right;">From the desks <a class="internal-link" href="/about"> <b>@paperland</b></a>.
-      <br>
-    </p>
-    <time datetime="{{ page.last_modified_at | date_to_xmlschema }}">{% if page.type != 'pages' %}
-      Last updated on {{ page.last_modified_at | date: "%B %-d, %Y" }}
-      {% endif %}
-    </time>
+  <div class="flex flex-col space-y-2 mb-6">
+    <h1 class="font-bold md:mr-32 lg:mr-80">{{ page.title }}</h1>
+
+    <div class="flex justify-between items-center">
+      <time datetime="{{ page.last_modified_at | date_to_xmlschema }}" class="text-sm text-gray-600">
+        {% if page.type != 'pages' %}
+        Last updated on {{ page.last_modified_at | date: "%B %-d, %Y" }}
+        {% endif %}
+      </time>
+
+      <p class="text-sm text-gray-600 text-right">
+        From the desks <a class=" hover:underline" href="/about"><b>@paperland</b></a>
+      </p>
+    </div>
   </div>
-  <div  class="prose prose-headings:text-orange-700   prose-headings:underline lg:prose-lg w-full">
+  <div  class="prose prose-headings:text-orange-700 lg:prose-lg w-full">
     <content>
       {{ content }}
     </content>
