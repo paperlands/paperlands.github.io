@@ -176,8 +176,9 @@ The world of computation and mathematics is very deep and we have only just scra
     <!-- Left Fade -->
     <div class="absolute top-0 left-0 z-10 w-20 h-full pointer-events-none lg:w-28 bg-gradient-to-r from-white to-transparent"></div>
     <!-- marquee -->
-    <div class="flex space-x-8 animate-marquee whitespace-nowrap">
+    <div class="flex items-center space-x-8 animate-marquee whitespace-nowrap">
         <img src="assets/lib/school_logos/sutd_logo_grayscale.png" class="h-8 lg:h-32 no-border "/>
+        <img src="assets/lib/school_logos/etonhouse_logo_grayscale.png" class="h-8 lg:h-32 no-border "/>
         <img src="assets/lib/school_logos/sst_logo_1x1_grayscale.png" class="h-16 lg:h-32 no-border"/>
         <img src="assets/lib/school_logos/stpats_logo_1x1_grayscale.png" class="h-16 lg:h-32 no-border"/>
         <img src="assets/lib/school_logos/CHIJKC_logo_1x1_grayscale.jpg" class="h-16 lg:h-32 no-border"/>
@@ -185,6 +186,7 @@ The world of computation and mathematics is very deep and we have only just scra
         <img src="assets/lib/school_logos/cck_logo_1x1_grayscale.jpg" class="h-16 lg:h-32 no-border"/>
         <!-- Duplicated to create "endless" loop effect -->
         <img src="assets/lib/school_logos/sutd_logo_grayscale.png" class="h-8 lg:h-32 no-border "/>
+        <img src="assets/lib/school_logos/etonhouse_logo_grayscale.png" class="h-8 lg:h-32 no-border "/>
         <img src="assets/lib/school_logos/sst_logo_1x1_grayscale.png" class="h-16 lg:h-32 no-border"/>
         <img src="assets/lib/school_logos/stpats_logo_1x1_grayscale.png" class="h-16 lg:h-32 no-border"/>
         <img src="assets/lib/school_logos/CHIJKC_logo_1x1_grayscale.jpg" class="h-16 lg:h-32 no-border"/>
