@@ -174,27 +174,27 @@ The world of computation and mathematics is very deep and we have only just scra
 <!-- School Engagement Modes section -->
 <div class="relative w-full overflow-hidden mt-52">
     <!-- Left Fade -->
-    <div class="absolute top-0 left-0 z-10 w-20 h-full pointer-events-none lg:w-28 bg-gradient-to-r from-white to-transparent"></div>
+    <div class="absolute top-0 left-0 z-10 w-20 h-full pointer-events-none lg:w-28 bg-gradient-to-r from-bg-background to-transparent"></div>
     <!-- marquee -->
     <div class="flex items-center space-x-8 animate-marquee whitespace-nowrap">
         <img src="assets/lib/school_logos/sutd_logo_grayscale.png" class="h-8 lg:h-32 no-border "/>
         <img src="assets/lib/school_logos/etonhouse_logo_grayscale.png" class="h-8 lg:h-32 no-border "/>
         <img src="assets/lib/school_logos/sst_logo_1x1_grayscale.png" class="h-16 lg:h-32 no-border"/>
         <img src="assets/lib/school_logos/stpats_logo_1x1_grayscale.png" class="h-16 lg:h-32 no-border"/>
-        <img src="assets/lib/school_logos/CHIJKC_logo_1x1_grayscale.jpg" class="h-16 lg:h-32 no-border"/>
-        <img src="assets/lib/school_logos/swiss_cottage_grayscale.png" class="h-16 lg:h-32 no-border"/>
-        <img src="assets/lib/school_logos/cck_logo_1x1_grayscale.jpg" class="h-16 lg:h-32 no-border"/>
+        <img src="assets/lib/school_logos/huayi_logo_grayscale.png" class="h-16 lg:h-32 no-border"/>
+        <img src="assets/lib/school_logos/zhonghua_logo_grayscale.png" class="h-16 lg:h-32 no-border"/>
+        <img src="assets/lib/school_logos/cck_logo_1x1_grayscale.png" class="h-16 lg:h-32 no-border"/>
         <!-- Duplicated to create "endless" loop effect -->
         <img src="assets/lib/school_logos/sutd_logo_grayscale.png" class="h-8 lg:h-32 no-border "/>
         <img src="assets/lib/school_logos/etonhouse_logo_grayscale.png" class="h-8 lg:h-32 no-border "/>
         <img src="assets/lib/school_logos/sst_logo_1x1_grayscale.png" class="h-16 lg:h-32 no-border"/>
         <img src="assets/lib/school_logos/stpats_logo_1x1_grayscale.png" class="h-16 lg:h-32 no-border"/>
-        <img src="assets/lib/school_logos/CHIJKC_logo_1x1_grayscale.jpg" class="h-16 lg:h-32 no-border"/>
-        <img src="assets/lib/school_logos/swiss_cottage_grayscale.png" class="h-16 lg:h-32 no-border"/>
-        <img src="assets/lib/school_logos/cck_logo_1x1_grayscale.jpg" class="h-16 lg:h-32 no-border"/>
+        <img src="assets/lib/school_logos/huayi_logo_grayscale.png" class="h-16 lg:h-32 no-border"/>
+        <img src="assets/lib/school_logos/zhonghua_logo_grayscale.png" class="h-16 lg:h-32 no-border"/>
+        <img src="assets/lib/school_logos/cck_logo_1x1_grayscale.png" class="h-16 lg:h-32 no-border"/>
     </div>
     <!-- Right Fade -->
-    <div class="absolute top-0 right-0 w-20 h-full pointer-events-none lg:w-28 bg-gradient-to-l from-white to-transparent"></div>
+    <div class="absolute top-0 right-0 w-20 h-full pointer-events-none lg:w-28 bg-gradient-to-l from-bg-background to-transparent"></div>
 </div>
 <section class=" lg:mx-60">
 <h2 class="my-8 text-3xl font-bold text-center lg:text-4xl">School Engagement Modes</h2><hr class="mb-8">

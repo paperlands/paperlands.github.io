@@ -57,7 +57,7 @@ module.exports = {
           DEFAULT: "#ff6f61",
           dark: "#cc574e",
         },
-        background: "#ffffff",
+        background: "#fdf6e3",
         text: {
           light: "#4a2329",
           DEFAULT: "#1f060e",
