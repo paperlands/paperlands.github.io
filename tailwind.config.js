@@ -14,8 +14,8 @@ module.exports = {
       animation: {
         marquee: "marquee 50s linear infinite",
         marquee2: "marquee2 50s linear infinite",
-        fade: 'fadeIn 1s ease-in-out',
-        fadeout: 'fadeOut 5s forwards',
+        fade: "fadeIn 1s ease-in-out",
+        fadeout: "fadeOut 5s forwards",
       },
       keyframes: {
         marquee: {
@@ -28,18 +28,18 @@ module.exports = {
           "100%": { transform: "translateX(-100%)" },
         },
         fadeIn: {
-					from: { opacity: 0 },
-					to: { opacity: 1 },
-				},
+          from: { opacity: 0 },
+          to: { opacity: 1 },
+        },
         fadeOut: {
-					from: { opacity: 1 },
-					to: { opacity: 0 },
-				},
+          from: { opacity: 1 },
+          to: { opacity: 0 },
+        },
       },
       brightness: {},
       fontFamily: {
-        sans: ["Noto Serif Grantha", ...defaultTheme.fontFamily.sans],
-        paperlang: ["paperLang", "Noto Serif Grantha"],
+        sans: ["Lora", ...defaultTheme.fontFamily.sans],
+        paperlang: ["paperLang", "Lora"],
       },
       colors: {
         primary: {
