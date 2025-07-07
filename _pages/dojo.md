@@ -9,7 +9,7 @@ permalink: /dojo
     <h1 class="mb-8 text-6xl tracking-tighter sm:text-9xl">Project Dojo</h1>
     <div class="">We design workshops to discover the joy of computing for all ages</div>
     <div class="my-12">
-        <a class="p-4 rounded-md bg-primary" href="https://dojo.paperland.in/">Turtle Demo</a>
+        <a class="p-4 rounded-md bg-primary" href="https://dojo.paperland.sg/">Turtle Demo</a>
     </div>
 </div>
 
