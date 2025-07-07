@@ -2,78 +2,110 @@
   <head>
     <meta charset="utf-8">
     <title>Redirecting...</title>
-    <!-- <meta http-equiv="refresh" content="0; url={{ page.redirect_link }}"> -->
     <link rel="canonical" href="{{ page.redirect_link }}">
 
     <script type="text/javascript">
+      
       (function() {
-        // Extract all URL parameters as props
-        function getUrlParams() {
-          var params = {};
-          var urlParams = new URLSearchParams(window.location.search);
-          
-          // Convert URLSearchParams to regular object
-          for (var pair of urlParams.entries()) {
-            params[pair[0]] = pair[1];
+          function getUrlParams() {
+              var params = {};
+              var urlParams = new URLSearchParams(window.location.search);
+              
+              // Convert URLSearchParams to regular object
+              for (var pair of urlParams.entries()) {
+                  params[pair[0]] = pair[1];
+              }
+              
+              return params;
           }
-          
-          return params;
-        }
-        
-        // Send tracking data immediately using sendBeacon
-        var endpoint = 'https://odin.paperland.sg/api/event';
-        var urlProps = getUrlParams();
-        
-        var eventData = {
-          'name': 'redirect',
-          'url': window.location.href,
-          'domain': 'paperland.sg', // adjust as needed
-          'referrer': document.referrer
-        };
-        
-        // Add props only if we have URL parameters
-        if (Object.keys(urlProps).length > 0) {
-          eventData.props = urlProps;
-        }
-        
-        var data = JSON.stringify(eventData);
-        
-        // sendBeacon guarantees delivery even during page unload
-        if (navigator.sendBeacon) {
-          var headers = {
-            'Content-Type': 'application/json',
-            'User-Agent': navigator.userAgent,
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache',
-            'Expires': '0'
+
+
+          var endpoint = 'https://odin.paperland.sg/api/event';
+          var urlProps = getUrlParams();
+
+          var eventData = {
+              'name': 'pageview',
+              'url': window.location.href,
+              'domain': 'paperland.sg', // adjust as needed
+              'referrer': document.referrer
           };
-          
-          // Create a Blob with proper headers for sendBeacon
-          var blob = new Blob([data], { type: 'application/json' });
-          navigator.sendBeacon(endpoint, blob);
-        } else {
-          // Fallback for older browsers - fire and forget
+
+          if (Object.keys(urlProps).length > 0) {
+              eventData.props = urlProps;
+          }
+
+          var data = JSON.stringify(eventData);
+
           var xhr = new XMLHttpRequest();
-          xhr.open('POST', endpoint, false); // synchronous for reliability
+          xhr.open('POST', endpoint, true); // Asynchronous request
           xhr.setRequestHeader('Content-Type', 'application/json');
           xhr.setRequestHeader('User-Agent', navigator.userAgent);
           xhr.setRequestHeader('Cache-Control', 'no-cache');
-          xhr.setRequestHeader('Pragma', 'no-cache');
-          xhr.setRequestHeader('Expires', '0');
-          try {
-            xhr.send(data);
-          } catch(e) {
-            // Fail silently - don't block redirect
-          }
-        }
 
-        // Redirect immediately - no delays
-        // window.location.replace("{{ page.redirect_link }}");
+          // Don't send credentials - this prevents CORS issues
+          xhr.withCredentials = false;
+
+          xhr.onreadystatechange = function() {
+              // Fire and forget - don't block on response
+          };
+
+          try {
+              xhr.send(data);
+          } catch(e) {
+              // Fail silently - don't block redirect
+              console.warn('odin ping failed:', e);
+          }
+
+          // redirect 
+          window.location.replace("{{ page.redirect_link }}");
       })();
     </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            min-height: 100vh;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        svg {
+            transform: rotate(-90deg);
+        }
+        
+        @keyframes draw {
+            0% { stroke-dashoffset: 314; }
+            50% { stroke-dashoffset: 0; }
+            100% { stroke-dashoffset: -314; }
+        }
+
+        .stroke {
+            animation: draw 3s ease-in-out infinite;
+            stroke-dasharray: 314;
+            stroke-dashoffset: 314;
+        }
+    </style>
   </head>
-  <body>
-    <!-- This should never be seen due to immediate redirect -->
+  <body class="flex items-center justify-center">
+    <!-- redirect shouldnt fail -->
+    <svg width="100" height="100" viewBox="0 0 100 100">
+        <circle
+            cx="50"
+            cy="50"
+            r="40"
+            fill="none"
+            stroke="#000"
+            stroke-width="2"
+            stroke-linecap="round"
+            class="stroke"
+        />
+    </svg>
     <noscript>
       <meta http-equiv="refresh" content="0; url={{ page.redirect_link }}">
       <a href="{{ page.redirect_link }}">Continue</a>
