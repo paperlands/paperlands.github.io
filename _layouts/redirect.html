@@ -1,16 +1,76 @@
-<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
     <title>Redirecting...</title>
-    <meta http-equiv="refresh" content="0; url={{ page.redirect_link }}">
+    <!-- <meta http-equiv="refresh" content="0; url={{ page.redirect_link }}"> -->
     <link rel="canonical" href="{{ page.redirect_link }}">
+
     <script type="text/javascript">
-      window.location.href = "{{ page.redirect_link }}";
+      (function() {
+        // Extract all URL parameters as props
+        function getUrlParams() {
+          var params = {};
+          var urlParams = new URLSearchParams(window.location.search);
+          
+          // Convert URLSearchParams to regular object
+          for (var pair of urlParams.entries()) {
+            params[pair[0]] = pair[1];
+          }
+          
+          return params;
+        }
+        
+        // Send tracking data immediately using sendBeacon
+        var endpoint = 'https://odin.fly.dev/api/event';
+        var urlProps = getUrlParams();
+        
+        var eventData = {
+          'name': 'redirect',
+          'url': window.location.href,
+          'domain': 'paperland.in', // adjust as needed
+          'referrer': document.referrer
+        };
+        
+        // Add props only if we have URL parameters
+        if (Object.keys(urlProps).length > 0) {
+          eventData.props = urlProps;
+        }
+        
+        var data = JSON.stringify(eventData);
+        
+        // sendBeacon guarantees delivery even during page unload
+        if (navigator.sendBeacon) {
+          var headers = {
+            'Content-Type': 'application/json',
+            'User-Agent': navigator.userAgent
+          };
+          
+          // Create a Blob with proper headers for sendBeacon
+          var blob = new Blob([data], { type: 'application/json' });
+          navigator.sendBeacon(endpoint, blob);
+        } else {
+          // Fallback for older browsers - fire and forget
+          var xhr = new XMLHttpRequest();
+          xhr.open('POST', endpoint, false); // synchronous for reliability
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.setRequestHeader('User-Agent', navigator.userAgent);
+          try {
+            xhr.send(data);
+          } catch(e) {
+            // Fail silently - don't block redirect
+          }
+        }
+
+        // Redirect immediately - no delays
+        window.location.replace("{{ page.redirect_link }}");
+      })();
     </script>
   </head>
   <body>
-    If you are not redirected automatically, follow
-    <a href="{{ page.redirect_link }}">this link</a>.
+    <!-- This should never be seen due to immediate redirect -->
+    <noscript>
+      <meta http-equiv="refresh" content="0; url={{ page.redirect_link }}">
+      <a href="{{ page.redirect_link }}">Continue</a>
+    </noscript>
   </body>
 </html>
