@@ -1,0 +1,50 @@
+# -*- restclient -*-
+# Phos API Endpoint Documentation
+
+:ipAddress = https://odin.paperland.sg/
+:ipAddress = https://india.fly.dev/proxy/sessions/dt3vhcwr4px3gmbld3jculgiaeb436ltuddvsda2q4zyhp6j
+:auth-headers = <<
+Authorization: :token
+Content-Type: application/json
+User-Agent: Emacs27
+##
+##
+:headers = <<
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36 OPR/71.0.3770.284
+Content-Type: application/json
+##
+## Calling Odin
+#https://paperland.sg/testone7?utm_source=ppman&utm_medium=lolol&utm_campaign=summer&author=pp&custom_param=value
+#""
+
+POST :ipAddress/api/event
+-> run-hook (restclient-set-var ":token" (cdr (assq 'payload (json-read))))
+:headers
+{
+    "name": "pageview",
+    "url": "http://localhost:4000/testone?utm_source=test11&utm_campaign=hola&utm_medium=test33",
+    "domain": "paperland.sg",
+    "props": {"author": "ppman"}
+}
+## Calling Odin
+#https://paperland.sg/testone7?utm_source=ppman&utm_medium=lolol&utm_campaign=summer&author=pp&custom_param=value
+#""
+
+
+POST :ipAddress/analytics
+-> run-hook (restclient-set-var ":token" (cdr (assq 'payload (json-read))))
+:headers
+{
+    "name": "pageview",
+    "url": "http://localhost:4000/testone2?utm_source=test11&utm_campaign=hola&utm_medium=test33",
+    "domain": "paperland.sg",
+    "props": {"author": "ppman"}
+}
+## Calling Odin
+#https://paperland.sg/testone7?utm_source=ppman&utm_medium=lolol&utm_campaign=summer&author=pp&custom_param=value
+#""
+
+
+GET :ipAddress/health
+-> run-hook (restclient-set-var ":token" (cdr (assq 'payload (json-read))))
+:headers

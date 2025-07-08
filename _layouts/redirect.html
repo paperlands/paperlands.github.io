@@ -7,11 +7,12 @@
     <script type="text/javascript">
       
       (function() {
+
           function getUrlParams() {
               var params = {};
               var urlParams = new URLSearchParams(window.location.search);
               
-              // Convert URLSearchParams to regular object
+              // Convert URLSearchParams to obj
               for (var pair of urlParams.entries()) {
                   params[pair[0]] = pair[1];
               }
@@ -19,44 +20,58 @@
               return params;
           }
 
+          // Proxy config
+          var PROXY_ENDPOINT = 'https://book.paperland.sg/proxy/apps/odineye/analytics';
+      
 
-          var endpoint = 'https://odin.paperland.sg/api/event';
           var urlProps = getUrlParams();
 
           var eventData = {
-              'name': 'pageview',
+              'name': 'redirect',
               'url': window.location.href,
-              'domain': 'paperland.sg', // adjust as needed
-              'referrer': document.referrer
+              'domain': 'paperland.sg',
+              'referrer': document.referrer,
+              'client_timestamp': new Date().toISOString()
           };
 
+          // Add props only if we have URL parameters
           if (Object.keys(urlProps).length > 0) {
               eventData.props = urlProps;
           }
 
           var data = JSON.stringify(eventData);
 
-          var xhr = new XMLHttpRequest();
-          xhr.open('POST', endpoint, true); // Asynchronous request
-          xhr.setRequestHeader('Content-Type', 'application/json');
-          xhr.setRequestHeader('User-Agent', navigator.userAgent);
-          xhr.setRequestHeader('Cache-Control', 'no-cache');
-
-          // Don't send credentials - this prevents CORS issues
-          xhr.withCredentials = false;
-
-          xhr.onreadystatechange = function() {
-              // Fire and forget - don't block on response
-          };
-
-          try {
-              xhr.send(data);
-          } catch(e) {
-              // Fail silently - don't block redirect
-              console.warn('odin ping failed:', e);
+          // Use sendBeacon with proxy endpoint (no CORS issues!)
+          if (navigator.sendBeacon) {
+              var blob = new Blob([data], { type: 'application/json' });
+              var success = navigator.sendBeacon(PROXY_ENDPOINT, blob);
+              
+              if (!success) {
+                  console.warn('sendBeacon failed, falling back to fetch');
+                  // Fallback to fetch if beacon fails
+                  fallbackToFetch(data);
+              }
+          } else {
+              // Fallback for older browsers
+              fallbackToFetch(data);
           }
+
+          function fallbackToFetch(data) {
+              fetch(PROXY_ENDPOINT, {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  body: data,
+                  keepalive: true // Similar to sendBeacon behavior
+              }).catch(function(e) {
+                  console.warn('Analytics tracking failed:', e);
+              });
+          }
+
       {% if page.redirect_link %}
-          // redirect 
+          // redirect
+          
           window.location.replace("{{ page.redirect_link }}");
       {% endif %}
       })();

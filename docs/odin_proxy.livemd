@@ -1,0 +1,187 @@
+# Odin Proxy
+
+```elixir
+Mix.install([
+  # Json Parser
+  {:jason, ">= 1.0.0"},
+  {:kino, "~> 0.14.1"},
+  {:req, "~> 0.5.14"},
+  {:plug, "~> 1.18"}
+])
+```
+
+## Section
+
+```elixir
+# Core configuration as a single source of truth
+config = %{
+  target: "https://odin.paperland.sg/api/event",
+  allowed_origins: ["localhost:4000", "dojo.paperland.sg", "paperland.sg", "paperland.notion.site"]
+}
+
+# Pipeline transformations following OTP patterns
+defmodule Analytics do
+  @moduledoc "Composable analytics proxy transformations"
+  def handle_cors(conn, config) do
+    origin = conn |> Plug.Conn.get_req_header("origin") |> List.first()
+    
+    cors_headers = case origin do
+      nil -> 
+        # No origin header (direct requests)
+        [{"access-control-allow-origin", "*"}]
+      origin_value ->
+
+        # Check if origin is in allowed list or use wildcard
+        if origin_allowed?(origin_value, config.allowed_origins) do
+                    IO.inspect origin_value
+         [{"access-control-allow-origin", origin_value}, {"vary", "Origin"}]
+
+
+        else
+          [{"access-control-allow-origin", "*"}]
+        end
+    end
+    
+    # Only set credentials header if we're not using wildcard
+    headers = case cors_headers do
+      [{"access-control-allow-origin", "*"}] -> cors_headers
+      _ -> [{"access-control-allow-credentials", "true"} | cors_headers]
+    end
+    
+    Enum.reduce(headers, conn, fn {k, v}, acc -> Plug.Conn.put_resp_header(acc, k, v) end)
+  end
+  
+
+  
+def handle_preflight(conn, config) do
+    conn
+    |> handle_cors(config)
+    |> Plug.Conn.put_resp_header("access-control-allow-methods", "POST, OPTIONS")
+    |> Plug.Conn.put_resp_header("access-control-allow-headers", "content-type, user-agent, x-requested-with")
+    |> Plug.Conn.put_resp_header("access-control-max-age", "86400")
+    |> Plug.Conn.send_resp(200, "")
+  end
+
+  
+  def parse_json(conn) do
+    try do
+      parsed_conn = Plug.Parsers.call(conn, Plug.Parsers.init(parsers: [Plug.Parsers.JSON], json_decoder: Jason))
+      {:ok, parsed_conn}
+    rescue
+      e -> {:error, "json_parse_error: #{inspect(e)}"}
+    end
+  end
+  
+  def enrich_payload(payload, conn) do
+    Map.put(payload, "props", Map.merge(payload["props"] || %{}, %{
+      "server_timestamp" => DateTime.utc_now() |> DateTime.to_iso8601(),
+      "client_ip" => client_ip(conn),
+      "user_agent" => conn |> Plug.Conn.get_req_header("user-agent") |> List.first()
+    }))
+  end
+  
+  # FIXED: Forward original headers required for unique visitor tracking
+  def forward_analytics(payload, target_url, conn) do
+    # Extract original headers needed for unique visitor counting
+    headers = build_forward_headers(conn)
+    
+    case Req.post(target_url, json: payload, headers: headers) do
+      {:ok, %{status: status}} when status in 200..299 -> {:ok, "success"}
+      {:ok, %{status: status}} -> {:error, "upstream_error_#{status}"}
+      {:error, reason} -> {:error, reason}
+    end
+  end
+  
+  def respond_json(conn, config, data, status \\ 200) do
+    conn
+    |> handle_cors(config)
+    |> Plug.Conn.put_resp_header("content-type", "application/json")
+    |> Plug.Conn.send_resp(status, Jason.encode!(data))
+  end
+  
+  # Build headers to forward to Plausible, preserving critical tracking headers
+  defp build_forward_headers(conn) do
+    base_headers = [{"content-type", "application/json"}]
+    
+    # Forward User-Agent (REQUIRED for unique visitor counting)
+    user_agent_headers = case Plug.Conn.get_req_header(conn, "user-agent") do
+      [ua | _] -> [{"user-agent", ua}]
+      [] -> []
+    end
+    
+    # Forward X-Forwarded-For (OPTIONAL but recommended for accurate IP tracking)
+    # Use the original client IP from the chain
+    xff_headers = case client_ip(conn) do
+      ip when is_binary(ip) -> [{"x-forwarded-for", ip}]
+      _ -> []
+    end
+    
+    base_headers ++ user_agent_headers ++ xff_headers
+  end
+  
+  defp client_ip(conn) do
+    case Plug.Conn.get_req_header(conn, "x-forwarded-for") do
+      [forwarded | _] -> 
+        # Extract the first (original client) IP from the comma-separated list
+        forwarded 
+        |> String.split(",") 
+        |> Enum.map(&String.trim/1)
+        |> List.first()
+        |> case do
+          ip when is_binary(ip) and ip != "" -> ip
+          _ -> format_remote_ip(conn.remote_ip)
+        end
+      [] -> 
+        format_remote_ip(conn.remote_ip)
+    end
+  end
+  
+  defp format_remote_ip(ip_tuple) do
+    ip_tuple |> :inet.ntoa() |> to_string()
+  end
+  
+  defp origin_allowed?(origin, allowed_origins) do
+    # Check exact match or domain match
+    Enum.any?(allowed_origins, fn allowed ->
+      origin == allowed or 
+      origin == "https://#{allowed}" or 
+      origin == "http://#{allowed}" or
+      String.ends_with?(origin, "://#{allowed}")
+    end)
+  end
+end
+
+
+```
+
+```elixir
+Kino.Proxy.listen(fn conn ->
+  case {conn.method, conn.path_info} do
+    # Preflight - just CORS headers
+    {"OPTIONS", ["analytics"]} -> 
+      Analytics.handle_preflight(conn, config)
+    
+    # Analytics POST - the main pipeline
+    {"POST", ["analytics"]} ->
+      with {:ok, conn} <- Analytics.parse_json(conn),
+         payload <- conn.body_params,
+         enriched_payload <- Analytics.enrich_payload(payload, conn),
+         {:ok, result} <- Analytics.forward_analytics(enriched_payload, config.target, conn) do
+      IO.inspect(result)
+        Analytics.respond_json(conn, config, %{"status" => "ok"})
+    else
+      {:error, reason} ->
+        Analytics.respond_json(conn, config, %{"error" => reason}, 400)
+    end
+
+
+    # Health check
+    {"GET", ["health"]} -> 
+      Plug.Conn.send_resp(conn, 200, "OK")
+    
+    # 404 for everything else
+    _ -> 
+      Plug.Conn.send_resp(conn, 404, "Not Found")
+  end
+  end)
+```
