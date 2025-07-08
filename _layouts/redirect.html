@@ -55,9 +55,10 @@
               // Fail silently - don't block redirect
               console.warn('odin ping failed:', e);
           }
-
+      {% if page.redirect_link %}
           // redirect 
           window.location.replace("{{ page.redirect_link }}");
+      {% endif %}
       })();
     </script>
     <style>
