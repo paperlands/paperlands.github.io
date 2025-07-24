@@ -83,7 +83,7 @@ permalink: /pricing
                             </svg>
                         </div>
                         <div class="text-stone-warm">
-                            <strong class="text-ink">35 Room Max Capacity</strong> 
+                            <strong class="text-ink">15 Room Max Capacity</strong> 
                         </div>
                     </div>
                     <div class="flex items-start space-x-3 feature-check">
@@ -278,7 +278,7 @@ permalink: /pricing
                             </svg>
                         </div>
                         <div class="text-stone-warm">
-                            <strong class="text-ink">SLA & 24/7 support</strong>
+                            <strong class="text-ink">Cohort level Support</strong>
                         </div>
                     </div>
                 </div>
@@ -299,14 +299,14 @@ permalink: /pricing
             <div class="p-6 shadow-lg bg-white/60 rounded-2xl">
                 <div class="flex items-center mb-4">
                     <div class="flex items-center justify-center w-12 h-12 mr-4 rounded-full bg-gradient-to-br from-orange-850/20 to-sage/20">
-                        <span class="text-lg">👩‍🏫</span>
+                        <span class="text-lg">🧑🏻‍🎓</span>
                     </div>
                     <div>
                         <h4 class="font-semibold text-ink">Kong Yew</h4>
                         <p class="text-sm text-sage">SST Year 3 Student</p>
                     </div>
                 </div>
-                <p class="italic text-stone-warm">"The visual and hands-on activity where we could make our own growing shape helped me understand Calculus so much better"</p>
+                <p class="italic text-stone-warm">"The visual and hands-on activity where we made our own growing shapes helped me finally figure out what calculus is about!"</p>
                 <div class="flex mt-4 text-orange-850">
                     ⭐⭐⭐⭐⭐
                 </div>
@@ -315,14 +315,14 @@ permalink: /pricing
             <div class="p-6 shadow-lg bg-white/60 rounded-2xl">
                 <div class="flex items-center mb-4">
                     <div class="flex items-center justify-center w-12 h-12 mr-4 rounded-full bg-gradient-to-br from-orange-850/20 to-sage/20">
-                        <span class="text-lg">👨‍🎓</span>
+                        <span class="text-lg">👨‍🏫</span>
                     </div>
                     <div>
                         <h4 class="font-semibold text-ink">Mr Tay Woei Long Samuel</h4>
                         <p class="text-sm text-sage">Secondary School HOD</p>
                     </div>
                 </div>
-                <p class="italic text-stone-warm">"My students had a great formative experience into the world of functions and abstraction that put them in good stead for the rest of the semsester of work"</p>
+                <p class="italic text-stone-warm">"My students had a great formative experience into the world of functions and abstraction that put them in good stead for the rest of the semester of lessons."</p>
                 <div class="flex mt-4 text-orange-850">
                     ⭐⭐⭐⭐⭐
                 </div>
@@ -331,14 +331,14 @@ permalink: /pricing
             <div class="p-6 shadow-lg bg-white/60 rounded-2xl">
                 <div class="flex items-center mb-4">
                     <div class="flex items-center justify-center w-12 h-12 mr-4 rounded-full bg-gradient-to-br from-orange-850/20 to-sage/20">
-                        <span class="text-lg">👩‍💼</span>
+                        <span class="text-lg">👨🏿‍🏫</span>
                     </div>
                     <div>
                         <h4 class="font-semibold text-ink">Ahmad Baba Abdullah</h4>
                         <p class="text-sm text-sage">High School Teacher</p>
                     </div>
                 </div>
-                <p class="italic text-stone-warm">"Experiencing this for the first time really changed how I looked at the process behind mathematics and I continue to be amazed."</p>
+                <p class="italic text-stone-warm">"Experiencing this for the first time really changed how I visualised the process behind geometry! Definitely will be running this my students into the future!"</p>
                 <div class="flex mt-4 text-orange-850">
                     ⭐⭐⭐⭐⭐
                 </div>
@@ -381,7 +381,7 @@ permalink: /pricing
         
         if (toggle.checked) {
             // Annual billing
-            dot.style.transform = 'translateX(36px)';
+            dot.style.transform = 'translateX(55px)';
             dot.parentElement.style.backgroundColor = '#ea580c';
             monthlyPrices.forEach(el => el.classList.remove('hidden'));
             annualPrices.forEach(el => el.classList.add('hidden'));
