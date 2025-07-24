@@ -8,7 +8,7 @@ permalink: /
 nav_color: white
 ---
 
-<section class="h-[40vh] md:h-[48vh] lg:h-[52vh]">
+<section class="h-[40vh] md:h-[48vh] lg:h-[52vh] animate-fade-in">
   <video class="absolute top-0 left-0 w-screen h-[48vh] object-cover brightness-[40%] -z-10 md:h-[56vh] lg:h-[60vh]" src="/assets/lib/landing/hero_video.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
 
   <div class="flex flex-col items-center justify-center">
@@ -23,7 +23,7 @@ nav_color: white
 
 
 <!-- Discovering mathematics section -->
-<section class="mt-24 mb-8 lg:mx-32">
+<section class="mt-24 mb-8 lg:mx-32 animate-fade-in">
 <h2 class="my-8 text-3xl font-bold text-center lg:text-4xl">Discovering Mathematics</h2><hr class="mb-8">
 Learning mathematics can be much more than a path to be followed, it can be a  <strong class="text-orange-850">journey of personal discovery</strong>.
 <br>
