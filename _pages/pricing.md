@@ -23,14 +23,14 @@ permalink: /pricing
             <div class="relative">
                 <input type="checkbox" id="billing-toggle" class="sr-only" onchange="toggleBilling()" checked>
                 <label for="billing-toggle" class="flex items-center cursor-pointer">
-                    <div class="relative h-8 transition-colors duration-300 bg-gray-300 rounded-full w-[4.5rem]">
-                        <div class="absolute w-6 h-6 transition-transform duration-300 transform translate-x-0 bg-white rounded-full top-1 left-1" id="toggle-dot"></div>
+                    <div class="relative w-16 h-8 transition-colors duration-300 bg-gray-300 rounded-full">
+                        <div class="absolute w-6 h-6 transition-transform duration-300 transform translate-x-0 bg-white rounded-full top-1" id="toggle-dot"></div>
                     </div>
                 </label>
             </div>
             <span class="text-stone-warm">
                 Annual 
-                <span class="inline-block px-2 py-1 ml-1 text-xs font-medium text-green-800 bg-green-100 rounded-full">
+                <span class="px-2 py-1 ml-1 text-xs font-medium text-green-800 bg-green-100 rounded-full">
                     Save 25%
                 </span>
             </span>
@@ -67,7 +67,7 @@ permalink: /pricing
                 <!-- Features -->
                 <div class="mb-8 space-y-4 text-base">
                     <div class="flex items-start space-x-3 feature-check">
-                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center mt-0.5 flex-shrink-0">
+                        <div class="w-5 h-5 rounded-full bg-ink flex items-center justify-center mt-0.5 flex-shrink-0">
                             <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                             </svg>
@@ -77,7 +77,7 @@ permalink: /pricing
                         </div>
                     </div>
                     <div class="flex items-start space-x-3 feature-check">
-                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center mt-0.5 flex-shrink-0">
+                        <div class="w-5 h-5 rounded-full bg-ink flex items-center justify-center mt-0.5 flex-shrink-0">
                             <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                             </svg>
@@ -87,7 +87,7 @@ permalink: /pricing
                         </div>
                     </div>
                     <div class="flex items-start space-x-3 feature-check">
-                        <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center mt-0.5 flex-shrink-0">
+                        <div class="w-5 h-5 rounded-full bg-ink flex items-center justify-center mt-0.5 flex-shrink-0">
                             <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                             </svg>
@@ -96,7 +96,6 @@ permalink: /pricing
                             <strong class="text-ink">Community Sharing Access</strong> 
                         </div>
                     </div>
-
                 </div>
                 
                 
@@ -124,28 +123,29 @@ permalink: /pricing
                 
                 <!-- Pricing -->
                 <div class="mb-8 text-center">
-                    <div class="flex items-center justify-center space-x-2">
-                        <!-- <span class="hidden text-2xl line-through text-sage monthly-price">$22</span> -->
-                        <!-- <span class="text-2xl line-through text-sage annual-price">$16.50</span>    -->
-                    </div>
                     <div class="mb-2 text-2xl lg:text-3xl font-paperlang text-ink">
-                        <span class="annual-price">$22</span>                        
-                        <span class="hidden monthly-price">$16.50</span>
+                        <span class="monthly-price">$22</span>                        
+                        <span class="hidden annual-price">$16.50</span>
                         <span class="text-lg text-gray-600 lg:text-xl">/mo</span>
                     </div>
                     <div class="text-sage ">
-                        <span class="hidden inline-block px-3 py-1 mt-2 -mt-1 text-sm font-medium text-green-800 bg-green-100 border border-green-900 rounded-full monthly-price">
-                            💰 Saving 25%
+                        <span class="hidden inline-block px-3 py-1 mt-2 -mt-1 text-sm font-medium text-green-800 bg-green-100 border border-green-900 rounded-full annual-price">
+                            💰 Saving <strong>25%</strong>
                         </span>
-                        <div class="inline-block px-3 py-1 mt-2 -mt-1 text-sm font-medium text-green-800 bg-green-100 rounded-full annual-price">
-                            💰 Save 25% with annual plan
-                        </div>
                     </div>
                 
                 </div>
-                <a href="https://buy.stripe.com/cNicN55MRg8A41edJi38400">
+                
+                <!-- Annual -->
+                <a href="https://buy.stripe.com/cNicN55MRg8A41edJi38400" class="annual-price">
                     <button class="w-full py-3 mb-6 text-lg font-bold text-white transition-all duration-300 transform shadow-lg rounded-2xl bg-gradient-to-r from-orange-850 to-red-600 hover:from-red-600 hover:to-orange-850 hover:shadow-xl hover:scale-105">
-                        🚀 Buy Now!
+                        Buy Now
+                    </button>
+                </a>
+                <!-- Monthly -->
+                <a href="https://buy.stripe.com/bJe00j2AFf4wgO06gQ38403" class="hidden monthly-price">
+                    <button class="w-full py-3 mb-6 text-lg font-bold text-white transition-all duration-300 transform shadow-lg rounded-2xl bg-gradient-to-r from-orange-850 to-red-600 hover:from-red-600 hover:to-orange-850 hover:shadow-xl hover:scale-105">
+                        Buy Now
                     </button>
                 </a>
                 
@@ -376,21 +376,21 @@ permalink: /pricing
     function toggleBilling() {
         const toggle = document.getElementById('billing-toggle');
         const dot = document.getElementById('toggle-dot');
-        const monthlyPrices = document.querySelectorAll('.monthly-price');
         const annualPrices = document.querySelectorAll('.annual-price');
+        const monthlyPrices = document.querySelectorAll('.monthly-price');
         
         if (toggle.checked) {
             // Annual billing
-            dot.style.transform = 'translateX(55px)';
+            dot.style.transform = 'translateX(36px)';
             dot.parentElement.style.backgroundColor = '#ea580c';
-            monthlyPrices.forEach(el => el.classList.remove('hidden'));
-            annualPrices.forEach(el => el.classList.add('hidden'));
+            annualPrices.forEach(el => el.classList.remove('hidden'));
+            monthlyPrices.forEach(el => el.classList.add('hidden'));
         } else {
             // Monthly billing
-            dot.style.transform = 'translateX(0)';
+            dot.style.transform = 'translateX(4px)';
             dot.parentElement.style.backgroundColor = '#d1d5db';
-            monthlyPrices.forEach(el => el.classList.add('hidden'));
-            annualPrices.forEach(el => el.classList.remove('hidden'));
+            annualPrices.forEach(el => el.classList.add('hidden'));
+            monthlyPrices.forEach(el => el.classList.remove('hidden'));
         }
     }
 
