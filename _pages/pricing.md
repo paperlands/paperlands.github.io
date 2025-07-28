@@ -83,7 +83,7 @@ permalink: /pricing
                             </svg>
                         </div>
                         <div class="text-stone-warm">
-                            <strong class="text-ink">15 Room Max Capacity</strong> 
+                            <strong class="text-ink">Max 15 pax/room</strong> 
                         </div>
                     </div>
                     <div class="flex items-start space-x-3 feature-check">
@@ -168,7 +168,7 @@ permalink: /pricing
                             </svg>
                         </div>
                         <div class="text-stone-warm">
-                            <strong class="text-ink">45 Room Max Capacity</strong> 
+                            <strong class="text-ink">Max 45 pax/room</strong> 
                         </div>
                     </div>
                     <div class="flex items-start space-x-3 feature-check">
@@ -178,7 +178,7 @@ permalink: /pricing
                             </svg>
                         </div>
                         <div class="text-stone-warm">
-                            <strong class="text-ink">Extended Classroom Management Features</strong>
+                            <strong class="text-ink">Live Classroom Management Features</strong>
                         </div>
                     </div>
                     <div class="flex items-start space-x-3 feature-check">
@@ -261,6 +261,7 @@ permalink: /pricing
                             <strong class="text-ink">Teachers and Student Workshops</strong>
                         </div>
                     </div>
+                
                     <div class="flex items-start space-x-3 feature-check">
                         <div class="w-5 h-5 rounded-full bg-ink flex items-center justify-center mt-0.5 flex-shrink-0">
                             <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -269,6 +270,16 @@ permalink: /pricing
                         </div>
                         <div class="text-stone-warm">
                             <strong class="text-ink">Codesigning Lesson Plans</strong>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-3 feature-check">
+                        <div class="w-5 h-5 rounded-full bg-ink flex items-center justify-center mt-0.5 flex-shrink-0">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div class="text-stone-warm">
+                            <strong class="text-ink">Analytics Dashboard</strong>
                         </div>
                     </div>
                     <div class="flex items-start space-x-3 feature-check">
@@ -381,7 +392,7 @@ permalink: /pricing
         
         if (toggle.checked) {
             // Annual billing
-            dot.style.transform = 'translateX(36px)';
+            dot.style.transform = 'translateX(52px)';
             dot.parentElement.style.backgroundColor = '#ea580c';
             annualPrices.forEach(el => el.classList.remove('hidden'));
             monthlyPrices.forEach(el => el.classList.add('hidden'));
