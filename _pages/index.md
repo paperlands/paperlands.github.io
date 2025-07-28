@@ -14,7 +14,7 @@ nav_color: white
   <div class="flex flex-col items-center justify-center">
     <h1 class="text-6xl tracking-tighter text-center font-paperlang lg:text-9xl">PaperLand.</h1>
     <div class="my-6 text-lg text-center text-white lg:my-8 lg:text-2xl font-paperlang">Designing a Computational approach to learning Mathematics</div>
-    <a class="px-4 py-2 rounded-md bg-primary" href="https://dojo.paperland.sg/welcome">Try Demo</a>
+    <a class="px-4 py-2 rounded-md bg-primary font-paperlang" href="https://dojo.paperland.sg/welcome">Enter PaperLand</a>
   </div>
 </section>
 

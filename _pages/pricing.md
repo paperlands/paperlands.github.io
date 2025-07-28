@@ -21,6 +21,8 @@ permalink: /pricing
         <div class="flex items-center justify-center mb-12 space-x-4">
             <span class="text-stone-warm">Monthly</span>
             <div class="relative">
+                <!-- <input type="checkbox" class="absolute left-1/2 -translate-x-1/2 w-full h-full peer appearance-none rounded-md" /> -->
+                <!-- <span class="w-16 h-10 flex items-center flex-shrink-0 ml-4 p-1 bg-gray-300 rounded-full duration-300 ease-in-out peer-checked:bg-green-400 after:w-8 after:h-8 after:bg-white after:rounded-full after:shadow-md after:duration-300 peer-checked:after:translate-x-6 group-hover:after:translate-x-1"></span> -->
                 <input type="checkbox" id="billing-toggle" class="sr-only" onchange="toggleBilling()" checked>
                 <label for="billing-toggle" class="flex items-center cursor-pointer">
                     <div class="relative w-16 h-8 transition-colors duration-300 bg-gray-300 rounded-full">
@@ -54,7 +56,7 @@ permalink: /pricing
                 <!-- Pricing -->
                 <div class="mb-8 text-center">
                     <div class="mb-2 text-2xl lg:text-3xl font-paperlang text-ink">$0</div>
-                    <div class="text-sage">Free Forever • No Account Needed</div>
+                    <div class="text-sage">Free Forever</div>
                 </div>
                 
                 <a href="https://dojo.paperland.sg/welcome">
@@ -100,7 +102,7 @@ permalink: /pricing
                 
                 
                 <p class="mt-4 text-xs text-center text-sage">
-                    Creating Together. 
+                    Creating Together • No Account Needed 
                 </p>
 
             </div>
@@ -214,7 +216,7 @@ permalink: /pricing
             <div class="relative p-6 border shadow-lg bg-white/80 backdrop-blur-sm rounded-3xl lg:p-8 border-ink/20 hover:border-ink/40 hover:shadow-2xl">
                 <!-- Icon -->
                 <div class="my-6 text-center">
-                    <h3 class="mb-2 text-5xl font-paperlang text-primary">Enterprise</h3>
+                    <h3 class="mb-2 text-5xl font-paperlang text-orange-800">Enterprise</h3>
                     <p class="text-sage">For schools and organisations</p>
                 </div>
                 
@@ -392,7 +394,7 @@ permalink: /pricing
         
         if (toggle.checked) {
             // Annual billing
-            dot.style.transform = 'translateX(52px)';
+            dot.style.transform = 'translate(150%, 0%)';
             dot.parentElement.style.backgroundColor = '#ea580c';
             annualPrices.forEach(el => el.classList.remove('hidden'));
             monthlyPrices.forEach(el => el.classList.add('hidden'));
