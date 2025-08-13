@@ -151,19 +151,21 @@ Students work shoulder to shoulder in a shared collaborative coding environment 
     <div class="absolute top-0 left-0 z-10 h-full pointer-events-none w-28 bg-gradient-to-r from-background to-transparent"></div>
     <!-- marquee -->
     <div class="flex space-x-8 animate-marquee whitespace-nowrap">
-        <img src="assets/lib/school_logos/sutd_logo_grayscale.png" class="h-8 lg:h-32 no-border "/>
-        <img src="assets/lib/school_logos/sst_logo_1x1_grayscale.png" class="h-16 lg:h-32 no-border"/>
+        <img src="assets/lib/school_logos/sutd_logo_grayscale.png" class="h-6 lg:h-28 no-border "/>
+        <img src="assets/lib/school_logos/etonhouse_logo_grayscale.png" class="h-8 lg:h-28 no-border "/>
+        <img src="assets/lib/school_logos/sjiinternational_logo_grayscale.png" class="h-20 lg:h-36 no-border"/>
         <img src="assets/lib/school_logos/stpats_logo_1x1_grayscale.png" class="h-16 lg:h-32 no-border"/>
+        <img src="assets/lib/school_logos/sst_logo_1x1_grayscale.png" class="h-16 lg:h-48 no-border"/>
         <img src="assets/lib/school_logos/huayi_logo_grayscale.png" class="h-16 lg:h-32 no-border"/>
         <img src="assets/lib/school_logos/zhonghua_logo_grayscale.png" class="h-16 lg:h-32 no-border"/>
-        <img src="assets/lib/school_logos/cck_logo_1x1_grayscale.png" class="h-16 lg:h-32 no-border"/>
         <!-- Duplicated to create "endless" loop effect -->
-        <img src="assets/lib/school_logos/sutd_logo_grayscale.png" class="h-8 lg:h-32 no-border "/>
-        <img src="assets/lib/school_logos/sst_logo_1x1_grayscale.png" class="h-16 lg:h-32 no-border"/>
+        <img src="assets/lib/school_logos/sutd_logo_grayscale.png" class="h-6 lg:h-28 no-border "/>
+        <img src="assets/lib/school_logos/etonhouse_logo_grayscale.png" class="h-8 lg:h-28 no-border "/>
+        <img src="assets/lib/school_logos/sjiinternational_logo_grayscale.png" class="h-20 lg:h-36 no-border"/>
         <img src="assets/lib/school_logos/stpats_logo_1x1_grayscale.png" class="h-16 lg:h-32 no-border"/>
+        <img src="assets/lib/school_logos/sst_logo_1x1_grayscale.png" class="h-16 lg:h-48 no-border"/>
         <img src="assets/lib/school_logos/huayi_logo_grayscale.png" class="h-16 lg:h-32 no-border"/>
         <img src="assets/lib/school_logos/zhonghua_logo_grayscale.png" class="h-16 lg:h-32 no-border"/>
-        <img src="assets/lib/school_logos/cck_logo_1x1_grayscale.png" class="h-16 lg:h-32 no-border"/>
     </div>
     <!-- Right Fade -->
     <div class="absolute top-0 right-0 h-full pointer-events-none w-28 bg-gradient-to-l from-background to-transparent"></div>
