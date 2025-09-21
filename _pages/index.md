@@ -60,7 +60,7 @@ Here at <strong class="text-orange-850">PaperLand</strong>, we are building the 
             <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/senang_16x9.webp" alt="student care center workshop">
         </div>
         <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/prime_numbers.webm" alt="prime numbers animation" autoplay loop muted playsinline />
+            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/cascading_squares.webm" alt="prime numbers animation" autoplay loop muted playsinline />
         </div>
     </div>
 </div>
@@ -98,7 +98,7 @@ The world of computation and mathematics is very deep and we have only just scra
             <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/ca_workshop_16x9.jpg" alt="cellular automaton workshop">
         </div>
         <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/unit_circle.mp4" alt="trigo unit circle animation" autoplay loop muted playsinline />
+            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/prime_numbers.webm" alt="trigo unit circle animation" autoplay loop muted playsinline />
         </div>
         <div>
             <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/stpats_discord_bot_workshop_16x9.jpg" alt="stpats workshop">
