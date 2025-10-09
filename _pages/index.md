@@ -60,7 +60,7 @@ Here at <strong class="text-orange-850">PaperLand</strong>, we are building the 
             <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/senang_16x9.webp" alt="student care center workshop">
         </div>
         <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/cascading_squares.webm" alt="prime numbers animation" autoplay loop muted playsinline />
+            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/fibonacci.webm" alt="prime numbers animation" autoplay loop muted playsinline />
         </div>
     </div>
 </div>
