@@ -1,10 +1,10 @@
----
+#---
 layout: landing
 title: MathxCode Paperland Teacher Workshop
 excerpt: Discover the math hidden around us!
 image: /assets/lib/geometry_workshop.png
 permalink: /teachers_workshop
----
+#---
 
 <section class="h-[32vh] md:h-[40vh] flex flex-col items-center justify-center">
   <video class="absolute top-0 left-0 w-screen h-[40vh] object-cover brightness-[40%] -z-10 md:h-[56vh] lg:h-[60vh]" src="/assets/lib/landing/workshop_hero_video.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
@@ -16,7 +16,7 @@ permalink: /teachers_workshop
 
 <div class="flex flex-col items-center justify-center my-20">
   <!-- <h2 class="my-8 text-2xl font-bold lg:text-4xl">"Discover the math hidden around us!"</h2> -->
-  <div class="text-center md:w-2/3 lg:w-1/2 pt-12">
+  <div class="pt-12 text-center md:w-2/3 lg:w-1/2">
     Challenge yourself with exploring computational approaches to learning mathematics with math teachers across Singapore!
   </div>
   <table class="my-8">
@@ -49,6 +49,6 @@ permalink: /teachers_workshop
   2. Add your name into the comments recipient section and pay.<br>
   3. See you at the workshop!<br>
   <!-- QR code -->
-  <img class="object-cover w-52 h-52 my-24 " src="/assets/lib/landing/QR.jpeg" alt="Coding and laser engraving workshop with student care centers">
+  <img class="object-cover my-24 w-52 h-52 " src="/assets/lib/landing/QR.jpeg" alt="Coding and laser engraving workshop with student care centers">
   Have questions?<a class="underline" href="mailto:info@paperland.sg">info@paperland.sg</a>
 </div>

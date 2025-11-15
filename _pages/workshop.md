@@ -1,10 +1,10 @@
----
+#---
 layout: landing
 title: MathxCode Paperland Workshop
 excerpt: Discover the math hidden around us!
 image: /assets/lib/geometry_workshop.png
 permalink: /workshop
----
+#---
 
 <section class="h-[40vh] md:h-[48vh] lg:h-[52vh]">
   <video class="absolute top-0 left-0 w-screen h-[48vh] object-cover brightness-[40%] -z-10 md:h-[56vh] lg:h-[60vh]" src="/assets/lib/landing/workshop_hero_video.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
