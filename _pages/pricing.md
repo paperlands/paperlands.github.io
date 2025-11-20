@@ -1,11 +1,11 @@
----
+#---
 layout: page
 title: Paperland - Designing new patterns of learning
 excerpt: We believe that the world would be a better place if the processes we shape illuminates and uplifts the spirit of fellowship and belonging. 
 image: /assets/lib/beauty_first.png
 id: pricing
 permalink: /pricing
----
+#---
 <body class="overflow-x-hidden bg-gradient-to-b from-slate-50 via-gray-50 to-stone-50">
 <!-- Pricing Header with Value Proposition -->
 <section class="px-4 py-12 text-center animate-fade-in">
@@ -21,8 +21,8 @@ permalink: /pricing
         <div class="flex items-center justify-center mb-12 space-x-4">
             <span class="text-stone-warm">Monthly</span>
             <div class="relative">
-                <!-- <input type="checkbox" class="absolute left-1/2 -translate-x-1/2 w-full h-full peer appearance-none rounded-md" /> -->
-                <!-- <span class="w-16 h-10 flex items-center flex-shrink-0 ml-4 p-1 bg-gray-300 rounded-full duration-300 ease-in-out peer-checked:bg-green-400 after:w-8 after:h-8 after:bg-white after:rounded-full after:shadow-md after:duration-300 peer-checked:after:translate-x-6 group-hover:after:translate-x-1"></span> -->
+                <!-- <input type="checkbox" class="absolute w-full h-full -translate-x-1/2 rounded-md appearance-none left-1/2 peer" /> -->
+                <!-- <span class="flex items-center flex-shrink-0 w-16 h-10 p-1 ml-4 duration-300 ease-in-out bg-gray-300 rounded-full peer-checked:bg-green-400 after:w-8 after:h-8 after:bg-white after:rounded-full after:shadow-md after:duration-300 peer-checked:after:translate-x-6 group-hover:after:translate-x-1"></span> -->
                 <input type="checkbox" id="billing-toggle" class="sr-only" onchange="toggleBilling()" checked>
                 <label for="billing-toggle" class="flex items-center cursor-pointer">
                     <div class="relative w-16 h-8 transition-colors duration-300 bg-gray-300 rounded-full">
@@ -216,7 +216,7 @@ permalink: /pricing
             <div class="relative p-6 border shadow-lg bg-white/80 backdrop-blur-sm rounded-3xl lg:p-8 border-ink/20 hover:border-ink/40 hover:shadow-2xl">
                 <!-- Icon -->
                 <div class="my-6 text-center">
-                    <h3 class="mb-2 text-5xl font-paperlang text-orange-800">Enterprise</h3>
+                    <h3 class="mb-2 text-5xl text-orange-800 font-paperlang">Enterprise</h3>
                     <p class="text-sage">For schools and organisations</p>
                 </div>
                 
