@@ -14,7 +14,7 @@ nav_color: white
   <div class="flex flex-col items-center justify-center">
     <h1 class="text-6xl tracking-tighter text-center font-paperlang lg:text-9xl">Our Approach</h1>
     <div class="my-6 text-lg text-center text-white lg:my-8 lg:text-2xl font-paperlang">Learning Mathematics through Creation</div>
-    <a class="px-5 py-2 transition rounded-md font-paperlang bg-primary hover:brightness-110" href="#contact">Enquire Further</a>
+    <a class="internal-link px-5 py-2 transition rounded-md font-paperlang bg-primary hover:brightness-110" href="#contact">Enquire Further</a>
   </div>
 </section>
 
