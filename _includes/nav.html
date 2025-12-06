@@ -1,14 +1,29 @@
 <nav class="bg-transparent ">
     <div class="px-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
       <div class="relative flex items-center justify-between h-16">
-        <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+        <div class="flex items-center space-x-3">
+          <!-- Logo -->
+          <div class="flex items-center shrink-0">
+            <a href="{{ site.baseurl }}/" class="flex items-center">
+              <img src="/assets/bannerpaperlang.svg" alt="PaperLand" class="h-10" />
+            </a>
+          </div>
+        </div>
+        <div class="flex-1 hidden sm:flex sm:justify-end">
+          <div class="flex justify-end space-x-4">
+            <a href="/approach" class="px-3 py-2 text-sm font-medium rounded-md {% if page.nav_color == 'white' %}text-white{% else %}text-black{% endif %}">Our Approach</a>
+            <a href="/#blog" class="px-3 py-2 text-sm font-medium rounded-md {% if page.nav_color == 'white' %}text-white{% else %}text-black{% endif %}">Blog</a>
+            <a href="/#contact" class="px-3 py-2 text-sm font-medium rounded-md {% if page.nav_color == 'white' %}text-white{% else %}text-black{% endif %}">Contact Us</a>
+          </div>
+        </div>
+        <div class="relative flex items-center sm:hidden">
           <!-- Mobile menu button-->
-          <button type="button" class="relative inline-flex items-center justify-center p-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+          <button type="button" class="relative inline-flex items-center justify-center p-2 rounded-md text-primary hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
             <span class="absolute -inset-0.5"></span>
             <span class="sr-only">Open main menu</span>
             <!--
               Icon when menu is closed.
-  
+ 
               Menu open: "hidden", Menu closed: "block"
             -->
             <svg class="block size-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true" data-slot="icon">
@@ -16,7 +31,7 @@
             </svg>
             <!--
               Icon when menu is open.
-  
+ 
               Menu open: "block", Menu closed: "hidden"
             -->
             <svg class="hidden size-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true" data-slot="icon">
@@ -24,33 +39,29 @@
             </svg>
           </button>
         </div>
-        <div class="flex items-center justify-center flex-1">
-          <!-- Logo -->
-          <div class="flex items-center shrink-0">
-            <a href="{{ site.baseurl }}/" >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" height="50"  >
-                  <image xlink:href="/assets/logo.svg" width="50" height="50"/>
-              </svg>
-            </a>
-          </div>
-          <div class="hidden sm:ml-6 sm:block">
-            <div class="flex space-x-4">
-              <a href="/approach" class="px-3 py-2 text-sm font-medium rounded-md {% if page.nav_color == 'white' %}text-white{% else %}text-black{% endif %}">Our Approach</a>
-              <a href="/#blog" class="px-3 py-2 text-sm font-medium rounded-md {% if page.nav_color == 'white' %}text-white{% else %}text-black{% endif %}">Blog</a>
-              <a href="/#contact" class="px-3 py-2 text-sm font-medium rounded-md {% if page.nav_color == 'white' %}text-white{% else %}text-black{% endif %}">Contact Us</a>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   
-    <!-- Mobile menu, show/hide based on menu state. -->
-    <div class="w-1/2 rounded-md sm:hidden bg-primary-light" id="mobile-menu">
-      <div class="px-2 pt-2 pb-3 space-y-1">
-        <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-        <a href="/approach" class="block px-3 py-2 text-base font-medium rounded-md text-text-light hover:bg-gray-700 hover:text-white">Our Approach</a>
-        <a href="/#blog" class="block px-3 py-2 text-base font-medium rounded-md text-text-light hover:bg-gray-700 hover:text-white">Blog</a>
-        <a href="/#contact" class="block px-3 py-2 text-base font-medium rounded-md text-text-light hover:bg-gray-700 hover:text-white">Contact Us</a>
+    <!-- Overlay backdrop -->
+    <div class="fixed inset-0 z-40 transition-opacity duration-300 ease-in-out bg-black bg-opacity-50 opacity-0 pointer-events-none sm:hidden" id="mobile-menu-overlay"></div>
+  
+    <!-- Mobile menu panel, slides in from right -->
+    <div class="fixed top-0 right-0 z-50 w-1/2 h-full transition-transform duration-300 ease-in-out transform translate-x-full shadow-xl bg-primary-light sm:hidden" id="mobile-menu">
+      <div class="flex flex-col h-full">
+        <!-- Close button -->
+        <div class="flex justify-end p-4">
+          <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-text-light hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" id="mobile-menu-close" aria-label="Close menu">
+            <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <!-- Menu items -->
+        <div class="flex-1 px-4 pb-4 space-y-1 overflow-y-auto">
+          <a href="/approach" class="block px-3 py-2 text-base font-medium rounded-md text-text-light hover:bg-gray-700 hover:text-white">Our Approach</a>
+          <a href="/#blog" class="block px-3 py-2 text-base font-medium rounded-md text-text-light hover:bg-gray-700 hover:text-white">Blog</a>
+          <a href="/#contact" class="block px-3 py-2 text-base font-medium rounded-md text-text-light hover:bg-gray-700 hover:text-white">Contact Us</a>
+        </div>
       </div>
     </div>
   </nav>
@@ -59,29 +70,55 @@
 <script>
     document.addEventListener("DOMContentLoaded", () => {
       const mobileMenu = document.getElementById("mobile-menu");
+      const mobileMenuOverlay = document.getElementById("mobile-menu-overlay");
       const menuButton = document.querySelector('[aria-controls="mobile-menu"]');
+      const closeButton = document.getElementById("mobile-menu-close");
 
       // Ensure the mobile menu is hidden by default
-      mobileMenu.classList.add("hidden");
+      mobileMenu.classList.add("translate-x-full");
+      mobileMenuOverlay.classList.add("opacity-0", "pointer-events-none");
+      mobileMenuOverlay.classList.remove("opacity-100", "pointer-events-auto");
       menuButton.setAttribute("aria-expanded", "false");
+
+      // Function to open mobile menu
+      const openMenu = () => {
+        menuButton.setAttribute("aria-expanded", "true");
+        mobileMenu.classList.remove("translate-x-full");
+        mobileMenuOverlay.classList.remove("opacity-0", "pointer-events-none");
+        mobileMenuOverlay.classList.add("opacity-100", "pointer-events-auto");
+        document.body.style.overflow = "hidden"; // Prevent body scroll
+      };
+
+      // Function to close mobile menu
+      const closeMenu = () => {
+        menuButton.setAttribute("aria-expanded", "false");
+        mobileMenu.classList.add("translate-x-full");
+        mobileMenuOverlay.classList.remove("opacity-100", "pointer-events-auto");
+        mobileMenuOverlay.classList.add("opacity-0", "pointer-events-none");
+        document.body.style.overflow = ""; // Restore body scroll
+      };
 
       // Function to toggle mobile menu
       const toggleMenu = () => {
-          const isExpanded = menuButton.getAttribute("aria-expanded") === "true";
-          menuButton.setAttribute("aria-expanded", !isExpanded);
-          mobileMenu.classList.toggle("hidden", isExpanded);
+        const isExpanded = menuButton.getAttribute("aria-expanded") === "true";
+        if (isExpanded) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
       };
 
       // Ensure menu visibility aligns with screen size
       const handleResize = () => {
-          if (window.innerWidth >= 640) { // Matches Tailwind's "sm" breakpoint
-          mobileMenu.classList.add("hidden"); // Always hide menu on larger screens
-          menuButton.setAttribute("aria-expanded", "false");
-          }
+        if (window.innerWidth >= 640) { // Matches Tailwind's "sm" breakpoint
+          closeMenu(); // Always close menu on larger screens
+        }
       };
 
       // Event listeners
       menuButton.addEventListener("click", toggleMenu);
+      closeButton.addEventListener("click", closeMenu);
+      mobileMenuOverlay.addEventListener("click", closeMenu);
       window.addEventListener("resize", handleResize);
 
       // Initial setup

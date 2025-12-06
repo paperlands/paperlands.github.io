@@ -9,12 +9,12 @@ nav_color: white
 ---
 
 <section class="h-[36vh] md:h-[48vh] lg:h-[52vh] animate-fade-in">
-  <video class="absolute top-0 left-0 w-screen h-[52vh] object-cover brightness-[40%] -z-10 md:h-[56vh] lg:h-[60vh]" src="/assets/lib/landing/hero_video.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
+  <video class="absolute top-0 left-0 w-screen h-[56vh] object-cover brightness-[40%] -z-10 md:h-[60vh] lg:h-[64vh]" src="/assets/lib/landing/hero_video.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
 
-  <div class="flex flex-col items-center justify-center">
-    <h1 class="text-6xl tracking-tighter text-center font-paperlang lg:text-9xl">PaperLand.</h1>
-    <div class="my-6 text-lg text-center text-white lg:my-8 lg:text-2xl font-paperlang">Designing a Computational approach to learning Mathematics</div>
-    <a class="px-4 py-2 rounded-md bg-primary font-paperlang" href="https://dojo.paperland.sg/welcome">Enter PaperLand</a>
+  <div class="flex flex-col items-center justify-center mt-10">
+    <h1 class="text-5xl tracking-tighter text-center text-white font-paperlang lg:text-8xl">where math <span class="text-primary">Lives.</span></h1>
+    <div class="my-4 text-lg text-center text-white lg:my-8 lg:text-2xl">Coding, Exploring and Sharing<br>Math's hidden Beauty.</div>
+    <a class="px-4 py-2 my-4 rounded-md bg-primary font-paperlang" href="https://dojo.paperland.sg/welcome">Enter PaperLand</a>
   </div>
 </section>
 
