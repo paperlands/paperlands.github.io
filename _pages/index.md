@@ -8,7 +8,7 @@ permalink: /
 nav_color: white
 ---
 
-<section class="h-[60vh] animate-fade-in md:h-[65vh]">
+<section class="h-[70vh] animate-fade-in md:h-[75vh]">
   <video class="absolute top-0 left-0 w-screen h-[100vh] object-cover brightness-[40%] -z-10" src="/assets/lib/landing/hero_video.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
 
   <div class="flex flex-col items-center justify-center mt-40">
@@ -20,50 +20,283 @@ nav_color: white
 
 
 
-
-
 <!-- Discovering mathematics section -->
-<section class="mt-24 mb-8 lg:mx-32 animate-fade-in">
-<h2 class="my-8 text-3xl font-bold text-center lg:text-4xl">Discovering Mathematics</h2><hr class="mb-8">
-Learning mathematics can be much more than a path to be followed, it can be a  <strong class="text-orange-850">journey of personal discovery</strong>.
-<br>
-<br> 
-Students <strong class="text-orange-850">create</strong> their own computational objects,  <strong class="text-orange-850">investigate</strong> hidden mathematical patterns and <strong class="text-orange-850">share</strong> their discoveries together with their classmates.
-<br>
-<br>
- As students teach the computer how to act and <strong class="text-orange-850">debug</strong> its behaviour, they begin to<strong class="text-orange-850"> reflect on their own actions and understanding</strong>.
- 
- They will reformulate original hypotheses, model the world around them and validate how math shapes the world – making learning <strong class="text-orange-850">fun, interactive, and meaningful!</strong> 
-<br>
-<br>
-Here at <strong class="text-orange-850">PaperLand</strong>, we are building the computational approach to foster more math explorers!
-<br>
-
+<section class="px-4 mt-16 mb-2 lg:px-0 lg:mx-32 animate-fade-in">
+  <h2 class="text-3xl font-bold text-center text-secondary lg:text-4xl">
+    Bring Math to Life with Code
+  </h2>
+  <p class="mt-4 text-sm text-center text-secondary/80 lg:text-base">
+    CRAFT → EXPERIMENT → COLLABORATE → GROW
+  </p>
+  <div class="flex flex-col items-center justify-center my-4">
+    <div class="flex flex-col items-start mx-auto">
+      <span>1. Craft your own mathematical paths</span>
+      <span>2. Experiment with ideas and conjectures</span>
+      <span>3. Collaborate to test and refine ideas</span>
+      <span>4. Embrace productive struggle</span>
+    </div>
+  </div>
 </section>
-<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-    <div class="hidden sm:grid sm:gap-4">
-        <div>
-            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt="abstraction workshop">
-        </div>
-        <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/sine_curve.webm" alt="sine curve animation" autoplay loop muted playsinline />
-        </div>
-        <div>
-            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/knowledge_park_16x9.webp" alt="student care center workshop">
-        </div>
+
+<div id="media-gallery" class="max-w-4xl mx-auto">
+  <!-- MAIN DISPLAY (slightly smaller, still dominant) -->
+  <div class="w-full mx-auto overflow-hidden bg-black shadow-xl aspect-video rounded-xl sm:w-3/4">
+    <div class="w-full h-full">
+      <!-- Slide 0 – Video -->
+      <div class="w-full h-full media-slide" data-index="0">
+        <video
+          src="/assets/lib/landing/prime_numbers.webm"
+          class="object-cover w-full h-full"
+          autoplay
+          loop
+          muted
+          playsinline
+        ></video>
+      </div>
+      <!-- Slide 1 – Video -->
+      <div class="hidden w-full h-full media-slide" data-index="1">
+        <video
+          src="/assets/lib/landing/sine_curve.webm"
+          class="object-cover w-full h-full"
+          autoplay
+          loop
+          muted
+          playsinline
+        ></video>
+      </div>
+      <!-- Slide 2 – Image -->
+      <div class="hidden w-full h-full media-slide" data-index="2">
+        <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/tree.mp4" alt="tree animation" autoplay loop muted playsinline />
+      </div>
+      <!-- Slide 3 – Video -->
+      <div class="hidden w-full h-full media-slide" data-index="3">
+        <video
+          src="/assets/lib/landing/polygon.mp4"
+          class="object-cover w-full h-full"
+          autoplay
+          loop
+          muted
+          playsinline
+        ></video>
+      </div>
+      <!-- Slide 4 – Image -->
+      <div class="hidden w-full h-full media-slide" data-index="4">
+        <video
+          src="/assets/lib/landing/xsinx.mp4"
+          class="object-cover w-full h-full"
+          autoplay
+          loop
+          muted
+          playsinline
+        ></video>
+      </div>
+      <!-- Slide 5 – Video -->
+      <div class="hidden w-full h-full media-slide" data-index="5">
+        <video
+          src="/assets/lib/landing/fibonacci.webm"
+          class="object-cover w-full h-full"
+          autoplay
+          loop
+          muted
+          playsinline
+        ></video>
+      </div>
     </div>
-    <div class="grid gap-4">
-        <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/polygon.mp4" alt="polygon animation" autoplay loop muted playsinline />
-        </div>
-        <div>
-            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/senang_16x9.webp" alt="student care center workshop">
-        </div>
-        <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/fibonacci.webm" alt="prime numbers animation" autoplay loop muted playsinline />
-        </div>
+  </div>
+  <!-- THUMBNAILS – compact horizontal strip, centered on desktop -->
+  <div class="relative max-w-xl mx-auto">
+    <div class="flex items-center gap-3 px-6 py-2 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
+      <!-- Thumb 0 (active by default) -->
+      <button
+        class="w-20 overflow-hidden transition rounded-lg snap-center shrink-0 h-14 media-thumb ring-2 ring-primary hover:ring-2 hover:ring-primary focus-visible:ring-2 focus-visible:ring-primary"
+        data-index="0"
+        type="button"
+        title="Prime numbers animation"
+      >
+        <video
+          src="/assets/lib/landing/prime_numbers.webm"
+          class="object-cover w-full h-full"
+          muted
+          playsinline
+        ></video>
+      </button>
+      <!-- Thumb 1 -->
+      <button
+        class="w-20 overflow-hidden transition rounded-lg snap-center shrink-0 h-14 media-thumb hover:ring-2 hover:ring-primary focus-visible:ring-2 focus-visible:ring-primary"
+        data-index="1"
+        type="button"
+        title="Sine curve animation"
+      >
+        <video
+          src="/assets/lib/landing/sine_curve.webm"
+          class="object-cover w-full h-full"
+          muted
+          playsinline
+        ></video>
+      </button>
+      <!-- Thumb 2 -->
+      <button
+        class="w-20 overflow-hidden transition rounded-lg snap-center shrink-0 h-14 media-thumb hover:ring-2 hover:ring-primary focus-visible:ring-2 focus-visible:ring-primary"
+        data-index="2"
+        type="button"
+        title="tree"
+      >
+        <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/tree.mp4" alt="tree animation" loop muted playsinline />
+      </button>
+      <!-- Thumb 3 -->
+      <button
+        class="w-20 overflow-hidden transition rounded-lg snap-center shrink-0 h-14 media-thumb hover:ring-2 hover:ring-primary focus-visible:ring-2 focus-visible:ring-primary"
+        data-index="3"
+        type="button"
+        title="Polygon animation"
+      >
+        <video
+          src="/assets/lib/landing/polygon.mp4"
+          class="object-cover w-full h-full"
+          muted
+          playsinline
+        ></video>
+      </button>
+      <!-- Thumb 4 -->
+      <button
+        class="w-20 overflow-hidden transition rounded-lg snap-center shrink-0 h-14 media-thumb hover:ring-2 hover:ring-primary focus-visible:ring-2 focus-visible:ring-primary"
+        data-index="4"
+        type="button"
+        title="Senang workshop"
+      >
+        <video
+          src="/assets/lib/landing/xsinx.mp4"
+          class="object-cover w-full h-full"
+          muted
+          playsinline
+        ></video>
+      </button>
+      <!-- Thumb 5 -->
+      <button
+        class="w-20 overflow-hidden transition rounded-lg snap-center shrink-0 h-14 media-thumb hover:ring-2 hover:ring-primary focus-visible:ring-2 focus-visible:ring-primary"
+        data-index="5"
+        type="button"
+        title="Fibonacci animation"
+      >
+        <video
+          src="/assets/lib/landing/fibonacci.webm"
+          class="object-cover w-full h-full"
+          muted
+          playsinline
+        ></video>
+      </button>
     </div>
+  </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const gallery = document.getElementById('media-gallery');
+  if (!gallery) return;
+
+  const slides = gallery.querySelectorAll('.media-slide');
+  const thumbs = gallery.querySelectorAll('.media-thumb');
+  if (!slides.length || !thumbs.length) return;
+
+  let currentIndex = 0;
+
+  // Find the horizontal scroll container automatically
+  const thumbScroller = thumbs[0].closest('.overflow-x-auto');
+
+  function pauseMedia(slide) {
+    const video = slide.querySelector('video');
+    if (video) video.pause();
+  }
+
+  function playMedia(slide) {
+    const video = slide.querySelector('video');
+    if (video) {
+      video.play().catch(() => {});
+    }
+  }
+
+  function setActiveThumb(index) {
+    thumbs.forEach((thumb, i) => {
+      if (i === index) {
+        thumb.classList.add('ring-2', 'ring-primary');
+      } else {
+        thumb.classList.remove('ring-2', 'ring-primary');
+      }
+    });
+  }
+
+  function scrollThumbIntoCenter(index) {
+    if (!thumbScroller) return;
+
+    const thumb = thumbs[index];
+    const scrollerRect = thumbScroller.getBoundingClientRect();
+    const thumbRect = thumb.getBoundingClientRect();
+
+    const currentScroll = thumbScroller.scrollLeft;
+
+    const thumbCenter =
+      thumbRect.left + thumbRect.width / 2;
+
+    const scrollerCenter =
+      scrollerRect.left + scrollerRect.width / 2;
+
+    const offset =
+      thumbCenter - scrollerCenter;
+
+    thumbScroller.scrollTo({
+      left: currentScroll + offset,
+      behavior: 'smooth'
+    });
+  }
+
+  function showSlide(index) {
+    if (index === currentIndex) return;
+    if (index < 0 || index >= slides.length) return;
+
+    // Hide old
+    slides[currentIndex].classList.add('hidden');
+    pauseMedia(slides[currentIndex]);
+
+    // Show new
+    currentIndex = index;
+    slides[currentIndex].classList.remove('hidden');
+    playMedia(slides[currentIndex]);
+
+    // Update UI
+    setActiveThumb(currentIndex);
+    scrollThumbIntoCenter(currentIndex);
+  }
+
+  // ✅ Init
+  slides.forEach((slide, i) => {
+    if (i === 0) {
+      slide.classList.remove('hidden');
+      playMedia(slide);
+    } else {
+      slide.classList.add('hidden');
+      pauseMedia(slide);
+    }
+  });
+
+  setActiveThumb(0);
+  scrollThumbIntoCenter(0);
+
+  // ✅ Click handlers
+  thumbs.forEach((thumb) => {
+    const index = parseInt(thumb.dataset.index, 10);
+    thumb.addEventListener('click', () => {
+      showSlide(index);
+    });
+  });
+});
+</script>
+
+
+<div class="flex justify-center">
+  <a class="px-4 py-2 my-4 rounded-md bg-primary font-paperlang internal-link" href="/approach">Explore Our Approach</a>
+</div>
+
+
 
 
 
