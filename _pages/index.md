@@ -45,7 +45,8 @@ nav_color: white
       <!-- Slide 0 – Video -->
       <div class="w-full h-full media-slide" data-index="0">
         <video
-          src="/assets/lib/landing/prime_numbers.webm"
+          src="/assets/lib/landing/fibonacci_spiral.webm"
+          poster="/assets/lib/landing/fibonacci_spiral.webp"
           class="object-cover w-full h-full"
           autoplay
           loop
@@ -111,18 +112,18 @@ nav_color: white
         class="w-20 overflow-hidden transition rounded-lg snap-center shrink-0 h-14 media-thumb ring-2 ring-primary hover:ring-2 hover:ring-primary focus-visible:ring-2 focus-visible:ring-primary"
         data-index="0"
         type="button"
-        title="Prime numbers animation"
+        title="fibonacci spiral image"
       >
-        <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt="abstraction workshop">
+        <img class="object-cover w-full h-full" src="/assets/lib/landing/fibonacci_spiral.webp" alt="fibonacci spiral image">
       </button>
       <!-- Thumb 1 -->
       <button
         class="w-20 overflow-hidden transition rounded-lg snap-center shrink-0 h-14 media-thumb hover:ring-2 hover:ring-primary focus-visible:ring-2 focus-visible:ring-primary"
         data-index="1"
         type="button"
-        title="Sine curve animation"
+        title="sine curve with code image"
       >
-        <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt="abstraction workshop">
+        <img class="object-cover w-full h-full" src="/assets/lib/landing/sine_curve_with_code.webp" alt="fibonacci spiral image">
       </button>
       <!-- Thumb 2 -->
       <button
@@ -131,7 +132,7 @@ nav_color: white
         type="button"
         title="tree"
       >
-        <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt="abstraction workshop">
+        <img class="object-cover w-full h-full" src="/assets/lib/landing/fibonacci_spiral.webp" alt="fibonacci spiral image">
       </button>
       <!-- Thumb 3 -->
       <button
@@ -140,7 +141,7 @@ nav_color: white
         type="button"
         title="Polygon animation"
       >
-        <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt="abstraction workshop">
+        <img class="object-cover w-full h-full" src="/assets/lib/landing/fibonacci_spiral.webp" alt="fibonacci spiral image">
       </button>
       <!-- Thumb 4 -->
       <button
@@ -149,7 +150,7 @@ nav_color: white
         type="button"
         title="Senang workshop"
       >
-        <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt="abstraction workshop">
+        <img class="object-cover w-full h-full" src="/assets/lib/landing/fibonacci_spiral.webp" alt="fibonacci spiral image">
       </button>
       <!-- Thumb 5 -->
       <button
@@ -158,7 +159,7 @@ nav_color: white
         type="button"
         title="Fibonacci animation"
       >
-        <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt="abstraction workshop">
+        <img class="object-cover w-full h-full" src="/assets/lib/landing/fibonacci_spiral.webp" alt="fibonacci spiral image">
       </button>
     </div>
   </div>
