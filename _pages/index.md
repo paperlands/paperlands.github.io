@@ -113,12 +113,7 @@ nav_color: white
         type="button"
         title="Prime numbers animation"
       >
-        <video
-          src="/assets/lib/landing/prime_numbers.webm"
-          class="object-cover w-full h-full"
-          muted
-          playsinline
-        ></video>
+        <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt="abstraction workshop">
       </button>
       <!-- Thumb 1 -->
       <button
@@ -127,12 +122,7 @@ nav_color: white
         type="button"
         title="Sine curve animation"
       >
-        <video
-          src="/assets/lib/landing/sine_curve.webm"
-          class="object-cover w-full h-full"
-          muted
-          playsinline
-        ></video>
+        <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt="abstraction workshop">
       </button>
       <!-- Thumb 2 -->
       <button
@@ -141,7 +131,7 @@ nav_color: white
         type="button"
         title="tree"
       >
-        <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/tree.mp4" alt="tree animation" loop muted playsinline />
+        <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt="abstraction workshop">
       </button>
       <!-- Thumb 3 -->
       <button
@@ -150,12 +140,7 @@ nav_color: white
         type="button"
         title="Polygon animation"
       >
-        <video
-          src="/assets/lib/landing/polygon.mp4"
-          class="object-cover w-full h-full"
-          muted
-          playsinline
-        ></video>
+        <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt="abstraction workshop">
       </button>
       <!-- Thumb 4 -->
       <button
@@ -164,12 +149,7 @@ nav_color: white
         type="button"
         title="Senang workshop"
       >
-        <video
-          src="/assets/lib/landing/xsinx.mp4"
-          class="object-cover w-full h-full"
-          muted
-          playsinline
-        ></video>
+        <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt="abstraction workshop">
       </button>
       <!-- Thumb 5 -->
       <button
@@ -178,12 +158,7 @@ nav_color: white
         type="button"
         title="Fibonacci animation"
       >
-        <video
-          src="/assets/lib/landing/fibonacci.webm"
-          class="object-cover w-full h-full"
-          muted
-          playsinline
-        ></video>
+        <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt="abstraction workshop">
       </button>
     </div>
   </div>
