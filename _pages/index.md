@@ -42,27 +42,40 @@ nav_color: white
   <!-- Main Display -->
   <div class="w-full mx-auto overflow-hidden bg-black shadow-xl aspect-video rounded-xl sm:w-3/4">
     <div class="w-full h-full">
-      <div class="w-full h-full media-slide" data-index="0"><video src="/assets/lib/landing/fibonacci_spiral.webm" poster="/assets/lib/landing/fibonacci_spiral.webp" class="object-cover w-full h-full" autoplay loop muted playsinline></video></div>
-      <div class="hidden w-full h-full media-slide" data-index="1"><video data-src="/assets/lib/landing/3DWaves.webm" class="object-cover w-full h-full" loop muted playsinline></video></div>
-      <div class="hidden w-full h-full media-slide" data-index="2"><video data-src="/assets/lib/landing/tree_fractal.webm" class="object-cover w-full h-full" loop muted playsinline></video></div>
-      <div class="hidden w-full h-full media-slide" data-index="3"><video data-src="/assets/lib/landing/polygon_fill.webm" class="object-cover w-full h-full" loop muted playsinline></video></div>
-      <div class="hidden w-full h-full media-slide" data-index="4"><video data-src="/assets/lib/landing/prime_sequence.webm" class="object-cover w-full h-full" loop muted playsinline></video></div>
-      <div class="hidden w-full h-full media-slide" data-index="5"><video data-src="/assets/lib/landing/sine_curve_with_code.webm" class="object-cover w-full h-full" loop muted playsinline></video></div>
+      <div class="w-full h-full media-slide" data-index="0">
+        <video src="/assets/lib/landing/fibonacci_spiral.webm" poster="/assets/lib/landing/fibonacci_spiral.webp" class="object-cover w-full h-full" muted playsinline></video>
+      </div>
+      <div class="hidden w-full h-full media-slide" data-index="1">
+        <video data-src="/assets/lib/landing/3DWaves.webm" class="object-cover w-full h-full" muted playsinline></video>
+      </div>
+      <div class="hidden w-full h-full media-slide" data-index="2">
+        <video data-src="/assets/lib/landing/tree_fractal.webm" class="object-cover w-full h-full" muted playsinline></video>
+      </div>
+      <div class="hidden w-full h-full media-slide" data-index="3">
+        <video data-src="/assets/lib/landing/polygon_fill.webm" class="object-cover w-full h-full" muted playsinline></video>
+      </div>
+      <div class="hidden w-full h-full media-slide" data-index="4">
+        <video data-src="/assets/lib/landing/prime_sequence.webm" class="object-cover w-full h-full" muted playsinline></video>
+      </div>
+      <div class="hidden w-full h-full media-slide" data-index="5">
+        <video data-src="/assets/lib/landing/sine_curve_with_code.webm" class="object-cover w-full h-full" muted playsinline></video>
+      </div>
     </div>
   </div>
 
-  <!-- Thumbnails -->
+  <!-- Thumbnails (unchanged) -->
   <div class="relative max-w-xl mx-auto">
     <div class="flex items-center gap-3 px-6 py-2 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
-      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 media-thumb ring-2 ring-primary hover:ring-2 hover:ring-primary" data-index="0" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/fibonacci_spiral.webp" alt=""></button>
-      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 media-thumb hover:ring-2 hover:ring-primary" data-index="1" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/3DWaves.webp" alt=""></button>
-      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 media-thumb hover:ring-2 hover:ring-primary" data-index="2" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/tree_fractal.webp" alt=""></button>
-      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 media-thumb hover:ring-2 hover:ring-primary" data-index="3" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/polygon_fill.webp" alt=""></button>
-      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 media-thumb hover:ring-2 hover:ring-primary" data-index="4" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/prime_sequence.webp" alt=""></button>
-      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 media-thumb hover:ring-2 hover:ring-primary" data-index="5" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/sine_curve_with_code.webp" alt=""></button>
+      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 media-thumb" data-index="0" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/fibonacci_spiral.webp" alt=""></button>
+      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 media-thumb" data-index="1" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/3DWaves.webp" alt=""></button>
+      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 media-thumb" data-index="2" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/tree_fractal.webp" alt=""></button>
+      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 media-thumb" data-index="3" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/polygon_fill.webp" alt=""></button>
+      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 media-thumb" data-index="4" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/prime_sequence.webp" alt=""></button>
+      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 media-thumb" data-index="5" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/sine_curve_with_code.webp" alt=""></button>
     </div>
   </div>
 </div>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -75,10 +88,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   let currentIndex = 0;
 
-  // Find the horizontal scroll container
+  // Horizontal scroll container for thumbnails
   const thumbScroller = thumbs[0].closest('.overflow-x-auto');
 
-  // Avoids loading every hidden slide’s video up front; only load when the slide is about to be shown.
   function ensureVideoLoaded(slide) {
     const video = slide.querySelector('video');
     if (!video) return;
@@ -99,9 +111,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function playMedia(slide) {
     const video = slide.querySelector('video');
-    if (video) {
-      video.play().catch(() => {});
-    }
+    if (!video) return;
+
+    // Don't force currentTime to 0 here; let it play naturally.
+    video.play().catch(() => {
+      // On some mobile browsers autoplay may be blocked;
+      // in that case, don't try to auto-advance based on "ended".
+    });
   }
 
   function setActiveThumb(index) {
@@ -153,7 +169,37 @@ document.addEventListener('DOMContentLoaded', function () {
     scrollThumbIntoCenter(currentIndex);
   }
 
-  // ✅ Initial state — only first slide plays
+  function showNextSlide() {
+    const nextIndex = (currentIndex + 1) % slides.length;
+    showSlide(nextIndex);
+  }
+
+  // Attach safe auto-advance handlers
+  function attachEndedHandlers() {
+    slides.forEach((slide, index) => {
+      const video = slide.querySelector('video');
+      if (!video) return;
+
+      video.addEventListener('ended', () => {
+        // Only act if this slide is still the current one
+        if (index !== currentIndex) return;
+
+        // Guard: on some browsers or unsupported formats,
+        // duration may be NaN or 0 and "ended" may fire weirdly.
+        const duration = video.duration;
+
+        if (!duration || isNaN(duration) || duration < 1) {
+          // Don't auto-advance for bogus/unsupported videos
+          return;
+        }
+
+        // If we've truly reached the end, advance
+        showNextSlide();
+      });
+    });
+  }
+
+  // Initial state — only first slide visible and playing
   slides.forEach((slide, i) => {
     if (i === 0) {
       slide.classList.remove('hidden');
@@ -166,8 +212,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   setActiveThumb(0);
   scrollThumbIntoCenter(0);
+  attachEndedHandlers();
 
-  // ✅ Click handlers
+  // Thumbnail click handlers
   thumbs.forEach((thumb) => {
     const index = parseInt(thumb.dataset.index, 10);
     thumb.addEventListener('click', () => {
