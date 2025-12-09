@@ -8,10 +8,15 @@ permalink: /approach
 nav_color: white
 ---
 
-<section class="h-[36vh] md:h-[48vh] lg:h-[52vh] animate-fade-in">
-  <video class="absolute top-0 left-0 w-screen h-[52vh] object-cover brightness-[40%] -z-10 md:h-[56vh] lg:h-[60vh]" src="/assets/lib/landing/hero_video.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
+<section class="h-[70vh] animate-fade-in md:h-[80vh]">
+  <video class="absolute top-0 left-0 w-screen h-[100vh] object-cover brightness-[40%] -z-10" 
+    src="/assets/lib/landing/hero_video.mp4" 
+    poster="/assets/lib/landing/3DWaves.webp" 
+    alt="Math x Computation hero video" 
+    autoplay loop muted playsinline 
+  />
 
-  <div class="flex flex-col items-center justify-center">
+  <div class="flex flex-col items-center justify-center mt-40">
     <h1 class="text-6xl tracking-tighter text-center text-white font-paperlang lg:text-9xl">Our Approach</h1>
     <div class="my-6 text-lg text-center text-white lg:my-8 lg:text-2xl font-paperlang">Learning Mathematics through <span class="text-primary">Creation</span></div>
     <a class="px-5 py-2 transition rounded-md internal-link font-paperlang bg-primary hover:brightness-110" href="#contact">Enquire Further</a>

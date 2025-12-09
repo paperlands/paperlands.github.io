@@ -9,7 +9,13 @@ nav_color: white
 ---
 
 <section class="h-[70vh] animate-fade-in md:h-[75vh]">
-  <video class="absolute top-0 left-0 w-screen h-[100vh] object-cover brightness-[40%] -z-10" src="/assets/lib/landing/hero_video.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
+  <video class="absolute top-0 left-0 w-screen h-[100vh] object-cover brightness-[40%] -z-10" 
+    src="/assets/lib/landing/hero_video.mp4" 
+    poster="/assets/lib/landing/3DWaves.webp" 
+    alt="Math x Computation hero video" 
+    autoplay loop muted playsinline 
+  />
+  <!-- <img class="absolute top-0 left-0 w-screen h-[100vh] object-cover brightness-[40%] -z-10" src="/assets/lib/landing/3DWaves.webp" alt=""> -->
 
   <div class="flex flex-col items-center justify-center mt-40">
     <h1 class="text-5xl tracking-tighter text-center text-white font-paperlang lg:text-8xl">where math <span class="text-primary">Lives.</span></h1>
