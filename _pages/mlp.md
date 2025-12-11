@@ -194,8 +194,38 @@ permalink: /mlp
 
 
 
-
-
+<!-- Who's MLP for section -->
+<section id="what" class="pt-40 lg:pt-48">
+  <div class="flex flex-col items-center mx-auto lg:max-w-xl">
+    <!-- Top image -->
+    <img
+      src="/assets/lib/landing/wan_functions.png"
+      alt="Math leader guiding a peer at the computer"
+      class="w-full max-w-md"
+    />
+    <!-- Title -->
+    <h2 class="mt-4 text-5xl tracking-tight lg:text-6xl">Who MLP's for</h2>
+    <!-- Body copy -->
+    <div class="px-4 mt-4 text-lg lg:text-xl">
+        <div class="flex">
+            <div class="p-2 m-2 text-center rounded-lg lg:p-4 bg-primary-light">
+                <span class="text-center text-primary">❧</span><span> Students (12+)</span>
+                <div class="mt-2">curious about math & excited to share ideas with others</div>
+            </div>
+            <div class="p-2 m-2 text-center rounded-lg lg:p-4 bg-primary-light">
+                <span class="text-center text-primary">❧</span><span> Schools</span>
+                <div class="mt-2">that value leadership, community, and creative learning</div>
+            </div>
+        </div>
+    </div>
+    <div class="mt-4">
+        Unlike math olympiads, students don’t work alone or race for rankings. They work together—building, sharing, and learning as a community.
+        <br>
+        <br>
+        Students grow by exploring ideas, communicating clearly, and leading others with confidence in mathematics.
+    </div>
+  </div>
+</section>
 
 <!-- Contact us -->
 <section id="contact" class="mt-36">
