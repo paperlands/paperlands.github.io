@@ -12,7 +12,7 @@ permalink: /mlp
     <!-- Text -->
     <div class="flex flex-col items-center space-y-4 lg:items-start lg:space-y-6 lg:w-3/5">
       <h1 class="text-4xl tracking-tight lg:text-7xl text-primary font-paperlang">
-        Math Leaders Program <span class="text-2xl lg:text-5xl">(MLP)</span>
+        Math Leaders Program <span class="text-2xl lg:text-4xl">(MLP)</span>
       </h1>
       <p class="lg:text-xl">
         We coach student leaders to spearhead a culture of creative mathematical inquiry
@@ -72,7 +72,7 @@ permalink: /mlp
     />
     <!-- Title -->
     <p class="mt-4">What are</p>
-    <h2 class="text-5xl tracking-tight lg:text-6xl">Math Leaders</h2>
+    <h2 class="text-4xl tracking-tight lg:text-6xl font-paperlang">Math Leaders</h2>
     <!-- Body copy -->
     <p class="px-4 mt-8 text-lg lg:text-xl">
       They explore mathematics by creating computational models,
@@ -92,7 +92,7 @@ permalink: /mlp
   <div class="flex flex-col-reverse items-center max-w-6xl px-6 mx-auto lg:flex-row lg:items-start">
     <!-- LEFT (Desktop): Header + Body -->
     <div class="flex flex-col lg:w-1/2">
-      <h2 class="text-5xl tracking-tight lg:text-6xl">Why MLP</h2>
+      <h2 class="text-4xl tracking-tight lg:text-6xl font-paperlang">Why MLP</h2>
       <p class="mt-6 text-lg lg:text-xl">
         Great mathematics cultures are built through active exploration, shared inquiry, and student leadership. 
         <br><br>
@@ -129,7 +129,7 @@ permalink: /mlp
   <div class="flex flex-col items-center mx-auto space-y-10">
     <!-- Heading + intro -->
     <div class="max-w-3xl px-6 space-y-4">
-      <h2 class="text-4xl tracking-tight lg:text-5xl font-paperlang">
+      <h2 class="text-4xl tracking-tight lg:text-4xl font-paperlang">
         How MLP works
       </h2>
       <p class="text-lg lg:text-xl">
@@ -198,13 +198,12 @@ permalink: /mlp
 <section id="what" class="pt-40 lg:pt-48">
   <div class="flex flex-col items-center mx-auto lg:max-w-xl">
     <!-- Top image -->
-    <img
-      src="/assets/lib/landing/wan_functions.png"
+    <!-- <img
+      src="/assets/lib/landing/kenneth.png"
       alt="Math leader guiding a peer at the computer"
-      class="w-full max-w-md"
-    />
+      class="w-full max-w-md"/> -->
     <!-- Title -->
-    <h2 class="mt-4 text-5xl tracking-tight lg:text-6xl">Who MLP's for</h2>
+    <h2 class="mt-4 text-4xl tracking-tight lg:text-6xl font-paperlang">Who MLP's for</h2>
     <!-- Body copy -->
     <div class="px-4 mt-4 text-lg lg:text-xl">
         <div class="flex">
@@ -227,9 +226,63 @@ permalink: /mlp
   </div>
 </section>
 
+
+
+<!-- Testimonial section -->
+<section id="testimonial" class="pt-40 lg:pt-48">
+  <div class="max-w-4xl px-6 mx-auto space-y-8 text-center">
+    <!-- Heading -->
+    <h2 class="text-4xl tracking-tight lg:text-4xl font-paperlang text-primary">Our Feedbacks</h2>
+    <!-- Cards -->
+    <div class="space-y-6">
+      <!-- Student -->
+      <div class="relative mx-auto max-w-3xl rounded-3xl border border-slate-300/60 bg-[#fcf5e6] shadow-[0_4px_12px_rgba(0,0,0,0.06)] px-6 pt-12 pb-6 lg:px-10">
+        <span class="absolute font-serif leading-none select-none -top-0 left-6 text-primary/30 text-8xl">&ldquo;</span>
+        <span class="absolute font-serif leading-none select-none text-8xl bottom-16 lg:bottom-8 right-6 text-primary/30">&rdquo;</span>
+        <p class="max-w-2xl mx-auto text-lg italic leading-relaxed lg:text-xl">PaperLand helped me finally see math. Creating models made everything click, and I started understanding ideas way faster than before.</p>
+        <div class="flex flex-col items-center gap-3 mt-6 lg:flex-row lg:justify-end lg:items-center">
+          <img src="/assets/lib/landing/stpatskidsalone.png" class="object-cover rounded-full shadow w-14 h-14"/>
+          <div class="text-center lg:text-right">
+            <p class="text-base font-medium text-slate-800">Tanha</p>
+            <p class="text-sm text-slate-600">Math Leader, 14 years old</p>
+          </div>
+        </div>
+      </div>
+      <!-- Teacher -->
+      <div class="relative mx-auto max-w-3xl rounded-3xl border border-slate-300/60 bg-[#fcf5e6] shadow-[0_4px_12px_rgba(0,0,0,0.04)] px-6 pt-10 pb-5 lg:px-10">
+        <span class="absolute font-serif leading-none select-none -top-0 left-6 text-primary/30 text-8xl">&ldquo;</span>
+        <span class="absolute font-serif leading-none select-none text-8xl bottom-16 lg:bottom-8 right-6 text-primary/30">&rdquo;</span>
+        <p class="max-w-2xl mx-auto text-lg italic leading-relaxed">My students were more engaged than ever. They learned by discovering, explaining, and teaching each other.</p>
+        <div class="flex flex-col items-center gap-3 mt-5 lg:flex-row lg:justify-end lg:items-center">
+          <div class="flex items-center justify-center w-12 h-12 text-sm font-medium rounded-full bg-slate-300/40 text-slate-700">T</div>
+          <div class="text-center lg:text-right">
+            <p class="text-base font-medium text-slate-800">Ms. Lee</p>
+            <p class="text-sm text-slate-600">Math Teacher</p>
+          </div>
+        </div>
+      </div>
+      <!-- Administrator -->
+      <div class="relative mx-auto max-w-3xl rounded-3xl border border-slate-300/60 bg-[#fcf5e6] shadow-[0_4px_12px_rgba(0,0,0,0.04)] px-6 pt-10 pb-5 lg:px-10">
+        <span class="absolute font-serif leading-none select-none -top-0 left-6 text-primary/30 text-8xl">&ldquo;</span>
+        <span class="absolute font-serif leading-none select-none text-8xl bottom-16 lg:bottom-8 right-6 text-primary/30">&rdquo;</span>
+        <p class="max-w-2xl mx-auto text-lg italic leading-relaxed">MLP builds confident student leaders who elevate the entire math culture in our school.</p>
+        <div class="flex flex-col items-center gap-3 mt-5 lg:flex-row lg:justify-end lg:items-center">
+          <div class="flex items-center justify-center w-12 h-12 text-sm font-medium rounded-full bg-slate-300/40 text-slate-700">K</div>
+          <div class="text-center lg:text-right">
+            <p class="text-base font-medium text-slate-800">Dr. Kumar</p>
+            <p class="text-sm text-slate-600">Head of Mathematics</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
 <!-- Contact us -->
 <section id="contact" class="mt-36">
-  <h2 class="my-8 text-4xl text-center">Contact Us</h2><hr>
+  <h2 class="my-8 text-4xl text-center font-paperlang">Contact Us</h2><hr>
 
   <div class="my-8 sm:flex sm:justify-center">
     <div class="m-8 sm:w-5/12">
