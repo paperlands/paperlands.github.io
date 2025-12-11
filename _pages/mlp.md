@@ -18,7 +18,7 @@ permalink: /mlp
         We coach student leaders to spearhead a culture of creative mathematical inquiry
         in service of their wider community.
       </p>
-      <a href="#contact" class="px-5 py-2 transition rounded-md bg-primary font-paperlang hover:brightness-110">
+      <a href="/mlp#contact" class="px-5 py-2 transition rounded-md bg-primary font-paperlang hover:brightness-110 internal-link">
         Start Free Pilot
       </a>
     </div>
@@ -62,7 +62,7 @@ permalink: /mlp
 
 
 <!-- What is a Math Leader section -->
-<section id="what" class="pt-40 lg:pt-48">
+<section id="what" class="pt-8 mt-40 lg:mt-48">
   <div class="flex flex-col items-center mx-auto lg:max-w-xl">
     <!-- Top image -->
     <img
@@ -88,7 +88,7 @@ permalink: /mlp
 
 
 <!-- Why MLP? section -->
-<section id="what" class="pt-40 lg:pt-48">
+<section id="what" class="pt-8 mt-40 lg:mt-48">
   <div class="flex flex-col-reverse items-center max-w-6xl px-6 mx-auto lg:flex-row lg:items-start">
     <!-- LEFT (Desktop): Header + Body -->
     <div class="flex flex-col lg:w-1/2">
@@ -125,11 +125,11 @@ permalink: /mlp
 
 
 <!-- How MLP works section -->
-<section id="how" class="pt-40 lg:pt-48">
+<section id="how" class="pt-8 mt-40 lg:mt-48">
   <div class="flex flex-col items-center mx-auto space-y-10">
     <!-- Heading + intro -->
     <div class="max-w-3xl px-6 space-y-4">
-      <h2 class="text-4xl tracking-tight lg:text-4xl font-paperlang">
+      <h2 class="text-4xl tracking-tight lg:text-6xl font-paperlang">
         How MLP works
       </h2>
       <p class="text-lg lg:text-xl">
@@ -144,12 +144,12 @@ permalink: /mlp
         <!-- PHASE 1 -->
         <div class="relative md:grid md:grid-cols-[auto_1fr_1fr] md:gap-16 items-start">
             <div class="flex-col items-center hidden pt-2 md:flex">
-            <span class="flex items-center justify-center w-8 h-8 text-base font-medium border rounded-full border-primary bg-primary">1</span>
+            <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">1</span>
             <span class="flex-1 w-px mt-2 bg-slate-300"></span>
             </div>
             <div class="space-y-3 text-center md:text-left">
             <div class="flex justify-center md:hidden">
-                <span class="flex items-center justify-center w-8 h-8 text-base font-medium border rounded-full border-primary bg-primary">1</span>
+                <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">1</span>
             </div>
             <h3 class="text-lg font-bold text-black">Explore Math through Creation</h3>
             <img src="/assets/lib/landing/cdac_geometry.png" class="w-full max-w-sm mx-auto rounded-md md:hidden" alt="">
@@ -160,12 +160,12 @@ permalink: /mlp
         <!-- PHASE 2 -->
         <div class="relative md:grid md:grid-cols-[auto_1fr_1fr] md:gap-16 items-start">
             <div class="flex-col items-center hidden pt-2 md:flex">
-            <span class="flex items-center justify-center w-8 h-8 text-base font-medium border rounded-full border-primary bg-primary">2</span>
+            <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">2</span>
             <span class="flex-1 w-px mt-2 bg-slate-300"></span>
             </div>
             <div class="space-y-3 text-center md:text-left">
             <div class="flex justify-center md:hidden">
-                <span class="flex items-center justify-center w-8 h-8 text-base font-medium border rounded-full border-primary bg-primary">2</span>
+                <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">2</span>
             </div>
             <h3 class="text-lg font-bold text-black">Design &amp; Refine Learning Experiences</h3>
             <img src="/assets/lib/landing/angelican_distribution.png" class="w-full max-w-sm mx-auto rounded-md md:hidden" alt="">
@@ -176,11 +176,11 @@ permalink: /mlp
         <!-- PHASE 3 -->
         <div class="relative md:grid md:grid-cols-[auto_1fr_1fr] md:gap-16 items-start">
             <div class="flex-col items-center hidden pt-2 md:flex">
-            <span class="flex items-center justify-center w-8 h-8 text-base font-medium border rounded-full border-primary bg-primary">3</span>
+            <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">3</span>
             </div>
             <div class="space-y-3 text-center md:text-left">
             <div class="flex justify-center md:hidden">
-                <span class="flex items-center justify-center w-8 h-8 text-base font-medium border rounded-full border-primary bg-primary">3</span>
+                <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">3</span>
             </div>
             <h3 class="text-lg font-bold text-black">Lead &amp; Share With the School Community</h3>
             <img src="/assets/lib/landing/stpatskidsalone.png" class="w-full max-w-sm mx-auto rounded-md md:hidden" alt="">
@@ -195,7 +195,7 @@ permalink: /mlp
 
 
 <!-- Who's MLP for section -->
-<section id="what" class="pt-40 lg:pt-48">
+<section id="what" class="pt-8 mt-40 lg:mt-48">
   <div class="flex flex-col items-center mx-auto lg:max-w-xl">
     <!-- Top image -->
     <!-- <img
@@ -229,10 +229,10 @@ permalink: /mlp
 
 
 <!-- Testimonial section -->
-<section id="testimonial" class="pt-40 lg:pt-48">
+<section id="testimonial" class="pt-8 mt-40 lg:mt-48">
   <div class="max-w-4xl px-6 mx-auto space-y-8 text-center">
     <!-- Heading -->
-    <h2 class="text-4xl tracking-tight lg:text-4xl font-paperlang text-primary">Our Feedbacks</h2>
+    <h2 class="text-4xl tracking-tight lg:text-6xl lg:text-4xl font-paperlang text-primary">Our Feedbacks</h2>
     <!-- Cards -->
     <div class="space-y-6">
       <!-- Student -->
@@ -281,19 +281,69 @@ permalink: /mlp
 
 
 <!-- Contact us -->
-<section id="contact" class="mt-36">
-  <h2 class="my-8 text-4xl text-center font-paperlang">Contact Us</h2><hr>
-
-  <div class="my-8 sm:flex sm:justify-center">
-    <div class="m-8 sm:w-5/12">
-      <p>Want to bring computation into mathematics for your students?</p><br>
-      <p>Want a demo?</p><br>
-      <p>Let's chat!</p>
-      Email us at <a class="underline" href="mailto:info@paperland.sg">info@paperland.sg</a>
+<section id="contact" class="pt-8 mt-40 lg:mt-48">
+  <div class="my-8 md:flex md:justify-center">
+    <div class="mb-8 md:mr-8">
+      <div class="text-center">
+        <h2 class="text-4xl tracking-tight lg:text-6xl font-paperlang">Free MLP Pilot</h2>
+        <div class="italic">3 weeks</div>
+      </div>
+      <!-- Weeks timeline -->
+      <div class="my-4 space-y-4">
+        <!-- Week 1 -->
+        <div class="flex gap-4">
+          <div class="flex flex-col items-center">
+            <div class="flex items-center justify-center w-8 h-8 text-sm font-medium border-2 rounded-full border-primary">W1</div>
+            <div class="flex-1 w-px bg-slate-300"></div>
+          </div>
+          <div class="space-y-1">
+            <h3 class="text-lg font-semibold text-slate-900">Learn &amp; Create</h3>
+            <p class="text-sm text-slate-700">Learn to code creative mathematical objects on PaperLand.</p>
+          </div>
+        </div>
+        <!-- Week 2 -->
+        <div class="flex gap-4">
+          <div class="flex flex-col items-center">
+            <div class="flex items-center justify-center w-8 h-8 text-sm font-medium border-2 rounded-full border-primary">W2</div>
+            <div class="flex-1 w-px bg-slate-300"></div>
+          </div>
+          <div class="space-y-1">
+            <h3 class="text-lg font-semibold text-slate-900">Share &amp; Communicate</h3>
+            <p class="text-sm text-slate-700">Present & share their creation with their peers.</p>
+          </div>
+        </div>
+        <!-- Week 3 -->
+        <div class="flex gap-4">
+          <div class="flex flex-col items-center">
+            <div class="flex items-center justify-center w-8 h-8 text-sm font-medium border-2 rounded-full border-primary">W3</div>
+            <div class="flex-1 w-px bg-slate-300"></div>
+          </div>
+          <div class="space-y-1">
+            <h3 class="text-lg font-semibold text-slate-900">Reflect &amp; Design</h3>
+            <p class="text-sm text-slate-700">Peer-reflection & design student-led workshop.</p>
+          </div>
+        </div>
+        <!-- Week 4 -->
+        <div class="flex gap-4">
+          <div class="flex flex-col items-center">
+            <div class="flex items-center justify-center w-8 h-8 text-sm font-medium rounded-full bg-primary">W4</div>
+          </div>
+          <div class="space-y-1">
+            <h3 class="text-lg font-semibold text-slate-900">Teaching Day</h3>
+            <p class="text-sm text-slate-700">Students lead a PaperLand workshop for their peers.</p>
+          </div>
+        </div>
+      </div>
+      <!-- Benefits -->
+      <div class="my-8 space-y-2 text-center text-slate-700">
+        <p class="font-semibold text-center text-slate-800">What’s included:</p>
+        <ul class="space-y-1 text-sm">
+          <li>✔ Full facilitation support from PaperLand</li>
+          <li>✔ No contracts or special hardware required</li>
+          <li>✔ No prior coding experience needed</li>
+        </ul>
+      </div>
     </div>
-    
-    {% include contact_form.html
-      href="/dojo" %}
+    {% include contact_form.html href="/dojo" %}
   </div>
 </section>
-
