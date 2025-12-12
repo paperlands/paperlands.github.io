@@ -24,9 +24,9 @@ permalink: /mlp
     </div>
     <!-- Image -->
     <img
-      src="/assets/lib/landing/sutd_calc.png"
-      alt="student care center workshop"
       class="w-full max-w-xl lg:max-w-none lg:w-1/2"
+      src="/assets/lib/landing/sutd_calc.webp"
+      alt="xsin(x) animation"
     />
   </div>
 </section>
@@ -66,21 +66,19 @@ permalink: /mlp
   <div class="flex flex-col items-center mx-auto lg:max-w-xl">
     <!-- Top image -->
     <img
-      src="/assets/lib/landing/wan_functions.png"
+      src="/assets/lib/landing/wan_function.webp"
       alt="Math leader guiding a peer at the computer"
       class="w-full max-w-md"
     />
     <!-- Title -->
-    <p class="mt-4">What are</p>
-    <h2 class="text-4xl tracking-tight lg:text-6xl font-paperlang">Math Leaders</h2>
+    <p class="mt-4">Who is a</p>
+    <h2 class="text-4xl tracking-tight lg:text-6xl font-paperlang">Math Leader</h2>
     <!-- Body copy -->
-    <p class="px-4 mt-8 text-lg lg:text-xl">
-      They explore mathematics by creating computational models,
-      exploring patterns, and designing visual mathematical ideas
+    <p class="px-4 mt-4 text-lg lg:text-xl">
+      Explore mathematics by creating computational models, exploring patterns, and designing visual mathematical ideas
       <br>
       <br>
-      They then lead their peers in understanding and discussing those ideas
-      through teaching workshops or clubs sessions.
+      Lead your peers in understanding and discussing those ideas through teaching workshops/clubs sessions.
     </p>
   </div>
 </section>
@@ -92,7 +90,7 @@ permalink: /mlp
   <div class="flex flex-col-reverse items-center max-w-6xl px-6 mx-auto lg:flex-row lg:items-start">
     <!-- LEFT (Desktop): Header + Body -->
     <div class="flex flex-col lg:w-1/2">
-      <h2 class="text-4xl tracking-tight lg:text-6xl font-paperlang">Why MLP</h2>
+      <h2 class="text-4xl tracking-tight text-center lg:text-6xl font-paperlang">Why MLP</h2>
       <p class="mt-6 text-lg lg:text-xl">
         Great mathematics cultures are built through active exploration, shared inquiry, and student leadership. 
         <br><br>
@@ -129,7 +127,7 @@ permalink: /mlp
   <div class="flex flex-col items-center mx-auto space-y-10">
     <!-- Heading + intro -->
     <div class="max-w-3xl px-6 space-y-4">
-      <h2 class="text-4xl tracking-tight lg:text-6xl font-paperlang">
+      <h2 class="text-4xl tracking-tight text-center lg:text-6xl font-paperlang">
         How MLP works
       </h2>
       <p class="text-lg lg:text-xl">
@@ -152,10 +150,10 @@ permalink: /mlp
                 <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">1</span>
             </div>
             <h3 class="text-lg font-bold text-black">Explore Math through Creation</h3>
-            <img src="/assets/lib/landing/cdac_geometry.png" class="w-full max-w-sm mx-auto rounded-md md:hidden" alt="">
+            <img src="/assets/lib/landing/cdac_geometry.webp" class="w-full max-w-sm mx-auto rounded-md md:hidden" alt="">
             <p class="text-lg">Begin by building visual and computational models in PaperLand to explore patterns, relationships, geometry, motion, and structure.</p>
             </div>
-            <img src="/assets/lib/landing/cdac_geometry.png" class="hidden w-full max-w-sm rounded-md md:block" alt="">
+            <img src="/assets/lib/landing/cdac_geometry.webp" class="hidden w-full max-w-sm rounded-md md:block" alt="">
         </div>
         <!-- PHASE 2 -->
         <div class="relative md:grid md:grid-cols-[auto_1fr_1fr] md:gap-16 items-start">
@@ -183,10 +181,10 @@ permalink: /mlp
                 <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">3</span>
             </div>
             <h3 class="text-lg font-bold text-black">Lead &amp; Share With the School Community</h3>
-            <img src="/assets/lib/landing/stpatskidsalone.png" class="w-full max-w-sm mx-auto rounded-md md:hidden" alt="">
+            <img src="/assets/lib/landing/stpatskidsalone.webp" class="w-full max-w-sm mx-auto rounded-md md:hidden" alt="">
             <p class="text-lg">Bring their work into clubs, classrooms, and workshops—leading peers in shared mathematical exploration.</p>
             </div>
-            <img src="/assets/lib/landing/stpatskidsalone.png" class="hidden w-full max-w-sm rounded-md md:block" alt="">
+            <img src="/assets/lib/landing/stpatskidsalone.webp" class="hidden w-full max-w-sm rounded-md md:block" alt="">
         </div>
     </div>
   </div>
