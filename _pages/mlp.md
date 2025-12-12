@@ -26,7 +26,7 @@ permalink: /mlp
     <img
       class="w-full max-w-xl lg:max-w-none lg:w-1/2"
       src="/assets/lib/landing/sutd_calc.webp"
-      alt="xsin(x) animation"
+      alt="mlp hero image"
     />
   </div>
 </section>
@@ -71,14 +71,14 @@ permalink: /mlp
       class="w-full max-w-md"
     />
     <!-- Title -->
-    <p class="mt-4">Who is a</p>
+    <p class="mt-4">Become a</p>
     <h2 class="text-4xl tracking-tight lg:text-6xl font-paperlang">Math Leader</h2>
     <!-- Body copy -->
     <p class="px-4 mt-4 text-lg lg:text-xl">
-      Explore mathematics by creating computational models, exploring patterns, and designing visual mathematical ideas
+      Build mathematical ideas with code, patterns, and visuals.
       <br>
       <br>
-      Lead your peers in understanding and discussing those ideas through teaching workshops/clubs sessions.
+      Share what you discover by leading and teaching your peers.
     </p>
   </div>
 </section>
@@ -150,10 +150,10 @@ permalink: /mlp
                 <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">1</span>
             </div>
             <h3 class="text-lg font-bold text-black">Explore Math through Creation</h3>
-            <img src="/assets/lib/landing/cdac_geometry.webp" class="w-full max-w-sm mx-auto rounded-md md:hidden" alt="">
+            <img src="/assets/lib/landing/cdac_geometry.webp" class="w-full max-w-sm mx-auto rounded-md md:hidden" alt="student showing his trigular ring">
             <p class="text-lg">Begin by building visual and computational models in PaperLand to explore patterns, relationships, geometry, motion, and structure.</p>
             </div>
-            <img src="/assets/lib/landing/cdac_geometry.webp" class="hidden w-full max-w-sm rounded-md md:block" alt="">
+            <img src="/assets/lib/landing/cdac_geometry.webp" class="hidden w-full max-w-sm rounded-md md:block" alt="student showing his trigular ring">
         </div>
         <!-- PHASE 2 -->
         <div class="relative md:grid md:grid-cols-[auto_1fr_1fr] md:gap-16 items-start">
@@ -237,9 +237,12 @@ permalink: /mlp
       <div class="relative mx-auto max-w-3xl rounded-3xl border border-slate-300/60 bg-[#fcf5e6] shadow-[0_4px_12px_rgba(0,0,0,0.06)] px-6 pt-12 pb-6 lg:px-10">
         <span class="absolute font-serif leading-none select-none -top-0 left-6 text-primary/30 text-8xl">&ldquo;</span>
         <span class="absolute font-serif leading-none select-none text-8xl bottom-16 lg:bottom-8 right-6 text-primary/30">&rdquo;</span>
-        <p class="max-w-2xl mx-auto text-lg italic leading-relaxed lg:text-xl">PaperLand helped me finally see math. Creating models made everything click, and I started understanding ideas way faster than before.</p>
+        <p class="max-w-2xl mx-auto text-lg italic leading-relaxed lg:text-xl">
+        ... A lot of my students enjoyed it! I was SURPRISED to see some of them pick up the concepts faster than I did! ...
+        </p>
         <div class="flex flex-col items-center gap-3 mt-6 lg:flex-row lg:justify-end lg:items-center">
-          <img src="/assets/lib/landing/stpatskidsalone.png" class="object-cover rounded-full shadow w-14 h-14"/>
+          <!-- <img src="/assets/lib/landing/stpatskidsalone.png" class="object-cover rounded-full shadow w-14 h-14"/> -->
+          <div class="flex items-center justify-center w-12 h-12 text-sm font-medium rounded-full bg-slate-300/40 text-slate-700">T</div>
           <div class="text-center lg:text-right">
             <p class="text-base font-medium text-slate-800">Tanha</p>
             <p class="text-sm text-slate-600">Math Leader, 14 years old</p>
@@ -250,9 +253,9 @@ permalink: /mlp
       <div class="relative mx-auto max-w-3xl rounded-3xl border border-slate-300/60 bg-[#fcf5e6] shadow-[0_4px_12px_rgba(0,0,0,0.04)] px-6 pt-10 pb-5 lg:px-10">
         <span class="absolute font-serif leading-none select-none -top-0 left-6 text-primary/30 text-8xl">&ldquo;</span>
         <span class="absolute font-serif leading-none select-none text-8xl bottom-16 lg:bottom-8 right-6 text-primary/30">&rdquo;</span>
-        <p class="max-w-2xl mx-auto text-lg italic leading-relaxed">My students were more engaged than ever. They learned by discovering, explaining, and teaching each other.</p>
+        <p class="max-w-2xl mx-auto text-lg italic leading-relaxed">... PaperLand is such an interactive and visual platform. My students had such a GREAT time being creative with mathematics, something they've never experienced before ... </p>
         <div class="flex flex-col items-center gap-3 mt-5 lg:flex-row lg:justify-end lg:items-center">
-          <div class="flex items-center justify-center w-12 h-12 text-sm font-medium rounded-full bg-slate-300/40 text-slate-700">T</div>
+          <div class="flex items-center justify-center w-12 h-12 text-sm font-medium rounded-full bg-slate-300/40 text-slate-700">L</div>
           <div class="text-center lg:text-right">
             <p class="text-base font-medium text-slate-800">Ms. Lee</p>
             <p class="text-sm text-slate-600">Math Teacher</p>
@@ -263,7 +266,7 @@ permalink: /mlp
       <div class="relative mx-auto max-w-3xl rounded-3xl border border-slate-300/60 bg-[#fcf5e6] shadow-[0_4px_12px_rgba(0,0,0,0.04)] px-6 pt-10 pb-5 lg:px-10">
         <span class="absolute font-serif leading-none select-none -top-0 left-6 text-primary/30 text-8xl">&ldquo;</span>
         <span class="absolute font-serif leading-none select-none text-8xl bottom-16 lg:bottom-8 right-6 text-primary/30">&rdquo;</span>
-        <p class="max-w-2xl mx-auto text-lg italic leading-relaxed">MLP builds confident student leaders who elevate the entire math culture in our school.</p>
+        <p class="max-w-2xl mx-auto text-lg italic leading-relaxed">... I'm so HAPPY to see a new mathematics culture where students actively lead and share about the beauty of mathematics with each other! ...</p>
         <div class="flex flex-col items-center gap-3 mt-5 lg:flex-row lg:justify-end lg:items-center">
           <div class="flex items-center justify-center w-12 h-12 text-sm font-medium rounded-full bg-slate-300/40 text-slate-700">K</div>
           <div class="text-center lg:text-right">
