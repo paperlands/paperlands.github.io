@@ -26,20 +26,17 @@ nav_color: white
 
 
 
-<!-- Discovering mathematics section -->
-<section class="px-4 mt-16 mb-2 lg:px-0 lg:mx-32 animate-fade-in">
-  <h2 class="text-3xl font-bold text-center text-secondary lg:text-4xl">
+<!-- Approach section -->
+<section class="px-4 mt-32 mb-2 lg:px-0 lg:mx-32 animate-fade-in">
+  <h2 class="text-4xl font-bold text-center lg:text-5xl font-paperlang text-secondary">
     Bring Math to Life with Code
   </h2>
-  <p class="mt-4 text-sm text-center text-secondary/80 lg:text-base">
-    CRAFT → EXPERIMENT → COLLABORATE → GROW
-  </p>
   <div class="flex flex-col items-center justify-center my-4">
     <div class="flex flex-col items-start mx-auto">
-      <span>1. Craft your own mathematical paths</span>
-      <span>2. Experiment with ideas and conjectures</span>
-      <span>3. Collaborate to test and refine ideas</span>
-      <span>4. Embrace productive struggle</span>
+      <span>1. <span class="text-lg font-bold text-secondary lg:text-xl">Craft</span> your own mathematical paths</span>
+      <span>2. <span class="text-lg font-bold text-secondary lg:text-xl">Experiment</span> with ideas and conjectures</span>
+      <span>3. <span class="text-lg font-bold text-secondary lg:text-xl">Collaborate</span> to test and refine ideas</span>
+      <span>4. <span class="text-lg font-bold text-secondary lg:text-xl">Embrace</span> productive struggle</span>
     </div>
   </div>
 </section>
@@ -68,7 +65,6 @@ nav_color: white
       </div>
     </div>
   </div>
-
   <!-- Thumbnails (unchanged) -->
   <div class="relative max-w-xl mx-auto">
     <div class="flex items-center gap-3 px-6 py-2 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
@@ -81,7 +77,6 @@ nav_color: white
     </div>
   </div>
 </div>
-
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -229,58 +224,78 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 </script>
-
 <div class="flex justify-center">
-  <a class="px-4 py-2 my-4 rounded-md bg-primary font-paperlang internal-link" href="/approach">Explore Our Approach</a>
+  <a class="px-4 py-2 my-4 rounded-md bg-primary internal-link" href="/approach">Explore Our Approach</a>
 </div>
 
 
 
-
-
-<!-- 1st Principles section -->
-<section class="mx-auto mb-8 mt-36 lg:mx-32">
-<h2 class="my-8 text-3xl font-bold text-center lg:text-4xl">From 1st Principles</h2><hr class="mb-8">
-
-We are designing our lessons around concepts learned in school, but from a <strong class="text-orange-850">1st principles</strong> perspective.<br>
-<br>
-
-From uncovering where the "sum of exterior angles" in polygons in <strong class="text-orange-850">geometry</strong> comes from,<br>
-to rediscovering <strong class="text-orange-850">calculus</strong> from a geometric perspective by observing change across the unit circle,<br>
-to using <strong class="text-orange-850">algebra</strong> and <strong class="text-orange-850">abstraction</strong> to form faces that composes proportionally with their friends' eye.<br>
-<br>
-
-The world of computation and mathematics is very deep and we have only just scratched the surface!
+<!-- Math Leaders Program section -->
+<section class="px-4 mb-2 mt-44 lg:px-0 lg:mx-48 animate-fade-in">
+  <h2 class="text-4xl font-bold text-center font-paperlang text-secondary lg:text-5xl">Math Leaders Program (MLP)</h2>
+  <p class="mt-4 text-center text-secondary/80">We coach student leaders to <span class="text-lg font-bold lg:text-xl text-secondary">spearhead</span> a culture of <span class="text-lg font-bold lg:text-xl text-secondary">creative</span> mathematical inquiry in <span class="text-lg font-bold lg:text-xl text-secondary">service</span> of their wider community.</p>
 </section>
-<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-    <div class="hidden sm:grid sm:gap-4">
-        <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/xsinx.mp4" alt="xsin(x) animation" autoplay loop muted playsinline />
-        </div>
-        <div>
-            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/SUTD_calculus_16x9.jpg" alt="calculus workshop">
-        </div>
-        <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/tree.mp4" alt="tree animation" autoplay loop muted playsinline />
-        </div>
+<div id="mlp-gallery" class="max-w-4xl mx-auto">
+<!-- Approach section -->
+  <div class="w-full mx-auto overflow-hidden bg-black shadow-xl aspect-video rounded-xl sm:w-3/4">
+    <div class="relative w-full h-full">
+      <div class="absolute inset-0 w-full h-full transition duration-500 ease-out mlp-slide" data-index="0"><img src="/assets/lib/landing/SUTD_calculus_16x9.jpg" class="object-cover w-full h-full" alt=""></div>
+      <div class="absolute inset-0 hidden w-full h-full transition duration-500 ease-out mlp-slide" data-index="1"><img loading="lazy" src="/assets/lib/landing/wan_workshop_16x9.jpg" class="object-cover w-full h-full" alt=""></div>
+      <div class="absolute inset-0 hidden w-full h-full transition duration-500 ease-out mlp-slide" data-index="2"><img loading="lazy" src="/assets/lib/landing/knowledge_park_16x9.webp" class="object-cover w-full h-full" alt=""></div>
+      <div class="absolute inset-0 hidden w-full h-full transition duration-500 ease-out mlp-slide" data-index="3"><img loading="lazy" src="/assets/lib/landing/senang_16x9.webp" class="object-cover w-full h-full" alt=""></div>
+      <div class="absolute inset-0 hidden w-full h-full transition duration-500 ease-out mlp-slide" data-index="4"><img loading="lazy" src="/assets/lib/landing/ca_workshop_16x9.jpg" class="object-cover w-full h-full" alt=""></div>
+      <div class="absolute inset-0 hidden w-full h-full transition duration-500 ease-out mlp-slide" data-index="5"><img loading="lazy" src="/assets/lib/landing/stpats_discord_bot_workshop_16x9.jpg" class="object-cover w-full h-full" alt=""></div>
     </div>
-    <div class="grid gap-4">
-        <div>
-            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/ca_workshop_16x9.jpg" alt="cellular automaton workshop">
-        </div>
-        <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/prime_numbers.webm" alt="trigo unit circle animation" autoplay loop muted playsinline />
-        </div>
-        <div>
-            <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/stpats_discord_bot_workshop_16x9.jpg" alt="stpats workshop">
-        </div>
+  </div>
+  <div class="relative max-w-xl mx-auto">
+    <div class="relative z-10 flex items-center gap-3 px-6 py-2 overflow-x-auto pointer-events-auto snap-x snap-mandatory scrollbar-hide">
+      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 mlp-thumb" data-index="0" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/SUTD_calculus_16x9.jpg" alt=""></button>
+      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 mlp-thumb" data-index="1" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt=""></button>
+      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 mlp-thumb" data-index="2" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/knowledge_park_16x9.webp" alt=""></button>
+      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 mlp-thumb" data-index="3" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/senang_16x9.webp" alt=""></button>
+      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 mlp-thumb" data-index="4" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/ca_workshop_16x9.jpg" alt=""></button>
+      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 mlp-thumb" data-index="5" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/stpats_discord_bot_workshop_16x9.jpg" alt=""></button>
     </div>
+  </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const slides = document.querySelectorAll(".mlp-slide");
+  const thumbs = document.querySelectorAll(".mlp-thumb");
+  let currentIndex = 0;
+  function showSlide(index) {
+    slides.forEach(slide => {
+      slide.classList.add("hidden");
+    });
+    slides[index].classList.remove("hidden");
+    thumbs.forEach(thumb => {
+      thumb.classList.remove("ring-2","ring-primary");
+    });
+    thumbs[index].classList.add("ring-2","ring-primary");
+    currentIndex = index;
+  }
+  function nextSlide() {
+    const nextIndex = (currentIndex + 1) % slides.length;
+    showSlide(nextIndex);
+  }
+  thumbs.forEach(thumb => {
+    thumb.addEventListener("click", () => {
+      const index = Number(thumb.dataset.index);
+      showSlide(index);
+    });
+  });
+  showSlide(0);
+  setInterval(nextSlide,3000);
+});
+</script>
+<div class="flex justify-center">
+  <a class="px-4 py-2 my-4 rounded-md bg-primary internal-link" href="/mlp">Learn More</a>
 </div>
 
 
 
 <section class="mt-36">
-  <h2 class="my-8 text-4xl text-center">Why Paperland?</h2><hr>
+  <h2 class="my-8 text-4xl text-center lg:text-5xl text-secondary">Why Paperland?</h2>
   <div class="sm:flex sm:justify-center">
     <div class="m-8 sm:w-5/12 sm:h-5/12">
       <p>We believe that the world would be a better place if the processes we shape and weave illuminates and uplifts the spirit of fellowship and belonging.</p>
@@ -296,8 +311,8 @@ The world of computation and mathematics is very deep and we have only just scra
 
 
 <section id="blog" class="mt-36 ">
-  <h2 class="my-8 text-4xl font-light tracking-tight text-center">Blog.</h2>
-  <hr>
+  <h2 class="my-8 text-4xl font-light tracking-tight text-center lg:text-5xl text-secondary">Blog.</h2>
+  
   <div class="grid grid-cols-1 gap-8 my-12 sm:grid-cols-2">
     {% assign recent_notes = site.notes | sort: "last_modified_at_timestamp" | reverse %}
     {% for note in recent_notes limit: 5 %}
@@ -312,20 +327,16 @@ The world of computation and mathematics is very deep and we have only just scra
           <!-- Hovering effect -->
           <div class="absolute inset-0 transition-opacity duration-300 opacity-100 bg-gradient-to-t from-black/90 to-transparent group-hover:from-amber-900/80"></div>
         </div>
-        
         <!-- Content that slides up on hover -->
         <div class="absolute bottom-0 left-0 right-0 p-6 transition-transform duration-300 transform translate-y-8 group-hover:translate-y-0">
           <!-- Date with minimal styling -->
           <p class="mb-2 text-xs font-light transition-opacity duration-300 opacity-0 text-white/80 group-hover:opacity-100">
             {{ note.last_date | date: "%B %d, %Y" }}
           </p>
-          
           <!-- Title with emphasis -->
           <div 
             class="block text-xl font-medium text-white transition-colors duration-300" 
-          
           >{{ note.title }}</div>
-          
           <!-- Read more link that appears on hover -->
           <p class="inline-flex items-center mt-3 text-sm transition-all duration-300 opacity-0 text-white/90 group-hover:opacity-100">
             Learn more..
@@ -342,63 +353,9 @@ The world of computation and mathematics is very deep and we have only just scra
 
 
 
-<!-- School Engagement Modes section -->
-<div class="relative w-full overflow-hidden mt-52">
-    <!-- Left Fade -->
-    <div class="absolute top-0 left-0 z-10 w-20 h-full pointer-events-none lg:w-28 bg-gradient-to-r from-background to-transparent"></div>
-    <!-- marquee -->
-    <div class="flex items-center space-x-8 animate-marquee whitespace-nowrap">
-        <img src="assets/lib/school_logos/sutd_logo_grayscale.png" class="h-6 lg:h-28 no-border "/>
-        <img src="assets/lib/school_logos/etonhouse_logo_grayscale.png" class="h-8 lg:h-20 no-border "/>
-        <img src="assets/lib/school_logos/sjiinternational_logo_grayscale.png" class="h-20 lg:h-36 no-border"/>
-        <img src="assets/lib/school_logos/stpats_logo_1x1_grayscale.png" class="h-16 lg:h-32 no-border"/>
-        <img src="assets/lib/school_logos/sst_logo_1x1_grayscale.png" class="h-16 lg:h-48 no-border"/>
-        <img src="assets/lib/school_logos/huayi_logo_grayscale.png" class="h-16 lg:h-32 no-border"/>
-        <img src="assets/lib/school_logos/zhonghua_logo_grayscale.png" class="h-16 lg:h-32 no-border"/>
-        <!-- Duplicated to create "endless" loop effect -->
-        <img src="assets/lib/school_logos/sutd_logo_grayscale.png" class="h-6 lg:h-28 no-border "/>
-        <img src="assets/lib/school_logos/etonhouse_logo_grayscale.png" class="h-8 lg:h-20 no-border "/>
-        <img src="assets/lib/school_logos/sjiinternational_logo_grayscale.png" class="h-20 lg:h-36 no-border"/>
-        <img src="assets/lib/school_logos/stpats_logo_1x1_grayscale.png" class="h-16 lg:h-32 no-border"/>
-        <img src="assets/lib/school_logos/sst_logo_1x1_grayscale.png" class="h-16 lg:h-48 no-border"/>
-        <img src="assets/lib/school_logos/huayi_logo_grayscale.png" class="h-16 lg:h-32 no-border"/>
-        <img src="assets/lib/school_logos/zhonghua_logo_grayscale.png" class="h-16 lg:h-32 no-border"/>
-    </div>
-    <!-- Right Fade -->
-    <div class="absolute top-0 right-0 w-20 h-full pointer-events-none lg:w-28 bg-gradient-to-l from-background to-transparent"></div>
-</div>
-<section class=" lg:mx-60">
-<h2 class="my-8 text-3xl font-bold text-center lg:text-4xl">School Engagement Modes</h2><hr class="mb-8">
-
-We adapt every engagement to fit the context and student profile of each school. Here are some ways we can kickstart this collaboration with you too:<br>
-<br>
-
-<strong class="text-orange-850">1. Workshop series:</strong><br>
-<div class="ml-5">
-We tailor our workshops for a variety of student profiles. Some students are faster while others need more support. One beautiful aspect about learning through computation is that it's <strong class="text-orange-850">flexible</strong> enough to accomodate all.<br>
-</div>
-<br>
-
-<strong class="text-orange-850">2. Student-Initiated Learning:</strong><br>
-<div class="ml-5">
-We designed a series of 1hr <strong class="text-orange-850">online lessons</strong> to engage students in mathematical exploration. Since we are exploring concepts from a geometrical perspective, students naturally explore ways to <strong class="text-orange-850">build</strong> elaborate works of art. The SIL program ends with us laser engraving the mathematical works of art made by students in the final lesson.<br>
-</div>
-<br>
-
-<strong class="text-orange-850">3. Lesson Co-designing:</strong><br>
-<div class="ml-5">
-We explore how math teachers can bring  it in their classrooms during curriculum time. We work with them to <strong class="text-orange-850">co-design lesson plans</strong> according to their <strong class="text-orange-850">scheme of work</strong> for the year. These are super exciting as we are pushing the <strong class="text-orange-850">frontier</strong> of math education together.<br>
-</div>
-<br>
-
-</section>
-
-
-
-
 <!-- Contact us -->
 <section id="contact" class="mt-36">
-  <h2 class="my-8 text-4xl text-center">Contact Us</h2><hr>
+  <h2 class="my-8 text-4xl text-center lg:text-5xl text-secondary">Contact Us</h2>
 
   <div class="my-8 sm:flex sm:justify-center">
     <div class="m-8 sm:w-5/12">
