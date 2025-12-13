@@ -10,7 +10,7 @@ nav_color: white
 
 <section class="h-[70vh] animate-fade-in md:h-[75vh]">
   <video class="absolute top-0 left-0 w-screen h-[100vh] object-cover brightness-[40%] -z-10" 
-    src="/assets/lib/landing/3Dwaves.webm" 
+    src="/assets/lib/landing/3DWaves.webm" 
     poster="/assets/lib/landing/3DWaves.webp" 
     alt="Math x Computation hero video" 
     autoplay loop muted playsinline 
