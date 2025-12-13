@@ -30,3 +30,25 @@ Common pixel sizes:
 - 1200x800 pixels
 - 900x600 pixels
 Usage: Photography, product images.
+
+# asset conversion ffmpeg cli
+
+PNG to WEBP:
+`ffmpeg -i epicycloid_egg.png -c:v libwebp -q:v 75 epicycloid_egg.webp`
+
+MP4 to WEBM:
+`ffmpeg -i hero_video.mp4 -c:v libvpx-vp9 -crf 28 -b:v 0 -pix_fmt yuv420p -row-mt 1 -c:a libopus -b:a 96k hero_video.webm`
+
+To export with alpha on Davinci Resolve, choose Format="Quicktime" -> Codec="GoPro Cineform" -> Type="RGB 16-bit"
+Then convert from MOV to WEBP:
+```
+ffmpeg -y -i sutd_calc.mov \
+  -an \
+  -vf "fps=30,scale=1280:-1:flags=lanczos,format=rgba" \
+  -loop 0 \
+  -c:v libwebp_anim \
+  -q:v 80 \
+  -compression_level 6 \
+  -preset picture \
+  sutd_calc.webp
+```

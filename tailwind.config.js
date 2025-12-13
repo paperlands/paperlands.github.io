@@ -16,15 +16,14 @@ module.exports = {
         marquee2: "marquee2 50s linear infinite",
         fade: "fadeIn 1s ease-in-out",
         fadeout: "fadeOut 5s forwards",
-        'pulse-slow': 'pulse 3s infinite',
-        'bounce-subtle': 'bounce 2s infinite',
-        'fade-in': 'fadeUp 0.6s ease-out',
-        'slide-up': 'slideUp 0.8s ease-out',
-        'drift': 'drift 8s ease-in-out infinite',
-        'shimmer': 'shimmer 3s ease-in-out infinite'
+        "pulse-slow": "pulse 3s infinite",
+        "bounce-subtle": "bounce 2s infinite",
+        "fade-in": "fadeUp 0.6s ease-out",
+        "slide-up": "slideUp 0.8s ease-out",
+        drift: "drift 8s ease-in-out infinite",
+        shimmer: "shimmer 3s ease-in-out infinite",
       },
       keyframes: {
-
         marquee: {
           "0%": { transform: "translateX(0%)" },
           "100%": { transform: "translateX(-100%)" },
@@ -38,9 +37,15 @@ module.exports = {
           "50%": { opacity: 0.7 },
         },
         drift: {
-          "0%, 100%":{ transform: "translateX(0px) translateY(0px) rotate(0deg);" },
-          "33%": { transform: "translateX(30px) translateY(-10px) rotate(2deg);" },
-          "66%": { transform: "translateX(-20px) translateY(-15px) rotate(-1deg);" }
+          "0%, 100%": {
+            transform: "translateX(0px) translateY(0px) rotate(0deg);",
+          },
+          "33%": {
+            transform: "translateX(30px) translateY(-10px) rotate(2deg);",
+          },
+          "66%": {
+            transform: "translateX(-20px) translateY(-15px) rotate(-1deg);",
+          },
         },
         marquee2: {
           "0%": { transform: "translateX(100%)" },
@@ -48,12 +53,12 @@ module.exports = {
           "100%": { transform: "translateX(-100%)" },
         },
         fadeUp: {
-          '0%': { opacity: '0', transform: 'translateY(20px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' }
+          "0%": { opacity: "0", transform: "translateY(20px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
         },
         slideUp: {
-          '0%': { opacity: '0', transform: 'translateY(40px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' }
+          "0%": { opacity: "0", transform: "translateY(40px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
         },
         fadeIn: {
           from: { opacity: 0 },
@@ -70,13 +75,13 @@ module.exports = {
         paperlang: ["paperLang", "Lora"],
       },
       colors: {
-        'sage': '#9ca3af',
-        'stone-warm': '#78716c',
-        'orange-850': '#ea580c',
-        'ink': '#1f2937',
+        sage: "#9ca3af",
+        "stone-warm": "#78716c",
+        "orange-850": "#ea580c",
+        ink: "#1f2937",
         primary: {
           light: "#ffebd3",
-          DEFAULT: "#fa9900",
+          DEFAULT: "#ff9933",
           dark: "#d97c00",
         },
         secondary: {
