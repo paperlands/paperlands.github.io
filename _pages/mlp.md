@@ -39,16 +39,20 @@ permalink: /mlp
     <div class="absolute top-0 left-0 z-10 w-20 h-full pointer-events-none lg:w-28 bg-gradient-to-r from-background to-transparent"></div>
     <!-- marquee -->
     <div class="flex items-center space-x-8 animate-marquee whitespace-nowrap">
-        <img src="assets/lib/school_logos/sutd_logo_grayscale.png" class="h-6 lg:h-24 no-border "/>
+        <img src="assets/lib/school_logos/atwin_logo.png" class="h-6 lg:h-24 no-border "/>
         <img src="assets/lib/school_logos/etonhouse_logo_grayscale.png" class="h-8 lg:h-16 no-border "/>
+        <img src="assets/lib/school_logos/sutd_logo_grayscale.png" class="h-6 lg:h-24 no-border "/>
+        <img src="assets/lib/school_logos/YMA_logo.png" class="h-20 lg:h-32 no-border"/>
         <img src="assets/lib/school_logos/sjiinternational_logo_grayscale.png" class="h-20 lg:h-32 no-border"/>
         <img src="assets/lib/school_logos/stpats_logo_1x1_grayscale.png" class="h-16 lg:h-28 no-border"/>
         <img src="assets/lib/school_logos/sst_logo_1x1_grayscale.png" class="h-16 lg:h-44 no-border"/>
         <img src="assets/lib/school_logos/huayi_logo_grayscale.png" class="h-16 lg:h-28 no-border"/>
         <img src="assets/lib/school_logos/zhonghua_logo_grayscale.png" class="h-16 lg:h-28 no-border"/>
         <!-- Duplicated to create "endless" loop effect -->
-        <img src="assets/lib/school_logos/sutd_logo_grayscale.png" class="h-6 lg:h-24 no-border "/>
+        <img src="assets/lib/school_logos/atwin_logo.png" class="h-6 lg:h-24 no-border "/>
         <img src="assets/lib/school_logos/etonhouse_logo_grayscale.png" class="h-8 lg:h-16 no-border "/>
+        <img src="assets/lib/school_logos/sutd_logo_grayscale.png" class="h-6 lg:h-24 no-border "/>
+        <img src="assets/lib/school_logos/YMA_logo.png" class="h-20 lg:h-32 no-border"/>
         <img src="assets/lib/school_logos/sjiinternational_logo_grayscale.png" class="h-20 lg:h-32 no-border"/>
         <img src="assets/lib/school_logos/stpats_logo_1x1_grayscale.png" class="h-16 lg:h-28 no-border"/>
         <img src="assets/lib/school_logos/sst_logo_1x1_grayscale.png" class="h-16 lg:h-44 no-border"/>
@@ -137,7 +141,7 @@ permalink: /mlp
       </p>
     </div>
     <!-- Phases -->
-    <div class="max-w-5xl px-6 mx-auto space-y-24">
+    <div class="max-w-5xl px-6 mx-auto space-y-10">
         <!-- PHASE 1 -->
         <div class="relative md:grid md:grid-cols-[auto_1fr_1fr] md:gap-16 items-start">
           <div class="flex-col items-center hidden pt-2 md:flex">
