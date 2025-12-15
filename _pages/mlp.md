@@ -75,10 +75,9 @@ permalink: /mlp
     <h2 class="text-4xl tracking-tight lg:text-6xl font-paperlang">Math Leader</h2>
     <!-- Body copy -->
     <p class="px-4 mt-4 text-lg lg:text-xl">
-      Build mathematical ideas with code, patterns, and visuals.
+      Build mathematical ideas with code to explore patterns and visuals.
       <br>
-      <br>
-      Share what you discover by leading and teaching your peers.
+      Share what you discovered by leading and teaching your peers.
     </p>
   </div>
 </section>
@@ -141,50 +140,48 @@ permalink: /mlp
     <div class="max-w-5xl px-6 mx-auto space-y-24">
         <!-- PHASE 1 -->
         <div class="relative md:grid md:grid-cols-[auto_1fr_1fr] md:gap-16 items-start">
-            <div class="flex-col items-center hidden pt-2 md:flex">
+          <div class="flex-col items-center hidden pt-2 md:flex">
             <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">1</span>
-            <span class="flex-1 w-px mt-2 bg-slate-300"></span>
-            </div>
-            <div class="space-y-3 text-center md:text-left">
+          </div>
+          <div class="space-y-3 md:text-left">
             <div class="flex justify-center md:hidden">
                 <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">1</span>
             </div>
             <h3 class="text-lg font-bold text-black">Explore Math through Creation</h3>
             <img src="/assets/lib/landing/cdac_geometry.webp" class="w-full max-w-sm mx-auto rounded-md md:hidden" alt="student showing his trigular ring">
-            <p class="text-lg">Begin by building visual and computational models in PaperLand to explore patterns, relationships, geometry, motion, and structure.</p>
-            </div>
-            <img src="/assets/lib/landing/cdac_geometry.webp" class="hidden w-full max-w-sm rounded-md md:block" alt="student showing his trigular ring">
+            <p class="text-lg text-left">Begin by building visual and computational models in PaperLand to explore patterns, relationships, geometry, motion, and structure.</p>
+          </div>
+          <img src="/assets/lib/landing/cdac_geometry.webp" class="hidden w-full max-w-sm rounded-md md:block" alt="student showing his trigular ring">
         </div>
         <!-- PHASE 2 -->
         <div class="relative md:grid md:grid-cols-[auto_1fr_1fr] md:gap-16 items-start">
-            <div class="flex-col items-center hidden pt-2 md:flex">
+          <div class="flex-col items-center hidden pt-2 md:flex">
             <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">2</span>
-            <span class="flex-1 w-px mt-2 bg-slate-300"></span>
-            </div>
-            <div class="space-y-3 text-center md:text-left">
+          </div>
+          <div class="space-y-3 ">
             <div class="flex justify-center md:hidden">
                 <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">2</span>
             </div>
-            <h3 class="text-lg font-bold text-black">Design &amp; Refine Learning Experiences</h3>
+            <h3 class="text-lg font-bold text-black">Share &amp; Communicate</h3>
             <img src="/assets/lib/landing/angelican_distribution.png" class="w-full max-w-sm mx-auto rounded-md md:hidden" alt="">
             <p class="text-lg">Turn their discoveries into interactive models, demonstrations, and activities designed for others to learn from.</p>
-            </div>
-            <img src="/assets/lib/landing/angelican_distribution.png" class="hidden w-full max-w-sm rounded-md md:block" alt="">
+          </div>
+          <img src="/assets/lib/landing/angelican_distribution.png" class="hidden w-full max-w-sm rounded-md md:block" alt="">
         </div>
         <!-- PHASE 3 -->
         <div class="relative md:grid md:grid-cols-[auto_1fr_1fr] md:gap-16 items-start">
-            <div class="flex-col items-center hidden pt-2 md:flex">
+          <div class="flex-col items-center hidden pt-2 md:flex">
             <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">3</span>
-            </div>
-            <div class="space-y-3 text-center md:text-left">
+          </div>
+          <div class="space-y-3 md">
             <div class="flex justify-center md:hidden">
                 <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">3</span>
             </div>
             <h3 class="text-lg font-bold text-black">Lead &amp; Share With the School Community</h3>
             <img src="/assets/lib/landing/stpatskidsalone.webp" class="w-full max-w-sm mx-auto rounded-md md:hidden" alt="">
-            <p class="text-lg">Bring their work into clubs, classrooms, and workshops—leading peers in shared mathematical exploration.</p>
-            </div>
-            <img src="/assets/lib/landing/stpatskidsalone.webp" class="hidden w-full max-w-sm rounded-md md:block" alt="">
+            <p class="text-lg">Bring their work into math clubs, classrooms, and workshops—leading peers in shared mathematical exploration.</p>
+          </div>
+          <img src="/assets/lib/landing/stpatskidsalone.webp" class="hidden w-full max-w-sm rounded-md md:block" alt="">
         </div>
     </div>
   </div>
