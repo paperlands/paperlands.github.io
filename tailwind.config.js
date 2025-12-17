@@ -12,7 +12,7 @@ module.exports = {
   theme: {
     extend: {
       animation: {
-        marquee: "marquee 50s linear infinite",
+        marquee: "marquee 40s linear infinite",
         marquee2: "marquee2 50s linear infinite",
         fade: "fadeIn 1s ease-in-out",
         fadeout: "fadeOut 5s forwards",
@@ -26,7 +26,7 @@ module.exports = {
       keyframes: {
         marquee: {
           "0%": { transform: "translateX(0%)" },
-          "100%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(-50%)" },
         },
         float: {
           "0%, 100%": { transform: "translateY(0px) rotate(0deg)" },
@@ -48,9 +48,8 @@ module.exports = {
           },
         },
         marquee2: {
-          "0%": { transform: "translateX(100%)" },
-          50: { transform: "translateX(0%)" },
-          "100%": { transform: "translateX(-100%)" },
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-50%)" },
         },
         fadeUp: {
           "0%": { opacity: "0", transform: "translateY(20px)" },
