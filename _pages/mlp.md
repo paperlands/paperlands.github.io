@@ -269,6 +269,11 @@ permalink: /mlp
 
 <!-- Contact us -->
 <section id="contact" class="pt-8 mt-40 lg:mt-48">
+  <!-- <img
+      src="/assets/lib/landing/spider_circle.webp"
+      alt="Math leader guiding a peer at the computer"
+      class="w-full max-w-md mx-auto md:hidden"
+  /> -->
   <div class="my-8 md:flex md:justify-center">
     <div class="my-8 md:mr-8 md:w-5/12">
       <div class="text-center">

@@ -52,3 +52,16 @@ ffmpeg -y -i sutd_calc.mov \
   -preset picture \
   sutd_calc.webp
 ```
+
+For more aggressive compression:
+```
+ffmpeg -y -i sutd_calc.mov \
+  -an \
+  -vf "fps=15,scale=960:-1:flags=lanczos,format=rgba" \
+  -loop 0 \
+  -c:v libwebp_anim \
+  -q:v 60 \
+  -compression_level 6 \
+  -preset drawing \
+  sutd_calc.webp
+```
