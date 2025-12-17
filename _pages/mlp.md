@@ -138,10 +138,7 @@ permalink: /mlp
         How MLP works
       </h2>
       <p class="text-lg lg:text-xl">
-        MLP trains student leaders to explore math through creative computation—then lead and teach their peers.
-      </p>
-      <p class="text-lg">
-        The program runs in three connected phases:
+        MLP is a 10-weeks program to train student leaders not only to explore math through creative computation, but to go beyond to lead and teach their wider community.
       </p>
     </div>
     <!-- Phases -->
@@ -166,26 +163,11 @@ permalink: /mlp
           <div class="flex-col items-center hidden pt-2 md:flex">
             <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">2</span>
           </div>
-          <div class="space-y-3 ">
+          <div class="space-y-3 md">
             <div class="flex justify-center md:hidden">
                 <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">2</span>
             </div>
-            <h3 class="text-lg font-bold text-black">Share &amp; Communicate</h3>
-            <img src="/assets/lib/landing/angelican_distribution.png" class="w-full max-w-sm mx-auto rounded-md md:hidden" alt="">
-            <p class="text-lg">Turn their discoveries into interactive models, demonstrations, and activities designed for others to learn from.</p>
-          </div>
-          <img src="/assets/lib/landing/angelican_distribution.png" class="hidden w-full max-w-sm rounded-md md:block" alt="">
-        </div>
-        <!-- PHASE 3 -->
-        <div class="relative md:grid md:grid-cols-[auto_1fr_1fr] md:gap-16 items-start">
-          <div class="flex-col items-center hidden pt-2 md:flex">
-            <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">3</span>
-          </div>
-          <div class="space-y-3 md">
-            <div class="flex justify-center md:hidden">
-                <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">3</span>
-            </div>
-            <h3 class="text-lg font-bold text-black">Lead &amp; Share With the School Community</h3>
+            <h3 class="text-lg font-bold text-black">Lead &amp; Teach their Community</h3>
             <img src="/assets/lib/landing/stpatskidsalone.webp" class="w-full max-w-sm mx-auto rounded-md md:hidden" alt="">
             <p class="text-lg">Bring their work into math clubs, classrooms, and workshops—leading peers in shared mathematical exploration.</p>
           </div>
@@ -201,18 +183,18 @@ permalink: /mlp
 <section id="what" class="pt-8 mt-40 lg:mt-48">
   <div class="flex flex-col items-center mx-auto lg:max-w-xl">
     <!-- Top image -->
-    <!-- <img
-      src="/assets/lib/landing/kenneth.png"
+    <img
+      src="/assets/lib/landing/angelican_distribution.png"
       alt="Math leader guiding a peer at the computer"
-      class="w-full max-w-md"/> -->
+      class="w-full max-w-md"/>
     <!-- Title -->
     <h2 class="mt-4 text-4xl tracking-tight lg:text-6xl font-paperlang">Who MLP's for</h2>
     <!-- Body copy -->
     <div class="px-4 mt-4 text-lg lg:text-xl">
         <div class="flex">
             <div class="p-2 m-2 text-center rounded-lg lg:p-4 bg-primary-light">
-                <span class="text-center text-primary">❧</span><span> Students (12+)</span>
-                <div class="mt-2">curious about math & excited to share ideas with others</div>
+                <span class="text-center text-primary">❧</span><span> Students</span>
+                <div class="mt-2">ages 12+ curious about math & excited to share ideas with others</div>
             </div>
             <div class="p-2 m-2 text-center rounded-lg lg:p-4 bg-primary-light">
                 <span class="text-center text-primary">❧</span><span> Schools</span>
@@ -222,7 +204,6 @@ permalink: /mlp
     </div>
     <div class="mt-4">
         Unlike math olympiads, students don’t work alone or race for rankings. They work together—building, sharing, and learning as a community.
-        <br>
         <br>
         Students grow by exploring ideas, communicating clearly, and leading others with confidence in mathematics.
     </div>
@@ -235,7 +216,7 @@ permalink: /mlp
 <section id="testimonial" class="pt-8 mt-40 lg:mt-48">
   <div class="max-w-4xl px-6 mx-auto space-y-8 text-center">
     <!-- Heading -->
-    <h2 class="text-4xl tracking-tight lg:text-6xl lg:text-4xl font-paperlang text-primary">Our Feedbacks</h2>
+    <h2 class="text-4xl tracking-tight lg:text-6xl lg:text-4xl font-paperlang text-primary">Testimonials</h2>
     <!-- Cards -->
     <div class="space-y-6">
       <!-- Student -->
@@ -289,65 +270,25 @@ permalink: /mlp
 <!-- Contact us -->
 <section id="contact" class="pt-8 mt-40 lg:mt-48">
   <div class="my-8 md:flex md:justify-center">
-    <div class="mb-8 md:mr-8">
+    <div class="my-8 md:mr-8 md:w-5/12">
       <div class="text-center">
-        <h2 class="text-4xl tracking-tight lg:text-6xl font-paperlang">Free MLP Pilot</h2>
-        <div class="italic">3 weeks</div>
+        <h2 class="text-4xl tracking-tight lg:text-6xl font-paperlang">MLP Pilot</h2>
+        <div class="italic">3 weeks · FREE</div>
       </div>
-      <!-- Weeks timeline -->
-      <div class="my-4 space-y-4">
-        <!-- Week 1 -->
-        <div class="flex gap-4">
-          <div class="flex flex-col items-center">
-            <div class="flex items-center justify-center w-8 h-8 text-sm font-medium border-2 rounded-full border-primary">W1</div>
-            <div class="flex-1 w-px bg-slate-300"></div>
-          </div>
-          <div class="space-y-1">
-            <h3 class="text-lg font-semibold text-slate-900">Learn &amp; Create</h3>
-            <p class="text-sm text-slate-700">Learn to code creative mathematical objects on PaperLand.</p>
-          </div>
-        </div>
-        <!-- Week 2 -->
-        <div class="flex gap-4">
-          <div class="flex flex-col items-center">
-            <div class="flex items-center justify-center w-8 h-8 text-sm font-medium border-2 rounded-full border-primary">W2</div>
-            <div class="flex-1 w-px bg-slate-300"></div>
-          </div>
-          <div class="space-y-1">
-            <h3 class="text-lg font-semibold text-slate-900">Share &amp; Communicate</h3>
-            <p class="text-sm text-slate-700">Present & share their creation with their peers.</p>
-          </div>
-        </div>
-        <!-- Week 3 -->
-        <div class="flex gap-4">
-          <div class="flex flex-col items-center">
-            <div class="flex items-center justify-center w-8 h-8 text-sm font-medium border-2 rounded-full border-primary">W3</div>
-            <div class="flex-1 w-px bg-slate-300"></div>
-          </div>
-          <div class="space-y-1">
-            <h3 class="text-lg font-semibold text-slate-900">Reflect &amp; Design</h3>
-            <p class="text-sm text-slate-700">Peer-reflection & design student-led workshop.</p>
-          </div>
-        </div>
-        <!-- Week 4 -->
-        <div class="flex gap-4">
-          <div class="flex flex-col items-center">
-            <div class="flex items-center justify-center w-8 h-8 text-sm font-medium rounded-full bg-primary">W4</div>
-          </div>
-          <div class="space-y-1">
-            <h3 class="text-lg font-semibold text-slate-900">Teaching Day</h3>
-            <p class="text-sm text-slate-700">Students lead a PaperLand workshop for their peers.</p>
-          </div>
-        </div>
+      <div class="mt-8">
+        Experience how the Math Leaders Program empowers students to explore real problems, explain their thinking, and lead math discussions — at no cost.
       </div>
       <!-- Benefits -->
-      <div class="my-8 space-y-2 text-center text-slate-700">
-        <p class="font-semibold text-center text-slate-800">What’s included:</p>
+      <div class="mt-8 space-y-2 ">
         <ul class="space-y-1 text-sm">
-          <li>✔ Full facilitation support from PaperLand</li>
-          <li>✔ No contracts or special hardware required</li>
+          <li>✔ Full facilitation from the PaperLand team</li>
+          <li>✔ No contracts/special hardware required</li>
           <li>✔ No prior coding experience needed</li>
+          <li>✔ Designed for aspiring math leaders ages 12+</li>
         </ul>
+      </div>
+      <div class="mt-8">
+        👉 Schedule a short call to see if the MLP Pilot is a good fit for your students.
       </div>
     </div>
     {% include contact_form.html href="/dojo" %}
