@@ -1,93 +1,237 @@
-#---
+---
 layout: landing
 title: MathxCode Paperland Workshop
 excerpt: Discover the math hidden around us!
-image: /assets/lib/geometry_workshop.png
+image: /assets/lib/beauty_first.png
 permalink: /workshop
-#---
+---
 
-<section class="h-[40vh] md:h-[48vh] lg:h-[52vh]">
-  <video class="absolute top-0 left-0 w-screen h-[48vh] object-cover brightness-[40%] -z-10 md:h-[56vh] lg:h-[60vh]" src="/assets/lib/landing/workshop_hero_video.mp4" alt="Math x Computation hero video" autoplay loop muted playsinline />
 
-  <h1 class="text-5xl font-bold tracking-tighter lg:text-9xl">Math x Coding</h1>
-  <p class="ml-2 text-white">Discover mathematics through computation</p>
-  <p class="mt-4 ml-2 text-white">Beside Beauty World Mrt</p>
-  <p class="ml-2 text-white">9am-12pm</p>
-  <p class="ml-2 text-white">21st March (fri)</p>
-  <br>
-  <a href="/workshop#register" class="px-4 py-2 ml-2 rounded-md bg-primary internal-link">Sign up now!</a>
+<section class="h-[70vh] lg:h-[60vh] animate-fade-in">
+  <div class="flex flex-col-reverse items-center justify-center my-8 text-center lg:flex-row lg:text-left lg:gap-8 lg:my-28">
+    <!-- Text -->
+    <div class="flex flex-col items-center space-y-4 lg:items-start lg:space-y-6 lg:w-3/5">
+      <h1 class="text-4xl tracking-tight lg:text-7xl text-primary font-paperlang">
+        Math Leaders Program<br>(online)
+      </h1>
+      <p class="lg:text-xl">
+        <span class="font-bold">A 10-weeks online program to explore mathematics using coding. </span>
+        Meet students around the world passionate about discovering and sharing the beauty of mathematics.
+        <br><br>
+        For kids 12-16.
+      </p>
+      <a href="/workshop#cta" class="px-5 py-2 transition rounded-md bg-primary font-paperlang hover:brightness-110 internal-link">
+        Join Free Trial Class
+      </a>
+      <span class="italic text-slate-500">Next session: 4th Jan 2026 (Sun) 9am</span>
+    </div>
+    <!-- Image -->
+    <img
+      class="w-full max-w-xl lg:max-w-none lg:w-1/2"
+      src="/assets/lib/landing/wan_function.webp"
+      alt="mlp hero image"
+    />
+  </div>
+</section>
+
+
+
+<!-- Who's MLP for section -->
+<section id="what" class="pt-8 mt-40 lg:mt-48">
+  <div class="flex flex-col items-center mx-auto lg:max-w-xl">
+    <!-- Top image -->
+    <img
+      src="/assets/lib/landing/cdac_geometry.webp"
+      alt="Math leader guiding a peer at the computer"
+      class="w-full max-w-md"/>
+    <!-- Title -->
+    <h2 class="mt-4 text-4xl tracking-tight lg:text-6xl font-paperlang">Who it's for</h2>
+    <!-- Body copy -->
+    <div class="px-4 mt-4 text-lg lg:text-xl">
+        <div class="flex">
+            <div class="p-2 m-2 text-center bg-white border rounded-lg shadow-sm lg:p-4 border-slate-300/60">
+                <span class="text-center text-primary">❧</span><span> Students (ages 12-16)</span>
+                <div class="mt-2 text-slate-600">Curious to discover and share the creative side of mathematics</div>
+            </div>
+        </div>
+    </div>
+    <div class="mt-4">
+        Unlike math olympiads, students don’t work alone or race for rankings. They work together—building, sharing, and learning as a community.
+        <br>
+        Students grow by exploring ideas, communicating clearly, and leading others with confidence in mathematics.
+    </div>
+  </div>
+</section>
+
+
+
+<!-- How MLP works section -->
+<section id="how" class="pt-8 mt-40 lg:mt-48">
+  <div class="flex flex-col items-center mx-auto space-y-10">
+    <!-- Heading + intro -->
+    <div class="max-w-3xl px-6 space-y-4">
+      <h2 class="text-4xl tracking-tight text-center lg:text-6xl font-paperlang">
+        How MLP works
+      </h2>
+      <p class="text-lg lg:text-xl">
+        In 10-weeks, student leaders not only learn to explore math through creative computation, but also learn to go beyond by leading and teaching their wider community.
+      </p>
+    </div>
+    <!-- Phases -->
+    <div class="max-w-5xl px-6 mx-auto space-y-10">
+        <!-- PHASE 1 -->
+        <div class="relative md:grid md:grid-cols-[auto_1fr_1fr] md:gap-16 items-start">
+          <div class="flex-col items-center hidden pt-2 md:flex">
+            <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">1</span>
+          </div>
+          <div class="space-y-3 md:text-left">
+            <div class="flex justify-center md:hidden">
+                <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">1</span>
+            </div>
+            <h3 class="text-lg font-bold text-black">Explore Math through Creation</h3>
+            <img src="/assets/lib/landing/angelican_distribution.png" class="w-full max-w-sm mx-auto rounded-md md:hidden" alt="student showing his trigular ring">
+            <p class="text-lg text-left">Begin by building visual and computational models in PaperLand to explore patterns, relationships, geometry, motion, and structure.</p>
+          </div>
+          <img src="/assets/lib/landing/angelican_distribution.png" class="hidden w-full max-w-sm rounded-md md:block" alt="student showing his trigular ring">
+        </div>
+        <!-- PHASE 2 -->
+        <div class="relative md:grid md:grid-cols-[auto_1fr_1fr] md:gap-16 items-start">
+          <div class="flex-col items-center hidden pt-2 md:flex">
+            <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">2</span>
+          </div>
+          <div class="space-y-3 md">
+            <div class="flex justify-center md:hidden">
+                <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">2</span>
+            </div>
+            <h3 class="text-lg font-bold text-black">Lead &amp; Teach their Community</h3>
+            <img src="/assets/lib/landing/sutd_calc.webp" class="w-full max-w-sm mx-auto rounded-md md:hidden" alt="">
+            <p class="text-lg">Bring their work into math clubs, classrooms, and workshops—leading peers in shared mathematical exploration.</p>
+          </div>
+          <img src="/assets/lib/landing/sutd_calc.webp" class="hidden w-full max-w-sm rounded-md md:block" alt="">
+        </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- Timeline section -->
+<section id="timeline" class="pt-8 mt-40 lg:mt-48">
+  <div class="max-w-4xl px-4 mx-auto">
+    <div class="text-center">
+      <h2 class="text-4xl tracking-tight lg:text-6xl font-paperlang">Next Cohort Timeline</h2>
+      <p class="mt-4 text-lg lg:text-xl text-slate-600">Every Sunday at <span class="font-semibold text-slate-900">9:00 AM SGT</span> for <span class="font-semibold text-slate-900">10 weeks</span>.</p>
+    </div>
+    <div class="flex flex-wrap justify-center gap-3 mt-4">
+      <span class="inline-flex items-center gap-2 px-4 py-2 text-sm bg-white border rounded-full shadow-sm border-slate-200 text-slate-700"><span aria-hidden="true">🗓️</span>11 Jan – 15 Mar 2026</span>
+    </div>
+    <div class="relative mt-4">
+      <div class="absolute left-8 top-0 h-full w-[2px] bg-gradient-to-b from-amber-500 via-sky-500 to-emerald-500 opacity-40"></div>
+      <ol class="pl-12 space-y-6">
+        <li class="relative">
+          <span class="absolute -left-[2.15rem] top-3 grid h-9 w-9 place-items-center rounded-full bg-amber-600 text-white shadow-md ring-4 ring-white">🎓</span>
+          <div class="p-6 bg-white border shadow-sm rounded-2xl border-slate-200">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <p class="text-base font-semibold text-slate-900">Free Trial Class</p>
+              <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full text-amber-950 bg-amber-50">Free • Open to all</span>
+            </div>
+            <p class="mt-2 text-slate-700"><span class="font-semibold">4 January 2026</span> • 9:00 AM SGT</p>
+            <p class="mt-2 text-sm text-slate-500">Join a free introductory session to experience the MLP format before committing.</p>
+          </div>
+        </li>
+        <li class="relative">
+          <span class="absolute -left-[2.15rem] top-3 grid h-9 w-9 place-items-center rounded-full bg-sky-600 text-white shadow-md ring-4 ring-white">🚀</span>
+          <div class="p-6 bg-white border shadow-sm rounded-2xl border-slate-200">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <p class="text-base font-semibold text-slate-900">10-Week Program Begins (Week 1)</p>
+              <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-sky-50 text-sky-700">Starts</span>
+            </div>
+            <p class="mt-2 text-slate-700"><span class="font-semibold">11 January 2026</span> • 9:00 AM SGT</p>
+            <p class="mt-2 text-sm text-slate-500">Weekly sessions every Sunday morning at 9:00 AM SGT for 10 consecutive weeks.</p>
+          </div>
+        </li>
+        <li class="relative">
+          <span class="absolute -left-[2.15rem] top-3 grid h-9 w-9 place-items-center rounded-full bg-emerald-600 text-white shadow-md ring-4 ring-white">🏁</span>
+          <div class="p-6 bg-white border shadow-sm rounded-2xl border-slate-200">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <p class="text-base font-semibold text-slate-900">Final Session (Week 10)</p>
+              <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-emerald-50 text-emerald-700">Ends</span>
+            </div>
+            <p class="mt-2 text-slate-700"><span class="font-semibold">15 March 2026</span> • 9:00 AM SGT</p>
+            <p class="mt-2 text-sm text-slate-500">Walk away with a deeper appreciation for how mathematics touches all our lives.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </div>
 </section>
 
 
 
 
-<!-- Tree section -->
-<section class="my-20">
-<h2 class="my-8 text-2xl font-bold lg:text-4xl">"Discover the math hidden around us!"</h2>
 
-Math is <strong > not </strong > just about memorizing formulas.
-<br>
-<br>
-For example, look at the tree pattern below:
-<br>
-Why did it grow this way?
- <br>
-  How else can it grow?
-  <br>
-  What other factors are acting upon it?
-  
-  <br><br>
-The beauty of mathematics is revealed by <strong class="text-orange-500">uncovering patterns and asking questions </strong> about the world around us!
-
-<video class="object-cover w-full h-full mt-8 rounded-md"  src="/assets/lib/landing/tree.mp4"   alt="Turtle graphics tree" autoplay loop muted playsinline />
-</section>
-
-
-
-<!-- Knowledge Park section -->
-<section class="my-32">
-<h2 class="my-8 text-3xl font-bold lg:text-4xl">"Discover Through Code & Play!"</h2>
-
-The best way to learn math is by <strong class="text-orange-500">exploring and experimenting. </strong>
-<br>
-<br>
-In our workshop, students will program computers to <strong class="text-orange-500">create</strong> their own patterns and <strong class="text-orange-500">communicate</strong> their discoveries with classmates.
-<br>
-<br>
- As students teach the computer how to act, they begin to<strong class="text-orange-500"> reflect on their own actions and thinking</strong>.
- They will formulate original hypotheses, model the world around them and test how math shapes the world – making learning <strong class="text-orange-500">fun, interactive, and meaningful!</strong>
-
-<video class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/knowledge_park.mp4" alt="Math and Coding workshop with student care centers" autoplay loop muted playsinline />
-
-</section>
-
-
-
-
-<!-- Feedback -->
-<section class="my-32">
-<h2 class="my-8 text-3xl font-bold lg:text-4xl">Testimonials</h2>
-
-<img class="object-cover w-full h-full mt-8 rounded-md" src="/assets/lib/landing/senang_16x9.webp" alt="Coding and laser engraving workshop with student care centers">
-
-<div class="mt-8 grid-container">
-    {% include quotes.html 
-        text="I’ve not seen Adam sit down and work on something in class for so long before. I’m so happy to see him spending time and obsessing over building his own shapes. Good job to the instructors for achieving this!"
-        author="Nancy"
-    %}
-    <br>
-    {% include quotes.html 
-        text="My daughter was so excited to share with me how she made a heart shape on the computer. I was surprised to hear her telling me about how she played around with the angles to achieve that because she was struggling with angles in school!"
-        author="Madeline"
-    %}
-</div>
+<!-- Testimonial section -->
+<section id="testimonial" class="pt-8 mt-40 lg:mt-48">
+  <img
+    src="/assets/lib/landing/stpatskidsalone.webp"
+    alt="Math leader guiding a peer at the computer"
+    class="w-full max-w-md mx-auto"
+  />
+  <div class="max-w-4xl px-6 mx-auto mt-4 space-y-8 text-center">
+    <!-- Heading -->
+    <h2 class="text-4xl tracking-tight lg:text-6xl font-paperlang text-primary">Testimonials</h2>
+    <!-- Cards -->
+    <div class="space-y-6">
+      <!-- Student -->
+      <div class="relative max-w-3xl px-6 pt-12 pb-6 mx-auto bg-white border shadow-sm rounded-3xl border-slate-300/60 lg:px-10">
+        <span class="absolute font-serif leading-none select-none -top-0 left-6 text-primary/30 text-8xl">&ldquo;</span>
+        <span class="absolute font-serif leading-none select-none text-8xl bottom-16 lg:bottom-8 right-6 text-primary/30">&rdquo;</span>
+        <p class="max-w-2xl mx-auto text-lg italic leading-relaxed lg:text-xl">
+        ... A lot of my students enjoyed it! I was SURPRISED to see some of them pick up the concepts faster than I did! ...
+        </p>
+        <div class="flex flex-col items-center gap-3 mt-6 lg:flex-row lg:justify-end lg:items-center">
+          <div class="flex items-center justify-center w-12 h-12 text-sm font-medium rounded-full bg-slate-300/40 text-slate-700">T</div>
+          <div class="text-center lg:text-right">
+            <p class="text-base font-medium text-slate-800">Tanha</p>
+            <p class="text-sm text-slate-600">Math Leader, 14 years old</p>
+          </div>
+        </div>
+      </div>
+      <!-- Teacher -->
+      <div class="relative max-w-3xl px-6 pt-10 pb-5 mx-auto bg-white border shadow-sm rounded-3xl border-slate-300/60 lg:px-10">
+        <span class="absolute font-serif leading-none select-none -top-0 left-6 text-primary/30 text-8xl">&ldquo;</span>
+        <span class="absolute font-serif leading-none select-none text-8xl bottom-16 lg:bottom-8 right-6 text-primary/30">&rdquo;</span>
+        <p class="max-w-2xl mx-auto text-lg italic leading-relaxed">... Jolle looked forward to every Sunday and sat for hours playing around with the (math) animations! ... </p>
+        <div class="flex flex-col items-center gap-3 mt-5 lg:flex-row lg:justify-end lg:items-center">
+          <div class="flex items-center justify-center w-12 h-12 text-sm font-medium rounded-full bg-slate-300/40 text-slate-700">L</div>
+          <div class="text-center lg:text-right">
+            <p class="text-base font-medium text-slate-800">Mdm Tan</p>
+            <p class="text-sm text-slate-600">Parent of Jolle</p>
+          </div>
+        </div>
+      </div>
+      <!-- Administrator -->
+      <div class="relative max-w-3xl px-6 pt-10 pb-5 mx-auto bg-white border shadow-sm rounded-3xl border-slate-300/60 lg:px-10">
+        <span class="absolute font-serif leading-none select-none -top-0 left-6 text-primary/30 text-8xl">&ldquo;</span>
+        <span class="absolute font-serif leading-none select-none text-8xl bottom-16 lg:bottom-8 right-6 text-primary/30">&rdquo;</span>
+        <p class="max-w-2xl mx-auto text-lg italic leading-relaxed">... I loved how you guys managed to get Jayden to teach others about math. It really helped him to step out of his comfort zone and become a better communicator. ...</p>
+        <div class="flex flex-col items-center gap-3 mt-5 lg:flex-row lg:justify-end lg:items-center">
+          <div class="flex items-center justify-center w-12 h-12 text-sm font-medium rounded-full bg-slate-300/40 text-slate-700">K</div>
+          <div class="text-center lg:text-right">
+            <p class="text-base font-medium text-slate-800">Mr Baker</p>
+            <p class="text-sm text-slate-600">Parent of Jayden</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 
 
 <!-- FAQ -->
 <section class="my-32">
-<h2 class="my-8 text-3xl font-bold lg:text-4xl">FAQ</h2>
+<h2 class="my-8 text-4xl text-center lg:text-6xl">FAQ</h2>
 <div class="max-w-xl space-y-4 sm:mx-auto lg:max-w-2xl">
     <!-- Question -->
     <div class="border-b">
@@ -100,6 +244,14 @@ In our workshop, students will program computers to <strong class="text-orange-5
     <!-- Question -->
     <div class="border-b">
         <button type="button" aria-label="Open item" title="Open item" class="flex items-center justify-between w-full p-4 focus:outline-none" onclick="toggleAccordion(this)">
+            <p class="text-left">My kid is not the best at math but is still really interested in it, should she join?</p>
+            <svg viewBox="0 0 24 24" class="w-3 text-gray-600 transition-transform duration-200"><polyline fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" points="2,7 12,17 22,7" stroke-linejoin="round"></polyline></svg>
+        </button>
+        <div class="hidden p-4 pt-0"><p class="text-gray-700">Of course! There's no need to be "good" at math in the traditional sense. This program focuses on discovering the creative applications and the fundamental intuitions behind mathematics.</p></div>
+    </div>
+    <!-- Question -->
+    <div class="border-b">
+        <button type="button" aria-label="Open item" title="Open item" class="flex items-center justify-between w-full p-4 focus:outline-none" onclick="toggleAccordion(this)">
             <p class="text-left">What is the student-to-instructor ratio?</p>
             <svg viewBox="0 0 24 24" class="w-3 text-gray-600 transition-transform duration-200"><polyline fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" points="2,7 12,17 22,7" stroke-linejoin="round"></polyline></svg>
         </button>
@@ -108,10 +260,10 @@ In our workshop, students will program computers to <strong class="text-orange-5
     <!-- Question -->
     <div class="border-b">
         <button type="button" aria-label="Open item" title="Open item" class="flex items-center justify-between w-full p-4 focus:outline-none" onclick="toggleAccordion(this)">
-            <p class="text-left">What should my child bring to the workshop?</p>
+            <p class="text-left">Do I need to install anything?</p>
             <svg viewBox="0 0 24 24" class="w-3 text-gray-600 transition-transform duration-200"><polyline fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" points="2,7 12,17 22,7" stroke-linejoin="round"></polyline></svg>
         </button>
-        <div class="hidden p-4 pt-0"><p class="text-gray-700">Students are encouraged to bring their own laptops along. Otherwise, please inform us prior.</p></div>
+        <div class="hidden p-4 pt-0"><p class="text-gray-700">None, just have a computer that has access to the internet.</p></div>
     </div>
     <!-- Question -->
     <div class="border-b">
@@ -119,149 +271,74 @@ In our workshop, students will program computers to <strong class="text-orange-5
             <p class="text-left">How do I make payment?</p>
             <svg viewBox="0 0 24 24" class="w-3 text-gray-600 transition-transform duration-200"><polyline fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" points="2,7 12,17 22,7" stroke-linejoin="round"></polyline></svg>
         </button>
-        <div class="hidden p-4 pt-0"><p class="text-gray-700">Payment will be made in person at the end of the first workshop. </p></div>
+        <div class="hidden p-4 pt-0"><p class="text-gray-700">Payment will be made after the 1st workshop session. Whatsapp us for more information.</p></div>
     </div>
 </div>
 </section>
 
-
-
-
-<!-- Form section -->
-<section class="my-32 lg:mx-24 lg:flex lg:justify-center" id="register">
-<div class="my-8 lg:h-1/4 lg:w-5/6 lg:mr-20">
-    <!-- Senang -->
-    <img class="object-cover w-full h-full rounded-md" src="/assets/lib/landing/ananias_16x9.webp" alt="Coding and laser engraving workshop with student care centers">
-    <h2 class="my-8 text-3xl lg:text-4xl">Register Now!</h2>
-    <table class="table-auto lg:mr-8">
-      <tbody>
-        <tr>
-          <td class="p-2 border">Price</td>
-          <td class="p-2 border">$89 <s>(U.P $125)</s></td>
-        </tr>
-        <tr>
-          <td class="p-2 border">Time</td>
-          <td class="p-2 border">9am-12pm (3hours)</td>
-        </tr>
-        <tr>
-          <td class="p-2 border">Location</td>
-          <td class="p-2 border">
-          <!-- <a href="https://maps.app.goo.gl/QtTiYx6bRrHUQZCMA">Block 71, Ayer Rajah Crescent, Level 4<br>
-            Singapore 139951 </a></td> -->
-          <a href="https://maps.app.goo.gl/2Gqxv1FnkXRw1zfw5">25 Lorong Kilat, #02-03<br>
-            Singapore 598126</a></td>
-        </tr>
-      </tbody>
-    </table>
-</div>
-
-<!-- Form -->
-<form id="lettertopaperland" class="flex flex-col w-full p-6 my-8 space-y-4 rounded-lg shadow-lg bg-primary-light" accept-charset="UTF-8" action="https://book.paperland.sg/proxy/apps/guru/workshop" method="POST">
-    <!-- Name -->
-    <label for="name-input" class="font-medium text-text">Name*</label>
-    <input id="name-input" type="text" name="name" placeholder="Alan Kay" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" />
-    <!-- Phone number -->
-    <label for="phone-input" class="font-medium text-text">Phone Number*</label>
-    <input id="phone-input" type="tel" name="phone" placeholder="+65 91234567" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" required />
-    <!-- Age -->
-    <label for="age-input" class="font-medium text-text">Age*</label>
-    <input id="age-input" type="number" name="age" placeholder="12" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" required />
-    <!-- Multiple Date Selection -->
-    <!-- <label class="font-medium text-text">Select Preferred Dates:</label> -->
-    <!-- <div class="grid grid-cols-1 gap-3 sm:grid-cols-2" id="date-selection-container"> -->
-    <!--     <\!-- Old dates -\-> -->
-    <!--     <div  -->
-    <!--       class="py-3 text-center text-gray-800 bg-gray-500 border rounded-md" -->
-    <!--     > -->
-    <!--       <s>16th-22nd</s> (full) -->
-    <!--     </div> -->
-    <!--     <\!-- Friday -\-> -->
-    <!--     <button  -->
-    <!--       type="button"  -->
-    <!--       class="py-3 text-center text-gray-800 bg-white border-2 border-gray-300 rounded-md " -->
-    <!--       onclick="this.blur(); toggleDate(this, 'Friday (27th)')" -->
-    <!--     > -->
-    <!--       Friday (27th) -->
-    <!--     </button> -->
-    <!-- </div> -->
-
-<input type="hidden" name="selected_dates" id="selected-dates" />
-<input type="hidden" name="return_url" value="{{ page.url | absolute_url }}" />
-
-<!-- Input message -->
-<div class="">
-  <label for="message-input" class="font-medium text-text">Message:</label>
-  <textarea id="message-input" name="message" rows="3" placeholder="Leave any message or questions you may have.." class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
-</div>
-
-<!-- Form submit button -->
-<button type="submit" class="px-4 py-2 text-white rounded-md bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary">Submit</button>
-</form>
-
-<!-- Successful toast -->
-<div class="fixed z-50 hidden bottom-4 right-4" id="toast-good">
-  <div class="flex items-center p-4 text-green-700 bg-green-100 border border-green-400 rounded-md shadow-lg">
-      <i class="mr-2 fa fa-check-circle"></i>
-      <span>Sent! To the desks <a class="text-blue-600 underline" href="/about"><b>@paperland</b></a></span>
-      <button class="ml-auto text-gray-500 hover:text-gray-700 focus:outline-none" onclick="document.getElementById('toast-good').style.display = 'none';">X</button>
-  </div>
-</div>
-
-<!-- Failure toast -->
-<div class="fixed z-50 hidden bottom-4 right-4" id="toast-bad">
-  <div class="flex items-center p-4 text-red-700 bg-red-100 border border-red-400 rounded-md shadow-lg">
-      <i class="mr-2 fa fa-check-circle"></i>
-      <span>Check the I am human checkbox!</span>
-      <button class="ml-auto text-gray-500 hover:text-gray-700 focus:outline-none" onclick="document.getElementById('toast-bad').style.display = 'none';">X</button>
-  </div>
-</div>
-</section>
-
-
-
-
 <script>
-    // form script
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('sent') == "true") {
-        const element = document.getElementById('toast-good');
-        element.style.display = 'block'; // Show the element
-    } else if (urlParams.get('sent') == "false") {
-        const element = document.getElementById('toast-bad');
-        element.style.display = 'block'; // Show the element
-    }
+// form script
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('sent') == "true") {
+    const element = document.getElementById('toast-good');
+    element.style.display = 'block'; // Show the element
+} else if (urlParams.get('sent') == "false") {
+    const element = document.getElementById('toast-bad');
+    element.style.display = 'block'; // Show the element
+}
 
-    // date selection script
-    const selectedDates = new Set();
+// date selection script
+const selectedDates = new Set();
 
-    function toggleDate(button, date) {
-    if (selectedDates.has(date)) {
-      selectedDates.delete(date);
-      button.classList.remove("bg-primary");
-      button.classList.add("bg-white", "text-gray-800");
-    } else {
-      selectedDates.add(date);
-      button.classList.add("bg-primary");
-      button.classList.remove("bg-white", "text-gray-800");
-    }
-
-    // Update the hidden input with selected dates
-    document.getElementById('selected-dates').value = Array.from(selectedDates).join(', ');
+function toggleDate(button, date) {
+  if (selectedDates.has(date)) {
+    selectedDates.delete(date);
+    button.classList.remove("bg-primary");
+    button.classList.add("bg-white", "text-gray-800");
+  } else {
+    selectedDates.add(date);
+    button.classList.add("bg-primary");
+    button.classList.remove("bg-white", "text-gray-800");
   }
 
-    // Accordion Script
-    function toggleAccordion(button) {
-        const content = button.nextElementSibling;
-        const icon = button.querySelector('svg');
+  // Update the hidden input with selected dates
+  document.getElementById('selected-dates').value = Array.from(selectedDates).join(', ');
+}
 
-        if (content.classList.contains('hidden')) {
-            // Open accordion
-            content.classList.remove('hidden');
-            icon.classList.add('rotate-180');
-        } else {
-            // Close accordion
-            content.classList.add('hidden');
-            icon.classList.remove('rotate-180');
-        }
-    }
+// Accordion Script
+function toggleAccordion(button) {
+  const content = button.nextElementSibling;
+  const icon = button.querySelector('svg');
+
+  if (content.classList.contains('hidden')) {
+      // Open accordion
+      content.classList.remove('hidden');
+      icon.classList.add('rotate-180');
+  } else {
+      // Close accordion
+      content.classList.add('hidden');
+      icon.classList.remove('rotate-180');
+  }
+}
 </script>
+
+
+
+<!-- Free Trial section -->
+<section id="cta" class="my-40 lg:mt-48">
+  <div class="max-w-2xl px-4 mx-auto text-center">
+    <h2 class="text-3xl tracking-tight lg:text-5xl font-paperlang text-slate-900">Join the Free Trial Class</h2>
+    <p class="mt-4 text-lg lg:text-xl text-slate-600">Experience the MLP before committing. No payment required.</p>
+    <div class="inline-flex flex-col items-center gap-2 px-6 py-4 mt-6 bg-white border shadow-sm rounded-2xl border-slate-200">
+      <p class="text-base font-semibold text-slate-900">🗓️ Sunday, 4 January 2026</p>
+      <p class="text-slate-700">⏰ 9:00 AM SGT</p>
+    </div>
+    <p class="mt-6 text-slate-600">To reserve a spot, message us on WhatsApp and let us know you’re interested in the free trial.</p>
+    <div class="mt-8">
+      <a href="https://wa.me/+6590181531" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-3 px-6 py-4 text-base font-semibold text-white transition bg-green-600 shadow-md rounded-2xl hover:bg-green-700">
+        <span aria-hidden="true">💬</span> Message us on WhatsApp
+      </a>
+    </div>
+    <p class="mt-6 text-sm text-slate-500">Full 10-week program fee: <span class="font-semibold text-slate-700">USD 600</span>. No obligation to enroll after the trial.</p>
+  </div>
+</section>
