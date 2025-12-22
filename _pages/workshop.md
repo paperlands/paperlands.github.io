@@ -16,7 +16,7 @@ permalink: /workshop
       </h1>
       <p class="lg:text-xl">
         <span class="font-bold">A 10-weeks online program to explore mathematics using coding. </span>
-        Meet students around the world passionate about discovering and sharing the beauty of mathematics.
+        Learn along side passionate students around the world to discover and share the beauty of mathematics.
         <br><br>
         For kids 12-16.
       </p>
