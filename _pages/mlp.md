@@ -220,7 +220,7 @@ permalink: /mlp
     <!-- Cards -->
     <div class="space-y-6">
       <!-- Student -->
-      <div class="relative mx-auto max-w-3xl rounded-3xl border border-slate-300/60 bg-[#fcf5e6] shadow-[0_4px_12px_rgba(0,0,0,0.06)] px-6 pt-12 pb-6 lg:px-10">
+      <div class="relative max-w-3xl px-6 pt-12 pb-6 mx-auto bg-white border shadow-sm rounded-3xl border-slate-300/60 lg:px-10">
         <span class="absolute font-serif leading-none select-none -top-0 left-6 text-primary/30 text-8xl">&ldquo;</span>
         <span class="absolute font-serif leading-none select-none text-8xl bottom-16 lg:bottom-8 right-6 text-primary/30">&rdquo;</span>
         <p class="max-w-2xl mx-auto text-lg italic leading-relaxed lg:text-xl">
@@ -236,7 +236,7 @@ permalink: /mlp
         </div>
       </div>
       <!-- Teacher -->
-      <div class="relative mx-auto max-w-3xl rounded-3xl border border-slate-300/60 bg-[#fcf5e6] shadow-[0_4px_12px_rgba(0,0,0,0.04)] px-6 pt-10 pb-5 lg:px-10">
+      <div class="relative max-w-3xl px-6 pt-10 pb-5 mx-auto bg-white border shadow-sm rounded-3xl border-slate-300/60 lg:px-10">
         <span class="absolute font-serif leading-none select-none -top-0 left-6 text-primary/30 text-8xl">&ldquo;</span>
         <span class="absolute font-serif leading-none select-none text-8xl bottom-16 lg:bottom-8 right-6 text-primary/30">&rdquo;</span>
         <p class="max-w-2xl mx-auto text-lg italic leading-relaxed">... PaperLand is such an interactive and visual platform. My students had such a GREAT time being creative with mathematics, something they've never experienced before ... </p>
@@ -249,7 +249,7 @@ permalink: /mlp
         </div>
       </div>
       <!-- Administrator -->
-      <div class="relative mx-auto max-w-3xl rounded-3xl border border-slate-300/60 bg-[#fcf5e6] shadow-[0_4px_12px_rgba(0,0,0,0.04)] px-6 pt-10 pb-5 lg:px-10">
+      <div class="relative max-w-3xl px-6 pt-10 pb-5 mx-auto bg-white border shadow-sm rounded-3xl border-slate-300/60 lg:px-10">
         <span class="absolute font-serif leading-none select-none -top-0 left-6 text-primary/30 text-8xl">&ldquo;</span>
         <span class="absolute font-serif leading-none select-none text-8xl bottom-16 lg:bottom-8 right-6 text-primary/30">&rdquo;</span>
         <p class="max-w-2xl mx-auto text-lg italic leading-relaxed">... I'm so HAPPY to see a new mathematics culture where students actively lead and share about the beauty of mathematics with each other! ...</p>

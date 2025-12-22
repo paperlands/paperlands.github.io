@@ -12,7 +12,7 @@ permalink: /workshop
     <!-- Text -->
     <div class="flex flex-col items-center space-y-4 lg:items-start lg:space-y-6 lg:w-3/5">
       <h1 class="text-4xl tracking-tight lg:text-7xl text-primary font-paperlang">
-        Math Leaders Program<br>(online)
+        Global<br>Math Leaders Program
       </h1>
       <p class="lg:text-xl">
         <span class="font-bold">A 10-weeks online program to explore mathematics using coding. </span>
@@ -36,15 +36,16 @@ permalink: /workshop
 
 
 
+
 <!-- Who's MLP for section -->
 <section id="what" class="pt-8 mt-40 lg:mt-48">
+  <!-- Top image -->
+  <img
+    src="/assets/lib/landing/map.png"
+    alt="Math leader guiding a peer at the computer"
+    class="w-full mx-auto lg:max-w-2xl"/>
+  <!-- Title -->
   <div class="flex flex-col items-center mx-auto lg:max-w-xl">
-    <!-- Top image -->
-    <img
-      src="/assets/lib/landing/cdac_geometry.webp"
-      alt="Math leader guiding a peer at the computer"
-      class="w-full max-w-md"/>
-    <!-- Title -->
     <h2 class="mt-4 text-4xl tracking-tight lg:text-6xl font-paperlang">Who it's for</h2>
     <!-- Body copy -->
     <div class="px-4 mt-4 text-lg lg:text-xl">
@@ -89,10 +90,10 @@ permalink: /workshop
                 <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">1</span>
             </div>
             <h3 class="text-lg font-bold text-black">Explore Math through Creation</h3>
-            <img src="/assets/lib/landing/angelican_distribution.png" class="w-full max-w-sm mx-auto rounded-md md:hidden" alt="student showing his trigular ring">
+            <img src="/assets/lib/landing/cdac_geometry.webp" class="w-full max-w-sm mx-auto rounded-md md:hidden" alt="student showing his trigular ring">
             <p class="text-lg text-left">Begin by building visual and computational models in PaperLand to explore patterns, relationships, geometry, motion, and structure.</p>
           </div>
-          <img src="/assets/lib/landing/angelican_distribution.png" class="hidden w-full max-w-sm rounded-md md:block" alt="student showing his trigular ring">
+          <img src="/assets/lib/landing/cdac_geometry.webp" class="hidden w-full max-w-sm rounded-md md:block" alt="student showing his trigular ring">
         </div>
         <!-- PHASE 2 -->
         <div class="relative md:grid md:grid-cols-[auto_1fr_1fr] md:gap-16 items-start">
@@ -104,10 +105,10 @@ permalink: /workshop
                 <span class="flex items-center justify-center w-8 h-8 text-base font-medium border-2 rounded-full border-primary">2</span>
             </div>
             <h3 class="text-lg font-bold text-black">Lead &amp; Teach their Community</h3>
-            <img src="/assets/lib/landing/sutd_calc.webp" class="w-full max-w-sm mx-auto rounded-md md:hidden" alt="">
+            <img src="/assets/lib/landing/stpatskidsalone.webp" class="w-full max-w-sm mx-auto rounded-md md:hidden" alt="">
             <p class="text-lg">Bring their work into math clubs, classrooms, and workshops—leading peers in shared mathematical exploration.</p>
           </div>
-          <img src="/assets/lib/landing/sutd_calc.webp" class="hidden w-full max-w-sm rounded-md md:block" alt="">
+          <img src="/assets/lib/landing/stpatskidsalone.webp" class="hidden w-full max-w-sm rounded-md md:block" alt="">
         </div>
     </div>
   </div>
@@ -118,7 +119,11 @@ permalink: /workshop
 <!-- Timeline section -->
 <section id="timeline" class="pt-8 mt-40 lg:mt-48">
   <div class="max-w-4xl px-4 mx-auto">
-    <div class="text-center">
+    <img
+      src="/assets/lib/landing/angelican_distribution.png"
+      alt="Math leader guiding a peer at the computer"
+      class="w-full max-w-md mx-auto"/>
+    <div class="mt-4 text-center">
       <h2 class="text-4xl tracking-tight lg:text-6xl font-paperlang">Next Cohort Timeline</h2>
       <p class="mt-4 text-lg lg:text-xl text-slate-600">Every Sunday at <span class="font-semibold text-slate-900">9:00 AM SGT</span> for <span class="font-semibold text-slate-900">10 weeks</span>.</p>
     </div>
@@ -173,7 +178,7 @@ permalink: /workshop
 <!-- Testimonial section -->
 <section id="testimonial" class="pt-8 mt-40 lg:mt-48">
   <img
-    src="/assets/lib/landing/stpatskidsalone.webp"
+    src="/assets/lib/landing/sutd_calc.webp"
     alt="Math leader guiding a peer at the computer"
     class="w-full max-w-md mx-auto"
   />
