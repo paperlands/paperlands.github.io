@@ -342,3 +342,17 @@ function toggleAccordion(button) {
     <p class="mt-6 text-sm text-slate-500">Full 10-week program fee: <span class="font-semibold text-slate-700">USD 600</span>. No obligation to enroll after the trial.</p>
   </div>
 </section>
+
+
+<div class="text-center">- OR -</div>
+
+
+<!-- Contact us -->
+<section id="contact" class="mt-36">
+  <h2 class="my-8 text-4xl text-center lg:text-5xl text-secondary">Contact Us</h2>
+
+  <div class="my-8 sm:flex sm:justify-center">
+    {% include contact_form.html
+      href="/dojo" %}
+  </div>
+</section>
