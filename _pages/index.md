@@ -10,7 +10,7 @@ nav_color: white
 
 <section class="h-[70vh] animate-fade-in md:h-[75vh]">
   <video class="absolute top-0 left-0 w-screen h-[100vh] object-cover brightness-[40%] -z-10" 
-    src="/assets/lib/landing/3DWaves.webm" 
+    src="/assets/lib/landing/3DWaves_small.webm" 
     poster="/assets/lib/landing/3DWaves.webp" 
     alt="Math x Computation hero video" 
     autoplay loop muted playsinline 
@@ -49,7 +49,7 @@ nav_color: white
         <video src="/assets/lib/landing/fibonacci_spiral.webm" poster="/assets/lib/landing/fibonacci_spiral.webp" class="object-cover w-full h-full" muted playsinline></video>
       </div>
       <div class="hidden w-full h-full media-slide" data-index="1">
-        <video data-src="/assets/lib/landing/3DWaves.webm" class="object-cover w-full h-full" muted playsinline></video>
+        <video data-src="/assets/lib/landing/3DWaves_small.webm" class="object-cover w-full h-full" muted playsinline></video>
       </div>
       <div class="hidden w-full h-full media-slide" data-index="2">
         <video data-src="/assets/lib/landing/tree_fractal.webm" class="object-cover w-full h-full" muted playsinline></video>
