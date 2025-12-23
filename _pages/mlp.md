@@ -80,7 +80,7 @@ permalink: /mlp
     />
     <!-- Title -->
     <p class="mt-4">Become a</p>
-    <h2 class="text-4xl tracking-tight lg:text-6xl font-paperlang">Math Leader</h2>
+    <h2 class="text-4xl font-bold tracking-tight lg:text-6xl font-paperlang">Math Leader</h2>
     <!-- Body copy -->
     <p class="px-4 mt-4 text-lg lg:text-xl">
       Build mathematical ideas with code to explore patterns and visuals.
@@ -97,7 +97,7 @@ permalink: /mlp
   <div class="flex flex-col-reverse items-center max-w-6xl px-6 mx-auto lg:flex-row lg:items-start">
     <!-- LEFT (Desktop): Header + Body -->
     <div class="flex flex-col lg:w-1/2">
-      <h2 class="text-4xl tracking-tight text-center lg:text-6xl font-paperlang">Why MLP</h2>
+      <h2 class="text-4xl font-bold tracking-tight text-center lg:text-6xl font-paperlang">Why MLP</h2>
       <p class="mt-6 text-lg lg:text-xl">
         Great mathematics cultures are built through active exploration, shared inquiry, and student leadership. 
         <br><br>
@@ -134,7 +134,7 @@ permalink: /mlp
   <div class="flex flex-col items-center mx-auto space-y-10">
     <!-- Heading + intro -->
     <div class="max-w-3xl px-6 space-y-4">
-      <h2 class="text-4xl tracking-tight text-center lg:text-6xl font-paperlang">
+      <h2 class="text-4xl font-bold tracking-tight text-center lg:text-6xl font-paperlang">
         How MLP works
       </h2>
       <p class="text-lg lg:text-xl">
@@ -188,7 +188,7 @@ permalink: /mlp
       alt="Math leader guiding a peer at the computer"
       class="w-full max-w-md"/>
     <!-- Title -->
-    <h2 class="mt-4 text-4xl tracking-tight lg:text-6xl font-paperlang">Who MLP's for</h2>
+    <h2 class="mt-4 text-4xl font-bold tracking-tight lg:text-6xl font-paperlang">Who MLP's for</h2>
     <!-- Body copy -->
     <div class="px-4 mt-4 text-lg lg:text-xl">
         <div class="flex">
@@ -216,7 +216,7 @@ permalink: /mlp
 <section id="testimonial" class="pt-8 mt-40 lg:mt-48">
   <div class="max-w-4xl px-6 mx-auto space-y-8 text-center">
     <!-- Heading -->
-    <h2 class="text-4xl tracking-tight lg:text-6xl lg:text-4xl font-paperlang text-primary">Testimonials</h2>
+    <h2 class="text-4xl font-bold tracking-tight lg:text-6xl lg:text-4xl font-paperlang text-primary">Testimonials</h2>
     <!-- Cards -->
     <div class="space-y-6">
       <!-- Student -->
@@ -277,7 +277,7 @@ permalink: /mlp
   <div class="my-8 md:flex md:justify-center">
     <div class="my-8 md:mr-8 md:w-5/12">
       <div class="text-center">
-        <h2 class="text-4xl tracking-tight lg:text-6xl font-paperlang">MLP Pilot</h2>
+        <h2 class="text-4xl font-bold tracking-tight lg:text-6xl font-paperlang">MLP Pilot</h2>
         <div class="italic">3 weeks · FREE</div>
       </div>
       <div class="mt-8">

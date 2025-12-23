@@ -7,33 +7,25 @@ permalink: /workshop
 ---
 
 
-<section class="h-[70vh] lg:h-[60vh] animate-fade-in">
-  <div class="flex flex-col-reverse items-center justify-center my-8 text-center lg:flex-row lg:text-left lg:gap-8 lg:my-28">
-    <!-- Text -->
-    <div class="flex flex-col items-center space-y-4 lg:items-start lg:space-y-6 lg:w-3/5">
-      <h1 class="text-4xl tracking-tight lg:text-7xl text-primary font-paperlang">
-        Global<br>Math Leaders Program
-      </h1>
-      <p class="lg:text-xl">
-        <span class="font-bold">A 10-weeks online program to explore mathematics using coding. </span>
-        Learn along side passionate students around the world to discover and share the beauty of mathematics.
-        <br><br>
-        For kids 12-16.
-      </p>
-      <a href="/workshop#cta" class="px-5 py-2 transition rounded-md bg-primary font-paperlang hover:brightness-110 internal-link">
-        Join Free Trial Class
-      </a>
-      <span class="italic text-slate-500">Next session: 4th Jan 2026 (Sun) 9am</span>
+<section class="h-[70vh] animate-fade-in md:h-[75vh]">
+  <video class="absolute top-0 left-0 w-screen h-[100vh] object-cover brightness-[40%] -z-10" 
+    src="/assets/lib/landing/spring.webm" 
+    poster="/assets/lib/landing/spring.webp" 
+    alt="Math x Computation hero video" 
+    autoplay loop muted playsinline 
+  />
+
+  <div class="flex flex-col items-center justify-center mt-28">
+    <h1 class="text-5xl tracking-tighter text-center text-primary font-paperlang lg:text-8xl">Math Leader Program</h1>
+    <div class="my-4 text-lg text-center text-white lg:my-8 lg:text-2xl">
+      A 10-weeks online program to <span class="text-primary">discover</span> and <span class="text-primary">share</span> the <span class="text-primary">beauty</span> of mathematics with students <span class="text-primary">around the world</span>.
+      <br><br>
+      For ages 12-16.
     </div>
-    <!-- Image -->
-    <img
-      class="w-full max-w-xl lg:max-w-none lg:w-1/2"
-      src="/assets/lib/landing/wan_function.webp"
-      alt="mlp hero image"
-    />
+    <a class="px-4 py-2 my-4 rounded-md bg-primary font-paperlang internal-link" href="/workshop#cta">Free Trial Class</a>
+    <span class="italic text-slate-300">Next session: 4th Jan 2026 (Sun) 9am</span>
   </div>
 </section>
-
 
 
 
@@ -46,20 +38,20 @@ permalink: /workshop
     class="w-full mx-auto lg:max-w-2xl"/>
   <!-- Title -->
   <div class="flex flex-col items-center mx-auto lg:max-w-xl">
-    <h2 class="mt-4 text-4xl tracking-tight lg:text-6xl font-paperlang">Who it's for</h2>
+    <h2 class="mt-4 text-4xl font-bold tracking-tight lg:text-6xl font-paperlang">Who it's for</h2>
     <!-- Body copy -->
     <div class="px-4 mt-4 text-lg lg:text-xl">
         <div class="flex">
             <div class="p-2 m-2 text-center bg-white border rounded-lg shadow-sm lg:p-4 border-slate-300/60">
                 <span class="text-center text-primary">❧</span><span> Students (ages 12-16)</span>
-                <div class="mt-2 text-slate-600">Curious to discover and share the creative side of mathematics</div>
+                <div class="mt-2 text-slate-600">Curious about math, coding, and teaching others.</div>
             </div>
         </div>
     </div>
     <div class="mt-4">
-        Unlike math olympiads, students don’t work alone or race for rankings. They work together—building, sharing, and learning as a community.
+        Students explore mathematics through coding, experimenting with ideas and discovering patterns in new ways.
         <br>
-        Students grow by exploring ideas, communicating clearly, and leading others with confidence in mathematics.
+        The goal is not just to learn mathematics, but to become confident communicators and leaders who can share mathematical thinking with others.
     </div>
   </div>
 </section>
@@ -71,7 +63,7 @@ permalink: /workshop
   <div class="flex flex-col items-center mx-auto space-y-10">
     <!-- Heading + intro -->
     <div class="max-w-3xl px-6 space-y-4">
-      <h2 class="text-4xl tracking-tight text-center lg:text-6xl font-paperlang">
+      <h2 class="text-4xl font-bold tracking-tight text-center lg:text-6xl font-paperlang">
         How MLP works
       </h2>
       <p class="text-lg lg:text-xl">
@@ -124,7 +116,7 @@ permalink: /workshop
       alt="Math leader guiding a peer at the computer"
       class="w-full max-w-md mx-auto"/>
     <div class="mt-4 text-center">
-      <h2 class="text-4xl tracking-tight lg:text-6xl font-paperlang">Next Cohort Timeline</h2>
+      <h2 class="text-4xl font-bold tracking-tight lg:text-6xl font-paperlang">Next Cohort Timeline</h2>
       <p class="mt-4 text-lg lg:text-xl text-slate-600">Every Sunday at <span class="font-semibold text-slate-900">9:00 AM SGT</span> for <span class="font-semibold text-slate-900">10 weeks</span>.</p>
     </div>
     <div class="flex flex-wrap justify-center gap-3 mt-4">
@@ -178,13 +170,13 @@ permalink: /workshop
 <!-- Testimonial section -->
 <section id="testimonial" class="pt-8 mt-40 lg:mt-48">
   <img
-    src="/assets/lib/landing/sutd_calc.webp"
+    src="/assets/lib/landing/wan_function.webp"
     alt="Math leader guiding a peer at the computer"
     class="w-full max-w-md mx-auto"
   />
   <div class="max-w-4xl px-6 mx-auto mt-4 space-y-8 text-center">
     <!-- Heading -->
-    <h2 class="text-4xl tracking-tight lg:text-6xl font-paperlang text-primary">Testimonials</h2>
+    <h2 class="text-4xl font-bold tracking-tight lg:text-6xl font-paperlang text-primary">Testimonials</h2>
     <!-- Cards -->
     <div class="space-y-6">
       <!-- Student -->
@@ -235,8 +227,13 @@ permalink: /workshop
 
 
 <!-- FAQ -->
-<section class="my-32">
-<h2 class="my-8 text-4xl text-center lg:text-6xl">FAQ</h2>
+<section class="mt-40 lg:mt-48">
+<img
+  src="/assets/lib/landing/sutd_calc.webp"
+  alt="Math leader guiding a peer at the computer"
+  class="w-full max-w-md mx-auto"
+/>
+<h2 class="my-8 text-4xl font-bold text-center lg:text-6xl">FAQ</h2>
 <div class="max-w-xl space-y-4 sm:mx-auto lg:max-w-2xl">
     <!-- Question -->
     <div class="border-b">
@@ -330,9 +327,9 @@ function toggleAccordion(button) {
 
 
 <!-- Free Trial section -->
-<section id="cta" class="my-40 lg:mt-48">
-  <div class="max-w-2xl px-4 mx-auto text-center">
-    <h2 class="text-3xl tracking-tight lg:text-5xl font-paperlang text-slate-900">Join the Free Trial Class</h2>
+<section id="cta" class="my-40 lg:my-48">
+  <div class="max-w-2xl px-4 mx-auto mt-4 text-center">
+    <h2 class="text-3xl font-bold tracking-tight lg:text-5xl font-paperlang">Join the Free Trial Class</h2>
     <p class="mt-4 text-lg lg:text-xl text-slate-600">Experience the MLP before committing. No payment required.</p>
     <div class="inline-flex flex-col items-center gap-2 px-6 py-4 mt-6 bg-white border shadow-sm rounded-2xl border-slate-200">
       <p class="text-base font-semibold text-slate-900">🗓️ Sunday, 4 January 2026</p>
@@ -354,7 +351,7 @@ function toggleAccordion(button) {
 
 <!-- Contact us -->
 <section id="contact" class="mt-36">
-  <h2 class="my-8 text-4xl text-center lg:text-5xl text-secondary">Contact Us</h2>
+  <h2 class="my-8 text-4xl font-bold text-center lg:text-5xl">Contact Us</h2>
 
   <div class="my-8 sm:flex sm:justify-center">
     {% include contact_form.html

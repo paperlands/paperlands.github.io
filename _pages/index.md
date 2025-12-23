@@ -295,7 +295,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 <section class="mt-36">
-  <h2 class="my-8 text-4xl text-center lg:text-5xl text-secondary">Why Paperland?</h2>
+  <h2 class="my-8 text-4xl font-bold text-center lg:text-5xl text-secondary">Why Paperland?</h2>
   <div class="sm:flex sm:justify-center">
     <div class="m-8 sm:w-5/12 sm:h-5/12">
       <p>We believe that the world would be a better place if the processes we shape and weave illuminates and uplifts the spirit of fellowship and belonging.</p>
@@ -311,7 +311,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 <section id="blog" class="mt-36 ">
-  <h2 class="my-8 text-4xl font-light tracking-tight text-center lg:text-5xl text-secondary">Blog.</h2>
+  <h2 class="my-8 text-4xl font-light font-bold tracking-tight text-center lg:text-5xl text-secondary">Blog.</h2>
   
   <div class="grid grid-cols-1 gap-8 my-12 sm:grid-cols-2">
     {% assign recent_notes = site.notes | sort: "last_modified_at_timestamp" | reverse %}
@@ -355,7 +355,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <!-- Contact us -->
 <section id="contact" class="mt-36">
-  <h2 class="my-8 text-4xl text-center lg:text-5xl text-secondary">Contact Us</h2>
+  <h2 class="my-8 text-4xl font-bold text-center lg:text-5xl text-secondary">Contact Us</h2>
 
   <div class="my-8 sm:flex sm:justify-center">
     <div class="m-8 sm:w-5/12">
