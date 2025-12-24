@@ -112,9 +112,13 @@ permalink: /workshop
 <section id="timeline" class="pt-8 mt-40 lg:mt-48">
   <div class="max-w-4xl px-4 mx-auto">
     <img
+        src="/assets/lib/landing/gambian.webp"
+        alt="Math leader guiding a peer at the computer"
+        class="w-1/2 mx-auto md:w-4/12"/>
+    <!-- <img
       src="/assets/lib/landing/angelican_distribution.png"
       alt="Math leader guiding a peer at the computer"
-      class="w-full max-w-md mx-auto"/>
+      class="w-1/2 mx-auto md:w-4/12"/> -->
     <div class="mt-4 text-center">
       <h2 class="text-4xl font-bold tracking-tight lg:text-6xl font-paperlang">Next Cohort Timeline</h2>
       <p class="mt-4 text-lg lg:text-xl text-slate-600">Every Sunday at <span class="font-semibold text-slate-900">9:00 AM SGT</span> for <span class="font-semibold text-slate-900">10 weeks</span>.</p>
