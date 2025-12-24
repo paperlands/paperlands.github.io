@@ -1,6 +1,6 @@
 ---
 title: A Computational Spirit to Learning Mathematics
-author: bala
+author: vivekbala
 last_date: 02-02-2025
 heroimgurl: assets/lib/turtlekanagawawave.png
 ---

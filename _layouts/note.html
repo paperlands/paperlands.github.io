@@ -9,7 +9,7 @@ layout: default
     <div class="flex justify-between items-center">
       <time datetime="{{ page.last_modified_at | date_to_xmlschema }}" class="text-sm text-gray-600">
         {% if page.type != 'pages' %}
-        Last updated on {{ page.last_modified_at | date: "%B %-d, %Y" }}
+        Last updated on {{ page.last_date | date: "%B %-d, %Y" }}
         {% endif %}
       </time>
 

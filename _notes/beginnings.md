@@ -30,7 +30,7 @@ That is because traditionally, the only way to express these have been via pen a
 
 However, with a computational environment, 
 {% margin %}
-Seymour Papert called this process the microworld where all childen engage in creation of little pockets of reality, where they grow a sense of bearing and footing to feel at home in with a piece of knowledge (say counting but in counting using hands world or using coins world or using clocks world etc.). 
+Seymour Papert called this process the microworld where all children engage in creation of little pockets of reality, where they grow a sense of bearing and footing to feel at home in with a piece of knowledge (say counting but in counting using hands world or using coins world or using clocks world etc.). 
 He believed computers is the interactive tool through which the process of exploring these [microworlds](/assets/lib/microworlds.pdf){: .internal-link} suited for education becomes "a more natural and spontaneous one, similar to the way children learn language"
 {% endmargin %}
 interaction can take the place of instruction and the shared construction of a rich simulated world for example one of wolves eating sheeps or the spread of wildfires can easily help kids play around with "abstract concepts" like exponentials and decay functions simply by setting up and manipulating simple parameters.
@@ -67,7 +67,7 @@ A learner engages most when building in the open. Watch children with sandcastle
 
 The fundamental aspects of collaboration, exploration, and building together are universal in learning.
 
-Whether it’s chidlbren playing and learning through building and sharing ideas, or seasoned software developers working on projects together, the core principles of engagement, collaboration, and learning through doing are the same.
+Whether it’s children playing and learning through building and sharing ideas, or seasoned software developers working on projects together, the core principles of engagement, collaboration, and learning through doing are the same.
 
 The colloborative, cooperative and competitive behavior is what drives and brings momentum in learning to everything from sports to music. 
 

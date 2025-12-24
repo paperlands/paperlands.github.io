@@ -188,7 +188,7 @@ permalink: /mlp
       alt="Math leader guiding a peer at the computer"
       class="w-full max-w-md"/>
     <!-- Title -->
-    <h2 class="mt-4 text-4xl font-bold tracking-tight lg:text-6xl font-paperlang">Who MLP's for</h2>
+    <h2 class="mt-4 text-4xl font-bold tracking-tight lg:text-6xl font-paperlang">MLP is for</h2>
     <!-- Body copy -->
     <div class="px-4 mt-4 text-lg lg:text-xl">
         <div class="flex">

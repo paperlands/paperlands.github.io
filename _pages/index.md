@@ -6,9 +6,66 @@ image: /assets/lib/beauty_first.png
 id: home
 permalink: /
 nav_color: white
+
+approach_gallery:
+  - type: video
+    src: /assets/lib/landing/fibonacci_spiral.webm
+    poster: /assets/lib/landing/fibonacci_spiral.webp
+    thumbnail: /assets/lib/landing/fibonacci_spiral.webp
+    title: Fibonacci Spiral
+    caption: Fibonacci Spiral
+    
+  - type: video
+    src: /assets/lib/landing/3DWaves_small.webm
+    poster: /assets/lib/landing/3DWaves.webp
+    thumbnail: /assets/lib/landing/3DWaves.webp
+    caption: Waves in 3D
+    
+  - type: video
+    src: /assets/lib/landing/tree_fractal.webm
+    poster: /assets/lib/landing/tree_fractal.webp
+    thumbnail: /assets/lib/landing/tree_fractal.webp
+    caption: Branching Trees
+    
+  - type: video
+    src: /assets/lib/landing/polygon_fill.webm
+    poster: /assets/lib/landing/polygon_fill.webp
+    thumbnail: /assets/lib/landing/polygon_fill.webp
+    caption: Archimedes' Method of Exhaustion
+    
+  - type: video
+    src: /assets/lib/landing/prime_sequence.webm
+    poster: /assets/lib/landing/prime_sequence.webp
+    thumbnail: /assets/lib/landing/prime_sequence.webp
+    caption: Prime Numbers Sequence
+    
+  - type: video
+    src: /assets/lib/landing/sine_curve_with_code.webm
+    poster: /assets/lib/landing/sine_curve_with_code.webp
+    thumbnail: /assets/lib/landing/sine_curve_with_code.webp
+    caption: Triangles to rise of Sine Curve
+
+  
+yt_gallery:
+  - type: youtube
+    video_id: 7WFR32Q6ZE0
+    thumbnail: https://img.youtube.com/vi/7WFR32Q6ZE0/mqdefault.jpg
+    title: What if we forget sine?
+  - type: youtube
+    video_id: PokC0uLCz2o
+    thumbnail: https://img.youtube.com/vi/PokC0uLCz2o/mqdefault.jpg
+    title: The Ten Thousand Names of Triangles 
+  - type: youtube
+    video_id: fw6q_C-tWuQ
+    thumbnail: https://img.youtube.com/vi/fw6q_C-tWuQ/mqdefault.jpg
+    title:  This Is Irrational. 
+  - type: youtube
+    video_id: cFJKHatepQo
+    thumbnail: https://img.youtube.com/vi/cFJKHatepQo/mqdefault.jpg
+    title: What if Pythagoras Theorem was forgotten? 
 ---
 
-<section class="h-[70vh] animate-fade-in md:h-[75vh]">
+<section class="h-[70dvh] animate-fade-in md:h-[75dvh]">
   <video class="absolute top-0 left-0 w-screen h-[100vh] object-cover brightness-[40%] -z-10" 
     src="/assets/lib/landing/3DWaves_small.webm" 
     poster="/assets/lib/landing/3DWaves.webp" 
@@ -28,8 +85,8 @@ nav_color: white
 
 <!-- Approach section -->
 <section class="px-4 mt-32 mb-2 lg:px-0 lg:mx-32 animate-fade-in">
-  <h2 class="text-4xl font-bold text-center lg:text-5xl font-paperlang text-secondary">
-    Bring Math to Life with Code
+  <h2 class="text-4xl font-bold font-paperlang text-center lg:text-5xl  text-secondary">
+    Bring Math to <span class="text-primary ">Life </span> with Code
   </h2>
   <div class="flex flex-col items-center justify-center my-4">
     <div class="flex flex-col items-start mx-auto">
@@ -41,189 +98,8 @@ nav_color: white
   </div>
 </section>
 
-<div id="media-gallery" class="max-w-4xl mx-auto">
-  <!-- Main Display -->
-  <div class="w-full mx-auto overflow-hidden bg-black shadow-xl aspect-video rounded-xl sm:w-3/4">
-    <div class="w-full h-full">
-      <div class="w-full h-full media-slide" data-index="0">
-        <video src="/assets/lib/landing/fibonacci_spiral.webm" poster="/assets/lib/landing/fibonacci_spiral.webp" class="object-cover w-full h-full" muted playsinline></video>
-      </div>
-      <div class="hidden w-full h-full media-slide" data-index="1">
-        <video data-src="/assets/lib/landing/3DWaves_small.webm" class="object-cover w-full h-full" muted playsinline></video>
-      </div>
-      <div class="hidden w-full h-full media-slide" data-index="2">
-        <video data-src="/assets/lib/landing/tree_fractal.webm" class="object-cover w-full h-full" muted playsinline></video>
-      </div>
-      <div class="hidden w-full h-full media-slide" data-index="3">
-        <video data-src="/assets/lib/landing/polygon_fill.webm" class="object-cover w-full h-full" muted playsinline></video>
-      </div>
-      <div class="hidden w-full h-full media-slide" data-index="4">
-        <video data-src="/assets/lib/landing/prime_sequence.webm" class="object-cover w-full h-full" muted playsinline></video>
-      </div>
-      <div class="hidden w-full h-full media-slide" data-index="5">
-        <video data-src="/assets/lib/landing/sine_curve_with_code.webm" class="object-cover w-full h-full" muted playsinline></video>
-      </div>
-    </div>
-  </div>
-  <!-- Thumbnails (unchanged) -->
-  <div class="relative max-w-xl mx-auto">
-    <div class="flex items-center gap-3 px-6 py-2 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
-      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 media-thumb" data-index="0" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/fibonacci_spiral.webp" alt=""></button>
-      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 media-thumb" data-index="1" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/3DWaves.webp" alt=""></button>
-      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 media-thumb" data-index="2" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/tree_fractal.webp" alt=""></button>
-      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 media-thumb" data-index="3" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/polygon_fill.webp" alt=""></button>
-      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 media-thumb" data-index="4" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/prime_sequence.webp" alt=""></button>
-      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 media-thumb" data-index="5" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/sine_curve_with_code.webp" alt=""></button>
-    </div>
-  </div>
-</div>
+{% include gallery.html items=page.approach_gallery id="approach-gallery" %}
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  const gallery = document.getElementById('media-gallery');
-  if (!gallery) return;
-
-  const slides = gallery.querySelectorAll('.media-slide');
-  const thumbs = gallery.querySelectorAll('.media-thumb');
-  if (!slides.length || !thumbs.length) return;
-
-  let currentIndex = 0;
-
-  // Horizontal scroll container for thumbnails
-  const thumbScroller = thumbs[0].closest('.overflow-x-auto');
-
-  function ensureVideoLoaded(slide) {
-    const video = slide.querySelector('video');
-    if (!video) return;
-
-    if (!video.src) {
-      const realSrc = video.dataset.src;
-      if (realSrc) {
-        video.src = realSrc;
-        video.load();
-      }
-    }
-  }
-
-  function pauseMedia(slide) {
-    const video = slide.querySelector('video');
-    if (video) video.pause();
-  }
-
-  function playMedia(slide) {
-    const video = slide.querySelector('video');
-    if (!video) return;
-
-    // Don't force currentTime to 0 here; let it play naturally.
-    video.play().catch(() => {
-      // On some mobile browsers autoplay may be blocked;
-      // in that case, don't try to auto-advance based on "ended".
-    });
-  }
-
-  function setActiveThumb(index) {
-    thumbs.forEach((thumb, i) => {
-      if (i === index) {
-        thumb.classList.add('ring-2', 'ring-primary');
-      } else {
-        thumb.classList.remove('ring-2', 'ring-primary');
-      }
-    });
-  }
-
-  function scrollThumbIntoCenter(index) {
-    if (!thumbScroller) return;
-
-    const thumb = thumbs[index];
-    const scrollerRect = thumbScroller.getBoundingClientRect();
-    const thumbRect = thumb.getBoundingClientRect();
-    const currentScroll = thumbScroller.scrollLeft;
-
-    const thumbCenter = thumbRect.left + thumbRect.width / 2;
-    const scrollerCenter = scrollerRect.left + scrollerRect.width / 2;
-    const offset = thumbCenter - scrollerCenter;
-
-    thumbScroller.scrollTo({
-      left: currentScroll + offset,
-      behavior: 'smooth'
-    });
-  }
-
-  function showSlide(index) {
-    if (index === currentIndex) return;
-    if (index < 0 || index >= slides.length) return;
-
-    // Hide current slide
-    slides[currentIndex].classList.add('hidden');
-    pauseMedia(slides[currentIndex]);
-
-    // Show new slide
-    currentIndex = index;
-    const newSlide = slides[currentIndex];
-
-    ensureVideoLoaded(newSlide);
-    newSlide.classList.remove('hidden');
-    playMedia(newSlide);
-
-    // Update UI
-    setActiveThumb(currentIndex);
-    scrollThumbIntoCenter(currentIndex);
-  }
-
-  function showNextSlide() {
-    const nextIndex = (currentIndex + 1) % slides.length;
-    showSlide(nextIndex);
-  }
-
-  // Attach safe auto-advance handlers
-  function attachEndedHandlers() {
-    slides.forEach((slide, index) => {
-      const video = slide.querySelector('video');
-      if (!video) return;
-
-      video.addEventListener('ended', () => {
-        // Only act if this slide is still the current one
-        if (index !== currentIndex) return;
-
-        // Guard: on some browsers or unsupported formats,
-        // duration may be NaN or 0 and "ended" may fire weirdly.
-        const duration = video.duration;
-
-        if (!duration || isNaN(duration) || duration < 1) {
-          // Don't auto-advance for bogus/unsupported videos
-          return;
-        }
-
-        // If we've truly reached the end, advance
-        showNextSlide();
-      });
-    });
-  }
-
-  // Initial state — only first slide visible and playing
-  slides.forEach((slide, i) => {
-    if (i === 0) {
-      slide.classList.remove('hidden');
-      playMedia(slide);
-    } else {
-      slide.classList.add('hidden');
-      pauseMedia(slide);
-    }
-  });
-
-  setActiveThumb(0);
-  scrollThumbIntoCenter(0);
-  attachEndedHandlers();
-
-  // Thumbnail click handlers
-  thumbs.forEach((thumb) => {
-    const index = parseInt(thumb.dataset.index, 10);
-    thumb.addEventListener('click', () => {
-      showSlide(index);
-    });
-  });
-});
-</script>
 <div class="flex justify-center">
   <a class="px-4 py-2 my-4 rounded-md bg-primary internal-link" href="/approach">Explore Our Approach</a>
 </div>
@@ -232,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <!-- Math Leaders Program section -->
 <section class="px-4 mb-2 mt-44 lg:px-0 lg:mx-48 animate-fade-in">
-  <h2 class="text-4xl font-bold text-center font-paperlang text-secondary lg:text-5xl">Math Leaders Program (MLP)</h2>
+  <h2 class="text-4xl font-bold text-center font-paperlang text-secondary lg:text-5xl">Math <span class="text-primary font-paperlang">Leaders </span> Program (MLP)</h2>
   <p class="mt-4 text-center text-secondary/80">We coach student leaders to <span class="text-lg font-bold lg:text-xl text-secondary">spearhead</span> a culture of <span class="text-lg font-bold lg:text-xl text-secondary">creative</span> mathematical inquiry in <span class="text-lg font-bold lg:text-xl text-secondary">service</span> of their wider community.</p>
 </section>
 <div id="mlp-gallery" class="max-w-4xl mx-auto">
@@ -295,7 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 <section class="mt-36">
-  <h2 class="my-8 text-4xl font-bold text-center lg:text-5xl text-secondary">Why Paperland?</h2>
+  <h2 class="my-8 text-4xl font-bold text-center lg:text-5xl text-secondary">Why <span class="text-primary font-paperlang">PaperLand?</span></h2>
   <div class="sm:flex sm:justify-center">
     <div class="m-8 sm:w-5/12 sm:h-5/12">
       <p>We believe that the world would be a better place if the processes we shape and weave illuminates and uplifts the spirit of fellowship and belonging.</p>
@@ -311,10 +187,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 <section id="blog" class="mt-36 ">
-  <h2 class="my-8 text-4xl font-light font-bold tracking-tight text-center lg:text-5xl text-secondary">Blog.</h2>
+  <h2 class="my-8 text-4xl font-light font-bold tracking-tight text-center lg:text-5xl text-secondary">Our <span class="text-primary font-paperlang">Library.</span></h2>
   
   <div class="grid grid-cols-1 gap-8 my-12 sm:grid-cols-2">
-    {% assign recent_notes = site.notes | sort: "last_modified_at_timestamp" | reverse %}
+    {% assign recent_notes = site.notes | sort: "last_date" %}
     {% for note in recent_notes limit: 5 %}
       <div class="relative overflow-hidden transition-all duration-300 rounded-lg group hover:shadow-md">
       <a href="{{ site.baseurl }}{{ note.url }}" data-tooltip="true" >
@@ -349,19 +225,23 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     {% endfor %}
   </div>
-</section>
-
+  <hr class="my-8">
+  {% include gallery.html items=page.yt_gallery id="yt-gallery" %}
+  <div class="flex justify-center">
+  <a class="px-4 py-2 my-4 rounded-md bg-primary internal-link" href="https://www.youtube.com/@realPaperLand">Discover More</a>
+</div>
 
 
 <!-- Contact us -->
 <section id="contact" class="mt-36">
-  <h2 class="my-8 text-4xl font-bold text-center lg:text-5xl text-secondary">Contact Us</h2>
+  <h2 class="my-8 text-4xl font-bold text-center lg:text-5xl text-secondary">Let's Work<span class="text-primary font-paperlang"> Together!</span></h2>
 
   <div class="my-8 sm:flex sm:justify-center">
     <div class="m-8 sm:w-5/12">
-      <p>Want to bring computation into mathematics for your students?</p><br>
-      <p>Want a demo?</p><br>
-      <p>Let's chat!</p>
+      <p>Wish to bring mathematics to life in your community?</p><br>
+      <p>Have an interesting idea or opportunity to share?</p><br>
+      <p>Looking to collaborate?</p><br>
+      <p>Let's chat!</p><br>
       Email us at <a class="underline" href="mailto:info@paperland.sg">info@paperland.sg</a>
     </div>
     
