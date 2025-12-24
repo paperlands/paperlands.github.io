@@ -345,7 +345,7 @@ function toggleAccordion(button) {
         <span aria-hidden="true">💬</span> Message us on WhatsApp
       </a>
     </div>
-    <p class="mt-6 text-sm text-slate-500">Full 10-week program fee: <span class="font-semibold text-slate-700">USD 600</span>. No obligation to enroll after the trial.</p>
+    <p class="mt-6 text-sm text-slate-500">Full 10-week program fee: <span class="font-semibold text-slate-700">USD 300</span>. No obligation to enroll after the trial.</p>
   </div>
 </section>
 
