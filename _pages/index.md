@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 <section id="blog" class="mt-36 ">
-  <h2 class="my-8 text-4xl font-light font-bold tracking-tight text-center lg:text-5xl text-secondary">Our <span class="text-primary font-paperlang">Library.</span></h2>
+  <h2 class="my-8 text-4xl font-bold tracking-tight text-center lg:text-5xl text-secondary">Our <span class="text-primary font-paperlang">Library.</span></h2>
   
   <div class="grid grid-cols-1 gap-8 my-12 sm:grid-cols-2">
     {% assign recent_notes = site.notes | sort: "last_date" %}
