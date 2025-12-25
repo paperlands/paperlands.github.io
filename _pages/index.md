@@ -78,8 +78,8 @@ yt_gallery:
 
 
 <!-- Approach section -->
-<section class="px-4 mt-[40dvh] lg:mt-[33dvh] mb-2 lg:px-0 lg:mx-32 animate-fade-in">
-  <h2 class="text-4xl font-bold font-paperlang text-center lg:text-5xl  text-secondary">
+<section class="px-4 mb-2 lg:px-0 lg:mx-32 animate-fade-in">
+  <h2 class="text-4xl font-bold text-center font-paperlang lg:text-5xl text-secondary">
     Bring Math to <span class="text-primary ">Life </span> with Code
   </h2>
   <div class="flex flex-col items-center justify-center my-4">
