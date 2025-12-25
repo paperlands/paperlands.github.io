@@ -1,0 +1,155 @@
+<!-- _includes/hero_video.liquid -->
+{% comment %}
+Usage:
+{% include hero_video
+   video_src="/assets/lib/landing/3DWaves_small.webm"
+   poster="/assets/lib/landing/3DWaves.webp"
+   title="where math <span class='text-primary'>Lives.</span>"
+   subtitle="Coding, Exploring and Sharing<br>Math's hidden Beauty."
+   height_mobile="70dvh"
+   height_desktop="75dvh"
+%}
+{% endcomment %}
+
+<section class="hero-video-section  h-[{{ include.height_mobile | default: '70dvh' }}] md:h-[{{ include.height_desktop | default: '75dvh' }}] overflow-hidden">
+  <!-- Low-res poster as immediate background -->
+  <div class="absolute  inset-0 -z-20 bg-cover bg-center brightness-[40%]" 
+       style="background-image: url('{{ include.poster }}');"
+       aria-hidden="true">
+  </div>
+  
+  <!-- Video with lazy loading and network-aware loading -->
+  <video 
+    class="hero-video absolute inset-0 w-full h-full object-cover brightness-[40%] -z-10 opacity-0"
+    poster="{{ include.poster }}"
+    muted 
+    playsinline
+    preload="none"
+    data-src="{{ include.video_src }}"
+    aria-label="{{ include.video_alt | default: 'Hero video background' }}"
+  ></video>
+  
+  <!-- Content overlay -->
+  <div class="relative z-10 flex flex-col items-center justify-center h-full px-4 animate-fade-in">
+    <h1 class="text-6xl tracking-tighter text-center text-white font-paperlang lg:text-8xl">
+      {{ include.title }}
+    </h1>
+    {% if include.subtitle %}
+    <div class="my-4 text-lg text-center text-white lg:my-8 lg:text-3xl">
+      {{ include.subtitle }}
+    </div>
+    {% endif %}
+    {% if include.action_link %}
+    <a class="px-4 py-2 my-4 rounded-md bg-primary font-paperlang" href="{{ include.action_link}}">{{ include.action_words }}</a>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  .hero-video-section {
+  }
+  
+  .hero-video {
+    will-change: opacity;
+    transition: opacity 0.6s ease-in;
+  }
+  
+  .hero-video.loaded {
+    opacity: 1 !important;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-out 0.2s both;
+  }
+  
+  /* Reduce motion for accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-video,
+    .animate-fade-in {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+(function() {
+  'use strict';
+  
+  const video = document.querySelector('.hero-video');
+  if (!video) return;
+  
+  // Check network conditions
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  const slowConnection = connection && (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g');
+  const saveData = connection && connection.saveData;
+  
+  // Don't load video on slow connections or data saver mode
+  if (slowConnection || saveData) {
+    console.log('Slow connection detected, skipping video load');
+    return;
+  }
+  
+  // Intersection Observer for lazy loading
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        loadVideo();
+        observer.unobserve(video);
+      }
+    });
+  }, {
+    rootMargin: '50px'
+  });
+  
+  function loadVideo() {
+    const src = video.dataset.src;
+    if (!src) return;
+    
+    // Preload and play
+    video.src = src;
+    video.load();
+    
+    // Handle loaded state
+    const onCanPlay = () => {
+      video.classList.add('loaded');
+      video.play().catch(e => console.log('Autoplay prevented:', e));
+      video.removeEventListener('canplay', onCanPlay);
+    };
+    
+    video.addEventListener('canplay', onCanPlay);
+    
+    // Fallback timeout
+    setTimeout(() => {
+      if (!video.classList.contains('loaded')) {
+        video.classList.add('loaded');
+      }
+    }, 3000);
+  }
+  
+  // Start observing when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => observer.observe(video));
+  } else {
+    observer.observe(video);
+  }
+  
+  // Pause video when out of viewport to save resources
+  const visibilityObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    });
+  }, { threshold: 0.25 });
+  
+  visibilityObserver.observe(video);
+})();
+</script>

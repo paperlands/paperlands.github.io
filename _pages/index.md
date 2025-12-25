@@ -65,26 +65,20 @@ yt_gallery:
     title: What if Pythagoras Theorem was forgotten? 
 ---
 
-<section class="h-[70dvh] animate-fade-in md:h-[75dvh]">
-  <video class="absolute top-0 left-0 w-screen h-[100vh] object-cover brightness-[40%] -z-10" 
-    src="/assets/lib/landing/3DWaves_small.webm" 
-    poster="/assets/lib/landing/3DWaves.webp" 
-    alt="Math x Computation hero video" 
-    autoplay loop muted playsinline 
-  />
-  <!-- <img class="absolute top-0 left-0 w-screen h-[100vh] object-cover brightness-[40%] -z-10" src="/assets/lib/landing/3DWaves.webp" alt=""> -->
-
-  <div class="flex flex-col items-center justify-center mt-40">
-    <h1 class="text-5xl tracking-tighter text-center text-white font-paperlang lg:text-8xl">where math <span class="text-primary">Lives.</span></h1>
-    <div class="my-4 text-lg text-center text-white lg:my-8 lg:text-2xl">Coding, Exploring and Sharing<br>Math's hidden Beauty.</div>
-    <a class="px-4 py-2 my-4 rounded-md bg-primary font-paperlang" href="https://dojo.paperland.sg/welcome">Enter PaperLand</a>
-  </div>
-</section>
-
+{% include hero_video.html
+   video_src="/assets/lib/landing/3DWaves_small.webm"
+   poster="/assets/lib/landing/3DWaves.webp"
+   title="where math <span class='text-primary'>Lives.</span>"
+   subtitle="Coding, Exploring and Sharing<br>Math's hidden Beauty."
+   action_link="https://dojo.paperland.sg/welcome"
+   action_words="Enter PaperLand"
+   height_mobile="70dvh"
+   height_desktop="100dvh"
+  %}
 
 
 <!-- Approach section -->
-<section class="px-4 mt-32 mb-2 lg:px-0 lg:mx-32 animate-fade-in">
+<section class="px-4 mt-[40dvh] lg:mt-[33dvh] mb-2 lg:px-0 lg:mx-32 animate-fade-in">
   <h2 class="text-4xl font-bold font-paperlang text-center lg:text-5xl  text-secondary">
     Bring Math to <span class="text-primary ">Life </span> with Code
   </h2>

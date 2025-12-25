@@ -1,5 +1,5 @@
 {% comment %}
-  Media Gallery Component
+  Optimized Media Gallery Component with Lazy Loading
   
   eg.
     {% include media-gallery.html 
@@ -14,12 +14,14 @@
     - aspect_ratio: "video" (16:9), "square", "portrait", "landscape" (default: "video")
     - main_width: Width class for main display (default: "sm:w-3/4")
     - autoplay: Enable autoplay (default: true)
+    - lazy_threshold: Intersection observer threshold (default: "200px")
 {% endcomment %}
 
 {% assign gallery_id = include.id | default: "media-gallery" %}
 {% assign aspect_ratio = include.aspect_ratio | default: "video" %}
 {% assign main_width = include.main_width | default: "sm:w-3/4" %}
 {% assign autoplay = include.autoplay | default: true %}
+{% assign lazy_threshold = include.lazy_threshold | default: "200px" %}
 
 {% case aspect_ratio %}
   {% when "video" %}
@@ -34,53 +36,84 @@
     {% assign aspect_class = "aspect-video" %}
 {% endcase %}
 
-<div id="{{ gallery_id }}" class="max-w-4xl mx-auto media-gallery" data-autoplay="{{ autoplay }}">
+<div id="{{ gallery_id }}" 
+     class="max-w-4xl mx-auto media-gallery" 
+     data-autoplay="{{ autoplay }}"
+     data-lazy-threshold="{{ lazy_threshold }}"
+     data-initialized="false">
+  
   <!-- Main Display -->
   <div class="w-full mx-auto overflow-hidden bg-black shadow-xl rounded-xl {{ main_width }} {{ aspect_class }}">
     <div class="relative w-full h-full">
       {% for item in include.items %}
         <div class="media-slide {% if forloop.index0 != 0 %}hidden{% endif %} absolute inset-0 w-full h-full" 
              data-index="{{ forloop.index0 }}"
-             data-type="{{ item.type }}">
+             data-type="{{ item.type }}"
+             data-loaded="false">
           
           {% case item.type %}
             {% when "video" %}
               <video 
-                {% if forloop.index0 == 0 %}src="{{ item.src }}"{% else %}data-src="{{ item.src }}"{% endif %}
+                data-src="{{ item.src }}"
                 {% if item.poster %}poster="{{ item.poster }}"{% endif %}
-                class="object-cover w-full h-full"
+                class="video-element object-cover w-full h-full opacity-0 transition-opacity duration-500"
+                preload="none"
                 muted
                 playsinline
                 {% if item.loop %}loop{% endif %}>
               </video>
+              <!-- Loading spinner for videos -->
+              <div class="loading-spinner absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity duration-300 pointer-events-none">
+                <div class="animate-spin rounded-full h-12 w-12 border-4 border-white border-t-transparent"></div>
+              </div>
             
             {% when "youtube" %}
-              <iframe
-                {% if forloop.index0 == 0 %}src="https://www.youtube.com/embed/{{ item.video_id }}?autoplay=1&mute=1&rel=0"{% else %}data-src="https://www.youtube.com/embed/{{ item.video_id }}?autoplay=1&mute=1&rel=0"{% endif %}
-                class="w-full h-full"
-                frameborder="0"
-                allow="autoplay; encrypted-media"
-                allowfullscreen>
-              </iframe>
+              <div class="relative w-full h-full bg-gray-900" data-youtube-id="{{ item.video_id }}">
+                <!-- Placeholder with thumbnail -->
+                <img 
+                  src="https://i.ytimg.com/vi/{{ item.video_id }}/maxresdefault.jpg"
+                  alt="YouTube video thumbnail"
+                  class="youtube-thumb object-cover w-full h-full transition-opacity duration-500"
+                  loading="lazy">
+                <div class="youtube-overlay absolute inset-0 flex items-center justify-center bg-black/30 transition-opacity duration-500">
+                  <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                  </svg>
+                </div>
+                <!-- Loading spinner (hidden by default) -->
+                <div class="loading-spinner absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity duration-300 pointer-events-none">
+                  <div class="animate-spin rounded-full h-12 w-12 border-4 border-white border-t-transparent"></div>
+                </div>
+              </div>
             
             {% when "image" %}
               <img 
-                {% if forloop.index0 == 0 %}src="{{ item.src }}"{% else %}data-src="{{ item.src }}"{% endif %}
+                data-src="{{ item.src }}"
                 alt="{{ item.alt | default: '' }}"
-                class="object-cover w-full h-full">
+                class="media-image object-cover w-full h-full opacity-0 transition-opacity duration-500"
+                loading="lazy">
+              <!-- Loading spinner for images -->
+              <div class="loading-spinner absolute inset-0 flex items-center justify-center bg-gray-100 opacity-0 transition-opacity duration-300 pointer-events-none">
+                <div class="animate-spin rounded-full h-12 w-12 border-4 border-gray-400 border-t-transparent"></div>
+              </div>
             
             {% when "iframe" %}
-              <iframe
-                {% if forloop.index0 == 0 %}src="{{ item.src }}"{% else %}data-src="{{ item.src }}"{% endif %}
-                class="w-full h-full"
-                {% if item.sandbox %}sandbox="{{ item.sandbox }}"{% endif %}
-                {% if item.allow %}allow="{{ item.allow }}"{% endif %}
-                frameborder="0">
-              </iframe>
+              <div class="relative w-full h-full bg-gray-900" data-iframe-src="{{ item.src }}">
+                <div class="iframe-placeholder absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900 transition-opacity duration-500">
+                  <div class="text-center">
+                    <div class="text-white text-lg mb-2">Interactive Content</div>
+                    <div class="text-gray-400 text-sm">Click to load</div>
+                  </div>
+                </div>
+                <!-- Loading spinner for iframes -->
+                <div class="loading-spinner absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity duration-300 pointer-events-none">
+                  <div class="animate-spin rounded-full h-12 w-12 border-4 border-white border-t-transparent"></div>
+                </div>
+              </div>
           {% endcase %}
           
           {% if item.caption %}
-            <div class="absolute bottom-0 left-full right-0 px-4 py-2 text-sm text-white bg-gradient-to-t from-black/80 to-transparent">
+            <div class="absolute bottom-0 left-0 right-0 px-4 py-2 text-sm text-white bg-gradient-to-t from-black/80 to-transparent">
               {{ item.caption }}
             </div>
           {% endif %}
@@ -94,7 +127,7 @@
     <div class="flex items-center gap-3 px-6 py-2 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
       {% for item in include.items %}
         <button 
-          class="media-thumb relative w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 transition-all hover:ring-2 hover:ring-gray-400 {% if forloop.index0 == 0 %}ring-2 ring-primary{% endif %}"
+          class="media-thumb relative w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 transition-all hover:ring-2 hover:ring-gray-400 {% if forloop.index0 == 0 %}ring-2 ring-blue-500{% endif %}"
           data-index="{{ forloop.index0 }}"
           type="button"
           aria-label="Show {{ item.title | default: 'media item' }} {{ forloop.index }}">
@@ -102,21 +135,20 @@
           <img 
             class="object-cover w-full h-full" 
             src="{{ item.thumbnail | default: item.poster | default: item.src }}" 
-            alt="{{ item.title | default: '' }}">
+            alt="{{ item.title | default: '' }}"
+            loading="lazy">
           
-          {% if item.type == "youtube" %}
+          {% if item.type == "youtube" or item.type == "video" %}
             <div class="absolute inset-0 flex items-center justify-center bg-black/30">
+              {% if item.type == "youtube" %}
               <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
               </svg>
+              {% endif %}
             </div>
           {% endif %}
 
-         {% if item.type == "video" %}
-            <div class="absolute inset-0 flex items-center justify-center bg-black/30">
-
-            </div>
-          {% endif %}
+          
         </button>
       {% endfor %}
     </div>
@@ -127,34 +159,196 @@
 (function() {
   function initMediaGallery(galleryId) {
     const gallery = document.getElementById(galleryId);
-    if (!gallery) return;
+    if (!gallery || gallery.dataset.initialized === 'true') return;
 
     const slides = gallery.querySelectorAll('.media-slide');
     const thumbs = gallery.querySelectorAll('.media-thumb');
     if (!slides.length || !thumbs.length) return;
 
     const autoplay = gallery.dataset.autoplay !== 'false';
+    const lazyThreshold = gallery.dataset.lazyThreshold || '200px';
     let currentIndex = 0;
+    let isInView = false;
     const thumbScroller = thumbs[0].closest('.overflow-x-auto');
 
+    // Intersection Observer for lazy loading when gallery enters viewport
+    const galleryObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          isInView = true;
+          // Load first slide when gallery comes into view
+          ensureMediaLoaded(slides[0]);
+          if (autoplay) {
+            playMedia(slides[0]);
+          }
+        } else {
+          isInView = false;
+          // Pause all media when gallery leaves viewport
+          slides.forEach(slide => pauseMedia(slide));
+        }
+      });
+    }, {
+      rootMargin: lazyThreshold,
+      threshold: 0.1
+    });
+
+    galleryObserver.observe(gallery);
+
+    function loadYouTubeIframe(container, videoId) {
+      if (container.querySelector('iframe')) return;
+      
+      // Show loading spinner
+      const spinner = container.querySelector('.loading-spinner');
+      if (spinner) {
+        spinner.style.opacity = '1';
+      }
+      
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=0&mute=1&rel=0&enablejsapi=1`;
+      iframe.className = 'w-full h-full opacity-0 transition-opacity duration-500';
+      iframe.frameBorder = '0';
+      iframe.allow = 'autoplay; encrypted-media';
+      iframe.allowFullscreen = true;
+      
+      // Fade in iframe when loaded
+      iframe.onload = () => {
+        const thumb = container.querySelector('.youtube-thumb');
+        const overlay = container.querySelector('.youtube-overlay');
+        
+        // Fade out thumbnail and overlay
+        if (thumb) thumb.style.opacity = '0';
+        if (overlay) overlay.style.opacity = '0';
+        
+        // Hide spinner
+        if (spinner) {
+          spinner.style.opacity = '0';
+        }
+        
+        // Fade in iframe after thumbnail fades out
+        setTimeout(() => {
+          iframe.style.opacity = '1';
+          // Clean up thumbnail after transition
+          setTimeout(() => {
+            if (thumb) thumb.remove();
+            if (overlay) overlay.remove();
+          }, 500);
+        }, 300);
+      };
+      
+      container.appendChild(iframe);
+    }
+
+    function loadIframe(container, src) {
+      if (container.querySelector('iframe')) return;
+      
+      const placeholder = container.querySelector('.iframe-placeholder');
+      const spinner = container.querySelector('.loading-spinner');
+      
+      // Show loading spinner
+      if (spinner) {
+        spinner.style.opacity = '1';
+      }
+      
+      const iframe = document.createElement('iframe');
+      iframe.src = src;
+      iframe.className = 'w-full h-full opacity-0 transition-opacity duration-500';
+      iframe.frameBorder = '0';
+      
+      iframe.onload = () => {
+        // Fade out placeholder
+        if (placeholder) {
+          placeholder.style.opacity = '0';
+        }
+        
+        // Hide spinner
+        if (spinner) {
+          spinner.style.opacity = '0';
+        }
+        
+        // Fade in iframe
+        setTimeout(() => {
+          iframe.style.opacity = '1';
+          // Clean up placeholder after transition
+          setTimeout(() => {
+            if (placeholder) placeholder.remove();
+          }, 500);
+        }, 300);
+      };
+      
+      container.appendChild(iframe);
+    }
+
     function ensureMediaLoaded(slide) {
+      if (slide.dataset.loaded === 'true') return;
+      
       const type = slide.dataset.type;
       
       if (type === 'video') {
         const video = slide.querySelector('video');
+        const spinner = slide.querySelector('.loading-spinner');
+        
         if (video && !video.src && video.dataset.src) {
+          // Show loading spinner
+          if (spinner) {
+            spinner.style.opacity = '1';
+          }
+          
           video.src = video.dataset.src;
+          
+          // Handle when video can start playing
+          const handleCanPlay = () => {
+            // Hide spinner
+            if (spinner) {
+              spinner.style.opacity = '0';
+            }
+            // Fade in video
+            video.style.opacity = '1';
+            video.removeEventListener('canplay', handleCanPlay);
+          };
+          
+          video.addEventListener('canplay', handleCanPlay);
           video.load();
+          slide.dataset.loaded = 'true';
         }
-      } else if (type === 'youtube' || type === 'iframe') {
-        const iframe = slide.querySelector('iframe');
-        if (iframe && !iframe.src && iframe.dataset.src) {
-          iframe.src = iframe.dataset.src;
+      } else if (type === 'youtube') {
+        const container = slide.querySelector('[data-youtube-id]');
+        if (container) {
+          const videoId = container.dataset.youtubeId;
+          loadYouTubeIframe(container, videoId);
+          slide.dataset.loaded = 'true';
+        }
+      } else if (type === 'iframe') {
+        const container = slide.querySelector('[data-iframe-src]');
+        if (container) {
+          const src = container.dataset.iframeSrc;
+          loadIframe(container, src);
+          slide.dataset.loaded = 'true';
         }
       } else if (type === 'image') {
         const img = slide.querySelector('img');
+        const spinner = slide.querySelector('.loading-spinner');
+        
         if (img && !img.src && img.dataset.src) {
-          img.src = img.dataset.src;
+          // Show loading spinner
+          if (spinner) {
+            spinner.style.opacity = '1';
+          }
+          
+          // Create a new image to preload
+          const preloadImg = new Image();
+          preloadImg.onload = () => {
+            img.src = img.dataset.src;
+            // Hide spinner
+            if (spinner) {
+              spinner.style.opacity = '0';
+            }
+            // Fade in image
+            setTimeout(() => {
+              img.style.opacity = '1';
+            }, 50);
+          };
+          preloadImg.src = img.dataset.src;
+          slide.dataset.loaded = 'true';
         }
       }
     }
@@ -168,23 +362,37 @@
       } else if (type === 'youtube') {
         const iframe = slide.querySelector('iframe');
         if (iframe && iframe.contentWindow) {
-          iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+          try {
+            iframe.contentWindow.postMessage(JSON.stringify({
+              event: 'command',
+              func: 'pauseVideo',
+              args: ''
+            }), '*');
+          } catch (e) {}
         }
       }
     }
 
     function playMedia(slide) {
+      if (!isInView) return;
+      
       const type = slide.dataset.type;
       
       if (type === 'video') {
         const video = slide.querySelector('video');
-        if (video) {
+        if (video && video.src) {
           video.play().catch(() => {});
         }
       } else if (type === 'youtube') {
         const iframe = slide.querySelector('iframe');
         if (iframe && iframe.contentWindow) {
-          iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+          try {
+            iframe.contentWindow.postMessage(JSON.stringify({
+              event: 'command',
+              func: 'playVideo',
+              args: ''
+            }), '*');
+          } catch (e) {}
         }
       }
     }
@@ -203,6 +411,8 @@
       if (!thumbScroller) return;
 
       const thumb = thumbs[index];
+      if (!thumb) return;
+
       const scrollerRect = thumbScroller.getBoundingClientRect();
       const thumbRect = thumb.getBoundingClientRect();
       const currentScroll = thumbScroller.scrollLeft;
@@ -227,15 +437,31 @@
       currentIndex = index;
       const newSlide = slides[currentIndex];
 
-      ensureMediaLoaded(newSlide);
+      // Lazy load media only when switching to it
+      if (isInView) {
+        ensureMediaLoaded(newSlide);
+      }
+      
       newSlide.classList.remove('hidden');
       
-      if (autoplay) {
-        playMedia(newSlide);
+      if (autoplay && isInView) {
+        // Small delay to ensure media is loaded
+        setTimeout(() => playMedia(newSlide), 100);
       }
 
       setActiveThumb(currentIndex);
       scrollThumbIntoCenter(currentIndex);
+
+      // Preload adjacent slides for smoother experience
+      const nextIndex = (currentIndex + 1) % slides.length;
+      const prevIndex = (currentIndex - 1 + slides.length) % slides.length;
+      
+      requestIdleCallback(() => {
+        if (isInView) {
+          ensureMediaLoaded(slides[nextIndex]);
+          ensureMediaLoaded(slides[prevIndex]);
+        }
+      });
     }
 
     function showNextSlide() {
@@ -252,7 +478,7 @@
           if (!video) return;
 
           video.addEventListener('ended', () => {
-            if (index !== currentIndex || !autoplay) return;
+            if (index !== currentIndex || !autoplay || !isInView) return;
             
             const duration = video.duration;
             if (!duration || isNaN(duration) || duration < 1) return;
@@ -263,14 +489,12 @@
       });
     }
 
-    // Initialize
+    // Initialize first slide only (don't load yet)
     slides.forEach((slide, i) => {
       if (i === 0) {
         slide.classList.remove('hidden');
-        if (autoplay) playMedia(slide);
       } else {
         slide.classList.add('hidden');
-        pauseMedia(slide);
       }
     });
 
@@ -282,7 +506,14 @@
       const index = parseInt(thumb.dataset.index, 10);
       thumb.addEventListener('click', () => showSlide(index));
     });
+
+    gallery.dataset.initialized = 'true';
   }
+
+  // Fallback for requestIdleCallback
+  window.requestIdleCallback = window.requestIdleCallback || function(cb) {
+    return setTimeout(cb, 1);
+  };
 
   // Initialize on DOMContentLoaded
   if (document.readyState === 'loading') {
