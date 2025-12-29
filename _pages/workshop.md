@@ -23,7 +23,7 @@ permalink: /workshop
       For ages 12-16.
     </div>
     <a class="px-4 py-2 my-4 rounded-md bg-primary font-paperlang internal-link" href="/workshop#cta">Free Trial Class</a>
-    <span class="italic text-slate-300">Next session: 4th Jan 2026 (Sun) 9am</span>
+    <span class="italic text-slate-300">Next session: 4th Jan 2026 (Sun) 9am SGT</span>
   </div>
 </section>
 
