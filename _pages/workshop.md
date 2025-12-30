@@ -1,36 +1,26 @@
 ---
 layout: landing
-title: MathxCode Paperland Workshop
-excerpt: Discover the math hidden around us!
+title: Math Leaders Program
+excerpt: Rediscover and share the beauty of math around us!
 image: /assets/lib/beauty_first.png
 permalink: /workshop
 ---
 
-
-<section class="h-[70vh] animate-fade-in md:h-[75vh]">
-  <video class="absolute top-0 left-0 w-screen h-[100vh] object-cover brightness-[40%] -z-10" 
-    src="/assets/lib/landing/spring.webm" 
-    poster="/assets/lib/landing/spring.webp" 
-    alt="Math x Computation hero video" 
-    autoplay loop muted playsinline 
-  />
-
-  <div class="flex flex-col items-center justify-center mt-28">
-    <h1 class="text-5xl tracking-tighter text-center text-primary font-paperlang lg:text-8xl">Math Leader Program</h1>
-    <div class="my-4 text-lg text-center text-white lg:my-8 lg:text-2xl">
-      A 10-weeks online program to <span class="text-primary">discover</span> and <span class="text-primary">share</span> the <span class="text-primary">beauty</span> of mathematics with students <span class="text-primary">around the world</span>.
-      <br><br>
-      For ages 12-16.
-    </div>
-    <a class="px-4 py-2 my-4 rounded-md bg-primary font-paperlang internal-link" href="/workshop#cta">Free Trial Class</a>
-    <span class="italic text-slate-300">Next session: 4th Jan 2026 (Sun) 9am SGT</span>
-  </div>
-</section>
-
-
+{% include hero_video.html
+   video_src="/assets/lib/landing/spring.webm"
+   poster="/assets/lib/landing/spring.webp"
+   title="Math <span class='text-primary'>Leaders</span> Program"
+   subtitle=' A 10-weeks online program to <span class="text-primary">discover</span> and <span class="text-primary">share</span> the <span class="text-primary">beauty</span> of mathematics with students <span class="text-primary">around the world</span>.<br><br>
+      For ages 12-16.'
+   action_link="/workshop#cta"
+   action_words="Join Now"
+   action_subtitle=' <span class="italic text-slate-300">Next session: 4th Jan 2026 (Sun) 9am SGT</span> '
+   height_mobile="70dvh"
+   height_desktop="100dvh"
+  %}
 
 <!-- Who's MLP for section -->
-<section id="what" class="pt-8 mt-40 lg:mt-48">
+<section id="what" class="pt-0 lg:mt-48">
   <!-- Top image -->
   <img
     src="/assets/lib/landing/map.png"
@@ -125,10 +115,13 @@ permalink: /workshop
     </div>
     <div class="flex flex-wrap justify-center gap-3 mt-4">
       <span class="inline-flex items-center gap-2 px-4 py-2 text-sm bg-white border rounded-full shadow-sm border-slate-200 text-slate-700"><span aria-hidden="true">🗓️</span>11 Jan – 15 Mar 2026</span>
+      <span class="inline-flex items-center gap-2 px-4 py-2 text-sm bg-white border rounded-full shadow-sm border-slate-200 text-slate-700"><span aria-hidden="true">🌐</span>Online</span>
     </div>
     <div class="relative mt-4">
       <div class="absolute left-8 top-0 h-full w-[2px] bg-gradient-to-b from-amber-500 via-sky-500 to-emerald-500 opacity-40"></div>
       <ol class="pl-12 space-y-6">
+        
+        <!-- Free Trial Class -->
         <li class="relative">
           <span class="absolute -left-[2.15rem] top-3 grid h-9 w-9 place-items-center rounded-full bg-amber-600 text-white shadow-md ring-4 ring-white">🎓</span>
           <div class="p-6 bg-white border shadow-sm rounded-2xl border-slate-200">
@@ -140,6 +133,8 @@ permalink: /workshop
             <p class="mt-2 text-sm text-slate-500">Join a free introductory session to experience the MLP format before committing.</p>
           </div>
         </li>
+
+        <!-- Week 1 -->
         <li class="relative">
           <span class="absolute -left-[2.15rem] top-3 grid h-9 w-9 place-items-center rounded-full bg-sky-600 text-white shadow-md ring-4 ring-white">🚀</span>
           <div class="p-6 bg-white border shadow-sm rounded-2xl border-slate-200">
@@ -164,9 +159,9 @@ permalink: /workshop
         </li>
       </ol>
     </div>
+    
   </div>
 </section>
-
 
 
 

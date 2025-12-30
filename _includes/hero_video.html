@@ -30,7 +30,7 @@ Usage:
   ></video>
   
   <!-- Content overlay -->
-  <div class="relative z-10 flex flex-col items-center mt-[15vh] md:mt-[35vh] lg:mt-[25vh] mb-[35vh] md:mb-[45vh] lg:mb-[35vh] h-full px-4 animate-fade-in">
+  <div class="relative z-10 flex flex-col items-center mt-[10dvh] md:mt-[25dvh] lg:mt-[15dvh] mb-[35dvh] md:mb-[45dvh] lg:mb-[25dvh] h-full px-4 animate-fade-in">
     <h1 class="text-6xl tracking-tighter text-center text-white font-paperlang lg:text-8xl">
       {{ include.title }}
     </h1>
@@ -41,6 +41,7 @@ Usage:
     {% endif %}
     {% if include.action_link %}
     <a class="px-4 py-2 my-4 rounded-md bg-primary font-paperlang" href="{{ include.action_link}}">{{ include.action_words }}</a>
+    {{ include.action_subtitle }}
     {% endif %}
   </div>
 </section>
