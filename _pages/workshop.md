@@ -120,7 +120,6 @@ permalink: /workshop
     <div class="relative mt-4">
       <div class="absolute left-8 top-0 h-full w-[2px] bg-gradient-to-b from-amber-500 via-sky-500 to-emerald-500 opacity-40"></div>
       <ol class="pl-12 space-y-6">
-        
         <!-- Free Trial Class -->
         <li class="relative">
           <span class="absolute -left-[2.15rem] top-3 grid h-9 w-9 place-items-center rounded-full bg-amber-600 text-white shadow-md ring-4 ring-white">🎓</span>
@@ -133,7 +132,6 @@ permalink: /workshop
             <p class="mt-2 text-sm text-slate-500">Join a free introductory session to experience the MLP format before committing.</p>
           </div>
         </li>
-
         <!-- Week 1 -->
         <li class="relative">
           <span class="absolute -left-[2.15rem] top-3 grid h-9 w-9 place-items-center rounded-full bg-sky-600 text-white shadow-md ring-4 ring-white">🚀</span>
@@ -332,7 +330,7 @@ function toggleAccordion(button) {
     <p class="mt-4 text-lg lg:text-xl text-slate-600">Experience the MLP before committing. No payment required.</p>
     <div class="inline-flex flex-col items-center gap-2 px-6 py-4 mt-6 bg-white border shadow-sm rounded-2xl border-slate-200">
       <p class="text-base font-semibold text-slate-900">🗓️ Sunday, 4 January 2026</p>
-      <p class="text-slate-700">⏰ 9:00 AM SGT</p>
+      <p class="text-slate-700">⏰ 9:00-10:15 AM SGT</p>
     </div>
     <p class="mt-6 text-slate-600">To reserve a spot, message us on WhatsApp and let us know you’re interested in the free trial.</p>
     <div class="mt-8">
