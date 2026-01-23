@@ -108,22 +108,22 @@ yt_gallery:
 <!-- Approach section -->
   <div class="w-full mx-auto overflow-hidden bg-black shadow-xl aspect-video rounded-xl sm:w-3/4">
     <div class="relative w-full h-full">
-      <div class="absolute inset-0 w-full h-full transition duration-500 ease-out mlp-slide" data-index="0"><img src="/assets/lib/landing/yma_executive_sharing.webp" class="object-cover w-full h-full" alt=""></div>
-      <div class="absolute inset-0 w-full h-full transition duration-500 ease-out mlp-slide" data-index="1"><img src="/assets/lib/landing/SUTD_calculus_16x9.jpg" class="object-cover w-full h-full" alt=""></div>
-      <div class="absolute inset-0 hidden w-full h-full transition duration-500 ease-out mlp-slide" data-index="2"><img loading="lazy" src="/assets/lib/landing/wan_workshop_16x9.jpg" class="object-cover w-full h-full" alt=""></div>
-      <div class="absolute inset-0 hidden w-full h-full transition duration-500 ease-out mlp-slide" data-index="3"><img loading="lazy" src="/assets/lib/landing/ca_workshop_16x9.jpg" class="object-cover w-full h-full" alt=""></div>
-      <div class="absolute inset-0 hidden w-full h-full transition duration-500 ease-out mlp-slide" data-index="4"><img loading="lazy" src="/assets/lib/landing/knowledge_park_16x9.webp" class="object-cover w-full h-full" alt=""></div>
-      <div class="absolute inset-0 hidden w-full h-full transition duration-500 ease-out mlp-slide" data-index="5"><img loading="lazy" src="/assets/lib/landing/stpats_discord_bot_workshop_16x9.jpg" class="object-cover w-full h-full" alt=""></div>
+      <div class="absolute inset-0 w-full h-full transition duration-500 ease-out mlp-slide" data-index="0"><img src="/assets/lib/landing/SUTD_calculus_16x9.jpg" class="object-cover w-full h-full" alt=""></div>
+      <div class="absolute inset-0 w-full h-full transition duration-500 ease-out mlp-slide" data-index="1"><img src="/assets/lib/landing/yma_executive_sharing.webp" class="object-cover w-full h-full" alt=""></div>
+      <div class="absolute inset-0 w-full h-full transition duration-500 ease-out mlp-slide" data-index="2"><img src="/assets/lib/landing/stpat_presentation.webp" class="object-cover w-full h-full" alt=""></div>
+      <div class="absolute inset-0 w-full h-full transition duration-500 ease-out mlp-slide" data-index="3"><img src="/assets/lib/landing/kanifing_high.webp" class="object-cover w-full h-full" alt=""></div>
+      <div class="absolute inset-0 hidden w-full h-full transition duration-500 ease-out mlp-slide" data-index="4"><img loading="lazy" src="/assets/lib/landing/wan_workshop_16x9.jpg" class="object-cover w-full h-full" alt=""></div>
+      <div class="absolute inset-0 hidden w-full h-full transition duration-500 ease-out mlp-slide" data-index="5"><img loading="lazy" src="/assets/lib/landing/ca_workshop_16x9.jpg" class="object-cover w-full h-full" alt=""></div>
     </div>
   </div>
   <div class="relative max-w-xl mx-auto">
     <div class="relative z-10 flex items-center gap-3 px-6 py-2 overflow-x-auto pointer-events-auto snap-x snap-mandatory scrollbar-hide">
-      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 mlp-thumb" data-index="0" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/yma_executive_sharing.webp" alt=""></button>
-      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 mlp-thumb" data-index="1" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/SUTD_calculus_16x9.jpg" alt=""></button>
-      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 mlp-thumb" data-index="2" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt=""></button>
-      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 mlp-thumb" data-index="3" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/ca_workshop_16x9.jpg" alt=""></button>
-      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 mlp-thumb" data-index="4" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/knowledge_park_16x9.webp" alt=""></button>
-      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 mlp-thumb" data-index="5" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/stpats_discord_bot_workshop_16x9.jpg" alt=""></button>
+      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 mlp-thumb" data-index="0" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/SUTD_calculus_16x9.jpg" alt=""></button>
+      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 mlp-thumb" data-index="1" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/yma_executive_sharing.webp" alt=""></button>
+      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 mlp-thumb" data-index="2" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/stpat_presentation.webp" alt=""></button>
+      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 mlp-thumb" data-index="3" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/kanifing_high.webp" alt=""></button>
+      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 mlp-thumb" data-index="4" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt=""></button>
+      <button class="w-20 overflow-hidden rounded-lg h-14 snap-center shrink-0 mlp-thumb" data-index="5" type="button"><img class="object-cover w-full h-full" src="/assets/lib/landing/ca_workshop_16x9.jpg" alt=""></button>
     </div>
   </div>
 </div>

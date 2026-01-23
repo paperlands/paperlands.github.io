@@ -74,7 +74,7 @@ permalink: /mlp
   <div class="flex flex-col items-center mx-auto lg:max-w-xl">
     <!-- Top image -->
     <img
-      src="/assets/lib/landing/wan_function.webp"
+      src="/assets/lib/landing/kanifing_high_transparent.webp"
       alt="Math leader guiding a peer at the computer"
       class="w-full max-w-md"
     />
@@ -120,7 +120,7 @@ permalink: /mlp
           <text x="110" y="305" font-size="28">Math</text>
           <text x="490" y="305" font-size="28">Creativity</text>
           <text x="300" y="500" font-size="28">Service</text>
-          <text x="300" y="310" font-size="28" font-weight="600">MLP</text>
+          <text x="300" y="310" font-size="28" font-weight="600" fill="#ff9933">MLP</text>
         </g>
       </svg>
     </div>
@@ -138,7 +138,7 @@ permalink: /mlp
         How MLP works
       </h2>
       <p class="text-lg lg:text-xl">
-        MLP is a 10-weeks program to train student leaders not only to explore math through creative computation, but to go beyond to lead and teach their wider community.
+        MLP is designed to train student leaders, not only to explore math through creative computation, but to go beyond by teaching and leading their wider community.
       </p>
     </div>
     <!-- Phases -->
@@ -179,12 +179,60 @@ permalink: /mlp
 
 
 
+<!-- Timeline section -->
+<section id="timeline" class="pt-8 mt-40 lg:mt-48">
+  <div class="flex flex-col items-center mx-auto lg:max-w-xl">
+    <img
+      src="/assets/lib/landing/angelican_distribution.png"
+      alt="Math leader guiding a peer at the computer"
+      class="w-full max-w-md"
+    />
+    <div class="flex flex-col items-center mx-auto mt-4 space-y-10">
+      <!-- Heading + intro -->
+      <div class="max-w-3xl px-6 space-y-4">
+        <h2 class="text-4xl font-bold tracking-tight text-center lg:text-6xl font-paperlang">
+          Timeline
+        </h2>
+        <p class="text-lg lg:text-xl">
+          Standard MLP is 10 weeks long. We do work with individual schools to tailor 3/5/8/10week options based on individual needs. Here's a reference for the program content:
+        </p>
+      </div>
+    </div>
+    <!-- timetable -->
+    <div class="mt-4 overflow-x-auto border shadow-sm border-primary rounded-2xl bg-white/60">
+      <table class="min-w-full text-sm text-left">
+        <thead class="text-primary">
+          <tr>
+            <th scope="col" class="px-2 py-3 font-semibold">Week</th>
+            <th scope="col" class="px-4 py-3 font-semibold">Lesson</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-orange-100">
+          <tr class=""><td class="px-2 py-3 font-medium text-center align-top">1</td><td class="px-4 py-3">Introduction to Coding Geometry &amp; Leadership</td></tr>
+          <tr class=""><td class="px-2 py-3 font-medium text-center align-top">2</td><td class="px-4 py-3">Creative Inquiry and Closed Path Theorem Finding</td></tr>
+          <tr class=""><td class="px-2 py-3 font-medium text-center align-top">3</td><td class="px-4 py-3">Teaching &amp; Culture Building</td></tr>
+          <tr class=""><td class="px-2 py-3 font-medium text-center align-top">4</td><td class="px-4 py-3">Fundamentals of Mathematical Animations</td></tr>
+          <tr class=""><td class="px-2 py-3 font-medium text-center align-top">5</td><td class="px-4 py-3">Community Interviews and Marketing</td></tr>
+          <tr class=""><td class="px-2 py-3 font-medium text-center align-top">6</td><td class="px-4 py-3">Mathematical Abstractions and Pair Programming</td></tr>
+          <tr class=""><td class="px-2 py-3 font-medium text-center align-top">7</td><td class="px-4 py-3">Functional Sequences and Number Patterns</td></tr>
+          <tr class=""><td class="px-2 py-3 font-medium text-center align-top">8</td><td class="px-4 py-3">Mathematical Modelling</td></tr>
+          <tr class=""><td class="px-2 py-3 font-medium text-center align-top">9</td><td class="px-4 py-3">Creative Inquiry Community Class &amp; Reflection</td></tr>
+          <tr class=""><td class="px-2 py-3 font-medium text-center align-top">10</td><td class="px-4 py-3">Mathematical Animation Community Class &amp; Reflection</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+
+
+
 <!-- Who's MLP for section -->
 <section id="what" class="pt-8 mt-40 lg:mt-48">
   <div class="flex flex-col items-center mx-auto lg:max-w-xl">
     <!-- Top image -->
     <img
-      src="/assets/lib/landing/angelican_distribution.png"
+      src="/assets/lib/landing/wan_function.webp"
       alt="Math leader guiding a peer at the computer"
       class="w-full max-w-md"/>
     <!-- Title -->
