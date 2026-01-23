@@ -19,7 +19,7 @@ permalink: /mlp
         in service of their wider community.
       </p>
       <a href="/mlp#contact" class="px-5 py-2 transition rounded-md bg-primary font-paperlang hover:brightness-110 internal-link">
-        Start Free Pilot
+        Inquire Pilot
       </a>
     </div>
     <!-- Image -->
@@ -326,7 +326,7 @@ permalink: /mlp
     <div class="my-8 md:mr-8 md:w-5/12">
       <div class="text-center">
         <h2 class="text-4xl font-bold tracking-tight lg:text-6xl font-paperlang">MLP Pilot</h2>
-        <div class="italic">3 weeks · FREE</div>
+        <div class="italic">3 weeks</div>
       </div>
       <div class="mt-8">
         Experience how the Math Leaders Program empowers students to explore real problems, explain their thinking, and lead math discussions — at no cost.
