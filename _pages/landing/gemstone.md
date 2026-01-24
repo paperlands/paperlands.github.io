@@ -1,6 +1,6 @@
 ---
 layout: redirect
 permalink: /gemstone
-redirect_link: https://paperland.notion.site/Gemstone-Lesson-Plan-1c168a9c942c804d9b8bea83bcd8769d
+redirect_link: https://paperland.notion.site/Polygon-Lesson-Plan-Gemstone-22368a9c942c8068aefdf64113a3f87b
 sitemap: false
 ---
