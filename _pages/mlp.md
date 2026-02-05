@@ -329,19 +329,19 @@ permalink: /mlp
         <div class="italic">3 weeks</div>
       </div>
       <div class="mt-8">
-        Experience how the Math Leaders Program empowers students to explore real problems, explain their thinking, and lead math discussions — at no cost.
+        Experience how the Math Leaders Program empowers students to explore real problems, explain their thinking, and lead math discussions.
       </div>
       <!-- Benefits -->
       <div class="mt-8 space-y-2 ">
         <ul class="space-y-1 text-sm">
           <li>✔ Full facilitation from the PaperLand team</li>
-          <li>✔ No contracts/special hardware required</li>
+          <li>✔ No special hardware required</li>
           <li>✔ No prior coding experience needed</li>
           <li>✔ Designed for aspiring math leaders ages 12+</li>
         </ul>
       </div>
       <div class="mt-8">
-        👉 Schedule a short call to see if the MLP Pilot is a good fit for your students.
+        👉 Schedule a short call to see if the MLP Pilot is a good fit for your students!
       </div>
     </div>
     {% include contact_form.html href="/dojo" %}
