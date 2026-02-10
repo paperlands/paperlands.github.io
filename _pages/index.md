@@ -47,6 +47,10 @@ approach_gallery:
   
 yt_gallery:
   - type: youtube
+    video_id: NgbSnVDSu1w
+    thumbnail: https://img.youtube.com/vi/NgbSnVDSu1w/mqdefault.jpg
+    title: The National Young Gambian Math Leaders
+  - type: youtube
     video_id: 7WFR32Q6ZE0
     thumbnail: https://img.youtube.com/vi/7WFR32Q6ZE0/mqdefault.jpg
     title: What if we forget sine?
