@@ -14,7 +14,7 @@ permalink: /rgs
 
 
 <div class="flex justify-center  items-center mt-[5dvh] mx-[10dvw]">
-    <img src="assets/lib/school_logos/RGS_logo_1x1.jpg" class="text-blue-500" width="250" height="250" class="no-responsive no-border"/>
+    <img src="assets/lib/school_logos/RGS_logo_1x1.png" class="text-blue-500" width="250" height="250" class="no-responsive no-border"/>
     <p class="pl-10 text-6xl mx-[8vw] ">×</p>
     <img src="assets/namelogo.svg" class="" width="250" height="250" class="no-responsive no-border"/>
 </div>
