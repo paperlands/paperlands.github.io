@@ -1,6 +1,6 @@
 ---
 layout: page
-title: from data floods to flow
+title: RGS Nightingale Data Initiative
 permalink: /rgs
 ---
 
@@ -100,7 +100,7 @@ permalink: /rgs
                     <h2 class="text-2xl font-light italic text-slate-800">Patient Detective</h2>
                 </div>
                 <p class="text-slate-600 leading-relaxed">
-                    Find & transform data to reveal latent hidden patterns.
+                    Find & transform data to reveal hidden underlying patterns.
                 </p>
             </div>
             <div class="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
@@ -118,7 +118,7 @@ permalink: /rgs
                     <h2 class="text-2xl font-light italic text-slate-800">Interactive Storyteller</h2>
                 </div>
                 <p class="text-slate-600 leading-relaxed">
-                    Design models and visualizations that share perspectives and can tell stories.
+                    Design models and visualizations that share perspectives and stories with others.
                 </p>
             </div>
 
@@ -176,11 +176,11 @@ permalink: /rgs
                     <h2 class="text-2xl font-light italic text-slate-800">Servant Leader</h2>
                 </div>
                 <p class="text-slate-600 leading-relaxed">
-                    Lead & teach others to follow in your footsteps and beyond.
+                    Lead & teach others to kickstart their own inquiry into the world of data.
                 </p>
             </div>
         
-        </div>
+        </div> 
         
         
 
