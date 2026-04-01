@@ -1,6 +1,7 @@
 @use "sass:color";
 $color-primary: hsl(0, 0%, 10%);
-$color-text: hsl(0, 0%, 20%);
+// change text colour here
+$color-text: hsl(0, 0%, 80%);
 $color-subtext: hsl(0, 0%, 30%);
 $color-core: rgb(255, 153, 51);
 $color-border: hsl(18.74, 100%, 50%);
@@ -121,9 +122,10 @@ a:not(:has(*)) {
   transition: background 300ms;
   padding: 0 0.1em;
   text-decoration: none;
-  color: $color-primary;
+  color: $color-core;
+
   &:hover {
-    color: white !important;
+    color: $color-core !important;
     background: #000000;
   }
   &:after {

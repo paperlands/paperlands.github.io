@@ -79,13 +79,13 @@ module.exports = {
         "orange-850": "#ea580c",
         ink: "#1f2937",
         primary: {
-          light: "#ffebd3",
+          light: "#0c0211",
           DEFAULT: "#ff9933",
           dark: "#d97c00",
         },
         secondary: {
           light: "#ededed",
-          DEFAULT: "#333333",
+          DEFAULT: "#ffffff",
           dark: "#1a1a1a",
         },
         accent: {
@@ -93,7 +93,7 @@ module.exports = {
           DEFAULT: "#ff6f61",
           dark: "#cc574e",
         },
-        background: "#fdf6e3",
+        background: "#050009",
         text: {
           light: "#4a2329",
           DEFAULT: "#1f060e",
