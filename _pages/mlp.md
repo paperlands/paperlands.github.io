@@ -18,7 +18,7 @@ permalink: /mlp
         We coach student leaders to spearhead a culture of creative mathematical inquiry
         in service of their wider community.
       </p>
-      <a href="/mlp#contact" class="px-5 py-2 transition rounded-md bg-primary font-paperlang hover:brightness-110 internal-link">
+      <a href="/mlp#contact" class="px-5 py-2 transition rounded-md bg-primary text-primary-light font-paperlang hover:brightness-110">
         Inquire Pilot
       </a>
     </div>

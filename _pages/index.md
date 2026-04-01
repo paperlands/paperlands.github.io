@@ -98,7 +98,7 @@ yt_gallery:
 {% include gallery.html items=page.approach_gallery id="approach-gallery" %}
 
 <div class="flex justify-center">
-  <a class="px-4 py-2 my-4 rounded-md bg-primary internal-link" href="/approach">Explore Our Approach</a>
+  <a class="px-4 py-2 my-4 rounded-md bg-primary text-primary-light" href="/approach">Explore Our Approach</a>
 </div>
 
 
@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 <div class="flex justify-center">
-  <a class="px-4 py-2 my-4 rounded-md bg-primary internal-link" href="/mlp">Learn More</a>
+  <a class="px-4 py-2 my-4 rounded-md bg-primary text-primary-light" href="/mlp">Learn More</a>
 </div>
 
 
@@ -225,7 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
   <hr class="my-8">
   {% include gallery.html items=page.yt_gallery id="yt-gallery" %}
   <div class="flex justify-center">
-  <a class="px-4 py-2 my-4 rounded-md bg-primary internal-link" href="https://www.youtube.com/@realPaperLand">Discover More</a>
+  <a class="px-4 py-2 my-4 rounded-md text-primary-light bg-primary" href="https://www.youtube.com/@realPaperLand">Discover More</a>
 </div>
 
 
@@ -235,14 +235,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   <div class="my-8 sm:flex sm:justify-center">
     <div class="m-8 sm:w-5/12">
-      <p>Wish to bring mathematics to life in your community?</p><br>
-      <p>Have an interesting idea or opportunity to share?</p><br>
-      <p>Looking to collaborate?</p><br>
-      <p>Let's chat!</p><br>
-      Email us at <a class="underline" href="mailto:info@paperland.sg">info@paperland.sg</a>
-    </div>
+      <p>Wish to share your <span class="text-primary font-paperlang"> love</span> for math with your community?</p><br>
+      <p>Have a burning question, a wild idea, or a creation you're unreasonably proud of?</p><br>
+      <p>Or maybe you just want to say hello!</p><br>
+      
+      Email us at <a class="underline" href="mailto:info@paperland.sg">info@paperland.sg</a> or send us a message! 
+    </div>  
     
     {% include contact_form.html
-      href="/dojo" %}
+      href="/dojo"
+      message_placeholder="Ask us anything!"
+      button_text="Send!"
+      %}
   </div>
 </section>
