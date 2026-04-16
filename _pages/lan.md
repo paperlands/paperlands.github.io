@@ -5,6 +5,7 @@ excerpt: We believe that the world would be a better place if the processes we s
 image: /assets/lib/beauty_first.png
 id: lan
 permalink: /lan
+version: 0.3.3
 ---
 <body class="bg-bg text-txt font-mono min-h-screen overflow-x-hidden">
  
@@ -25,14 +26,13 @@ permalink: /lan
     </p>
     <div class="flex gap-3 justify-center" id="os-buttons">
  
-      <a href="/assets/install/PaperLandInstaller.exe" download="PaperLandInstaller_v0.3.0.exe" data-os="windows" onclick="pick('windows')"
+      <a href="/assets/install/PaperLandInstaller.exe" download="PaperLandInstaller_v{{ page.version }}.exe" data-os="windows" onclick="pick('windows')"
         class="os-btn group flex-1 max-w-[170px] flex flex-col items-center gap-3.5
                border border-sage/40 rounded-lg px-3 pt-6 pb-4
                transition-all duration-300 ease-out
                hover:border-primary hover:-translate-y-0.5 hover:shadow-[0_4px_24px_rgba(255,153,51,0.08)]
                cursor-pointer bg-transparent">
-        <pre  class="os-icon text-[9px] leading-[1.35] text-stone-warm transition-colors duration-300
-                    group-hover:text-primary-dark whitespace-pre font-mono">⠀⠀⠀⣤⣴⣾⣿⣿⣿⣿⣿⣶⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡄
+        <pre  class="os-icon text-[9px] leading-[1.5] text-stone-warm transition-colors duration-300 group-hover:text-primary-dark whitespace-pre font-mono">⠀⠀⠀⣤⣴⣾⣿⣿⣿⣿⣿⣶⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡄
 ⠀⠀⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⢰⣦⣄⣀⣀⣠⣴⣾⣿⠃
 ⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⡏⠀⠀⣼⣿⣿⣿⣿⣿⣿⣿⣿⠀
 ⠀⠀⣼⣿⡿⠿⠛⠻⠿⣿⣿⡇⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⡿⠀
@@ -46,43 +46,87 @@ permalink: /lan
 </pre>
         <span class="os-label text-[11px] tracking-[0.12em] uppercase text-sage transition-colors duration-300">Windows</span>
       </a>
+      <div  class="os-btn group flex-1 max-w-[170px] flex flex-col items-center
+            border border-sage/40 rounded-lg px-3 pt-5
+            transition-all duration-300 ease-out
+            has-[a:hover]:border-primary has-[a:hover]:-translate-y-0.5
+            has-[a:hover]:shadow-[0_4px_24px_rgba(255,153,51,0.08)]">
+
+  <div class="flex w-full">
+    <a href="/assets/install/PaperLandDojo_x86_64.dmg"
+       download="PaperLand_MacOS_v{{ page.version }}_x86_64.dmg"
+       data-os="macos" onclick="pick('macos')"
+       class="group/half h-full py-2 flex flex-col items-center">
+      <pre class="os-icon text-[9px] leading-[1.15] text-stone-warm font-mono whitespace-pre group-hover/half:text-primary-dark transition-colors duration-300">⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀
+⠀⠀⠀⢀⣠⣤⣤⣤⣀⣀⠈
+⠀⢠⣶⣿⣿⣿⣿⣿⣿⣿⣿
+⣠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⠀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⠀⠀⠙⢿⣿⣿⣿⣿⣿⣿⣿
+⠀⠀⠀⠈⠙⢿⣿⣿⣿⠿⠟</pre>
+      <span class="mt-1 text-[8px] tracking-[0.13em] uppercase font-mono text-sage/60
+                   group-hover/half:text-primary group-hover/half:opacity-100
+                   transition-colors duration-300">x86</span>
+    </a>
+
+    <a href="/assets/install/PaperLandDojo_arm64.dmg"
+       download="PaperLand_MacOS_v{{ page.version }}_arm64.dmg"
+       data-os="macos" onclick="pick('macos')"
+       class="group/half py-2 flex  flex-col items-center">
+      <pre class="os-icon text-[9px] leading-[1.15] text-stone-warm font-mono whitespace-pre group-hover/half:text-primary-dark transition-colors duration-300">⠀⠀⠀⣀⣀⠀⠀⠀⠀⠀⠀
+⢀⣴⣿⣿⡿⠀⠀⠀⠀⠀⠀
+⣾⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀
+⠋⠉⣁⣠⣤⣤⣤⣀⡀⠀⠀
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀
+⣿⣿⣿⣿⣿⣿⣿⣿⠟⠋⠀
+⣿⣿⣿⣿⣿⣿⣿⡏⠀⠀⠀
+⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀
+⣿⣿⣿⣿⣿⣿⣿⣧⠀⠀⠀
+⣿⣿⣿⣿⣿⣿⣿⣿⣷⣤⣀
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁
+⣿⣿⣿⣿⣿⣿⣿⣿⡟⠁⠀
+⠛⠻⠿⣿⣿⣿⡿⠋</pre>
+      <span class="mt-1 text-[8px] tracking-[0.13em] uppercase font-mono text-sage/60
+                   group-hover/half:text-primary group-hover/half:opacity-100
+                   transition-colors duration-300">arm</span>
+    </a>
+
+  </div>
+
+  <span class="text-[11px] tracking-[0.12em] os-label uppercase pb-4 text-sage">macOS</span>
+</div>
+
  
-      <a href="/assets/install/PaperLand_MacOS_0.3.0" download="PaperLand_MacOS_0.3.0" data-os="macos" onclick="pick('macos')"
+      <a href="/assets/install/dojo_linux" download="PaperLand_Linux_v{{ page.version }}" data-os="linux" onclick="pick('linux')"
         class="os-btn group flex-1 max-w-[170px] flex flex-col items-center gap-3.5
                border border-sage/40 rounded-lg px-3 pt-6 pb-4
                transition-all duration-300 ease-out
                hover:border-primary hover:-translate-y-0.5 hover:shadow-[0_4px_24px_rgba(255,153,51,0.08)]
                cursor-pointer bg-transparent">
-        <pre class="os-icon text-[9px] leading-[1.15] text-stone-warm transition-colors duration-300
-                    group-hover:text-primary-dark whitespace-pre font-mono">⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⣿⡿⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⢀⣠⣤⣤⣤⣀⣀⠈⠋⠉⣁⣠⣤⣤⣤⣀⡀⠀⠀
-⠀⢠⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀
-⣠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠋⠀
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏⠀⠀⠀
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⠀⠀⠀
-⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣤⣀
-⠀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁
-⠀⠀⠙⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠁⠀
-⠀⠀⠀⠈⠙⢿⣿⣿⣿⠿⠟⠛⠻⠿⣿⣿⣿⡿⠋⠀⠀⠀</pre>
-        <span class="os-label text-[11px] tracking-[0.12em] uppercase text-sage transition-colors duration-300">macOS</span>
-      </a>
- 
-      <a href="/assets/install/PaperLand_Linux" download="PaperLand_Linux_v0.3.0" data-os="linux" onclick="pick('linux')"
-        class="os-btn group flex-1 max-w-[170px] flex flex-col items-center gap-3.5
-               border border-sage/40 rounded-lg px-3 pt-6 pb-4
-               transition-all duration-300 ease-out
-               hover:border-primary hover:-translate-y-0.5 hover:shadow-[0_4px_24px_rgba(255,153,51,0.08)]
-               cursor-pointer bg-transparent">
-        <pre class="os-icon text-[9px] leading-[1.15] text-stone-warm transition-colors duration-300
-                    group-hover:text-primary-dark whitespace-pre font-mono">   .--.
-  |o  o|
-  | /\ |
- /|    |\
-/ |    | \
-  '----'</pre>
+        <pre class="os-icon text-[9px] leading-[1.04] text-stone-warm transition-colors duration-300
+                    group-hover:text-primary-dark whitespace-pre font-mono">             d888b
+           d888888b.
+           8P"YP"Y88
+           8|o||o|88
+           8'    .88
+           8`._.' Y8.
+          d/      `8b.
+         dP   .    Y8b.
+        d8:'  "  `::88b
+       d8"         'Y88b
+      :8P    '      :888
+       8a.   :     _a88P
+     ._/"Yaa_:   .| 88P|
+     \    YP"    `| 8P  `.
+     /     \.___.d|    .'
+     `--..__)8888P`._.' 
+</pre>
         <span class="os-label text-[11px] tracking-[0.12em] uppercase text-sage transition-colors duration-300">Linux</span>
       </a>
  
@@ -123,7 +167,7 @@ permalink: /lan
       <span class="w-[3px] h-[3px] rounded-full bg-primary/20"></span>
       <span class="w-[3px] h-[3px] rounded-full bg-primary/10"></span>
     </div>
-    <pre class="text-[10px] leading-tight text-primary/[0.15] mt-8 select-none font-mono">    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⢔⣶⠀⠀
+    <pre class="text-[10px] leading-tight text-primary    mt-8 select-none font-mono">    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⢔⣶⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡼⠗⡿⣾⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡼⠓⡞⢩⣯⡀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠰⡹⠁⢰⠃⣩⣿⡇⠀
