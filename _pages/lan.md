@@ -1,11 +1,11 @@
 ---
 layout: page
-title: Install PaperLAN 
+title: Install PaperLAN Locally 
 excerpt: We believe that the world would be a better place if the processes we shape illuminates and uplifts the spirit of fellowship and belonging. 
 image: /assets/lib/beauty_first.png
 id: lan
 permalink: /lan
-version: 0.3.3
+version: 0.3.5
 ---
 <body class="bg-bg text-txt font-mono min-h-screen overflow-x-hidden">
  
@@ -13,8 +13,8 @@ version: 0.3.3
  
   <!-- Header -->
   <header class="text-center mb-16 animate-fade-up">
-    <h1 class="font-paperlang font-light text-4xl sm:text-5xl tracking-wide text-txt mb-4">
-      Install PaperLan
+    <h1 class="font-paperlang font-bold text-center  text-4xl sm:text-5xl tracking-wide text-txt mb-4">
+      Install <span class="text-primary ">PaperLan </span> 
     </h1>
     <div class="w-16 h-px mx-auto bg-gradient-to-r from-transparent via-primary to-transparent"></div>
   </header>
@@ -144,7 +144,7 @@ version: 0.3.3
           <span class="text-primary/50 mt-0.5 text-[10px]">►</span>
           <div>
             <div class="text-txt-light">Local Network</div>
-            <div class="text-sage text-xs mt-0.5">a mobile hotspot, wired ethernet or wifi router</div>
+            <div class="text-sage text-xs mt-0.5">mobile hotspot, wired ethernet or wifi router</div>
           </div>
         </div>
         <div class="flex gap-3 items-start">
@@ -160,7 +160,7 @@ version: 0.3.3
  
   <!-- Footer -->
   <footer class="text-center pt-8 border-t border-primary/10 animate-fade-up-3">
-    <div class="font-paperlang text-sm text-primary-dark tracking-widest">PaperLan</div>
+    <div class="font-paperlang text-sm text-primary tracking-widest">PaperLan</div>
     <div class="text-[10px] text-sage mt-1">crafted with reverence for fellowship</div>
     <div class="flex justify-center gap-2 mt-4">
       <span class="w-[3px] h-[3px] rounded-full bg-primary/30"></span>
@@ -217,101 +217,5 @@ version: 0.3.3
 </script>
  
 </body>
-<!-- <body class="min-h-screen text-amber_phosphor overflow-x-hidden"> -->
- 
-<!-- <\!-- Subtle background grain -\-> -->
-
- 
-
- 
-<!-- <div class="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-20 relative z-10"> -->
- 
-<!--   <\!-- Header -\-> -->
-<!--   <header class="text-center mb-16 sm:mb-24"> -->
-<!--     <div class="mb-6 opacity-50"> -->
-<!--       <svg class="inline-block w-8 h-8 animate-float" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"> -->
-<!--         <circle cx="20" cy="20" r="3" fill="#ffb000"/> -->
-<!--         <circle cx="20" cy="20" r="10" stroke="#ffb000" stroke-width="0.5" opacity="0.6"/> -->
-<!--         <circle cx="20" cy="20" r="17" stroke="#ffb000" stroke-width="0.3" opacity="0.3"/> -->
-<!--       </svg> -->
-<!--     </div> -->
-<!--     <h1 class="font-paperlang text-3xl sm:text-5xl tracking-wide text-glow-strong mb-4 leading-tight"> -->
-<!--       Install PaperLAN -->
-<!--     </h1> -->
-<!--     <div class="w-24 h-px mx-auto bg-gradient-to-r from-transparent via-brass to-transparent mb-6"></div> -->
-    
-<!--   </header> -->
-  
-
-<!--   </div> -->
- 
-  
- 
-<!--   <\!-- ═══════════════ REQUIREMENTS ═══════════════ -\-> -->
-<!--   <section class="mb-20 sm:mb-28"> -->
-<!--     <div class="border border-brass/20 rounded-lg p-6 sm:p-8 relative bg-void/40"> -->
-<!--       <div class="absolute -top-3 left-6"> -->
-<!--         <span class="font-terminal text-xs bg-void px-3 py-1 text-brass tracking-widest uppercase">System Requirements</span> -->
-<!--       </div> -->
-<!--       <div class="grid sm:grid-cols-2 gap-6 font-terminal text-sm"> -->
-<!--         <div class="space-y-3"> -->
-<!--           <div class="flex items-start gap-3"> -->
-<!--             <span class="text-brass/50 mt-0.5">►</span> -->
-<!--             <div> -->
-<!--               <div class="text-amber_phosphor/80">Local Network</div> -->
-<!--               <div class="text-amber_dim/40 text-xs">a mobile hotspot, wired ethernet or WIFI router</div> -->
-<!--             </div> -->
-<!--           </div> -->
-<!--         </div> -->
-        
-      
-<!--           <div class="flex items-start gap-3"> -->
-<!--             <span class="text-brass/50 mt-0.5">►</span> -->
-<!--             <div> -->
-<!--               <div class="text-amber_phosphor/80">Friends Nearby</div> -->
-<!--               <div class="text-amber_dim/40 text-xs">the only true requirement</div> -->
-            
-<!--           </div> -->
-<!--         </div> -->
-<!--       </div> -->
-<!--     </div> -->
-<!--   </section> -->
- 
- 
-<!--   <\!-- ═══════════════ FOOTER ═══════════════ -\-> -->
-<!--   <footer class="text-center pt-10 border-t border-brass/10"> -->
-<!--     <div class="font-paperlang text-xs text-primary space-y-1"> -->
-<!--       <div>PaperLan</div> -->
-<!--       <div class="text-gray-500">crafted with reverence for fellowship</div> -->
-<!--       <div class="flex items-center justify-center gap-2 mt-3"> -->
-<!--         <div class="w-1 h-1 rounded-full bg-brass/30"></div> -->
-<!--         <div class="w-1 h-1 rounded-full bg-brass/20"></div> -->
-<!--         <div class="w-1 h-1 rounded-full bg-brass/10"></div> -->
-<!--       </div> -->
-<!--     </div> -->
- 
-<!--     <\!-- ASCII butterfly - Zhuangzi's dream -\-> -->
-<!--     <pre class="font-terminal text-[10px] text-primary mt-8 leading-tight select-none"> -->
-<!--     ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⢔⣶⠀⠀ -->
-<!-- ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡼⠗⡿⣾⠀⠀ -->
-<!-- ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡼⠓⡞⢩⣯⡀⠀ -->
-<!-- ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠰⡹⠁⢰⠃⣩⣿⡇⠀ -->
-<!-- ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢷⣿⠿⣉⣩⠛⠲⢶⡠⢄⠐⣣⠃⣰⠗⠋⢀⣯⠁⠀ -->
-<!-- ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣯⣠⠬⠦⢤⣀⠈⠓⢽⣾⢔⣡⡴⠞⠻⠙⢳⡄ -->
-<!-- ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣵⣳⠖⠉⠉⢉⣩⣵⣿⣿⣒⢤⣴⠤⠽⣬⡇ -->
-<!-- ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⢻⣟⠟⠋⢡⡎⢿⢿⠳⡕⢤⡉⡷⡽⠁ -->
-<!-- ⣧⢮⢭⠛⢲⣦⣀⠀⠀⠀⠠⡀⠀⠀⠀⡾⣥⣏⣖⡟⠸⢺⠀⠀⠈⠙⠋⠁⠀⠀ -->
-<!-- ⠈⠻⣶⡛⠲⣄⠀⠙⠢⣀⠀⢇⠀⠀⠀⠘⠿⣯⣮⢦⠶⠃⠀⠀⠀⠀⠀⠀⠀⠀ -->
-<!-- ⠀⠀⢻⣿⣥⡬⠽⠶⠤⣌⣣⣼⡔⠊⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ -->
-<!-- ⠀⠀⢠⣿⣧⣤⡴⢤⡴⣶⣿⣟⢯⡙⠒⠤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ -->
-<!-- ⠀⠀⠘⣗⣞⣢⡟⢋⢜⣿⠛⡿⡄⢻⡮⣄⠈⠳⢦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ -->
-<!-- ⠀⠀⠀⠈⠻⠮⠴⠵⢋⣇⡇⣷⢳⡀⢱⡈⢋⠛⣄⣹⣲⡀⠀⠀⠀⠀⠀⠀⠀⠀ -->
-<!-- ⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⣱⡇⣦⢾⣾⠿⠟⠿⠷⠷⣻⠧⠀⠀⠀⠀⠀⠀⠀⠀ -->
-<!-- ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠻⠽⠞⠊⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ -->
-<!--     </pre> -->
-<!--   </footer> -->
- 
-
-<!-- </body> -->
 
 
