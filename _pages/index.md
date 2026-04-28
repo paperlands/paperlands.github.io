@@ -47,7 +47,7 @@ approach_gallery:
   
 yt_gallery:
   - type: youtube
-    video_id: NgbSnVDSu1w
+    video_id: aJ8Me8VZU8c
     thumbnail: https://img.youtube.com/vi/NgbSnVDSu1w/mqdefault.jpg
     title: The National Young Gambian Math Leaders
   - type: youtube
