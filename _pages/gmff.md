@@ -1,6 +1,8 @@
 ---
 layout: darkpage
 title: Gambian Mathematics Film Festival
+excerpt: Celebrating the young Gambian spirit of discovery and learning
+image: /assets/lib/gmff.png
 permalink: /gmff
 ---
 <head>
@@ -417,7 +419,7 @@ permalink: /gmff
     text-transform: uppercase;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
   }
  
   .gmff-hero__hud-item span {
@@ -472,18 +474,18 @@ permalink: /gmff
   <div class="gmff-hero__hud">
     <div class="gmff-hero__hud-item">
     </div>
-    <div class="gmff-hero__hud-item">DATE <span>MAY 16TH</span></div>
+    <div class="gmff-hero__hud-item">⏲ <span>MAY 16TH</span></div>
     <div class="gmff-hero__hud-item">STATUS <span>OPEN</span></div>
     <div class="gmff-hero__hud-item">
       <div class="gmff-hero__hud-dot"></div>
-      GMFF
+      UTG Law Faculty, Kanifing
     </div>
   </div>
 </section>
 
  
-      <div class="inline-block m-6">
-        <span class="font-orbitron text-xs tracking-[0.3em] text-orange-400 opacity-60 uppercase block">Young Mathematician Association · Presents</span>
+      <div class="inline-block mt-6 mb-2">
+        <span class="font-orbitron text-xs tracking-[0.3em] text-orange-400 opacity-60 uppercase block">Young Mathematician Association . Presents with ♡ </span>
       </div>
  
       <!-- <h1 class="font-orbitron font-black text-3xl sm:text-4xl leading-tight tracking-wide mb-1"> -->
@@ -501,11 +503,11 @@ permalink: /gmff
       <div class="orange-line my-4"></div>
  
       <p class="font-lora text-base text-gray-400 leading-relaxed max-w-lg mx-auto font-light tracking-wide">
-        Mathematics is the study of any and all possible patterns. We seek films that share not just ideas but <span class="text-orange-400">your spirit</span> of care, curiosity and creativity.
+        Mathematics is the study of any and all possible patterns. We seek films that celebrate not just these patterns but <span class="text-orange-400">your team's spirit</span> of curiosity, courage and creativity.
       </p>
  
       <div class="text-center mt-3 font-mono text-xs text-orange-500 opacity-50">
-        SUBMISSION DEADLINE — MAY 11TH
+        SUBMISSION DEADLINE — <b> MAY 11TH</b>
       </div>
     </div>
  
@@ -577,7 +579,7 @@ permalink: /gmff
         <div class="bracket-box">
           <input
             class="field-input"
-            type="url"
+            pattern="(?:(?:https?:\/\/)?|(?:www\.))[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b(?:[-a-zA-Z0-9@:%_\+.~#?&/=]*)"
             id="film-link-input"
             name="film_link"
             placeholder="youtube.com/watch?v=... or www.tiktok.com/@/..."
