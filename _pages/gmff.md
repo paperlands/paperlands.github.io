@@ -467,15 +467,15 @@ permalink: /gmff
     <img
       
       src="assets/lib/gmff.png"
-      alt="The Gambian Mathematics Film Festival — May 16th"
+      alt="The Gambian Mathematics Film Festival — May 15th"
     />
   </div>
  
   <div class="gmff-hero__hud">
     <div class="gmff-hero__hud-item">
     </div>
-    <div class="gmff-hero__hud-item">⏲ <span>MAY 16TH</span></div>
-    <div class="gmff-hero__hud-item">STATUS <span>OPEN</span></div>
+    <div class="gmff-hero__hud-item">⏲ <span>MAY 15TH</span></div>
+    <div class="gmff-hero__hud-item">STATUS <span>JUDGING</span></div>
     <div class="gmff-hero__hud-item">
       <div class="gmff-hero__hud-dot"></div>
       UTG Law Faculty, Kanifing
@@ -483,34 +483,31 @@ permalink: /gmff
   </div>
 </section>
 
- 
-      <div class="inline-block mt-6 mb-2">
-        <span class="font-orbitron text-xs tracking-[0.3em] text-orange-400 opacity-60 uppercase block">Young Mathematician Association . Presents with ♡ </span>
-      </div>
- 
-      <!-- <h1 class="font-orbitron font-black text-3xl sm:text-4xl leading-tight tracking-wide mb-1"> -->
-      <!--   <span class="text-white">THE</span> -->
-      <!--   <span class="glow-text text-orange-400"> GAMBIAN</span> -->
-      <!-- </h1> -->
-      <!-- <h1 class="font-orbitron font-black text-3xl sm:text-4xl leading-tight tracking-wide mb-1"> -->
-      <!--   <span class="glow-text text-orange-400">MATHEMATICS</span> -->
-      <!-- </h1> -->
-      <!-- <h1 class="font-orbitron font-black text-3xl sm:text-4xl leading-tight tracking-wide mb-4"> -->
-      <!--   <span class="text-white">FILM</span> -->
-      <!--   <span class=" text-white"> FESTIVAL</span> -->
-      <!-- </h1> -->
- 
-      <div class="orange-line my-4"></div>
- 
-      <p class="font-lora text-base text-gray-400 leading-relaxed max-w-lg mx-auto font-light tracking-wide">
-        Mathematics is the study of any and all possible patterns. We seek films that celebrate not just these patterns but <span class="text-orange-400">your team's spirit</span> of curiosity, courage and creativity.
-      </p>
- 
-      <div class="text-center mt-3 font-mono text-xs text-orange-500 opacity-50">
-        SUBMISSION DEADLINE — <b> MAY 11TH</b>
-      </div>
-    </div>
- 
+<div class="inline-block mt-6 mb-2">
+  <span class="font-orbitron text-xs tracking-[0.3em] text-orange-400 opacity-60 uppercase block">
+    Young Mathematician Association · Presents with ♡
+  </span>
+</div>
+
+<div class="orange-line my-4"></div>
+
+<div class="font-lora text-base text-gray-400 leading-relaxed max-w-lg mx-auto font-light tracking-wide space-y-4">
+  <p>
+    When we asked for films, we weren't looking for perfect proofs or the biggest ideas.
+    We were looking for something rarer: <span class="text-orange-400">your team's spirit</span>
+    of curiosity that asks "Why?", the joy in creating something together and the courage
+    to share it with others so they can feel it too.
+  </p>
+  <p>
+    We felt this overpowering spirit as your questions, ideas and mathematics itself came <span class="text-orange-400"> alive </span> in your films.
+  </p>
+  <p>Now others will too.</p>
+  <p>See you at the festival!</p>
+</div>
+
+<div class="text-center my-8 font-mono text-xs text-orange-500 opacity-50">
+  FESTIVAL ON <b>MAY 15TH 9AM</b>
+</div> 
     <!-- <\!-- Criteria badges -\-> -->
     <!-- <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-10"> -->
     <!--   <div class="archetype-badge"> -->
@@ -541,124 +538,124 @@ permalink: /gmff
     
         <!-- FORM -->
     <form id="gmff-film-submission" accept-charset="UTF-8" action="https://book.paperland.sg/proxy/apps/guru/film" method="POST" onsubmit="return validateForm(event)">
-      <div class="math-dec mb-8">— FILM SUBMISSION FORM —</div>
+      <div class="math-dec mb-8">— FILM SUBMISSION CLOSED —</div>
  
-      <!-- Film Title -->
-      <div class="mb-7">
-        <label class="field-label" for="film-title-input">Film Title</label>
-        <div class="bracket-box">
-          <input
-            class="field-input"
-            type="text"
-            id="film-title-input"
-            name="film_title"
-            placeholder="Enter the title of your film..."
-            required
-          />
-        </div>
-      </div>
+    <!--   <\!-- Film Title -\-> -->
+    <!--   <div class="mb-7"> -->
+    <!--     <label class="field-label" for="film-title-input">Film Title</label> -->
+    <!--     <div class="bracket-box"> -->
+    <!--       <input -->
+    <!--         class="field-input" -->
+    <!--         type="text" -->
+    <!--         id="film-title-input" -->
+    <!--         name="film_title" -->
+    <!--         placeholder="Enter the title of your film..." -->
+    <!--         required -->
+    <!--       /> -->
+    <!--     </div> -->
+    <!--   </div> -->
  
-      <!-- School -->
-      <div class="mb-7">
-        <label class="field-label" for="school-input">School</label>
-        <div class="bracket-box">
-          <input
-            class="field-input"
-            type="text"
-            id="school-input"
-            name="school"
-            placeholder="Name of your school or institution..."
-            required
-          />
-        </div>
-      </div>
+    <!--   <\!-- School -\-> -->
+    <!--   <div class="mb-7"> -->
+    <!--     <label class="field-label" for="school-input">School</label> -->
+    <!--     <div class="bracket-box"> -->
+    <!--       <input -->
+    <!--         class="field-input" -->
+    <!--         type="text" -->
+    <!--         id="school-input" -->
+    <!--         name="school" -->
+    <!--         placeholder="Name of your school or institution..." -->
+    <!--         required -->
+    <!--       /> -->
+    <!--     </div> -->
+    <!--   </div> -->
  
-      <!-- Film Link -->
-      <div class="mb-10">
-        <label class="field-label" for="film-link-input">Film Link</label>
-        <div class="bracket-box">
-          <input
-            class="field-input"
-            pattern="(?:(?:https?:\/\/)?|(?:www\.))[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b(?:[-a-zA-Z0-9@:%_\+.~#?&/=]*)"
-            id="film-link-input"
-            name="film_link"
-            placeholder="youtube.com/watch?v=... or www.tiktok.com/@/..."
-            required
-          />
-        </div>
-        <p class="font-mono text-xs text-orange-500 opacity-40 mt-2 ml-1">
-          ↳ YouTube, TikTok, Instagram, or any PUBLIC video link
-        </p>
-      </div>
+    <!--   <\!-- Film Link -\-> -->
+    <!--   <div class="mb-10"> -->
+    <!--     <label class="field-label" for="film-link-input">Film Link</label> -->
+    <!--     <div class="bracket-box"> -->
+    <!--       <input -->
+    <!--         class="field-input" -->
+    <!--         pattern="(?:(?:https?:\/\/)?|(?:www\.))[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b(?:[-a-zA-Z0-9@:%_\+.~#?&/=]*)" -->
+    <!--         id="film-link-input" -->
+    <!--         name="film_link" -->
+    <!--         placeholder="youtube.com/watch?v=... or www.tiktok.com/@/..." -->
+    <!--         required -->
+    <!--       /> -->
+    <!--     </div> -->
+    <!--     <p class="font-mono text-xs text-orange-500 opacity-40 mt-2 ml-1"> -->
+    <!--       ↳ YouTube, TikTok, Instagram, or any PUBLIC video link -->
+    <!--     </p> -->
+    <!--   </div> -->
  
-      <div class="orange-line mb-8"></div>
+    <!--   <div class="orange-line mb-8"></div> -->
  
-      <!-- Team Members Section -->
-      <div class="mb-8">
-        <div class="flex items-center justify-between mb-5">
-          <div>
-            <h2 class="font-orbitron font-bold text-sm tracking-widest text-orange-400 uppercase">Team Members</h2>
-            <p class="font-rajdhani text-xs text-gray-500 mt-1 tracking-wide">Add every student involved in creating this film</p>
-          </div>
-          <div class="font-mono text-xs text-orange-500 opacity-40" id="memberCount">01 MEMBER</div>
-        </div>
+    <!--   <\!-- Team Members Section -\-> -->
+    <!--   <div class="mb-8"> -->
+    <!--     <div class="flex items-center justify-between mb-5"> -->
+    <!--       <div> -->
+    <!--         <h2 class="font-orbitron font-bold text-sm tracking-widest text-orange-400 uppercase">Team Members</h2> -->
+    <!--         <p class="font-rajdhani text-xs text-gray-500 mt-1 tracking-wide">Add every student involved in creating this film</p> -->
+    <!--       </div> -->
+    <!--       <div class="font-mono text-xs text-orange-500 opacity-40" id="memberCount">01 MEMBER</div> -->
+    <!--     </div> -->
  
-        <div id="membersList" class="space-y-3">
-          <!-- Initial member added by JS -->
-        </div>
+    <!--     <div id="membersList" class="space-y-3"> -->
+    <!--       <\!-- Initial member added by JS -\-> -->
+    <!--     </div> -->
  
-        <button type="button" class="add-btn mt-4" onclick="addMember()">
-          + ADD TEAM MEMBER
-        </button>
-      </div>
+    <!--     <button type="button" class="add-btn mt-4" onclick="addMember()"> -->
+    <!--       + ADD TEAM MEMBER -->
+    <!--     </button> -->
+    <!--   </div> -->
  
-      <!-- Hidden fields -->
-      <input type="hidden" name="return_url" value="" id="return-url-input" />
+    <!--   <\!-- Hidden fields -\-> -->
+    <!--   <input type="hidden" name="return_url" value="" id="return-url-input" /> -->
  
-      <!-- Cloudflare Turnstile -->
-      <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-      <div class="flex justify-center my-6">
-        <div class="cf-turnstile" data-sitekey="0x4AAAAAACugliz5rFIg0aRA" data-theme="dark"></div>
-      </div>
+    <!--   <\!-- Cloudflare Turnstile -\-> -->
+    <!--   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script> -->
+    <!--   <div class="flex justify-center my-6"> -->
+    <!--     <div class="cf-turnstile" data-sitekey="0x4AAAAAACugliz5rFIg0aRA" data-theme="dark"></div> -->
+    <!--   </div> -->
  
  
-      <div class="orange-line mb-10"></div>
+  <div class="orange-line mb-10"></div>
  
-      <!-- Submit -->
-      <div class="flex flex-col items-center gap-4">
-        <div class="math-dec text-xs w-full">∑ ( creatives × storytellers × producers ) ⊃ ∞</div>
+    <!--   <\!-- Submit -\-> -->
+    <!--   <div class="flex flex-col items-center gap-4"> -->
+    <!--     <div class="math-dec text-xs w-full">∑ ( creatives × storytellers × producers ) ⊃ ∞</div> -->
  
-        <button type="submit" class="submit-btn mt-2">
-          SUBMIT FILM ▸▸
-        </button>
+    <!--     <button type="submit" class="submit-btn mt-2"> -->
+    <!--       SUBMIT FILM ▸▸ -->
+    <!--     </button> -->
  
-        <p class="font-mono text-xs text-gray-600 text-center mt-2">
-          BY SUBMITTING YOU CONFIRM THIS IS ORIGINAL STUDENT WORK
-        </p>
-      </div>
-    </form>
+    <!--     <p class="font-mono text-xs text-gray-600 text-center mt-2"> -->
+    <!--       BY SUBMITTING YOU CONFIRM THIS IS ORIGINAL STUDENT WORK -->
+    <!--     </p> -->
+    <!--   </div> -->
+    <!-- </form> -->
  
-    <!-- Success Message -->
-    <div class="form-success" id="successMessage">
-      <div class="text-center py-16 px-8">
-        <div class="font-orbitron font-black text-5xl text-orange-400 glow-text mb-6">✓</div>
-        <h2 class="font-orbitron font-bold text-xl text-white tracking-widest mb-4">SUBMISSION RECEIVED</h2>
-        <div class="orange-line my-5"></div>
-        <p class="font-rajdhani text-gray-400 text-base leading-relaxed mb-6">
-          Thank you for submitting to the Gambian Mathematics Film Festival.<br>
-          Your film will be reviewed in the spirit of discovery.
-        </p>
-        <div class="font-mono text-xs text-orange-500 opacity-50">MAY 16TH · YOUNG MATHEMATICIAN ASSOCIATION</div>
-      </div>
-    </div>
+    <!-- <\!-- Success Message -\-> -->
+    <!-- <div class="form-success" id="successMessage"> -->
+    <!--   <div class="text-center py-16 px-8"> -->
+    <!--     <div class="font-orbitron font-black text-5xl text-orange-400 glow-text mb-6">✓</div> -->
+    <!--     <h2 class="font-orbitron font-bold text-xl text-white tracking-widest mb-4">SUBMISSION RECEIVED</h2> -->
+    <!--     <div class="orange-line my-5"></div> -->
+    <!--     <p class="font-rajdhani text-gray-400 text-base leading-relaxed mb-6"> -->
+    <!--       Thank you for submitting to the Gambian Mathematics Film Festival.<br> -->
+    <!--       Your film will be reviewed in the spirit of discovery. -->
+    <!--     </p> -->
+    <!--     <div class="font-mono text-xs text-orange-500 opacity-50">MAY 16TH · YOUNG MATHEMATICIAN ASSOCIATION</div> -->
+    <!--   </div> -->
+    <!-- </div> -->
  
     <!-- Footer -->
     <div class="text-center  mt-16 pb-8">
       <div class="math-dec text-xs">crafted with reverence for fellowship.</div>
     </div>
  
-  </div>
-</div>
+<!--   </div> -->
+<!-- </div> -->
  
  <!-- Toast: success -->
 <div class="fixed z-50 hidden bottom-6 right-6" id="toast-good">
