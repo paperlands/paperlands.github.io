@@ -467,14 +467,14 @@ permalink: /gmff
     <img
       
       src="assets/lib/gmff.png"
-      alt="The Gambian Mathematics Film Festival — May 15th"
+      alt="The Gambian Mathematics Film Festival — May 16th"
     />
   </div>
  
   <div class="gmff-hero__hud">
     <div class="gmff-hero__hud-item">
     </div>
-    <div class="gmff-hero__hud-item">⏲ <span>MAY 15TH</span></div>
+    <div class="gmff-hero__hud-item">⏲ <span>MAY 16TH</span></div>
     <div class="gmff-hero__hud-item">STATUS <span>JUDGING</span></div>
     <div class="gmff-hero__hud-item">
       <div class="gmff-hero__hud-dot"></div>
@@ -506,7 +506,7 @@ permalink: /gmff
 </div>
 
 <div class="text-center my-8 font-mono text-xs text-orange-500 opacity-50">
-  FESTIVAL ON <b>MAY 15TH 9AM</b>
+  FESTIVAL ON <b>MAY 16TH 9AM</b>
 </div> 
     <!-- <\!-- Criteria badges -\-> -->
     <!-- <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-10"> -->
