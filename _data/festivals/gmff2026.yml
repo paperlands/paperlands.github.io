@@ -1,0 +1,113 @@
+# _data/gmff_results.yml
+# ─────────────────────────────────────────────────────────────
+# Gambian Mathematics Film Festival — results data
+#
+# Fields per film:
+#   rank:      1 | 2 | 3  →  podium tier     null → finalist row
+#   title:     film name
+#   school:    submitting school
+#   video_url: external link (Instagram, TikTok, YouTube …)
+#   platform:  instagram | tiktok | youtube   (drives watch-link label)
+#   members:   list of { name, grade }  — grade optional
+# ─────────────────────────────────────────────────────────────
+
+festival:
+  name: "The Gambian Mathematics Film Festival"
+  edition: "2025"
+  date: "May 16th"
+  organiser: "Young Mathematician Association"
+
+films:
+
+  - rank: 1
+    title: "The Doppler Effect"
+    school: "Latrikunda Senior Secondary School"
+    video_url: "https://www.instagram.com/reel/DYLXkbmowPq/?igsh=MWtrMXh1MnY0dWR2Yw=="
+    platform: instagram
+    members:
+      - name: Ramatoulie Barry
+        grade: G12
+      - name: Sainabou John
+        grade: G12
+      - name: Mariatou Mendy
+        grade: G12
+
+  - rank: 2
+    title: "Composite Shapes"
+    school: "Maahad Senior Secondary School"
+    video_url: "https://vt.tiktok.com/ZS9WoMr75"
+    platform: tiktok
+    members:
+      - name: Abubacarr Bateh
+        grade: G10
+      - name: Binta Fatty
+        grade: G10
+      - name: Alieu Kandeh
+        grade: G10
+
+  - rank: 3
+    title: "Quadratic Equation Solved Geometrically"
+    school: "St. Peter's Senior Secondary School"
+    video_url: "https://vm.tiktok.com/ZS9Fbg6KcBqsD-dL5LF/"
+    platform: tiktok
+    members:
+      - name: Dextro Gomez
+      - name: Mariam Sawo
+      - name: Fevorrite-Paige N.N
+      - name: John Goswell
+
+  - rank: null
+    title: "Imaginary Numbers"
+    school: "Charles Jow Memorial Academy"
+    video_url: "https://www.tiktok.com/@founders.gm/video/7638724109568036116"
+    platform: tiktok
+    members:
+      - name: Fatou Sowe
+        grade: G11
+      - name: Ousainou Mendy
+        grade: G11
+      - name: Edrisa Ceesay
+        grade: G11
+      - name: Ebrima Senghore
+        grade: G11
+
+  - rank: null
+    title: "The Arch 22"
+    school: "Kanifing East Senior Secondary School"
+    video_url: "https://www.tiktok.com/@islamik___reminder/video/7638659884640111879"
+    platform: tiktok
+    members:
+      - name: Almameh Sawo
+        grade: G11
+      - name: Ida Secka
+        grade: G11
+      - name: Mamjarra Mboob
+        grade: G11
+
+  - rank: null
+    title: "Line of Symmetry"
+    school: "Maahad Senior Secondary School"
+    video_url: "https://vt.tiktok.com/ZS9vGt6uL/"
+    platform: tiktok
+    members:
+      - name: Mamie Touray
+        grade: G10
+      - name: Abubacarr Demba
+        grade: G10
+      - name: Isa Jarju
+        grade: G10
+
+  - rank: null
+    title: "Concentric Polygons"
+    school: "Charles Jow Memorial Academy"
+    video_url: "https://vt.tiktok.com/ZS9TEHH44/"
+    platform: tiktok
+    members:
+      - name: Abdou Gai Njie
+        grade: G11
+      - name: Abubacarr Saidy
+        grade: G11
+      - name: Maimunatou Jallow
+        grade: G11
+      - name: Christopher Ijioma Irubor
+        grade: G11

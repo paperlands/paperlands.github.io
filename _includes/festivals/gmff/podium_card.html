@@ -1,0 +1,145 @@
+{% comment %}
+  _includes/gmff/podium_card.html
+  ───────────────────────────────────────────────────────────────
+  Parameters:
+    film   {object}  — one ranked film from site.data.gmff_results.films
+  ───────────────────────────────────────────────────────────────
+{% endcomment %}
+
+{% assign f = include.film %}
+
+{% case f.rank %}
+  {% when 1 %}
+    {% assign medal_class  = "medal-1" %}
+    {% assign card_class   = "rank-1" %}
+    {% assign tag_label    = "GOLD" %}
+    {% assign tag_style    = "border-color:rgba(245,158,11,0.5);color:#f59e0b" %}
+    {% assign title_class  = "text-amber-300 glow-gold" %}
+    {% assign school_color = "color:rgba(245,158,11,0.55)" %}
+    {% assign base_h       = "h-14" %}
+    {% assign base_label   = "1ST PLACE · WINNER" %}
+    {% assign base_style   = "background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.3);border-top:3px solid rgba(245,158,11,0.8)" %}
+    {% assign base_text    = "text-amber-400 glow-gold" %}
+    {% assign member_color = "color:rgba(245,158,11,0.5)" %}
+    {% assign grade_color  = "color:rgba(245,158,11,0.3)" %}
+    {% assign watch_style  = "border-color:rgba(245,158,11,0.4);color:#f59e0b;background:rgba(245,158,11,0.06)" %}
+  {% when 2 %}
+    {% assign medal_class  = "medal-2" %}
+    {% assign card_class   = "rank-2" %}
+    {% assign tag_label    = "SILVER" %}
+    {% assign tag_style    = "border-color:rgba(148,163,184,0.35);color:rgba(148,163,184,0.8)" %}
+    {% assign title_class  = "text-slate-300 glow-silver" %}
+    {% assign school_color = "color:rgba(148,163,184,0.55)" %}
+    {% assign base_h       = "h-10" %}
+    {% assign base_label   = "2ND PLACE" %}
+    {% assign base_style   = "background:rgba(148,163,184,0.07);border:1px solid rgba(148,163,184,0.2);border-top:3px solid rgba(148,163,184,0.5)" %}
+    {% assign base_text    = "text-slate-400" %}
+    {% assign member_color = "color:rgba(148,163,184,0.5)" %}
+    {% assign grade_color  = "color:rgba(148,163,184,0.3)" %}
+    {% assign watch_style  = "border-color:rgba(148,163,184,0.35);color:#94a3b8;background:rgba(148,163,184,0.06)" %}
+  {% when 3 %}
+    {% assign medal_class  = "medal-3" %}
+    {% assign card_class   = "rank-3" %}
+    {% assign tag_label    = "BRONZE" %}
+    {% assign tag_style    = "border-color:rgba(180,83,9,0.4);color:#cd7c2a" %}
+    {% assign title_class  = "text-amber-700 glow-bronze" %}
+    {% assign school_color = "color:rgba(180,83,9,0.6)" %}
+    {% assign base_h       = "h-7" %}
+    {% assign base_label   = "3RD PLACE" %}
+    {% assign base_style   = "background:rgba(180,83,9,0.07);border:1px solid rgba(180,83,9,0.2);border-top:3px solid rgba(180,83,9,0.5)" %}
+    {% assign base_text    = "text-amber-700" %}
+    {% assign member_color = "color:rgba(180,83,9,0.5)" %}
+    {% assign grade_color  = "color:rgba(180,83,9,0.3)" %}
+    {% assign watch_style  = "border-color:rgba(180,83,9,0.4);color:#cd7c2a;background:rgba(180,83,9,0.06)" %}
+{% endcase %}
+
+{% if f.platform == "instagram" %}
+  {% assign platform_label = "Watch on Instagram" %}
+  {% assign platform_icon  = "ig-icon" %}
+{% elsif f.platform == "tiktok" %}
+  {% assign platform_label = "Watch on TikTok" %}
+  {% assign platform_icon  = "tt-icon" %}
+{% else %}
+  {% assign platform_label = "Watch Film" %}
+  {% assign platform_icon  = "" %}
+{% endif %}
+
+<div class="podium-card {{ card_class }} w-full animate-riseUp">
+  <div class="medal {{ medal_class }}">{{ f.rank }}</div>
+  <div class="card-inner">
+    <div class="shimmer-overlay"></div>
+    {% if f.rank == 1 %}
+      <div class="absolute top-0 left-0 right-0 h-px"
+           style="background:linear-gradient(90deg,transparent,#f59e0b,transparent)"></div>
+    {% endif %}
+
+    <!-- Watch link panel -->
+    <a href="{{ f.video_url }}" target="_blank" rel="noopener noreferrer"
+       class="watch-panel block" aria-label="Watch {{ f.title }} on {{ f.platform }}">
+      <div class="watch-inner">
+        {% if f.platform == "instagram" %}
+          <!-- Instagram glyph -->
+          <svg class="platform-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <circle cx="12" cy="12" r="5"/>
+            <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+        {% elsif f.platform == "tiktok" %}
+          <!-- TikTok glyph -->
+          <svg class="platform-glyph" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.77a4.85 4.85 0 0 1-1.01-.08z"/>
+          </svg>
+        {% else %}
+          <svg class="platform-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <polygon points="5,3 19,12 5,21"/>
+          </svg>
+        {% endif %}
+        <span class="watch-label">{{ platform_label }}</span>
+        <svg class="watch-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M3 8h10M9 4l4 4-4 4"/>
+        </svg>
+      </div>
+    </a>
+
+    <!-- Info -->
+    <div class="{% if f.rank == 1 %}p-5{% else %}p-4{% endif %}">
+      <div class="flex items-start justify-between gap-2 mb-3">
+        <div class="min-w-0">
+          <h3 class="font-orbitron font-bold {% if f.rank == 1 %}text-base{% else %}text-sm{% endif %} {{ title_class }} leading-tight">
+            {{ f.title }}
+          </h3>
+          <p class="font-mono text-xs mt-1 truncate" style="{{ school_color }}">{{ f.school }}</p>
+        </div>
+        <span class="tag-pill shrink-0" style="{{ tag_style }}">{{ tag_label }}</span>
+      </div>
+
+      <!-- Team members -->
+      {% if f.members.size > 0 %}
+        <div class="mt-3 pt-3" style="border-top:1px solid rgba(255,255,255,0.05)">
+          <p class="font-mono text-[9px] tracking-widest mb-2" style="{{ grade_color }}">TEAM MEMBERS</p>
+          <ul class="space-y-1">
+            {% for member in f.members %}
+              <li class="flex items-baseline justify-between gap-2">
+                <span class="font-rajdhani text-xs font-semibold" style="{{ member_color }}">
+                  {{ member.name }}
+                </span>
+                {% if member.grade %}
+                  <span class="font-mono text-[9px] shrink-0" style="{{ grade_color }}">
+                    {{ member.grade }}
+                  </span>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Podium step base -->
+  <div class="{{ base_h }} flex items-center justify-center mt-1" style="{{ base_style }}">
+    <span class="font-orbitron text-[10px] tracking-widest {{ base_text }} opacity-80">
+      {{ base_label }}
+    </span>
+  </div>
+</div>

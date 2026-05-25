@@ -1,0 +1,60 @@
+{% comment %}
+  _includes/gmff/podium.html
+  ───────────────────────────────────────────────────────────────
+  Orchestrator — reads _data/gmff_results.yml, renders full section.
+  Usage: {% include gmff/podium.html %}
+  Requires: {% include gmff/podium_assets.html %} once in layout.
+  ───────────────────────────────────────────────────────────────
+{% endcomment %}
+
+{% assign results   = site.data.festivals.gmff2026 %}
+{% assign fest      = results.festival %}
+{% assign podium    = results.films | where_exp: "f", "f.rank != nil"  | sort: "rank" %}
+{% assign finalists = results.films | where_exp: "f", "f.rank == nil" %}
+
+{% comment %} Visual order: 2nd left · 1st centre · 3rd right {% endcomment %}
+{% assign display_order = "2,1,3" | split: "," %}
+
+    <!-- ══ HEADER ══════════════════════════════════════════════ -->
+    <!-- ══ PODIUM: 2nd · 1st · 3rd ════════════════════════════ -->
+    <div class="mb-4 ">
+      <p class="font-orbitron text-[10px] tracking-[0.25em] text-orange-500 opacity-50 uppercase text-center my-10">
+        THE FINALISTS
+      </p>
+      <div class="flex flex-col lg:flex-row items-end justify-center gap-5 lg:gap-3">
+        {% for pos in display_order %}
+          {% assign pos_int = pos | plus: 0 %}
+          {% assign film = podium | where: "rank", pos_int | first %}
+          {% if film %}
+            {% if pos_int == 1 %}
+        <div class="w-full lg:w-80 flex-shrink-0 pb-10">{% include festivals/gmff/podium_card.html film=film %}</div>
+
+        {% elsif pos_int == 2 %}
+        <div class="w-full lg:w-60 flex-shrink-0 pb-10" >{% include festivals/gmff/podium_card.html film=film %}</div>
+              {% else %}
+
+              
+              <div class="w-full lg:w-60 flex-shrink-0 " >{% include festivals/gmff/podium_card.html film=film %}</div>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- ══ DIVIDER ════════════════════════════════════════════ -->
+    {% if finalists.size > 0 %}
+    <div class="my-14 flex items-center gap-4">
+      <div class="orange-line flex-1"></div>
+      <p class="font-orbitron text-[10px] tracking-[0.28em] text-orange-500 opacity-55 uppercase shrink-0">
+        Official Selection
+      </p>
+      <div class="orange-line flex-1"></div>
+    </div>
+
+    <!-- ══ FINALISTS GRID ═════════════════════════════════════ -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 mb-16">
+      {% for film in finalists %}
+        {% include festivals/gmff/finalist_card.html film=film %}
+      {% endfor %}
+    </div>
+    {% endif %}

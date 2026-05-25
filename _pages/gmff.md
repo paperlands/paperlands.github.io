@@ -475,7 +475,7 @@ permalink: /gmff
     <div class="gmff-hero__hud-item">
     </div>
     <div class="gmff-hero__hud-item">⏲ <span>MAY 16TH</span></div>
-    <div class="gmff-hero__hud-item">STATUS <span>JUDGING</span></div>
+    <div class="gmff-hero__hud-item">STATUS <span>🥳</span></div>
     <div class="gmff-hero__hud-item">
       <div class="gmff-hero__hud-dot"></div>
       UTG Law Faculty, Kanifing
@@ -491,7 +491,7 @@ permalink: /gmff
 
 <div class="orange-line my-4"></div>
 
-<div class="font-lora text-base text-gray-400 leading-relaxed max-w-lg mx-auto font-light tracking-wide space-y-4">
+<div class="font-lora  text-base text-gray-400 leading-relaxed max-w-lg mx-auto font-light tracking-wide space-y-4">
   <p>
     When we asked for films, we weren't looking for perfect proofs or the biggest ideas.
     We were looking for something rarer: <span class="text-orange-400">your team's spirit</span>
@@ -501,13 +501,15 @@ permalink: /gmff
   <p>
     We felt this overpowering spirit as your questions, ideas and mathematics itself came <span class="text-orange-400"> alive </span> in your films.
   </p>
-  <p>Now others will too.</p>
-  <p>See you at the festival!</p>
+  <p>It was a real joy to witness your curiosity, creativity, and courage as you brought mathematics to life through your creations and stories!</p>
+  <p>Here are the work of the finalists of the inaugural Gambian Mathematics Film Festival!</p>
+  
 </div>
+ <div class="w-full">
+ {% include festivals/gmff/podium.html %}
+ </div>
+{% include festivals/gmff/podium_assets.html %}
 
-<div class="text-center my-8 font-mono text-xs text-orange-500 opacity-50">
-  FESTIVAL ON <b>MAY 16TH 9AM</b>
-</div> 
     <!-- <\!-- Criteria badges -\-> -->
     <!-- <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-10"> -->
     <!--   <div class="archetype-badge"> -->
@@ -533,12 +535,10 @@ permalink: /gmff
     <!--   </div> -->
     <!-- </div> -->
  
-    <div class="orange-line mb-10"></div>
- 
     
         <!-- FORM -->
-    <form id="gmff-film-submission" accept-charset="UTF-8" action="https://book.paperland.sg/proxy/apps/guru/film" method="POST" onsubmit="return validateForm(event)">
-      <div class="math-dec mb-8">— FILM SUBMISSION CLOSED —</div>
+    <!-- <form id="gmff-film-submission" accept-charset="UTF-8" action="https://book.paperland.sg/proxy/apps/guru/film" method="POST" onsubmit="return validateForm(event)"> -->
+    <!--   <div class="math-dec mb-8">— FILM SUBMISSION CLOSED —</div> -->
  
     <!--   <\!-- Film Title -\-> -->
     <!--   <div class="mb-7"> -->
