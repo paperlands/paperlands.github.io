@@ -1,0 +1,66 @@
+---
+google_fonts: "family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=IBM+Plex+Mono:wght@400;500&family=Lora:ital,wght@0,300;0,400;1,400"
+---
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth motion-reduce:scroll-auto">
+{% include head.html %}
+<body class="min-h-screen overflow-x-hidden bg-secondary-dark font-body font-light text-gold antialiased selection:bg-phosphor selection:text-twilight">
+
+<!-- procedural sky (assets/js/twilight-sky.js renders onto #sky) -->
+<canvas id="sky" class="fixed inset-0 z-0 block h-full w-full" aria-hidden="true"></canvas>
+
+<!-- CRT veil -->
+<div class="pointer-events-none fixed inset-0 z-[3] bg-[radial-gradient(ellipse_120%_95%_at_50%_42%,transparent_55%,rgba(10,5,14,0.42)_88%,rgba(8,4,12,0.72)_100%)]" aria-hidden="true"></div>
+<div class="pointer-events-none fixed inset-0 z-[3] mix-blend-multiply bg-[repeating-linear-gradient(to_bottom,transparent_0px,transparent_2px,rgba(8,4,12,0.16)_3px,transparent_4px)]" aria-hidden="true"></div>
+<div class="pointer-events-none fixed inset-0 z-[3] bg-phosphor/[0.018] animate-flicker motion-reduce:animate-none" aria-hidden="true"></div>
+
+<!-- left measurement ruler (axis of the chart-sky) -->
+<div class="pointer-events-none fixed inset-y-0 left-[clamp(10px,2.5vw,34px)] z-[4] w-[18px] border-l border-phosphor/20 opacity-80 bg-no-repeat [background-size:9px_100%] bg-[repeating-linear-gradient(to_bottom,rgb(240_168_61/0.22)_0_1px,transparent_1px_calc(100%/22))] after:absolute after:inset-y-0 after:left-0 after:w-[18px] after:bg-no-repeat after:[background-size:5px_100%] after:bg-[repeating-linear-gradient(to_bottom,rgb(240_168_61/0.10)_0_1px,transparent_1px_calc(100%/88))] after:content-['']" aria-hidden="true"></div>
+
+<main class="relative z-[2] mx-auto max-w-[1060px] px-[clamp(1.4rem,6vw,4rem)]">
+
+    {{ content }}
+        <!-- 
+         id="page-foot" is load-bearing: twilight-sky.js summons the butterfly
+         fellowship only while this footer is in view
+    <footer id="page-foot" class="mt-[clamp(4rem,10vh,7rem)] border-t border-phosphor/10 pt-12 text-center">
+        <div class="pl-[0.42em] font-display text-[1.05rem] tracking-[0.42em] text-phosphor [text-shadow:0_0_10px_rgb(240_168_61/0.45)]">PaperLan</div>
+        <div class="mt-2 font-mono text-[0.56rem] uppercase tracking-[0.24em] text-mute">crafted with reverence for fellowship</div>
+        <div class="mt-5 flex justify-center gap-2" aria-hidden="true">
+            <span class="h-[3px] w-[3px] rounded-full bg-phosphor/30"></span>
+            <span class="h-[3px] w-[3px] rounded-full bg-phosphor/20"></span>
+            <span class="h-[3px] w-[3px] rounded-full bg-phosphor/10"></span>
+        </div>
+        <pre class="mt-9 inline-block select-none text-left font-mono text-[9px] leading-[1.06] text-ember opacity-55 [text-shadow:0_0_7px_rgb(217_111_55/0.4)]" aria-hidden="true">⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⢔⣶⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡼⠗⡿⣾⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡼⠓⡞⢩⣯⡀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠰⡹⠁⢰⠃⣩⣿⡇⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢷⣿⠿⣉⣩⠛⠲⢶⡠⢄⠐⣣⠃⣰⠗⠋⢀⣯⠁⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣯⣠⠬⠦⢤⣀⠈⠓⢽⣾⢔⣡⡴⠞⠻⠙⢳⡄
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣵⣳⠖⠉⠉⢉⣩⣵⣿⣿⣒⢤⣴⠤⠽⣬⡇
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⢻⣟⠟⠋⢡⡎⢿⢿⠳⡕⢤⡉⡷⡽⠁
+⣧⢮⢭⠛⢲⣦⣀⠀⠀⠀⠠⡀⠀⠀⠀⡾⣥⣏⣖⡟⠸⢺⠀⠀⠈⠙⠋⠁⠀⠀
+⠈⠻⣶⡛⠲⣄⠀⠙⠢⣀⠀⢇⠀⠀⠀⠘⠿⣯⣮⢦⠶⠃⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⢻⣿⣥⡬⠽⠶⠤⣌⣣⣼⡔⠊⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⢠⣿⣧⣤⡴⢤⡴⣶⣿⣟⢯⡙⠒⠤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠘⣗⣞⣢⡟⢋⢜⣿⠛⡿⡄⢻⡮⣄⠈⠳⢦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠈⠻⠮⠴⠵⢋⣇⡇⣷⢳⡀⢱⡈⢋⠛⣄⣹⣲⡀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⣱⡇⣦⢾⣾⠿⠟⠿⠷⠷⣻⠧⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠻⠽⠞⠊⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</pre>
+        <div class="mt-10 flex flex-wrap justify-between gap-4 border-t border-phosphor/10 pt-6 text-left font-mono text-[0.58rem] uppercase tracking-[0.2em] text-dim">
+            <span>canopy render 01 · twilight pass</span>
+            <span>oklch(0.088 0.0413 315.13)</span>
+            <span>placeholder colophon</span>
+        </div>
+    </footer>
+        -->
+    <footer id="page-foot" class="pt-36 border-t border-phosphor/10 text-center">
+        <span class="font-paperlang">Crafted with ♡ in <a href="{{ site.baseurl }}/about"><span class="text-primary">PaperLand.</span></a></span>
+    </footer>
+
+</main>
+
+
+<script src="{{ '/assets/js/twilight-sky.js' | relative_url }}" defer></script>
+</body>
+</html>

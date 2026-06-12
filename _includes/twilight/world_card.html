@@ -1,0 +1,36 @@
+{% comment %}
+  Twilight lesson card. Params:
+    item  — programme entry from page front matter: { lesson: <catalog key>,
+            date?, title?, description?, lesson_url? } (entry overrides catalog)
+    index — 1-based position in the programme
+  Catalog: _data/lessons.yml. Renders an animated canvas pane when the lesson
+  has a `world` renderer id (twilight-sky.js), else its static thumb.
+  When lesson_url is absent the card renders as non-interactive (in-construction).
+{% endcomment %}
+{% assign lesson = site.data.lessons[include.item.lesson] %}
+{% assign title = include.item.title | default: lesson.title %}
+{% assign description = include.item.description | default: lesson.description %}
+{% assign url = include.item.lesson_url | default: lesson.lesson_url %}
+{% if url %}
+<a href="{{ url }}"
+   class="tw-frame group flex flex-col p-0 text-inherit no-underline hover:-translate-y-[3px] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-[3px] focus-visible:outline-phosphor lg:col-span-2">
+{% else %}
+<div class="tw-frame flex flex-col p-0 cursor-not-allowed opacity-50 lg:col-span-2">
+{% endif %}
+  <div class="relative aspect-video overflow-hidden border-b border-phosphor/20">
+    {% if lesson.world %}
+    <canvas data-world="{{ lesson.world }}" class="absolute inset-0 block h-full w-full" aria-hidden="true"></canvas>
+    {% else %}
+    <img src="{{ lesson.thumb }}" alt="{{ title }}" class="absolute inset-0 h-full w-full object-cover">
+    {% endif %}
+    <!-- <span class="tw-chip absolute right-3 top-2.5 z-[1]">[{{ include.index }}] 連結</span> -->
+    {% if include.item.date %}
+    <span class="tw-chip absolute right-3 top-2.5 z-[1]">{{ include.item.date }}</span>
+    {% endif %}
+  </div>
+  <div class="flex flex-1 flex-col p-5 pb-6">
+    <h3 class="mb-2 font-display text-[1.3rem] font-medium italic text-gold">{{ title }}</h3>
+    <p class="text-left text-[0.86rem] leading-[1.65] text-mute">{{ description }}</p>
+    <span class="mt-auto pt-3.5 font-mono text-[0.56rem]  uppercase tracking-[0.26em] text-dim transition-colors duration-[350ms] group-hover:text-phosphor group-hover:[text-shadow:0_0_6px_rgb(240_168_61/0.5)] motion-reduce:transition-none">{% if url %}jmpto world →{% else %}to be unlocked{% endif %}</span>
+  </div>
+{% if url %}</a>{% else %}</div>{% endif %}

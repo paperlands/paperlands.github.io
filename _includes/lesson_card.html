@@ -1,0 +1,28 @@
+{% comment %}
+  Light-theme lesson card. Params:
+    item   — programme entry from page front matter: { lesson: <catalog key>,
+             date?, title?, description?, lesson_url? } (entry overrides catalog)
+    number — optional badge number
+  Catalog: _data/lessons.yml.
+{% endcomment %}
+{% assign lesson = site.data.lessons[include.item.lesson] %}
+{% assign title = include.item.title | default: lesson.title %}
+{% assign description = include.item.description | default: lesson.description %}
+{% assign url = include.item.lesson_url | default: lesson.lesson_url %}
+<a href="{{ url }}"
+   class="group flex flex-col border border-gray-200 rounded-lg overflow-hidden no-underline text-secondary bg-white transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
+   >
+  <div class="relative overflow-hidden h-36 bg-gradient-to-br from-primary to-amber-300">
+    <img src="{{ lesson.thumb }}" class="absolute inset-0 object-cover w-full h-full" onerror="this.style.display='none'" alt="{{ title }}">
+    {% if include.number %}
+    <span class="absolute flex items-center justify-center w-6 h-6 text-xs font-bold text-white rounded-full top-3 right-3 bg-black/40">{{ include.number }}</span>
+    {% endif %}
+  </div>
+  <div class="flex flex-col flex-1 p-4">
+    <h3 class="mt-0 mb-1 text-base font-semibold leading-snug">{{ title }}</h3>
+    {% if include.item.date %}
+    <p class="m-0 mb-1 text-xs text-gray-500">{{ include.item.date }}</p>
+    {% endif %}
+    <p class="m-0 text-sm leading-relaxed text-gray-600">{{ description }}</p>
+  </div>
+</a>

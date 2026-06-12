@@ -1,0 +1,71 @@
+# Canonical lesson catalog — the single source of truth for lesson identity.
+# Pages compose per-page programmes (selection, order, dates, overrides) in
+# their own front matter; see _pages/tjc.md and _pages/lesson-plans.md.
+#
+# Fields: title, description, lesson_url, thumb,
+#         world (1-5, twilight canvas renderer id in assets/js/twilight-sky.js, optional)
+#
+# lesson_url points to a local redirect page (e.g. /gemstone) rather than
+# directly to Notion, so all outbound clicks go through _layouts/redirect.html
+# for analytics. The Notion target lives in that redirect page's front matter.
+#
+# Programme entries may override title/description/lesson_url per page.
+# Note: overrides resolve via Liquid `default:`, so an empty-string override
+# falls back to the catalog value.
+
+regular_gemstone:
+  title: "Polygons to Gemstones"
+  description: "Learn basic movement commands and loops to create geometric patterns."
+  lesson_url: /gemstone
+  thumb: /assets/lib/lesson-plans/regular_gemstone.webp
+  world: 1
+
+circular_arc:
+  title: "Arcs and Abstractions"
+  description: "Create custom commands and work with variables to build circular shapes."
+  lesson_url: /arc
+  thumb: /assets/lib/lesson-plans/circular_arc.webp
+  world: 2
+
+moving_patterns:
+  title: "Living Number Patterns"
+  description: "Explore recursion to generate repeating patterns mirroring world of numbers."
+  lesson_url: /moving-patterns
+  thumb: /assets/lib/lesson-plans/moving_patterns.webp
+  world: 3
+
+oscillating_heartbeat:
+  title: "Oscillating Heartbeat"
+  description: "Uncover secret of oscillations hidden beneath the rhythm of waves and heartbeats."
+  lesson_url: /heartbeat
+  thumb: /assets/lib/lesson-plans/oscillating_heartbeat.webp
+  world: 4
+
+leaderless_flock:
+  title: "Leaderless Flock"
+  description: "From the flash of fireflies to the dance of a shoal of fish how do we work at once, when no one is in command?"
+  world: 5
+
+seemingly_random:
+  title: "Seemingly Random"
+  description: "Dive into coordinate geometry and random distribution patterns."
+  lesson_url: /random
+  thumb: /assets/lib/lesson-plans/seemingly_random.webp
+
+monster_face:
+  title: "Monster Face"
+  description: "Learn abstraction by creating expressive monster faces."
+  lesson_url: /monster-face
+  thumb: /assets/lib/lesson-plans/monster_face.webp
+
+similar_triangles:
+  title: "Similar Triangles"
+  description: "Explore the properties of similar triangles through interactive geometry."
+  lesson_url: /similar-triangles
+  thumb: /assets/lib/lesson-plans/similar_triangles.webp
+
+endless_chain_of_squares:
+  title: "Endless Chain of Squares"
+  description: "Discover calculus concepts through infinite geometric series."
+  lesson_url: /chain-of-squares
+  thumb: /assets/lib/lesson-plans/the_endless_chain_of_squares.webp

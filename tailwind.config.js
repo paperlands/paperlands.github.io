@@ -95,8 +95,17 @@ module.exports = {
             fontFamily: {
                 sans: ["Lora", ...defaultTheme.fontFamily.sans],
                 paperlang: ["paperLang", "Lora"],
+                display: ['"Cormorant Garamond"', "Lora", "Georgia", "serif"],
+                body: ["Lora", "Georgia", "serif"],
+                mono: ['"IBM Plex Mono"', ...defaultTheme.fontFamily.mono],
             },
             colors: {
+                twilight: 'rgb(22 15 27 / <alpha-value>)',        /* oklch(0.088 0.0413 315.13) */
+                phosphor: 'rgb(240 168 61 / <alpha-value>)',      /* oklch(0.78 0.149 72)  */
+                ember: 'rgb(217 111 55 / <alpha-value>)',      /* oklch(0.65 0.175 48)  */
+                gold: 'rgb(241 219 164 / <alpha-value>)',     /* oklch(0.9 0.083 88)   */
+                mute: 'rgb(151 140 162 / <alpha-value>)',     /* oklch(0.65 0.04 315)  */
+                dim: 'rgb(93 83 102 / <alpha-value>)',        /* oklch(0.45 0.035 315) */
                 sage: "#9ca3af",
                 "stone-warm": "#78716c",
                 "orange-850": "#ea580c",
@@ -109,7 +118,7 @@ module.exports = {
                 secondary: {
                     light: "#ededed",
                     DEFAULT: "#333333",
-                    dark: "#1a1a1a",
+                    dark: "#050009",
                 },
                 accent: {
                     light: "#ffa086",

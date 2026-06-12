@@ -19,10 +19,12 @@ def convert_links(doc)
   open_external_links_in_new_tab = !!doc.site.config["open_external_links_in_new_tab"]
 
   if open_external_links_in_new_tab
-    parsed_doc = Nokogiri::HTML(doc.content)
+    # Parse as a fragment: Nokogiri::HTML would wrap the content in a
+    # spurious <html><body> that ends up nested inside the layout's body.
+    parsed_doc = Nokogiri::HTML::DocumentFragment.parse(doc.content)
     parsed_doc.css("a:not(.internal-link):not(.footnote):not(.reversefootnote):not(.card-link)").each do |link|
       link.set_attribute('target', '_blank')
     end
-    doc.content = parsed_doc.inner_html
+    doc.content = parsed_doc.to_html
   end
 end

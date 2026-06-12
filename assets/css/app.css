@@ -12,6 +12,100 @@
 }
 
 
+/* Twilight theme primitives (see _layouts/twilight.html).
+   Only emitted when the class names appear in content-globbed files. */
+@layer components {
+  /* Corner-bracket phosphor frame — the twilight card surface. */
+  .tw-frame {
+    position: relative;
+    border: 1px solid theme(colors.phosphor/20%);
+    background-color: theme(colors.twilight/55%);
+    backdrop-filter: blur(3px);
+    transition: all 450ms;
+  }
+  .tw-frame:hover {
+    transform: translateY(-3px);
+    border-color: theme(colors.phosphor/55%);
+    box-shadow: 0 0 28px rgb(240 168 61 / 0.13), inset 0 0 24px rgb(240 168 61 / 0.05);
+  }
+  .tw-frame::before,
+  .tw-frame::after {
+    content: '';
+    position: absolute;
+    height: 11px;
+    width: 11px;
+    transition: all 450ms;
+  }
+  .tw-frame::before {
+    left: -1px;
+    top: -1px;
+    z-index: 1;
+    border-left: 1px solid theme(colors.phosphor);
+    border-top: 1px solid theme(colors.phosphor);
+  }
+  .tw-frame::after {
+    right: -1px;
+    bottom: -1px;
+    border-right: 1px solid theme(colors.phosphor);
+    border-bottom: 1px solid theme(colors.phosphor);
+  }
+  .tw-frame:hover::before,
+  .tw-frame:hover::after {
+    height: 22px;
+    width: 22px;
+  }
+
+  /* Mono section label with phosphor glow. */
+  .tw-kicker {
+    font-family: theme(fontFamily.mono);
+    font-size: 0.62rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.32em;
+    color: theme(colors.phosphor);
+    text-shadow: 0 0 8px rgb(240 168 61 / 0.5);
+  }
+
+  /* Tick-mark section separator: <div class="tw-rule" role="separator"></div> */
+  .tw-rule {
+      margin-top: clamp(4rem, 10vh, 7rem);
+      margin-bottom: clamp(4rem, 10vh, 7rem);
+      border: none;
+      height: auto;
+      background: none;
+      text-align: center;
+
+      &::before {
+          content: '☙ ——— ✦ ——— ❧';
+          display: block;
+          font-size: 0.78rem;
+          letter-spacing: 0.15em;
+          color: theme(colors.phosphor / 45%);
+          font-family: "Lora", Georgia, 'Book Antiqua', Palatino, serif;
+          line-height: 1;
+      }
+  }
+  /* Small mono bordered tag (the [n] 連結 badges). */
+  .tw-chip {
+    border: 1px solid theme(colors.phosphor/20%);
+    background-color: theme(colors.twilight/65%);
+    padding: 0.25rem 0.5rem;
+    font-family: theme(fontFamily.mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+    color: theme(colors.phosphor);
+    text-shadow: 0 0 6px rgb(240 168 61 / 0.55);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tw-frame,
+    .tw-frame::before,
+    .tw-frame::after {
+      transition: none;
+    }
+  }
+}
+
 @layer utilities {
       /* Hide scrollbar for Chrome, Safari and Opera */
       .no-scrollbar::-webkit-scrollbar {
