@@ -22,14 +22,14 @@ regular_gemstone:
 
 circular_arc:
   title: "Arcs and Abstractions"
-  description: "Create custom commands and work with variables to build circular shapes."
+  description: "Rediscover the properties of circles by creating your own commands."
   lesson_url: /arc
   thumb: /assets/lib/lesson-plans/circular_arc.webp
   world: 2
 
 moving_patterns:
-  title: "Living Number Patterns"
-  description: "Explore recursion to generate repeating patterns mirroring world of numbers."
+  title: "Living Number Sequences"
+  description: "Explore recursion to explore the changing patterns from the world of numbers."
   lesson_url: /moving-patterns
   thumb: /assets/lib/lesson-plans/moving_patterns.webp
   world: 3
