@@ -143,7 +143,7 @@ classes:
       <!-- <svg viewBox="0 0 30 30" class="h-full w-full fill-none stroke-phosphor stroke-[1.1] drop-shadow-[0_0_4px_rgb(240_168_61/0.6)]"><path d="M15 26 V12"/><path d="M15 14 C9 14 6 9 5 5 C11 5 15 8 15 14 Z"/><path d="M15 18 C20 18 24 14 25 10 C19 10 15 13 15 18 Z"/></svg> -->
     </div>
     <h3 class="mb-2.5 font-display text-[1.55rem] font-medium italic tracking-[0.01em] text-gold">STEWARD</h3>
-    <p class="text-[0.92rem] leading-[1.7] text-mute">Care and tend to our spirit of wonder. It is the seed that inspires us towards beauty larger than us.</p>
+    <p class="text-[0.92rem] leading-[1.7] text-mute">Care and tend to our spirit of wonder. It is the seed that inspires us towards beauty larger than ourselves.</p>
   </article>
 </div>
 
