@@ -48,14 +48,14 @@ classes:
 <section aria-labelledby="arch-h">
   <div class="mb-10">
     <p class="tw-kicker">// SEEK. BUILD. WRESTLE. STEWARD</p>
-    <h2 id="arch-h" class="mt-3.5 font-display text-[clamp(1.7rem,3.4vw,2.5rem)] font-normal tracking-[0.015em] text-gold">4 <em class="italic text-phosphor">Paths</em></h2>
+    <h2 id="arch-h" class="mt-3.5 font-display text-[clamp(1.7rem,3.4vw,2.5rem)] font-normal tracking-[0.015em] text-gold"><span class="text-[2em]">4</span> <em class="italic text-phosphor">Paths</em></h2>
     <p class="mt-3 max-w-[56ch] text-[0.95rem] leading-[1.7] text-mute">Many doors to open. Some will <i class="italic text-gold">call out to you. </i>
     <br>
     Pass through any one and it will <i class="italic text-gold"> lead you to others. </i></p>
   </div>
   
   <div class="grid gap-6 md:grid-cols-2">
-  <article class="tw-frame group p-7 pb-8">
+  <article class="pb-8 tw-frame group p-7">
     <div class="mb-4 flex items-baseline justify-between font-mono text-[0.58rem] uppercase tracking-[0.16em] text-phosphor [text-shadow:0_0_6px_rgb(240_168_61/0.5)]">
       <span>&pi; &middot; 3.14159&hellip;</span><span class="text-dim [text-shadow:none]"></span>
     </div>
@@ -66,7 +66,7 @@ classes:
     <p class="text-[0.9rem] leading-[1.7] text-mute">Every map has holes and edges. Question it. Follow the unnoticed path until the world gives up a secret.</p>
   </article>
 
-  <article class="tw-frame group p-5 pb-8">
+  <article class="p-5 pb-8 tw-frame group">
     <div class="mb-4 flex items-baseline justify-between font-mono text-[0.58rem] uppercase tracking-[0.16em] text-phosphor [text-shadow:0_0_6px_rgb(240_168_61/0.5)]">
       <span>&phi; &middot; 1.61803...</span><span class="text-dim [text-shadow:none]"></span>
     </div>
@@ -78,7 +78,7 @@ classes:
     <p class="text-[0.9rem] leading-[1.7] text-mute">The world lays unfinished. Forge your own hammer. Design well-crafted steps where imagination takes form.</p>
   </article>
 
-  <article class="tw-frame group p-7 pb-8">
+  <article class="pb-8 tw-frame group p-7">
     <div class="mb-4 flex items-baseline justify-between font-mono text-[0.58rem] uppercase tracking-[0.16em] text-phosphor [text-shadow:0_0_6px_rgb(240_168_61/0.5)]">
       <span>&radic;2 &middot; 1.41421...</span><span class="text-dim [text-shadow:none]"></span>
     </div>
@@ -87,10 +87,10 @@ classes:
       
     </div>
     <h3 class="mb-2.5 font-display text-[1.55rem] font-medium italic tracking-[0.01em] text-gold">WRESTLE</h3>
-    <p class="text-[0.9rem] leading-[1.7] text-mute">Some problems won't give up easy. Grapple with them and find hidden leverage. Fortune favours the bold.</p>
+    <p class="text-[0.92rem] leading-[1.7] text-mute">Some problems won't be easy. Grapple with them and find hidden leverage. Fortune favours the bold.</p>
   </article>
 
-  <article class="tw-frame group p-7 pb-8">
+  <article class="pb-8 tw-frame group p-7">
     <div class="mb-4 flex items-baseline justify-between font-mono text-[0.58rem] uppercase tracking-[0.16em] text-phosphor [text-shadow:0_0_6px_rgb(240_168_61/0.5)]">
       <span>e &middot; 2.71828...</span><span class="text-dim [text-shadow:none]"></span>
     </div>
@@ -153,9 +153,9 @@ classes:
 <section id="worlds" aria-labelledby="worlds-h">
   <div class="mb-10">
     <p class="tw-kicker">// scaffolds for learning</p>
-    <h2 id="worlds-h" class="mt-3.5 font-display text-[clamp(1.7rem,3.4vw,2.5rem)] font-normal tracking-[0.015em] text-gold">5 <em class="italic text-phosphor">worlds</em></h2>
+    <h2 id="worlds-h" class="mt-3.5 font-display text-[clamp(1.7rem,3.4vw,2.5rem)] font-normal tracking-[0.015em] text-gold"><span class="text-[2em]">5</span> <em class="italic text-phosphor">Worlds</em></h2>
     <p class="mt-3 max-w-[56ch] text-[0.95rem] leading-[1.7] text-mute">These are windows into 5 mathematical worlds. <i class="italic text-gold"> Make them your own. </i>
-    Embark on your own journey or pull your <i class="italic text-gold"> friends along. </i></p>
+    Embark on your own journey or <i class="italic text-gold">pull your friends along!</i></p>
   </div>
 
   <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-6 lg:[&>*:nth-child(4)]:col-start-2 lg:[&>*:nth-child(5)]:col-start-4">
