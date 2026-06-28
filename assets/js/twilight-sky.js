@@ -628,6 +628,272 @@
     }
   }
 
+  /* ============ THE SIXTH WORLD · WebGL capstone renderers ============
+     The 2D worlds animate a *rule*; these animate the academy itself. Two
+     variants share one tiny harness (makeGLPane): a full-screen fragment
+     shader over a single triangle, straight-alpha so the twilight sky shows
+     through, DPR-capped, and cached on the element so a resize or pane
+     rebuild reuses the program and never leaks a GL context. They register as
+     ordinary world panes — culled offscreen, stilled under reduced-motion —
+     only the context and draw path differ.
+       · forge   — the crucible the five worlds pour into (molten field)
+       · academy — Raphael's School of Athens: a Parthenon raised from the
+                   ground up on a loop (line-art over the open sky)           */
+
+  var GL_VS = "attribute vec2 a;void main(){gl_Position=vec4(a,0.0,1.0);}";
+  var GL_HEAD = [
+    "#ifdef GL_FRAGMENT_PRECISION_HIGH",
+    "precision highp float;",
+    "#else",
+    "precision mediump float;",
+    "#endif",
+    "uniform vec2 uResolution;",
+    "uniform float uTime;",
+    "float hash(vec2 p){p=fract(p*vec2(123.34,345.45));p+=dot(p,p+34.345);return fract(p.x*p.y);}"
+  ].join("\n");
+
+  function makeGLPane(canvas, fragSrc) {
+    if (canvas.__glpane) {
+      canvas.__glpane.resize();
+      return canvas.__glpane;
+    }
+    var opts = { alpha: true, premultipliedAlpha: false, antialias: true, depth: false };
+    var gl = canvas.getContext("webgl", opts) ||
+             canvas.getContext("experimental-webgl", opts);
+    if (!gl) return null;
+
+    function compile(type, src) {
+      var s = gl.createShader(type);
+      gl.shaderSource(s, src);
+      gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) return null;
+      return s;
+    }
+    var vs = compile(gl.VERTEX_SHADER, GL_VS);
+    var fs = compile(gl.FRAGMENT_SHADER, fragSrc);
+    if (!vs || !fs) return null;
+    var prog = gl.createProgram();
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return null;
+    gl.useProgram(prog);
+
+    var buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    var aLoc = gl.getAttribLocation(prog, "a");
+    gl.enableVertexAttribArray(aLoc);
+    gl.vertexAttribPointer(aLoc, 2, gl.FLOAT, false, 0, 0);
+    var uRes = gl.getUniformLocation(prog, "uResolution");
+    var uTime = gl.getUniformLocation(prog, "uTime");
+
+    var GLDPR = Math.min(window.devicePixelRatio || 1, 1.5);
+
+    function resize() {
+      var host = canvas.parentElement || canvas;
+      var w = host.clientWidth || canvas.clientWidth || 640;
+      var h = host.clientHeight || canvas.clientHeight || 268;
+      var pw = Math.max(1, Math.floor(w * GLDPR));
+      var ph = Math.max(1, Math.floor(h * GLDPR));
+      if (canvas.width !== pw || canvas.height !== ph) {
+        canvas.width = pw;
+        canvas.height = ph;
+      }
+      gl.viewport(0, 0, canvas.width, canvas.height);
+    }
+
+    function draw(t) {
+      if (gl.isContextLost && gl.isContextLost()) return;
+      gl.useProgram(prog);
+      gl.uniform2f(uRes, canvas.width, canvas.height);
+      gl.uniform1f(uTime, t);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+
+    canvas.addEventListener("webglcontextlost", function (e) {
+      e.preventDefault();
+      canvas.__glpane = null;
+    }, false);
+
+    var R = { draw: draw, resize: resize };
+    canvas.__glpane = R;
+    resize();
+    return R;
+  }
+
+  /* --- variant: the forge / crucible (molten field) --- */
+  var FORGE_FS = [
+    GL_HEAD,
+    "float noise(vec2 p){vec2 i=floor(p);vec2 f=fract(p);vec2 u=f*f*(3.0-2.0*f);",
+    " float a=hash(i),b=hash(i+vec2(1.0,0.0)),c=hash(i+vec2(0.0,1.0)),d=hash(i+vec2(1.0,1.0));",
+    " return mix(mix(a,b,u.x),mix(c,d,u.x),u.y);}",
+    "float fbm(vec2 p){float v=0.0,a=0.5;mat2 m=mat2(1.6,1.2,-1.2,1.6);",
+    " for(int i=0;i<5;i++){v+=a*noise(p);p=m*p;a*=0.5;}return v;}",
+    "void main(){",
+    " vec2 uv=gl_FragCoord.xy/uResolution;",
+    " float asp=uResolution.x/uResolution.y;",
+    " vec2 p=vec2(uv.x*asp,uv.y);",
+    " vec3 twilight=vec3(0.086,0.059,0.106);",
+    " vec3 ember=vec3(0.851,0.435,0.216);",
+    " vec3 phosphor=vec3(0.941,0.659,0.239);",
+    " vec3 gold=vec3(0.945,0.859,0.643);",
+    " float t=uTime;",
+    " float breath=0.82+0.12*sin(t*0.9)+0.06*sin(t*2.17+1.3);",
+    " float ss=0.5+0.5*sin(t*0.31); float strike=ss*ss; strike*=strike; strike*=strike; strike*=strike;",
+    " vec2 q=p*vec2(2.2,2.0);",
+    " vec2 warp=vec2(fbm(q+vec2(0.0,-t*0.45)),fbm(q+vec2(5.2,-t*0.6+1.7)));",
+    " float flow=fbm(q+warp*1.8+vec2(0.0,-t*0.5));",
+    " float up=clamp(1.0-uv.y,0.0,1.0);",
+    " float vbase=up*sqrt(up);",
+    " float mx=(uv.x-0.5)*asp*1.5; float mouth=exp(-(mx*mx))*sqrt(up);",
+    " float heat=(vbase*0.85+mouth*0.9)*(0.55+0.85*flow)*breath;",
+    " heat+=strike*0.35*vbase;",
+    " float shimmer=fbm(p*6.0+vec2(0.0,-t*1.4))-0.5;",
+    " heat+=shimmer*0.18*heat;",
+    " heat=clamp(heat,0.0,1.6);",
+    " vec3 col=twilight;",
+    " col=mix(col,ember,smoothstep(0.06,0.45,heat));",
+    " col=mix(col,phosphor,smoothstep(0.40,0.85,heat));",
+    " col=mix(col,gold,smoothstep(0.85,1.25,heat));",
+    " float spark=0.0;",
+    " for(int i=0;i<3;i++){float fi=float(i);",
+    "  float sc=26.0+fi*22.0; float sp=0.30+fi*0.18;",
+    "  vec2 gp=vec2(p.x*sc,p.y*sc+t*sp*sc);",
+    "  vec2 cell=floor(gp); vec2 f=fract(gp)-0.5;",
+    "  float r=hash(cell+vec2(fi*17.0));",
+    "  float live=step(0.86,r);",
+    "  float flick=0.5+0.5*sin(t*(3.0+6.0*r)+r*30.0);",
+    "  spark+=smoothstep(0.16,0.0,length(f))*live*flick*up;",
+    " }",
+    " col+=gold*spark*0.9;",
+    " float cxx=(uv.x-0.5)*asp*2.2; float core=exp(-(cxx*cxx))*smoothstep(0.0,0.22,up);",
+    " col+=ember*core*0.25*breath;",
+    " float a=clamp(heat*1.15+vbase*0.45+spark,0.0,1.0);",
+    " a=max(a,vbase*0.5);",
+    " a*=1.0-smoothstep(0.78,1.0,uv.y)*0.55;",
+    " vec2 vv=(uv-0.5)*vec2(1.0,0.85); float vig=1.0-0.35*dot(vv,vv);",
+    " col*=vig;",
+    " gl_FragColor=vec4(col,a);",
+    "}"
+  ].join("\n");
+
+  /* --- variant: Raphael's academy — a hall struck out toward the horizon ------
+     Stand at the mouth of a colossal hall and look in: towering pillars in
+     one-point perspective, arch beyond arch, the corridor running off to a great
+     horizon of light. A hall the old dwarf-masons would have stopped to marvel
+     at — Khazad-dûm scale, the viewer a mote beneath the vault.
+
+     It is not loaded, it is *forged*: built one hammer blow at a time, from the
+     outside in. On a slow, deliberate beat the next bay is struck into being —
+     it does not fade up, it *lands*: full-size in an instant, oversized for a
+     blink (the overshoot of the blow), a white flash on its stone, a burst of
+     dust, and a ring that shivers through the whole standing hall. Then it
+     settles to a steady glow while the corridor reaches one bay deeper toward the
+     light. Unbuilt bays are simply not there yet — no blueprint, no ghost.
+
+     And the dust does not all fall. Sparks struck from the stone settle as
+     stardust and stay, so as the nave takes hold the vault fills with a starry
+     heaven and the whole interior floats in celestial space — the feeling of a
+     Cathedral of the Resurrection. Each blow throws up a fresh shower of light.
+
+     Cheap geometry: each transverse bay lives on a plane at one depth, so its
+     whole profile — two mighty piers, a round arch, a floor course — is the same
+     drawing scaled about the vanishing point; eleven depths fall out of
+     `s = F/Z`. When the last blow falls the horizon blazes; then it fades and
+     begins again, for after this builder cometh another. */
+  var ACADEMY_FS = [
+    GL_HEAD,
+    "float sdSeg(vec2 p,vec2 a,vec2 b){vec2 pa=p-a,ba=b-a;float h=clamp(dot(pa,ba)/dot(ba,ba),0.0,1.0);return length(pa-ba*h);}",
+    "void main(){",
+    " vec2 uv=gl_FragCoord.xy/uResolution;",
+    " float asp=uResolution.x/uResolution.y;",
+    " vec2 P=vec2(uv.x*asp,uv.y);",
+    " vec3 phosphor=vec3(0.941,0.659,0.239);",
+    " vec3 gold=vec3(0.945,0.859,0.643);",
+    " vec3 ember=vec3(0.851,0.435,0.216);",
+    " float t=uTime;",
+    " float px=1.0/uResolution.y; float aa=1.2*px;",
+    " float lwP=2.1*px; float lwA=1.25*px; float lwF=1.0*px;", /* pier / arch / floor weights */
+    " float CYC=15.0; float cyc=mod(t,CYC);",
+    " float fade=min(smoothstep(0.0,1.2,cyc),smoothstep(CYC,CYC-1.8,cyc));",
+    " float T0=0.8; float STAG=0.85;",                          /* first blow, then seconds between blows */
+    " float bp=clamp((cyc-T0)/(STAG*10.0),0.0,1.0);",           /* build progress 0..1 */
+    " float camp=bp*bp*(3.0-2.0*bp);",                          /* eased, for the camera */
+    /* the hall in world units on a transverse plane (vp = the horizon, y up).
+       The camera rides the build: pulled back and level at first (open space for
+       the first stars to be born in), it dollies in and tilts up as the nave
+       rises, so the hall grows to fill the frame and the eye cranes into the
+       vault by the time the last blow falls. */
+    " float F=mix(0.66,0.90,camp);",                            /* dolly in: enlarges to fill as it is forged */
+    " vec2 vp=vec2(0.5*asp,mix(0.40,0.30,camp)); vec2 v=P-vp;", /* pan up toward the ceiling as it fills */
+    " float Wn=0.78;",           /* hall half-width */
+    " float ImpY=0.46;",         /* springing line, high above vp */
+    " float FlY=-0.52;",         /* floor, low below vp — falls past the frame */
+    " float Z0=1.0; float Q=1.26;",
+    " float breath=0.85+0.10*sin(t*0.8)+0.05*sin(t*1.9+1.1);",
+    " float stone=0.0, pathLit=0.0, strikeGlow=0.0, ring=0.0;",
+    " for(int i=0;i<11;i++){ float fi=float(i);",
+    "  float Z=Z0*pow(Q,fi); float s=F/Z; vec2 p=v/s;",       /* into bay-plane coords */
+    "  float age=cyc-(T0+STAG*fi); float built=step(0.0,age);", /* struck yet? */
+    "  float x=age/0.16; float impact=exp(-x*x)*built;",       /* the blow, decaying */
+    "  float swP=1.0+1.8*impact; float swA=1.0+1.4*impact;",   /* overshoot slam */
+    "  float dP=min(sdSeg(p,vec2(-Wn,FlY),vec2(-Wn,ImpY)),sdSeg(p,vec2(Wn,FlY),vec2(Wn,ImpY)));", /* piers */
+    "  float dA=1000.0; if(p.y>ImpY) dA=abs(length(p-vec2(0.0,ImpY))-Wn);", /* round arch */
+    "  float dF=sdSeg(p,vec2(-Wn,FlY),vec2(Wn,FlY));",         /* floor course */
+    "  float depthA=mix(1.0,0.5,fi/10.0);",                    /* far bays recede dimmer */
+    "  float iP=smoothstep(lwP*swP+aa,lwP*swP,dP*s);",
+    "  float iA=smoothstep(lwA*swA+aa,lwA*swA,dA*s);",
+    "  float iF=smoothstep(lwF+aa,lwF,dF*s);",
+    "  float line=max(max(iP,iA),iF)*built*depthA;",
+    "  stone=max(stone,line);",
+    "  strikeGlow=max(strikeGlow,max(iP,iA)*impact*depthA);",
+    "  ring=max(ring,impact);",
+    " }",
+    /* the great horizon the hall drives toward — a beacon that blazes as it nears */
+    " float gd=length(v); float prog=clamp((cyc-T0)/(STAG*10.0),0.0,1.0);",
+    " float halo=exp(-gd*gd*60.0)*(0.30+0.70*prog)*breath;",
+    " float dy=(uv.y-vp.y)/0.014; float dx=(P.x-vp.x)/0.55;",
+    " float horizon=exp(-dy*dy)*exp(-dx*dx)*(0.25+0.75*prog);",
+    /* compose, straight alpha over the twilight sky */
+    " vec3 col=vec3(0.0); float a=0.0;",
+    " vec3 stoneCol=mix(phosphor,gold,0.40); float life=0.88+0.12*breath;",
+    " col+=stoneCol*stone*life; a=max(a,stone*0.95);",
+    " col+=mix(gold,vec3(1.0,0.97,0.88),0.6)*strikeGlow; a=max(a,strikeGlow*0.8);",
+    " col+=gold*ring*0.06; a=max(a,ring*0.04);",               /* the blow rings through the hall */
+    /* stardust — sparks struck from the stone that settle and stay, so as the
+       nave takes hold the vault fills with a starry heaven (Resurrection vault) */
+    " float space=smoothstep(0.18,1.0,uv.y)*prog*0.20;",       /* deep-space veil in the vault */
+    " col+=vec3(0.10,0.08,0.18)*space; a=max(a,space*0.5);",
+    " float stars=0.0;",
+    " for(int s=0;s<3;s++){ float fs=float(s); float sc=20.0+fs*30.0;",
+    "  vec2 gp=vec2(P.x*sc,uv.y*sc); vec2 cell=floor(gp); vec2 f=fract(gp)-0.5;",
+    "  float r=hash(cell+vec2(fs*41.0)); float live=step(0.90,r);",
+    "  float bt=T0+hash(cell+vec2(fs*17.0,5.0))*8.6;",          /* each star is born at its own moment, scattered across the build */
+    "  float age=cyc-bt; float born=smoothstep(0.0,0.5,age);",  /* it comes to life... */
+    "  float q=age/0.26; float pop=exp(-q*q);",                 /* ...with a flash of birth, then settles to twinkle */
+    "  vec2 base=(vec2(hash(cell+1.3),hash(cell+4.7))-0.5)*0.55;",
+    "  vec2 drift=0.08*vec2(sin(t*0.3+r*20.0),cos(t*0.24+r*15.0));", /* and then it lives — a slow wander */
+    "  float dd=length(f-base-drift);",
+    "  float tw=0.5+0.5*sin(t*(0.8+2.4*hash(cell+9.0))+r*40.0);",
+    "  stars+=smoothstep(0.07,0.0,dd)*live*born*(tw*0.7+pop*1.0); }",
+    " stars*=(1.0-stone*0.9)*(1.0+0.4*ring);",                  /* dimmed behind stone, shivered by each blow */
+    " vec3 starCol=mix(gold,vec3(1.0,0.97,0.90),0.4);",
+    " col+=starCol*stars*0.8; a=max(a,stars*0.55);",
+    " float dust=0.0; float dmask=smoothstep(0.72,0.2,uv.y);",
+    " for(int m=0;m<2;m++){ float fm=float(m); float sc=64.0+fm*44.0;",
+    "  vec2 gp=vec2(P.x*sc,uv.y*sc-t*(0.5+fm*0.3)*sc); vec2 cell=floor(gp); vec2 f=fract(gp)-0.5;",
+    "  float r=hash(cell+vec2(fm*23.0)); dust+=smoothstep(0.24,0.0,length(f))*step(0.9,r); }",
+    " dust*=ring*dmask; col+=gold*dust*0.7; a=max(a,dust*0.6);",
+    " col+=mix(gold,vec3(1.0,0.95,0.85),0.5)*halo; a=max(a,halo);",
+    " col+=gold*horizon; a=max(a,horizon*0.85);",
+    " float hy=(uv.y-vp.y)/0.15; float haze=exp(-hy*hy)*0.10;",
+    " col+=ember*haze; a=max(a,haze*0.4);",
+    " a*=fade; col*=fade;",
+    " gl_FragColor=vec4(col,clamp(a,0.0,1.0));",
+    "}"
+  ].join("\n");
+
   /* registry: id -> draw(c,w,h,t,dt); offscreen panes are culled */
   var WORLD_DRAWS = {
     1: worldGemstone,
@@ -636,6 +902,11 @@
     4: worldHeartbeat,
     5: worldFlock,
   };
+  /* WebGL world renderers: id -> factory(canvas) -> { draw(t), resize() } */
+  var WORLD_GL = {
+    forge: function (c) { return makeGLPane(c, FORGE_FS); },
+    academy: function (c) { return makeGLPane(c, ACADEMY_FS); },
+  };
   var panes = [];
 
   function setupPanes() {
@@ -643,11 +914,18 @@
     var cs = document.querySelectorAll("canvas[data-world]");
     for (var i = 0; i < cs.length; i++) {
       var id = cs[i].getAttribute("data-world");
+      if (WORLD_GL[id]) {
+        var glr = WORLD_GL[id](cs[i]);
+        if (!glr) continue; // no WebGL: leave the CSS fallback glow in place
+        panes.push({ el: cs[i], kind: "gl", glr: glr, visible: true });
+        continue;
+      }
       var draw = WORLD_DRAWS[id];
       if (!draw) continue;
       var s = setupThumb(cs[i]);
       panes.push({
         el: cs[i],
+        kind: "2d",
         c: s.c,
         w: s.w,
         h: s.h,
@@ -675,7 +953,8 @@
     for (var i = 0; i < panes.length; i++) {
       var p = panes[i];
       if (!p.visible) continue;
-      p.draw(p.c, p.w, p.h, t, dt);
+      if (p.kind === "gl") p.glr.draw(t, dt);
+      else p.draw(p.c, p.w, p.h, t, dt);
     }
   }
   setupPanes();

@@ -46,6 +46,11 @@ leaderless_flock:
   description: "From the flash of fireflies to the dance of a shoal of fish how do we work at once, when no one is in command?"
   world: 5
 
+the_academy:
+  title: "The Academy"
+  description: "The capstone world — the crucible the other five pour into. Raised by hand, from the ground up, into a School of Athens of our own."
+  world: academy # forge
+
 seemingly_random:
   title: "Seemingly Random"
   description: "Dive into coordinate geometry and random distribution patterns."

@@ -1,0 +1,16 @@
+{%- comment -%}
+  Archetype card. For 4 paths
+  Params: constant (glyph + value, may contain HTML entities), icon (svg file
+  stored in archetypes/), name, body.
+{%- endcomment -%}
+{%- capture icon -%}archetypes/{{ include.icon }}.svg{%- endcapture -%}
+<article class="tw-frame group p-7 pb-8">
+  <div class="mb-4 flex items-baseline justify-between font-mono text-[0.58rem] uppercase tracking-[0.16em] text-phosphor [text-shadow:0_0_6px_rgb(240_168_61/0.5)]">
+    <span>{{ include.constant }}</span><span class="text-dim [text-shadow:none]"></span>
+  </div>
+  <div class="absolute right-6 top-[0.5rem] h-[70px] w-[70px] text-phosphor opacity-85  drop-shadow-[0_0_4px_rgb(240_168_61/0.6)]">
+    {% include {{ icon }} %}
+  </div>
+  <h3 class="mb-2.5 font-display text-[1.55rem] font-medium italic tracking-[0.01em] text-gold">{{ include.name }}</h3>
+  <p class="text-[0.9rem] leading-[1.7] text-mute">{{ include.body }}</p>
+</article>
