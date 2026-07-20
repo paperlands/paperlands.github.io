@@ -7,7 +7,7 @@ image: /assets/lib/hq.png
 classes:
   capstone: the_academy
   worlds:
-    - lesson: regular_gemstone
+    - lesson: keplers_world
       date: 20/07
     - lesson: circular_arc
       date: 27/07
@@ -88,7 +88,7 @@ classes:
   <div class="mb-10">
     <p class="tw-kicker">// the sixth world · Yours to build</p>
     <h2 id="academy-h" class="mt-3.5 font-display text-[clamp(1.7rem,3.4vw,2.5rem)] font-normal tracking-[0.015em] text-gold"><span class="text-[2em]">6</span> <em class="italic text-phosphor">{{ cap.title }}</em></h2>
-    <p class="mt-3 max-w-[60ch] text-[0.95rem] leading-[1.7] text-mute">The five worlds are windows you step <i class="italic text-gold">through</i>. <br> The sixth is <i class="italic text-gold">yours to build.</i> <br> Each block a question for us to lay bare. <br>  A  <i class="italic text-gold"> path you found true.</i> <br> Bring your friends and <i class="italic text-gold">  share under one roof </i></p>
+    <p class="mt-3 max-w-[60ch] text-[0.95rem] leading-[1.7] text-mute">The five worlds are windows you <i class="italic text-gold">step through</i>. <br> The sixth is <i class="italic text-gold">yours to build.</i> <br> Each block begins with a <i class="italic text-gold">question you seek. </i> <br>  Ends with a <i class="italic text-gold"> path you found true.</i> </p>
   </div>
 
   <figure class="tw-frame group p-0">
@@ -105,7 +105,7 @@ classes:
     </figcaption>
   </figure>
 
-  <p class="mt-9 max-w-[58ch] text-[0.95rem] leading-[1.7] text-mute">The last world lays unfinished by design and that is the <i class="italic text-gold">invitation</i>.</p>
+  <p class="mt-9 max-w-[58ch] text-[0.95rem] leading-[1.7] text-mute">Invite your friends to<i class="italic text-gold">  share under one roof. </i></p>
 </section>
 
 <div class="tw-rule" role="separator"></div>

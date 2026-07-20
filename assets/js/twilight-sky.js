@@ -628,6 +628,264 @@
     }
   }
 
+  /* [6] the forms themselves -> Kepler's Mysterium: the five
+         Platonic solids nested one within the next in his order —
+         cube, tetrahedron, dodecahedron, icosahedron, octahedron —
+         each shell turning on its own slow axis, the spheres
+         between the forms drawn faint, a glint sweeping the edges */
+  var KEPLER = (function () {
+    var PHI = (1 + Math.sqrt(5)) / 2;
+    /* faces fall out of duality: each solid's face normals are its
+       dual's vertices in dual-aligned orientation (the tetrahedron is
+       self-dual, negated), so a face is the ring of vertices leaning
+       furthest toward a normal */
+    function build(verts, normals) {
+      var i, j, dx, dy, dz, d, m;
+      for (i = 0; i < verts.length; i++) {
+        m = Math.sqrt(
+          verts[i][0] * verts[i][0] +
+            verts[i][1] * verts[i][1] +
+            verts[i][2] * verts[i][2],
+        );
+        verts[i][0] /= m;
+        verts[i][1] /= m;
+        verts[i][2] /= m;
+      }
+      /* edges join nearest neighbours — true of all five solids */
+      var min = 1e9;
+      for (i = 0; i < verts.length; i++) {
+        for (j = i + 1; j < verts.length; j++) {
+          dx = verts[i][0] - verts[j][0];
+          dy = verts[i][1] - verts[j][1];
+          dz = verts[i][2] - verts[j][2];
+          d = dx * dx + dy * dy + dz * dz;
+          if (d < min) min = d;
+        }
+      }
+      var edges = [];
+      for (i = 0; i < verts.length; i++) {
+        for (j = i + 1; j < verts.length; j++) {
+          dx = verts[i][0] - verts[j][0];
+          dy = verts[i][1] - verts[j][1];
+          dz = verts[i][2] - verts[j][2];
+          d = dx * dx + dy * dy + dz * dz;
+          if (d < min * 1.05) edges.push(i, j);
+        }
+      }
+      var faces = [];
+      for (i = 0; i < normals.length; i++) {
+        var n = normals[i];
+        m = Math.sqrt(n[0] * n[0] + n[1] * n[1] + n[2] * n[2]);
+        var nx = n[0] / m,
+          ny = n[1] / m,
+          nz = n[2] / m;
+        var best = -2;
+        for (j = 0; j < verts.length; j++) {
+          d = verts[j][0] * nx + verts[j][1] * ny + verts[j][2] * nz;
+          if (d > best) best = d;
+        }
+        var idx = [];
+        for (j = 0; j < verts.length; j++) {
+          d = verts[j][0] * nx + verts[j][1] * ny + verts[j][2] * nz;
+          if (d > best - 1e-6) idx.push(j);
+        }
+        /* order the ring around the normal */
+        var ux = Math.abs(ny) < 0.9 ? nz : 0,
+          uy = Math.abs(ny) < 0.9 ? 0 : nz,
+          uz = Math.abs(ny) < 0.9 ? -nx : -ny;
+        var wx = ny * uz - nz * uy,
+          wy = nz * ux - nx * uz,
+          wz = nx * uy - ny * ux;
+        idx.sort(function (a, b) {
+          var va = verts[a],
+            vb = verts[b];
+          return (
+            Math.atan2(
+              va[0] * wx + va[1] * wy + va[2] * wz,
+              va[0] * ux + va[1] * uy + va[2] * uz,
+            ) -
+            Math.atan2(
+              vb[0] * wx + vb[1] * wy + vb[2] * wz,
+              vb[0] * ux + vb[1] * uy + vb[2] * uz,
+            )
+          );
+        });
+        faces.push({ n: [nx, ny, nz], f: idx });
+      }
+      return { v: verts, e: edges, f: faces };
+    }
+    var cube = [],
+      ico = [],
+      dod = [],
+      i,
+      s1,
+      s2;
+    for (i = 0; i < 8; i++) {
+      cube.push([i & 1 ? 1 : -1, i & 2 ? 1 : -1, i & 4 ? 1 : -1]);
+    }
+    var tet = [
+      [1, 1, 1],
+      [1, -1, -1],
+      [-1, 1, -1],
+      [-1, -1, 1],
+    ];
+    var oct = [
+      [1, 0, 0],
+      [-1, 0, 0],
+      [0, 1, 0],
+      [0, -1, 0],
+      [0, 0, 1],
+      [0, 0, -1],
+    ];
+    var dodN = [],
+      icoN = [],
+      P2 = PHI * PHI;
+    for (s1 = -1; s1 <= 1; s1 += 2) {
+      for (s2 = -1; s2 <= 1; s2 += 2) {
+        ico.push([0, s1, s2 * PHI], [s1, s2 * PHI, 0], [s2 * PHI, 0, s1]);
+        dod.push(
+          [0, s1 / PHI, s2 * PHI],
+          [s1 / PHI, s2 * PHI, 0],
+          [s2 * PHI, 0, s1 / PHI],
+        );
+        dodN.push([0, s1 * PHI, s2], [s1 * PHI, s2, 0], [s2, 0, s1 * PHI]);
+        icoN.push([s1, 0, s2 * P2], [0, s2 * P2, s1], [s2 * P2, s1, 0]);
+      }
+    }
+    for (i = 0; i < 8; i++) {
+      dod.push(cube[i].slice());
+      icoN.push(cube[i].slice());
+    }
+    var tetN = [];
+    for (i = 0; i < 4; i++) {
+      tetN.push([-tet[i][0], -tet[i][1], -tet[i][2]]);
+    }
+    /* copies for the dual-normal role: build() normalizes in place */
+    function copy(vs) {
+      var out = [];
+      for (var j = 0; j < vs.length; j++) out.push(vs[j].slice());
+      return out;
+    }
+    return [
+      build(cube, copy(oct)),
+      build(tet, tetN),
+      build(dod, dodN),
+      build(ico, icoN),
+      build(oct, copy(cube)),
+    ];
+  })();
+  /* shells outermost first; radii widened from Kepler's literal
+     inspheres so the inner sanctum stays legible in a small pane */
+  var KEPLER_SHELLS = [
+    { r: 1.0, sp: 0.1, tilt: 0.42, dir: 1 },
+    { r: 0.74, sp: 0.15, tilt: -0.32, dir: -1 },
+    { r: 0.55, sp: 0.2, tilt: 0.68, dir: 1 },
+    { r: 0.41, sp: 0.27, tilt: -0.55, dir: -1 },
+    { r: 0.29, sp: 0.35, tilt: 0.5, dir: 1 },
+  ];
+  function worldKepler(c, w, h, t) {
+    c.clearRect(0, 0, w, h);
+    var cx = w / 2,
+      cy = h / 2;
+    var R = Math.min(w, h) * 0.46;
+    var g = t * 0.55;
+    var lx = Math.cos(g) * 0.9,
+      ly = 0.35,
+      lz = Math.sin(g) * 0.9;
+    /* innermost first, so the nesting shows through the glass */
+    for (var k = 4; k >= 0; k--) {
+      var sh = KEPLER_SHELLS[k];
+      var solid = KEPLER[k];
+      var rad = R * sh.r;
+      /* the sphere between the forms */
+      c.strokeStyle = "rgba(" + PHOS + ",0.07)";
+      c.lineWidth = 1;
+      c.beginPath();
+      c.arc(cx, cy, rad, 0, 6.2832);
+      c.stroke();
+      /* each form turns on its own axis, slowly nodding */
+      var ay = t * sh.sp * sh.dir + k * 1.7;
+      var ax = sh.tilt + Math.sin(t * 0.07 + k * 2.3) * 0.25;
+      var cyy = Math.cos(ay),
+        syy = Math.sin(ay);
+      var cxx = Math.cos(ax),
+        sxx = Math.sin(ax);
+      var P = [];
+      for (var vi = 0; vi < solid.v.length; vi++) {
+        var v = solid.v[vi];
+        var x1 = v[0] * cyy + v[2] * syy;
+        var z1 = -v[0] * syy + v[2] * cyy;
+        var y1 = v[1] * cxx - z1 * sxx;
+        var z2 = v[1] * sxx + z1 * cxx;
+        var ps = 1 / (1 - z2 * 0.2);
+        P.push(x1, y1, z2, cx + x1 * ps * rad, cy + y1 * ps * rad);
+      }
+      var base = lerp(0.2, 0.42, k / 4); /* the sanctum glows brighter */
+      var col = k === 4 ? GOLD : PHOS;
+      /* surfaces: celestial glass, far faces ember, near faces lit */
+      var ord = [];
+      for (var fi = 0; fi < solid.f.length; fi++) {
+        var fn = solid.f[fi].n;
+        var nx1 = fn[0] * cyy + fn[2] * syy;
+        var nz1 = -fn[0] * syy + fn[2] * cyy;
+        var ny1 = fn[1] * cxx - nz1 * sxx;
+        var nz2 = fn[1] * sxx + nz1 * cxx;
+        ord.push({ i: fi, x: nx1, y: ny1, z: nz2 });
+      }
+      ord.sort(function (fa, fb) {
+        return fa.z - fb.z;
+      });
+      for (var oi = 0; oi < ord.length; oi++) {
+        var fo = ord[oi];
+        var lit = Math.max(0, fo.x * lx + fo.y * ly + fo.z * lz);
+        var fAlpha =
+          0.02 + Math.max(0, fo.z) * 0.05 + lit * lit * 0.09;
+        c.fillStyle =
+          fo.z > 0
+            ? "rgba(" + col + "," + fAlpha.toFixed(3) + ")"
+            : "rgba(" + EMBER + "," + (fAlpha * 0.8 + 0.015).toFixed(3) + ")";
+        var ring = solid.f[fo.i].f;
+        c.beginPath();
+        var p0 = ring[0] * 5;
+        c.moveTo(P[p0 + 3], P[p0 + 4]);
+        for (var q = 1; q < ring.length; q++) {
+          var pq = ring[q] * 5;
+          c.lineTo(P[pq + 3], P[pq + 4]);
+        }
+        c.closePath();
+        c.fill();
+      }
+      for (var e = 0; e < solid.e.length; e += 2) {
+        var a = solid.e[e] * 5,
+          b = solid.e[e + 1] * 5;
+        var mx = (P[a] + P[b]) / 2,
+          my = (P[a + 1] + P[b + 1]) / 2,
+          mz = (P[a + 2] + P[b + 2]) / 2;
+        var ml = Math.sqrt(mx * mx + my * my + mz * mz) || 1;
+        var face = Math.max(0, (mx * lx + my * ly + mz * lz) / ml);
+        var depth = (mz + 1) / 2; /* near edges bolder */
+        var alpha = (base + face * face * 0.35) * lerp(0.35, 1, depth);
+        c.strokeStyle = "rgba(" + col + "," + alpha.toFixed(3) + ")";
+        c.lineWidth = 1 + face * face * 0.6;
+        c.beginPath();
+        c.moveTo(P[a + 3], P[a + 4]);
+        c.lineTo(P[b + 3], P[b + 4]);
+        c.stroke();
+      }
+      /* vertices surface as they come round to face us */
+      for (var d = 0; d < P.length; d += 5) {
+        var vd = (P[d + 2] + 1) / 2;
+        if (vd < 0.55) continue;
+        c.fillStyle = "rgba(" + GOLD + "," + (0.7 * vd * vd).toFixed(3) + ")";
+        c.fillRect(P[d + 3] - 1, P[d + 4] - 1, 2, 2);
+      }
+    }
+    /* the still point all the forms are built around */
+    var pulse = 0.5 + 0.5 * Math.sin(t * 0.9);
+    c.fillStyle = "rgba(" + GOLD + "," + (0.45 + 0.35 * pulse).toFixed(3) + ")";
+    c.fillRect(cx - 1, cy - 1, 2, 2);
+  }
+
   /* ============ THE SIXTH WORLD · WebGL capstone renderers ============
      The 2D worlds animate a *rule*; these animate the academy itself. Two
      variants share one tiny harness (makeGLPane): a full-screen fragment
@@ -901,6 +1159,7 @@
     3: worldRecursion,
     4: worldHeartbeat,
     5: worldFlock,
+    6: worldKepler,
   };
   /* WebGL world renderers: id -> factory(canvas) -> { draw(t), resize() } */
   var WORLD_GL = {

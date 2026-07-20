@@ -3,7 +3,7 @@
 # their own front matter; see _pages/tjc.md and _pages/lesson-plans.md.
 #
 # Fields: title, description, lesson_url, thumb,
-#         world (1-5, twilight canvas renderer id in assets/js/twilight-sky.js, optional)
+#         world (1-6, twilight canvas renderer id in assets/js/twilight-sky.js, optional)
 #
 # lesson_url points to a local redirect page (e.g. /gemstone) rather than
 # directly to Notion, so all outbound clicks go through _layouts/redirect.html
@@ -45,6 +45,13 @@ leaderless_flock:
   title: "Leaderless Flock"
   description: "From the flash of fireflies to the dance of a shoal of fish how do we work at once, when no one is in command?"
   world: 5
+
+keplers_world:
+  title: "Kepler's Lost World"
+  description: "Seek the questions that led geometers down the path from everyday polygons to the sacred platonic solids"
+  lesson_url: /kepler
+  thumb: /assets/lib/lesson-plans/regular_gemstone.webp
+  world: 6
 
 the_academy:
   title: "The Academy"
