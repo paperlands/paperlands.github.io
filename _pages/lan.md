@@ -5,7 +5,7 @@ excerpt: We believe that the world would be a better place if the processes we s
 image: /assets/lib/beauty_first.png
 id: lan
 permalink: /lan
-version: 0.4.1
+version: 0.4.2
 ---
 <body class="bg-bg text-txt font-mono min-h-screen overflow-x-hidden">
  
@@ -33,7 +33,7 @@ version: 0.4.1
             has-[a:hover]:shadow-[0_4px_24px_rgba(255,153,51,0.08)]">
 
   <div class="flex w-full flex-1 items-center justify-center">
-    <a href="https://github.com/paperlands/dojo/releases/latest/download/PaperLandDojo-{{ page.version }}-windows-x86-setup.exe"
+    <a href="https://github.com/paperlands/dojo/releases/download/v{{ page.version }}/PaperLandDojo-{{ page.version }}-windows-x86-setup.exe"
        download="PaperLand_Windows_v{{ page.version }}_x86.exe"
        data-os="windows" onclick="pick('windows')"
        class="group/half py-2 flex flex-col items-center">
@@ -53,7 +53,7 @@ version: 0.4.1
                    transition-colors duration-300">x86</span>
     </a>
 
-    <a href="https://github.com/paperlands/dojo/releases/latest/download/PaperLandDojo-{{ page.version }}-windows-x86_64-setup.exe"
+    <a href="https://github.com/paperlands/dojo/releases/download/v{{ page.version }}/PaperLandDojo-{{ page.version }}-windows-x86_64-setup.exe"
        download="PaperLand_Windows_v{{ page.version }}_x86_64.exe"
        data-os="windows" onclick="pick('windows')"
        class="group/half py-2 flex  flex-col items-center">
@@ -84,7 +84,7 @@ version: 0.4.1
             has-[a:hover]:shadow-[0_4px_24px_rgba(255,153,51,0.08)]">
 
   <div class="flex w-full flex-1 items-center justify-center">
-    <a href="https://github.com/paperlands/dojo/releases/latest/download/PaperLandDojo-{{ page.version }}-macos-x86_64.dmg"
+    <a href="https://github.com/paperlands/dojo/releases/download/v{{ page.version }}/PaperLandDojo-{{ page.version }}-macos-x86_64.dmg"
        download="PaperLand_MacOS_v{{ page.version }}_x86_64.dmg"
        data-os="macos" onclick="pick('macos')"
        class="group/half py-2 flex flex-col items-center">
@@ -106,7 +106,7 @@ version: 0.4.1
                    transition-colors duration-300">x86</span>
     </a>
 
-    <a href="https://github.com/paperlands/dojo/releases/latest/download/PaperLandDojo-{{ page.version }}-macos-arm64.dmg"
+    <a href="https://github.com/paperlands/dojo/releases/download/v{{ page.version }}/PaperLandDojo-{{ page.version }}-macos-arm64.dmg"
        download="PaperLand_MacOS_v{{ page.version }}_arm64.dmg"
        data-os="macos" onclick="pick('macos')"
        class="group/half py-2 flex  flex-col items-center">
@@ -134,7 +134,7 @@ version: 0.4.1
 </div>
 
  
-      <a href="https://github.com/paperlands/dojo/releases/latest/download/dojo-{{ page.version }}-linux-x86_64" download="PaperLand_Linux_v{{ page.version }}_x86_64" data-os="linux" onclick="pick('linux')"
+      <a href="https://github.com/paperlands/dojo/releases/download/v{{ page.version }}/dojo-{{ page.version }}-linux-x86_64" download="PaperLand_Linux_v{{ page.version }}_x86_64" data-os="linux" onclick="pick('linux')"
         class="os-btn group flex-1 max-w-[170px] flex flex-col items-center
                border border-sage/40 rounded-lg px-3 pt-5
                transition-all duration-300 ease-out
