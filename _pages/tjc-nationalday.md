@@ -27,7 +27,7 @@ challenge:
 
   <p class="max-w-[52ch] text-[clamp(0.94rem,1.4vw,1.12rem)] leading-[1.75] text-mute">
     Our nation turns <i class="italic text-gold">sixty-one</i> this week. Sixty-one steps from a beginning that could have gone any number of ways. <br><br>
-    Nothing around us holds still. <i class="italic text-gold">Find one thing that changes.</i> <br> <i class="italic text-gold">Then question and show us how.</i> <span aria-hidden="true">🇸🇬🔥</span>
+    Nothing around us holds still. <i class="italic text-gold">Find one thing that changes.</i> <br> <i class="italic text-gold">Then question and model it.</i> <span aria-hidden="true">🇸🇬🔥</span>
   </p>
 
   <!-- window + live gate state -->
@@ -52,17 +52,17 @@ challenge:
 
   <div class="grid gap-8 md:grid-cols-2">
     <p class="text-[0.95rem] leading-[1.75] text-mute">
-      We started this journey by observing the world around us more closely. Its <i class="italic text-gold">objects</i>. The <i class="italic text-gold">processes</i> that shape it. We hunted for what properties tell us about what it <i>is and isn't</i>.
+      We started this journey by observing the world around us more closely. Its <i class="italic text-gold">objects</i>. The <i class="italic text-gold">processes</i> that shape it. We identified <i class="italic text-gold">properties</i> that defined <i>what they are</i>, and <i>what they are not</i>.
     </p>
     <p class="text-[0.95rem] leading-[1.75] text-mute">
       This week we turned to something deeper. Not what something <i>is</i>, but what it <i class="italic text-gold">becomes</i>. We began with the spiral, one of the oldest symbols of change there is — <i class="italic text-gold">involution</i>, <i class="italic text-gold">evolution</i>, continuous transformation.
     </p>
   </div>
 
-  <figure class="tw-frame group mt-11 p-0">
+  <figure class="p-0 tw-frame group mt-11">
     <span class="tw-chip absolute right-3 top-3 z-[2]">WEEK 03</span>
     <div class="relative aspect-[1000/380] overflow-hidden border-b border-phosphor/20 bg-[radial-gradient(120%_130%_at_50%_115%,rgb(217_111_55/0.38),rgb(240_168_61/0.09)_34%,transparent_66%)]">
-      <canvas data-world="3" class="absolute inset-0 block h-full w-full" role="img" aria-label="A spiral drawing itself outward, each turn a little longer than the last, then folding back in on itself."></canvas>
+      <canvas data-world="3" class="absolute inset-0 block w-full h-full" role="img" aria-label="A spiral drawing itself outward, each turn a little longer than the last, then folding back in on itself."></canvas>
       <div class="pointer-events-none absolute inset-x-0 bottom-0 z-[1] bg-gradient-to-t from-twilight/85 via-twilight/35 to-transparent px-5 pb-[1.1rem] pt-16 text-center">
         <p class="font-display text-[clamp(0.85rem,2vw,1.18rem)] italic tracking-[0.04em] text-phosphor [text-shadow:0_0_16px_rgb(240_168_61/0.55),0_0_44px_rgb(217_111_55/0.3)]">“ The same step, taken again, on what the last step left behind. ”</p>
       </div>
@@ -81,20 +81,20 @@ challenge:
 <section aria-labelledby="hand-h">
   <div class="mb-10">
     <p class="tw-kicker">// your group's why? &amp; how?</p>
-    <h2 id="hand-h" class="mt-3.5 font-display text-[clamp(1.7rem,3.4vw,2.5rem)] font-normal tracking-[0.015em] text-gold">Your <em class="italic text-phosphor">Brief</em></h2>
-    <p class="mt-3 max-w-[52ch] text-[0.95rem] leading-[1.7] text-mute">Two parts. <i class="italic text-gold">Find your question.</i> Then <i class="italic text-gold">model how they change or behave.</i></p>
+    <h2 id="hand-h" class="mt-3.5 font-display text-[clamp(1.7rem,3.4vw,2.5rem)] font-normal tracking-[0.015em] text-gold">Your <em class="italic text-phosphor">Challenge</em></h2>
+    <p class="mt-3 text-[0.95rem] leading-[1.7] text-mute">Two parts. <i class="italic text-gold">Identify your question.</i> Then <i class="italic text-gold">model how they change or behave with code.</i></p>
   </div>
 
-  <ol class="m-0 grid list-none gap-6 p-0 sm:grid-cols-2">
-    <li class="tw-frame flex h-full flex-col p-7 sm:p-8">
+  <ol class="grid gap-6 p-0 m-0 list-none sm:grid-cols-2">
+    <li class="flex flex-col h-full tw-frame p-7 sm:p-8">
       <span class="font-mono text-[0.58rem] uppercase tracking-[0.26em] text-dim">01 · why?</span>
-      <h3 class="mt-4 font-display text-[1.45rem] font-medium italic leading-snug text-gold">Find your Question</h3>
-      <p class="mt-3 flex-1 text-[0.9rem] leading-[1.7] text-mute">The question your group has been chasing. State it in one clear sentence — e.g. <i class="italic text-gold">Why do shells often follow spiral patterns?</i></p>
+      <h3 class="mt-4 font-display text-[1.45rem] font-medium italic leading-snug text-gold">Identify your Question</h3>
+      <p class="mt-3 flex-1 text-[0.9rem] leading-[1.7] text-mute">Find one thing that changes. Identify a key question about it which your group has been chasing. State it in one clear sentence — e.g. <i class="italic text-gold">Why do shells often follow spiral patterns?</i></p>
     </li>
-    <li class="tw-frame flex h-full flex-col p-7 sm:p-8">
+    <li class="flex flex-col h-full tw-frame p-7 sm:p-8">
       <span class="font-mono text-[0.58rem] uppercase tracking-[0.26em] text-dim">02 · how?</span>
-      <h3 class="mt-4 font-display text-[1.45rem] font-medium italic leading-snug text-gold">Draft your Model.</h3>
-      <p class="mt-3 flex-1 text-[0.9rem] leading-[1.7] text-mute">Is it possible to express and represent how it changes or behaves? It doesn't have to be a perfect model make <i class="italic text-gold"> your best guess on how it begins and changes. </i> </p>
+      <h3 class="mt-4 font-display text-[1.45rem] font-medium italic leading-snug text-gold">Model with Code</h3>
+      <p class="mt-3 flex-1 text-[0.9rem] leading-[1.7] text-mute">Is it possible to express and represent how it changes or behaves with code? It doesn't have to be a perfect model, just make <i class="italic text-gold"> your best guess on how it begins and changes. </i> </p>
     </li>
   </ol>
 
@@ -166,7 +166,7 @@ challenge:
       chip: "OPEN",
       glyph: "✦",
       title: "The gate is open",
-      note: "You have found your question and have drafted your model.",
+      note: "Submit your question and code for review.",
       locked: "Sealed"
     },
     closed: {
