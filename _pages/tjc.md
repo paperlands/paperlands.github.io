@@ -82,6 +82,27 @@ classes:
 
 <div class="tw-rule" role="separator"></div>
 
+<!-- ====================== LIVE CHALLENGE ====================== -->
+<section aria-labelledby="chal-h">
+  <div class="mb-10">
+    <p class="tw-kicker">// take it home</p>
+    <h2 id="chal-h" class="mt-3.5 font-display text-[clamp(1.7rem,3.4vw,2.5rem)] font-normal tracking-[0.015em] text-gold">The <em class="italic text-phosphor">Challenge</em></h2>
+    <p class="mt-3 max-w-[56ch] text-[0.95rem] leading-[1.7] text-mute">A world is only yours once you've <i class="italic text-gold">built something in it.</i></p>
+  </div>
+
+  <a href="/tjc/nationaldaychallenge" class="tw-frame group block p-7 text-inherit no-underline sm:p-9">
+    <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-3">
+      <span class="font-mono text-[0.58rem] uppercase tracking-[0.26em] text-dim">challenge 01</span>
+      <span class="tw-chip">09/08 — 11/08</span>
+    </div>
+    <h3 class="mt-5 max-w-[22ch] font-display text-[clamp(1.5rem,3vw,2rem)] font-medium italic leading-[1.15] text-gold">National Day Challenge <span aria-hidden="true">🇸🇬</span></h3>
+    <p class="mt-4 max-w-[48ch] text-[0.9rem] leading-[1.7] text-mute">Ask a question of something that changes in the world around you. Then model <i class="italic text-gold">how</i> it changes.</p>
+    <span class="mt-7 inline-flex items-center gap-3 font-mono text-[0.70rem] uppercase tracking-[0.26em] text-dim transition-colors duration-[550ms] after:h-px after:w-10 after:bg-gradient-to-r after:from-phosphor/70 after:to-transparent after:content-[''] group-hover:text-phosphor group-hover:[text-shadow:0_0_6px_rgb(240_168_61/0.5)] motion-reduce:transition-none">read the brief</span>
+  </a>
+</section>
+
+<div class="tw-rule" role="separator"></div>
+
 <!-- ====================== THE SIXTH WORLD · THE ACADEMY ====================== -->
 <section aria-labelledby="academy-h" class="scroll-mt-24">
   {% assign cap = site.data.lessons[page.classes.capstone] %}
