@@ -12,7 +12,7 @@ challenge:
   closes_label: "11 AUG"
   # Leave blank to keep the gate sealed. Fill it with the dojo submission link
   # and the gate opens on its own at `opens` and shuts itself at `closes`.
-  submit_url: "https://dojo.paperland.sg/shell?clan=TJC&action=share"
+  submit_url: "https://dojo.paperland.sg/shell?fork=cd8cc9b085e76dcfe0df8a110de3af32af839339f07bcebaff29ab4e26811327&action=share&clan=TJC"
 ---
 
 {% assign ch = page.challenge %}
