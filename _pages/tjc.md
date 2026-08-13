@@ -93,7 +93,7 @@ classes:
   <a href="/tjc/nationaldaychallenge" class="tw-frame group block p-7 text-inherit no-underline sm:p-9">
     <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-3">
       <span class="font-mono text-[0.58rem] uppercase tracking-[0.26em] text-dim">challenge 01</span>
-      <span class="tw-chip">09/08 — 11/08</span>
+      <span class="tw-chip">09/08 — 16/08</span>
     </div>
     <h3 class="mt-5 max-w-[22ch] font-display text-[clamp(1.5rem,3vw,2rem)] font-medium italic leading-[1.15] text-gold">National Day Challenge <span aria-hidden="true">🇸🇬</span></h3>
     <p class="mt-4 max-w-[48ch] text-[0.9rem] leading-[1.7] text-mute">Ask a question of something that changes in the world around you. Then model <i class="italic text-gold">how</i> it changes.</p>

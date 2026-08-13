@@ -7,9 +7,9 @@ image: /assets/lib/hq.png
 challenge:
   number: "01"
   opens: "2026-08-09T00:00:00+08:00"
-  closes: "2026-08-11T23:59:59+08:00"
+  closes: "2026-08-16T23:59:59+08:00"
   opens_label: "09 AUG"
-  closes_label: "11 AUG"
+  closes_label: "16 AUG"
   # Leave blank to keep the gate sealed. Fill it with the dojo submission link
   # and the gate opens on its own at `opens` and shuts itself at `closes`.
   submit_url: "https://dojo.paperland.sg/shell?fork=cd8cc9b085e76dcfe0df8a110de3af32af839339f07bcebaff29ab4e26811327&action=share&clan=TJC"
@@ -101,7 +101,7 @@ challenge:
   <!-- gate: the single place intention resolves into action -->
   <div id="gate" class="scroll-mt-24 mt-[clamp(2.75rem,7vh,4.25rem)]">
     <div class="mb-6 text-center">
-      <p class="tw-kicker">// then share it</p>
+      <p class="tw-kicker">// the gate, unexpectedly ajar</p>
     </div>
 
     <div id="gate-panel"
@@ -125,7 +125,7 @@ challenge:
         <!-- open state -->
         <a data-gate-link hidden href="#"
            target="_blank" rel="noopener"
-           class="inline-block bg-phosphor px-10 pl-11 py-4 pb-[0.95rem] font-mono text-[0.72rem] font-medium uppercase tracking-[0.34em] text-twilight no-underline shadow-[0_0_22px_rgb(240_168_61/0.4),0_0_70px_rgb(217_111_55/0.22)] transition-all duration-[350ms] hover:-translate-y-0.5 hover:shadow-[0_0_34px_rgb(240_168_61/0.65),0_0_110px_rgb(217_111_55/0.35)] focus-visible:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold motion-reduce:transition-none">Share it here</a>
+           class="inline-block bg-phosphor px-10 pl-11 py-4 pb-[0.95rem] font-mono text-[0.72rem] font-medium uppercase tracking-[0.34em] text-twilight no-underline shadow-[0_0_22px_rgb(240_168_61/0.4),0_0_70px_rgb(217_111_55/0.22)] transition-all duration-[350ms] hover:-translate-y-0.5 hover:shadow-[0_0_34px_rgb(240_168_61/0.65),0_0_110px_rgb(217_111_55/0.35)] focus-visible:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold motion-reduce:transition-none">Enter the Dojo.</a>
 
         <!-- sealed / closed state -->
         <div data-gate-locked class="inline-block cursor-not-allowed border border-phosphor/20 px-10 pl-11 py-4 pb-[0.95rem] font-mono text-[0.72rem] uppercase tracking-[0.34em] text-dim">Sealed</div>
@@ -163,10 +163,10 @@ challenge:
       locked: "Sealed"
     },
     open: {
-      chip: "OPEN",
+      chip: "REOPENED",
       glyph: "✦",
-      title: "The gate is open",
-      note: "Submit your question and code for review.",
+      title: "The gate has mysteriously reopened",
+      note: "Someone left it ajar. The veil has lifted and your friend's creation appears.",
       locked: "Sealed"
     },
     closed: {
