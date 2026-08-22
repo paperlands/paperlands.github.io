@@ -17,25 +17,14 @@
 
     <!-- ══ HEADER ══════════════════════════════════════════════ -->
     <!-- ══ PODIUM: 2nd · 1st · 3rd ════════════════════════════ -->
-    <div class="mb-4 ">
-      <p class="font-orbitron text-[10px] tracking-[0.25em] text-orange-500 opacity-50 uppercase text-center my-10">
-        THE FINALISTS
-      </p>
-      <div class="flex flex-col lg:flex-row items-end justify-center gap-5 lg:gap-3">
+    <div class="gmff-results">
+      <h2 class="gmff-results__title">Award Winners</h2>
+      <div class="gmff-podium-row">
         {% for pos in display_order %}
           {% assign pos_int = pos | plus: 0 %}
           {% assign film = podium | where: "rank", pos_int | first %}
           {% if film %}
-            {% if pos_int == 1 %}
-        <div class="w-full lg:w-80 flex-shrink-0 pb-10">{% include festivals/gmff/podium_card.html film=film %}</div>
-
-        {% elsif pos_int == 2 %}
-        <div class="w-full lg:w-60 flex-shrink-0 pb-10" >{% include festivals/gmff/podium_card.html film=film %}</div>
-              {% else %}
-
-              
-              <div class="w-full lg:w-60 flex-shrink-0 " >{% include festivals/gmff/podium_card.html film=film %}</div>
-            {% endif %}
+            <div class="podium-position podium-position-{{ pos_int }} {% if pos_int == 1 %}podium-position--winner{% endif %}">{% include festivals/gmff/podium_card.html film=film %}</div>
           {% endif %}
         {% endfor %}
       </div>
@@ -46,7 +35,7 @@
     <div class="my-14 flex items-center gap-4">
       <div class="orange-line flex-1"></div>
       <p class="font-orbitron text-[10px] tracking-[0.28em] text-orange-500 opacity-55 uppercase shrink-0">
-        Official Selection
+        Official Finalists
       </p>
       <div class="orange-line flex-1"></div>
     </div>

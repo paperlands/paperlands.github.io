@@ -6,24 +6,23 @@
 #   rank:      1 | 2 | 3  →  podium tier     null → finalist row
 #   title:     film name
 #   school:    submitting school
-#   video_url: external link (Instagram, TikTok, YouTube …)
-#   platform:  instagram | tiktok | youtube   (drives watch-link label)
+#   video_url: local asset path
 #   members:   list of { name, grade }  — grade optional
 # ─────────────────────────────────────────────────────────────
 
 festival:
   name: "The Gambian Mathematics Film Festival"
-  edition: "2025"
+  edition: "2026"
   date: "May 16th"
   organiser: "Young Mathematician Association"
+  audience: "Secondary Schools"
 
 films:
 
   - rank: 1
     title: "The Doppler Effect"
     school: "Latrikunda Senior Secondary School"
-    video_url: "https://www.instagram.com/reel/DYLXkbmowPq/?igsh=MWtrMXh1MnY0dWR2Yw=="
-    platform: instagram
+    video_url: "/assets/lib/gmff26/1)%20doppler%20effect.mp4"
     members:
       - name: Ramatoulie Barry
         grade: G12
@@ -35,8 +34,7 @@ films:
   - rank: 2
     title: "Composite Shapes"
     school: "Maahad Senior Secondary School"
-    video_url: "https://vt.tiktok.com/ZS9WoMr75"
-    platform: tiktok
+    video_url: "/assets/lib/gmff26/2)%20composite%20shapes.mp4"
     members:
       - name: Abubacarr Bateh
         grade: G10
@@ -48,8 +46,7 @@ films:
   - rank: 3
     title: "Quadratic Equation Solved Geometrically"
     school: "St. Peter's Senior Secondary School"
-    video_url: "https://vm.tiktok.com/ZS9Fbg6KcBqsD-dL5LF/"
-    platform: tiktok
+    video_url: "/assets/lib/gmff26/3)%20Quadratic%20Equation%20solved%20Geometrically.mp4"
     members:
       - name: Dextro Gomez
       - name: Mariam Sawo
@@ -59,8 +56,7 @@ films:
   - rank: null
     title: "Imaginary Numbers"
     school: "Charles Jow Memorial Academy"
-    video_url: "https://www.tiktok.com/@founders.gm/video/7638724109568036116"
-    platform: tiktok
+    video_url: "/assets/lib/gmff26/6)%20Imaginary%20numbers.mp4"
     members:
       - name: Fatou Sowe
         grade: G11
@@ -74,8 +70,7 @@ films:
   - rank: null
     title: "The Arch 22"
     school: "Kanifing East Senior Secondary School"
-    video_url: "https://www.tiktok.com/@islamik___reminder/video/7638659884640111879"
-    platform: tiktok
+    video_url: "/assets/lib/gmff26/5)%20The%20Arch%2022.mp4"
     members:
       - name: Almameh Sawo
         grade: G11
@@ -87,8 +82,7 @@ films:
   - rank: null
     title: "Line of Symmetry"
     school: "Maahad Senior Secondary School"
-    video_url: "https://vt.tiktok.com/ZS9vGt6uL/"
-    platform: tiktok
+    video_url: "/assets/lib/gmff26/4)%20line_of_symmetry.mp4"
     members:
       - name: Mamie Touray
         grade: G10
@@ -100,8 +94,7 @@ films:
   - rank: null
     title: "Concentric Polygons"
     school: "Charles Jow Memorial Academy"
-    video_url: "https://vt.tiktok.com/ZS9TEHH44/"
-    platform: tiktok
+    video_url: "/assets/lib/gmff26/7)%20Concentric%20Polygons.mp4"
     members:
       - name: Abdou Gai Njie
         grade: G11

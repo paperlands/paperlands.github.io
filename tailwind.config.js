@@ -26,6 +26,7 @@ module.exports = {
                 "slide-up": "slideUp 0.8s ease-out",
                 drift: "drift 8s ease-in-out infinite",
                 shimmer: "shimmer 3s ease-in-out infinite",
+                riseUp: "riseUp 0.65s ease both",
             },
             keyframes: {
                 gridScroll: {
@@ -58,6 +59,10 @@ module.exports = {
                 shimmer: {
                     "0%, 100%": { opacity: 0.3 },
                     "50%": { opacity: 0.7 },
+                },
+                riseUp: {
+                    "0%": { opacity: "0", transform: "translateY(28px)" },
+                    "100%": { opacity: "1", transform: "translateY(0)" },
                 },
                 drift: {
                     "0%, 100%": {
@@ -98,6 +103,8 @@ module.exports = {
                 display: ['"Cormorant Garamond"', "Lora", "Georgia", "serif"],
                 body: ["Lora", "Georgia", "serif"],
                 mono: ['"IBM Plex Mono"', ...defaultTheme.fontFamily.mono],
+                orbitron: ["Orbitron", "monospace"],
+                rajdhani: ["Rajdhani", "sans-serif"],
             },
             colors: {
                 twilight: 'rgb(22 15 27 / <alpha-value>)',        /* oklch(0.088 0.0413 315.13) */
