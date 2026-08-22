@@ -33,18 +33,21 @@ permalink: /gmff
   .gmff-hero {
     display: grid;
     place-items: center;
+    min-height: min(760px, 86vh);
     padding: clamp(3rem, 8vw, 6rem) 1.25rem;
     background: var(--gmff-ink);
     color: var(--gmff-paper);
   }
-
   .gmff-hero__frame {
-    width: min(100%, 54rem);
-    text-align: center;
+    display: grid;
+    grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr);
+    align-items: center;
+    gap: clamp(2rem, 6vw, 6rem);
+    width: min(100%, 72rem);
   }
-
+  .gmff-hero__copy { text-align: left; }
   .gmff-hero__eyebrow {
-    margin: 0 0 0.9rem;
+    margin: 0 0 1rem;
     color: var(--gmff-sun);
     font-family: 'Orbitron', sans-serif;
     font-size: 0.63rem;
@@ -52,34 +55,49 @@ permalink: /gmff
     letter-spacing: 0.18em;
     text-transform: uppercase;
   }
-
   .gmff-hero__title {
-    max-width: 22ch;
-    margin: 0 auto 0.75rem;
+    margin: 0 0 1rem;
     color: var(--gmff-paper);
     font-family: 'Orbitron', sans-serif;
-    font-size: clamp(1.75rem, 3.6vw, 3.1rem);
-    letter-spacing: -0.035em;
-    line-height: 1.1;
+    font-size: clamp(2rem, 4.8vw, 4.5rem);
+    letter-spacing: -0.05em;
+    line-height: 1.03;
   }
-
   .gmff-hero__deck {
-    max-width: 38rem;
-    margin: 0 auto 2rem;
+    max-width: 28rem;
+    margin: 0;
     color: #D8CCB8;
     font-family: 'Lora', serif;
-    font-size: clamp(0.95rem, 1.5vw, 1.12rem);
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
     line-height: 1.6;
   }
-
+  .gmff-hero__hint {
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+    margin-top: 2rem;
+    color: var(--gmff-sun);
+    font: .68rem 'Share Tech Mono', monospace;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+  }
+  .gmff-hero__hint::before { content: '▶'; display: inline-grid; flex: 0 0 auto; place-items: center; width: 2.125rem; height: 1.5rem; border-radius: .35rem; background: var(--gmff-sienna); color: var(--gmff-paper); font-size: .58rem; }
+  .gmff-hero__hint:hover { color: var(--gmff-paper); }
+  .gmff-hero__hint:hover::before { background: #9f3d1c; }
   .gmff-hero__stage {
     position: relative;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 16 / 10;
     overflow: hidden;
     background: #17130F;
+    border: 1px solid rgba(242, 166, 90, .45);
     border-left: clamp(0.45rem, 1.2vw, 0.75rem) solid var(--gmff-sienna);
+    box-shadow: 18px 18px 0 rgba(200, 79, 35, .18);
   }
-
   .gmff-hero__poster-frame, .gmff-hero__video {
     position: absolute;
     inset: 0;
@@ -87,73 +105,43 @@ permalink: /gmff
     width: 100%;
     height: 100%;
   }
-
-  .gmff-hero__poster-frame {
-    z-index: 2;
-    background: #17130F;
-  }
-
+  .gmff-hero__poster-frame { z-index: 2; transition: opacity .35s ease, transform .5s ease; }
   .gmff-hero__poster {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    object-position: center;
+    display: block; width: 100%; height: 100%;
+    object-fit: cover; object-position: center;
+    filter: saturate(.8);
   }
-
-  .gmff-hero__video {
-    z-index: 1;
-    border: 0;
-    background: #000;
+  .gmff-hero__poster-frame::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, rgba(16,16,14,.15), rgba(16,16,14,.58));
   }
-
+  .gmff-hero__video { z-index: 1; border: 0; background: #000; opacity: 0; transition: opacity .45s ease; }
   .gmff-hero__play {
-    position: absolute;
-    z-index: 4;
-    top: auto;
-    bottom: clamp(0rem, 4vw, 0.5rem);
-    left: 50%;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.75rem 1rem;
-    border: 1px solid rgba(242, 231, 213, 0.78);
-    background: rgba(16, 16, 14, 0.86);
-    color: var(--gmff-paper);
-    font-family: 'Share Tech Mono', monospace;
-    font-size: clamp(0.64rem, 1.4vw, 0.78rem);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    transform: translateX(-50%);
-    cursor: pointer;
+    position: absolute; z-index: 4; inset: 50% auto auto 50%;
+    display: inline-grid; place-items: center;
+    width: 68px; height: 48px; padding: 0; border: 0; border-radius: 12px;
+    background: var(--gmff-sienna); color: #fff;
+    font: 1.25rem/1 'Arial', sans-serif; letter-spacing: 0;
+    text-transform: uppercase; transform: translate(-50%, -50%);
+    cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,.35);
+    transition: background .2s ease, transform .2s ease;
   }
-
-  .gmff-hero__play:hover { border-color: var(--gmff-sun); color: var(--gmff-sun); }
+  .gmff-hero__play:hover { background: #9f3d1c; color: #fff; transform: translate(-50%, -50%) scale(1.04); }
   .gmff-hero__play:focus-visible { outline: 2px solid var(--gmff-sun); outline-offset: 4px; }
-
-  .gmff-hero__wipe {
-    position: absolute;
-    z-index: 3;
-    inset: 0;
-    background: var(--gmff-sienna);
-    pointer-events: none;
-    transform: translateX(-101%);
-  }
-
+  .gmff-hero__wipe { position: absolute; z-index: 3; inset: 0; background: var(--gmff-sienna); pointer-events: none; transform: translateX(-101%); }
   .gmff-hero__stage.is-transitioning .gmff-hero__wipe { animation: gmff-stage-wipe 300ms ease-in-out both; }
-  .gmff-hero__stage.is-playing .gmff-hero__poster-frame, .gmff-hero__stage.is-playing .gmff-hero__play { visibility: hidden; }
-
-  @keyframes gmff-stage-wipe {
-    0% { transform: translateX(-101%); }
-    50% { transform: translateX(0); }
-    100% { transform: translateX(101%); }
+  .gmff-hero__stage.is-playing .gmff-hero__poster-frame { opacity: 0; transform: scale(1.04); pointer-events: none; }
+  .gmff-hero__stage.is-playing .gmff-hero__video { z-index: 5; opacity: 1; }
+  .gmff-hero__stage.is-playing .gmff-hero__play { display: none; }
+  @keyframes gmff-stage-wipe { 0% { transform: translateX(-101%); } 50% { transform: translateX(0); } 100% { transform: translateX(101%); } }
+  @media (max-width: 720px) {
+    .gmff-hero { min-height: auto; padding: 3.5rem 1rem 4rem; }
+    .gmff-hero__frame { grid-template-columns: 1fr; gap: 2rem; }
+    .gmff-hero__copy { text-align: center; }
+    .gmff-hero__deck { margin-inline: auto; }
+    .gmff-hero__hint { justify-content: center; }
+    .gmff-hero__stage { aspect-ratio: 4 / 3; box-shadow: 10px 10px 0 rgba(200, 79, 35, .18); }
   }
-
-  @media (max-width: 520px) {
-    .gmff-hero { padding: 3rem 1rem; }
-    .gmff-hero__stage { aspect-ratio: 4 / 3; }
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .gmff-hero__stage.is-transitioning .gmff-hero__wipe { animation: none; }
     .gmff-hero *, .gmff-hero *::before, .gmff-hero *::after { transition-duration: 0.01ms !important; }
@@ -162,14 +150,16 @@ permalink: /gmff
  
 <section class="gmff-hero" id="gmff-hero" aria-label="Gambian Mathematics Film Festival">
   <div class="gmff-hero__frame">
-    <p class="gmff-hero__eyebrow">May 16 · 2026</p>
-    <h1 class="gmff-hero__title">Gambian Mathematics Film Festival</h1>
-    <p class="gmff-hero__deck">A celebration of young Gambian curiosity, creativity, and storytelling.</p>
+    <div class="gmff-hero__copy">
+      <p class="gmff-hero__eyebrow">May 16 · 2026</p>
+      <h1 class="gmff-hero__title">Gambian Mathematics Film Festival</h1>
+      <p class="gmff-hero__deck">A celebration of young Gambian curiosity, creativity, and storytelling.</p>
+      <button class="gmff-hero__hint" type="button" data-gmff-hero-play aria-label="Play the festival film">Watch the festival film</button>
+    </div>
     <div class="gmff-hero__stage" data-gmff-hero-stage>
-      <picture class="gmff-hero__poster-frame">
-        <source type="image/webp" srcset="/assets/lib/gmff-720.webp 720w, /assets/lib/gmff-1301.webp 1301w" sizes="(max-width: 520px) calc(100vw - 2rem), 720px" />
-        <img class="gmff-hero__poster" src="/assets/lib/gmff.png" alt="Gambian Mathematics Film Festival poster" width="1301" height="1354" />
-      </picture>
+      <div class="gmff-hero__poster-frame">
+        <img class="gmff-hero__poster" src="https://i.ytimg.com/vi/IT7jGh46MPc/maxresdefault.jpg" alt="Preview of the Gambian Mathematics Film Festival film" width="1280" height="720" />
+      </div>
       <iframe
         class="gmff-hero__video"
         data-gmff-hero-video="https://www.youtube-nocookie.com/embed/IT7jGh46MPc?autoplay=1&rel=0"
@@ -179,13 +169,13 @@ permalink: /gmff
         allowfullscreen
       ></iframe>
       <div class="gmff-hero__wipe" aria-hidden="true"></div>
-      <button class="gmff-hero__play" type="button" data-gmff-hero-play aria-label="Play the festival film">▶ <span>Play the festival film</span></button>
+      <button class="gmff-hero__play" type="button" data-gmff-hero-play aria-label="Play the festival film">▶</button>
     </div>
   </div>
 </section>
 
 <div class="gmff-presenter inline-block">
-  <span class="font-orbitron text-xs tracking-[0.3em] text-orange-400 opacity-60 uppercase block">
+  <span class="font-orbitron text-sm tracking-[0.3em] text-orange-400 opacity-60 uppercase block">
     Young Mathematician Association · Presents with ♡
   </span>
 </div>
@@ -265,6 +255,8 @@ permalink: /gmff
       modal.classList.add('is-open');
       modal.setAttribute('aria-hidden', 'false');
       document.body.classList.add('gmff-modal-open');
+      player.autoplay = true;
+      player.play().catch(() => {});
       close.focus();
     });
   });
@@ -298,25 +290,20 @@ permalink: /gmff
 <script>
 (() => {
   const stage = document.querySelector('[data-gmff-hero-stage]');
-  const play = document.querySelector('[data-gmff-hero-play]');
+  const plays = document.querySelectorAll('[data-gmff-hero-play]');
   const video = stage?.querySelector('[data-gmff-hero-video]');
-  if (!stage || !play || !video) return;
+  if (!stage || !video || !plays.length) return;
 
-  play.addEventListener('click', () => {
-    if (stage.classList.contains('is-transitioning') || stage.classList.contains('is-playing')) return;
-    const startVideo = () => {
+  const startPlayback = () => {
+    if (stage.classList.contains('is-playing') || stage.classList.contains('is-transitioning')) return;
+    stage.classList.add('is-transitioning');
+    window.setTimeout(() => {
       video.src = video.dataset.gmffHeroVideo;
       stage.classList.add('is-playing');
-    };
+      stage.classList.remove('is-transitioning');
+    }, 150);
+  };
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      startVideo();
-      return;
-    }
-
-    stage.classList.add('is-transitioning');
-    window.setTimeout(startVideo, 150);
-    window.setTimeout(() => stage.classList.remove('is-transitioning'), 300);
-  });
+  plays.forEach((play) => play.addEventListener('click', startPlayback));
 })();
 </script>
