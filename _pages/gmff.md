@@ -12,7 +12,7 @@ permalink: /gmff
   .math-dec { color: #c5b9a5; font: 0.7rem 'Share Tech Mono', monospace; letter-spacing: 0.08em; text-align: center; }
 </style>
 <main class="min-h-screen py-12 px-4">
-  <div class="max-w-6xl mx-auto">
+  <div class="max-w-7xl mx-auto">
  
     <!-- Header -->
     <div class="text-center">
@@ -40,12 +40,13 @@ permalink: /gmff
   }
   .gmff-hero__frame {
     display: grid;
-    grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr);
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
     align-items: center;
-    gap: clamp(2rem, 6vw, 6rem);
-    width: min(100%, 72rem);
+    gap: clamp(2rem, 5vw, 5rem);
+    width: min(100%, 80rem);
   }
-  .gmff-hero__copy { text-align: left; }
+  .gmff-hero__copy { min-width: 0; container-type: inline-size; text-align: left; }
+  .gmff-hero__stage { min-width: 0; }
   .gmff-hero__eyebrow {
     margin: 0 0 1rem;
     color: var(--gmff-sun);
@@ -56,12 +57,15 @@ permalink: /gmff
     text-transform: uppercase;
   }
   .gmff-hero__title {
+    max-width: 100%;
     margin: 0 0 1rem;
     color: var(--gmff-paper);
     font-family: 'Orbitron', sans-serif;
-    font-size: clamp(2rem, 4.8vw, 4.5rem);
+    font-size: clamp(2rem, 4vw, 4.5rem);
+    font-size: clamp(2rem, 12cqi, 4.5rem);
     letter-spacing: -0.05em;
     line-height: 1.03;
+    text-wrap: balance;
   }
   .gmff-hero__deck {
     max-width: 28rem;
@@ -134,7 +138,7 @@ permalink: /gmff
   .gmff-hero__stage.is-playing .gmff-hero__video { z-index: 5; opacity: 1; }
   .gmff-hero__stage.is-playing .gmff-hero__play { display: none; }
   @keyframes gmff-stage-wipe { 0% { transform: translateX(-101%); } 50% { transform: translateX(0); } 100% { transform: translateX(101%); } }
-  @media (max-width: 720px) {
+  @media (max-width: 1023px) {
     .gmff-hero { min-height: auto; padding: 3.5rem 1rem 4rem; }
     .gmff-hero__frame { grid-template-columns: 1fr; gap: 2rem; }
     .gmff-hero__copy { text-align: center; }
