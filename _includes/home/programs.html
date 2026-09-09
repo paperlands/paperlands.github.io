@@ -1,0 +1,74 @@
+<section id="programs" class="px-5 py-24 bg-white sm:py-32 lg:px-10 lg:py-40">
+  <div class="mx-auto max-w-[1440px]">
+    <div class="grid gap-10 lg:grid-cols-12">
+      <div class="lg:col-span-4">
+        <div class="lg:sticky lg:top-28">
+          <p class="mb-4 font-mono text-xs uppercase tracking-[0.28em] text-black/45">What can students do?</p>
+          <h2 class="text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl">Embark on a Mathematical Adventure</h2>
+          <p class="mt-6 text-lg leading-8 text-black/60">
+            This medium creates fruitful opportunities for students to pursue curiosity, exercise creativity and develop mathematical communication.
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-6 lg:col-span-8">
+        <article class="grid gap-6 rounded-[1.75rem] bg-[#111] p-6 text-white sm:p-8 md:grid-cols-5">
+          <div class="md:col-span-3">
+            <!-- {% include home/media.html media_type="video" src="/assets/home/programs/inquiry.mp4" alt="Students investigating mathematical ideas and presenting their exploration" fallback="Add inquiry.mp4" height="min-h-[320px]" %} -->
+            {% include home/media.html 
+              media_type="video" 
+              src="/assets/lib/home/programs/inquiry.mp4" 
+              alt="Students investigating mathematical ideas and presenting their exploration" 
+              fallback="Add inquiry.mp4" 
+              height="min-h-[320px]" %}
+          </div>
+          <div class="flex flex-col justify-between md:col-span-2">
+            <div>
+              <p class="font-mono text-xs uppercase tracking-[0.22em] text-[#ffb76f]">01 — Inquiry</p>
+              <h3 class="mt-3 text-3xl font-semibold">Discover Something New</h3>
+              <p class="mt-4 leading-7 text-white/65">Challenge assumptions, investigate questions, test ideas and pursue mathematics beyond the classroom.</p>
+            </div>
+            <div class="pt-5 mt-8 border-t border-white/10">
+              <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-white/35">Culminates in</p>
+              <p class="mt-2 text-sm leading-6 text-white/55">Symposium · Research Presentation · Showcase</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="grid gap-6 rounded-[1.75rem] bg-[#f4eee4] p-6 sm:p-8 md:grid-cols-5">
+          <div class="flex flex-col justify-between md:col-span-2">
+            <div>
+              <p class="font-mono text-xs uppercase tracking-[0.22em] text-[#d36f18]">02 — Appreciation</p>
+              <h3 class="mt-3 text-3xl font-semibold">Create With Mathematics</h3>
+              <p class="mt-4 leading-7 text-black/60">Explore the contours of mathematical ideas and use them to create works of art. Discover hidden beauty through animations, modelling, visualisation and creative expression.</p>
+            </div>
+            <div class="pt-5 mt-8 border-t border-black/10">
+              <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-black/35">Culminates in</p>
+              <p class="mt-2 text-sm leading-6 text-black/55">Math Film Festival · Creative Showcase · Exhibition</p>
+            </div>
+          </div>
+          <div class="md:col-span-3">
+            {% include home/media.html media_type="video" src="/assets/home/programs/appreciation.mp4" alt="Students creating and sharing mathematical visual work" fallback="Add appreciation.mp4" height="min-h-[320px]" %}
+          </div>
+        </article>
+
+        <article class="grid gap-6 rounded-[1.75rem] border border-black/10 bg-white p-6 sm:p-8 md:grid-cols-5">
+          <div class="md:col-span-3">
+            {% include home/media.html media_type="video" src="/assets/home/programs/leadership.mp4" alt="Students preparing and leading mathematical learning for peers" fallback="Add leadership.mp4" height="min-h-[320px]" %}
+          </div>
+          <div class="flex flex-col justify-between md:col-span-2">
+            <div>
+              <p class="font-mono text-xs uppercase tracking-[0.22em] text-[#d36f18]">03 — Leadership</p>
+              <h3 class="mt-3 text-3xl font-semibold">Learn By Teaching</h3>
+              <p class="mt-4 leading-7 text-black/60">The human connection matters more than ever in the AI era. The ability to communicate, teach and influence others to think about mathematics remains a crucial part of mathematical leadership.</p>
+            </div>
+            <div class="pt-5 mt-8 border-t border-black/10">
+              <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-black/35">Culminates in</p>
+              <p class="mt-2 text-sm leading-6 text-black/55">Student-led Workshop · Peer Teaching · Presentation</p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>

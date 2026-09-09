@@ -1,0 +1,10 @@
+{% assign ph_height = include.height | default: "min-h-[360px]" %}
+<div class="{{ ph_height }} relative flex w-full items-center justify-center overflow-hidden rounded-[1.5rem] border border-dashed border-white/25 bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-800 p-8 text-white shadow-xl">
+  <div class="relative max-w-xl text-center">
+    <div class="mb-4 font-mono text-[11px] uppercase tracking-[0.28em] text-[#ffb76f]">{{ include.type }}</div>
+    <div class="text-lg font-semibold leading-snug sm:text-xl">{{ include.title }}</div>
+    {% if include.description %}
+      <p class="mx-auto mt-3 max-w-lg text-sm leading-6 text-white/60">{{ include.description }}</p>
+    {% endif %}
+  </div>
+</div>
