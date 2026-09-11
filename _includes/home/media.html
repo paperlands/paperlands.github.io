@@ -12,14 +12,32 @@
   </div>
 
   {% if media_type == "video" %}
+    {% assign video_sources = include.sources | default: include.src | split: "," %}
     <video
       class="absolute inset-0 h-full w-full"
       style="object-fit: {{ media_fit }}; object-position: {{ media_position }};"
       autoplay muted loop playsinline preload="metadata"
       {% if include.poster %}poster="{{ include.poster }}"{% endif %}
       aria-label="{{ include.alt }}"
+      onerror="this.style.display='none'"
     >
-      <source src="{{ include.src }}" type="video/mp4" onerror="this.parentElement.style.display='none'">
+      {% for raw_src in video_sources %}
+        {% assign video_src = raw_src | strip %}
+        {% if video_src != "" %}
+          {% assign ext = video_src | split: "." | last | downcase %}
+          {% case ext %}
+            {% when "webm" %}
+              {% assign video_mime = "video/webm" %}
+            {% when "ogg" or "ogv" %}
+              {% assign video_mime = "video/ogg" %}
+            {% when "mov" %}
+              {% assign video_mime = "video/quicktime" %}
+            {% else %}
+              {% assign video_mime = "video/mp4" %}
+          {% endcase %}
+          <source src="{{ video_src }}" type="{{ video_mime }}">
+        {% endif %}
+      {% endfor %}
     </video>
   {% else %}
     <img
