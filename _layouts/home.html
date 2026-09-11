@@ -1,9 +1,13 @@
 ---
+onlytailwind: true
+lora_weights: "400;500;600;700"
+google_fonts: "family=IBM+Plex+Mono:wght@400"
 ---
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="motion-safe:scroll-smooth">
   {% include head.html %}
-  <body class="m-0 max-w-none overflow-x-hidden bg-[#f6f1e8] p-0 font-sans text-[#171717]">
+  <!-- Preserve baseline body metrics without loading legacy page styles. -->
+  <body class="m-0 max-w-none overflow-x-hidden bg-[#f6f1e8] p-0 font-body text-base leading-[1.7] text-[#171717] min-[820px]:text-[1.2rem]">
     {% include home/nav.html %}
     <main>{{ content }}</main>
     {% include home/footer.html %}

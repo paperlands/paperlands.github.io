@@ -7,7 +7,7 @@
 
   <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.title }}{% endif %}">
 
-{% if page.onlytailwind  %}
+{% if page.onlytailwind or layout.onlytailwind %}
   <link rel="stylesheet" href="{{ "/assets/css/app.css" | relative_url }}">
   {% else %}
   <link rel="stylesheet" href="{{ "/assets/css/app.css" | relative_url }}">
@@ -17,7 +17,7 @@
       rel="stylesheet"
       href="assets/css/paper.min.css"
     /> -->
-  <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lora{% if layout.lora_weights %}:wght@{{ layout.lora_weights }}{% endif %}&display=swap" rel="stylesheet">
   {% if layout.google_fonts %}<link href="https://fonts.googleapis.com/css2?{{ layout.google_fonts }}&display=swap" rel="stylesheet">{% endif %}
 
   <meta property="og:site_name" content="{{ site.title }}">

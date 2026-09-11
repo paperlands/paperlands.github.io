@@ -20,7 +20,7 @@
   <div class="cf-turnstile" data-sitekey="0x4AAAAAACugliz5rFIg0aRA" data-theme="light"></div>
   </div>
   
-  <button type="submit" class="px-4 py-2 text-white rounded-md bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary">{% if include.button_text %}{{ include.button_text }}{% else %}Book a call{% endif %}</button>
+  <button type="submit" class="px-4 py-2 {{ include.button_text_class | default: 'text-white' }} rounded-md bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary">{% if include.button_text %}{{ include.button_text }}{% else %}Book a call{% endif %}</button>
 </form>
 
 <div class="fixed z-50 hidden bottom-4 right-4" id="toast-good">

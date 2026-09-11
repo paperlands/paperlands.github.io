@@ -4,13 +4,6 @@
 {% assign media_position = include.position | default: "center" %}
 
 <div class="{{ media_height }} relative w-full overflow-hidden rounded-[1.5rem] bg-neutral-900">
-  <div class="absolute inset-0 flex items-center justify-center border border-dashed border-white/20 bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-800 p-8 text-center text-white">
-    <div>
-      <p class="font-mono text-[10px] uppercase tracking-[0.22em] text-[#ffb76f]">Asset pending</p>
-      <p class="mt-2 text-sm text-white/50">{{ include.fallback }}</p>
-    </div>
-  </div>
-
   {% if media_type == "video" %}
     {% assign video_sources = include.sources | default: include.src | split: "," %}
     <video
