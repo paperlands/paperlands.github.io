@@ -10,11 +10,13 @@
     </div>
 
     <div class="contact-form-wrap">
-      <div class="contact-form-intro">
-        <p class="editorial-label">Start a conversation</p>
-        <p>Tell us a little about your organisation and what you would like your students to explore.</p>
+      <div class="contact-form-inner">
+        <div class="contact-form-intro">
+          <p class="editorial-label">Start a conversation</p>
+          <p>Tell us a little about your organisation and what you would like your students to explore.</p>
+        </div>
+        {% include contact_form.html button_text_class="text-white" form_class="home-contact-form" %}
       </div>
-      {% include contact_form.html button_text_class="text-black" form_class="home-contact-form" %}
     </div>
   </div>
 </section>

@@ -11,11 +11,15 @@
     <p>Coding mathematical visualisations made accessible for students.</p>
     <div class="home-opening-hero__actions">
       <a class="home-opening-hero__primary internal-link" href="/#work-with-us">Talk to us</a>
-      <a class="home-opening-hero__secondary" href="https://dojo.paperland.sg/welcome">Enter PaperLand <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 13 13 3M3 3h10v10"/></svg></a>
+      <a class="home-opening-hero__secondary" href="https://dojo.paperland.sg/welcome">Enter PaperLand {% include home/icon-arrow.html direction="external" %}</a>
     </div>
   </div>
   <button class="home-opening-hero__playback" type="button" aria-controls="home-opening-video" hidden>
-    <span aria-hidden="true">▷</span> <span data-playback-label>Play video</span>
+    <span class="home-opening-hero__playback-icon" aria-hidden="true">
+      <svg data-playback-play viewBox="0 0 12 12" focusable="false"><path d="M3 2.25 9.5 6 3 9.75V2.25Z" fill="none" stroke="currentColor" stroke-width="1.15" /></svg>
+      <svg data-playback-pause viewBox="0 0 12 12" focusable="false" hidden><path d="M3.5 2v8M8.5 2v8" fill="none" stroke="currentColor" stroke-width="1.25" /></svg>
+    </span>
+    <span data-playback-label>Play video</span>
   </button>
 </section>
 <script>
@@ -23,11 +27,13 @@
   const video = document.getElementById('home-opening-video');
   const button = document.querySelector('.home-opening-hero__playback');
   const label = button.querySelector('[data-playback-label]');
-  const icon = button.firstElementChild;
+  const playIcon = button.querySelector('[data-playback-play]');
+  const pauseIcon = button.querySelector('[data-playback-pause]');
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const sync = () => {
     label.textContent = video.paused ? 'Play video' : 'Pause video';
-    icon.textContent = video.paused ? '▷' : 'Ⅱ';
+    playIcon.hidden = !video.paused;
+    pauseIcon.hidden = video.paused;
   };
   video.controls = false;
   button.hidden = false;

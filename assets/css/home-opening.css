@@ -1,4 +1,9 @@
 /* Scoped to the homepage opening. The approved sections below are untouched. */
+.home-document,
+.home-page-body {
+  background: #191b18;
+}
+
 .home-opening-nav {
   position: absolute;
   inset: 0 0 auto;
@@ -11,7 +16,8 @@
   height: 88px;
   max-width: 1440px;
   margin-inline: auto;
-  padding-inline: 40px;
+  padding-left: max(40px, env(safe-area-inset-left));
+  padding-right: max(40px, env(safe-area-inset-right));
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -82,7 +88,7 @@ the centre of the footage stays clear. */
   width: 100%;
   max-width: 1440px;
   margin-inline: auto;
-  padding: 180px 40px 128px;
+  padding: 180px max(40px, env(safe-area-inset-right)) 128px max(40px, env(safe-area-inset-left));
 }
 .home-opening-hero h1 {
   margin: 0;
@@ -151,6 +157,16 @@ the centre of the footage stays clear. */
   line-height: 1.5;
   color: #e0e1dc;
 }
+.home-opening-hero__playback-icon,
+.home-opening-hero__playback-icon svg {
+  display: block;
+  width: 12px;
+  height: 12px;
+  flex: none;
+}
+.home-opening-hero__playback-icon svg[hidden] {
+  display: none;
+}
 .home-opening-hero__playback[hidden] {
   display: none;
 }
@@ -168,14 +184,16 @@ the centre of the footage stays clear. */
 }
 @media (max-width: 1023px) {
   .home-opening-nav__inner {
-    padding-inline: 28px;
+    padding-left: max(28px, env(safe-area-inset-left));
+    padding-right: max(28px, env(safe-area-inset-right));
     height: 80px;
   }
   .home-opening-nav__links {
     gap: 24px;
   }
   .home-opening-hero__content {
-    padding-inline: 28px;
+    padding-left: max(28px, env(safe-area-inset-left));
+    padding-right: max(28px, env(safe-area-inset-right));
   }
   .home-opening-hero__playback {
     right: 28px;
