@@ -11,23 +11,13 @@
         A computational MathLand creates fruitful opportunities for students to discover patterns, investigate hypotheses and share the beauty of mathematics.
       </p>
 
-      <div class="programs-mini-route" aria-hidden="true">
-        <span>01</span><i></i><span>02</span><i></i><span>03</span>
-      </div>
     </header>
 
     <div class="program-sequence" aria-label="Construct, collaborate and communicate">
-      <div class="program-route" aria-hidden="true">
-        <span class="program-route-node program-route-node--1"></span>
-        <span class="program-route-node program-route-node--2"></span>
-        <span class="program-route-node program-route-node--3"></span>
-      </div>
-
       <article class="program-step program-step--construct">
         <div class="program-step-heading">
-          <div class="program-number" aria-hidden="true">01</div>
           <div class="program-story">
-            <p class="program-stage"><span>01</span> Construct</p>
+            <p class="program-stage">Construct</p>
             <h3>Create unique visualisations</h3>
             <p class="program-description">
               Learn to code by building mathematical objects students can manipulate, observe and investigate for themselves.
@@ -46,7 +36,7 @@
           <span class="program-corner program-corner--top" aria-hidden="true"></span>
           <video
             data-program-video
-            autoplay muted loop playsinline preload="metadata"
+            muted loop playsinline preload="none"
             poster="/assets/lib/home/programs/construct-poster.jpg"
             aria-label="Students coding, creating mathematical visualisations and investigating ideas using PaperLand"
           >
@@ -57,9 +47,8 @@
 
       <article class="program-step program-step--collaborate">
         <div class="program-step-heading">
-          <div class="program-number" aria-hidden="true">02</div>
           <div class="program-story">
-            <p class="program-stage"><span>02</span> Collaborate</p>
+            <p class="program-stage">Collaborate</p>
             <h3>Cross-pollination of ideas</h3>
             <p class="program-description">
               Explore alongside like-minded friends, compare what you notice and let one idea spark the next.
@@ -77,7 +66,7 @@
           <span class="program-corner program-corner--bottom" aria-hidden="true"></span>
           <video
             data-program-video
-            autoplay muted loop playsinline preload="metadata"
+            muted loop playsinline preload="none"
             poster="/assets/lib/home/programs/collaborate-poster.jpg"
             aria-label="Students discussing mathematical ideas, comparing observations and exploring together"
           >
@@ -88,9 +77,8 @@
 
       <article class="program-step program-step--communicate">
         <div class="program-step-heading">
-          <div class="program-number" aria-hidden="true">03</div>
           <div class="program-story">
-            <p class="program-stage"><span>03</span> Communicate</p>
+            <p class="program-stage">Communicate</p>
             <h3>Share and Present</h3>
             <p class="program-description">
               Take discoveries beyond the screen and share the beauty of mathematics through experiences created for others.
@@ -108,7 +96,7 @@
           <span class="program-corner program-corner--top" aria-hidden="true"></span>
           <video
             data-program-video
-            autoplay muted loop playsinline preload="metadata"
+            muted loop playsinline preload="none"
             poster="/assets/lib/home/programs/communicate-poster.jpg"
             aria-label="Students presenting, exhibiting and sharing mathematics with their wider community"
           >
@@ -124,19 +112,50 @@
     </div>
   </div>
 
-  <div class="programs-transition" aria-hidden="true">
-    <span class="programs-transition-line"></span>
-    <span class="programs-transition-pulse"></span>
-  </div>
 </section>
 
 <script>
   (() => {
+    const videos = [...document.querySelectorAll('[data-program-video]')];
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (!reducedMotion.matches) return;
-    document.querySelectorAll('[data-program-video]').forEach((video) => {
-      video.removeAttribute('autoplay');
-      video.pause();
+
+    if (reducedMotion.matches || !('IntersectionObserver' in window)) {
+      videos.forEach((video) => video.pause());
+      return;
+    }
+
+    const visibility = new Map(videos.map((video) => [video, 0]));
+
+    const updatePlayback = () => {
+      const activeVideo = document.hidden
+        ? null
+        : videos.reduce((mostVisible, video) => {
+            if (visibility.get(video) < 0.55) return mostVisible;
+            if (!mostVisible || visibility.get(video) > visibility.get(mostVisible)) return video;
+            return mostVisible;
+          }, null);
+
+      videos.forEach((video) => {
+        if (video !== activeVideo) {
+          video.pause();
+          return;
+        }
+
+        video.muted = true;
+        const playback = video.play();
+        if (playback) playback.catch(() => {});
+      });
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => visibility.set(entry.target, entry.intersectionRatio));
+      updatePlayback();
+    }, {
+      threshold: [0, 0.35, 0.55, 0.75, 1],
+      rootMargin: '0px 0px -8% 0px',
     });
+
+    videos.forEach((video) => observer.observe(video));
+    document.addEventListener('visibilitychange', updatePlayback);
   })();
 </script>
