@@ -1,0 +1,110 @@
+/* Local visual study: Programs and Student Reflection only. */
+.home-programs, .home-reflection { background: #faf8f3; color: #191b18; }
+.programs-inner, .reflection-inner { max-width: 1440px; margin-inline: auto; padding-inline: 40px; }
+.home-programs { padding-top: 112px; }
+.home-programs .editorial-meta, .home-reflection .editorial-meta { font-family: 'IBM Plex Mono', monospace; font-size: .75rem; line-height: 1.6; letter-spacing: .16em; text-transform: uppercase; color: #59564e; }
+.programs-intro { display: grid; grid-template-columns: 1.2fr 1fr; align-items: end; gap: 100px; padding-bottom: 80px; }
+.programs-intro h2 { max-width: 660px; margin-top: 22px; font-size: clamp(3rem, 4.6vw, 4.25rem); line-height: 1.08; letter-spacing: -.04em; font-weight: 500; text-wrap: balance; }
+.programs-intro-description { max-width: 470px; padding-bottom: 3px; font-size: 1.125rem; line-height: 1.8; color: #474840; }
+.program-step { display: grid; grid-template-columns: 5fr 7fr; gap: 72px; align-items: center; border-top: 1px solid #cecac1; padding-block: 56px; }
+.program-story { max-width: 430px; }
+.program-label { display: flex; align-items: center; gap: 18px; margin-bottom: 22px; }
+.program-number { font-size: 3.5rem; line-height: 1; letter-spacing: -.055em; color: #ab481d; font-weight: 400; }
+.program-label .editorial-meta { color: #91401c; }
+.program-story h3 { font-size: clamp(2rem, 3vw, 2.875rem); font-weight: 500; line-height: 1.13; letter-spacing: -.035em; text-wrap: balance; }
+.program-description { margin-top: 22px; max-width: 390px; color: #474840; font-size: 1.0625rem; line-height: 1.8; }
+.program-media { min-width: 0; background: #191b18; }
+.program-media video { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+.program-step--2 { grid-template-columns: 7fr 5fr; }
+.program-step--2 .program-story { grid-column: 2; grid-row: 1; justify-self: end; }
+.program-step--2 .program-media { grid-column: 1; grid-row: 1; }
+.program-step--2 video { aspect-ratio: 16 / 9; }
+.program-culmination { margin-top: 28px; padding-top: 18px; border-top: 1px solid #d8d3ca; }
+.program-culmination > p:last-child { margin-top: 8px; color: #59564e; font-size: .875rem; line-height: 1.8; }
+.home-reflection { padding-block: 12px 96px; }
+.reflection-grid { display: grid; grid-template-columns: 7fr 5fr; align-items: center; gap: 72px; border-top: 1px solid #cecac1; padding-top: 64px; }
+.reflection-frame { background: #191b18; }
+.reflection-video { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: contain; }
+.reflection-quote { margin: 24px 0 0; font-size: clamp(1.5rem, 2.2vw, 2rem); font-weight: 400; line-height: 1.4; letter-spacing: -.025em; }
+.reflection-attribution { margin-top: 24px; color: #59564e; font-size: .875rem; }
+.program-media video:focus-visible, .reflection-video:focus-visible { outline: 2px solid #91401c; outline-offset: 5px; }
+@media (max-width: 1100px) {
+  .programs-intro { gap: 48px; }
+  .program-step, .reflection-grid { gap: 40px; }
+  .program-number { font-size: 3rem; }
+}
+@media (max-width: 1023px) {
+  .programs-inner, .reflection-inner { padding-inline: 28px; }
+  .home-programs { padding-top: 80px; }
+  .programs-intro { gap: 32px; padding-bottom: 56px; }
+  .programs-intro h2 { font-size: 3rem; }
+  .programs-intro-description { font-size: 1rem; }
+  .program-step { gap: 32px; padding-block: 40px; }
+  .program-label { gap: 12px; }
+  .program-story h3 { font-size: 2rem; }
+  .program-description { font-size: 1rem; margin-top: 18px; }
+  .reflection-grid { grid-template-columns: 1fr 1fr; gap: 32px; padding-top: 48px; }
+}
+@media (max-width: 699px) {
+  .programs-inner, .reflection-inner { padding-inline: 20px; }
+  .home-programs { padding-top: 64px; }
+  .programs-intro { display: block; padding-bottom: 40px; }
+  .programs-intro h2 { font-size: 2.75rem; max-width: 390px; margin-top: 18px; }
+  .programs-intro-description { margin-top: 24px; max-width: 430px; line-height: 1.75; }
+  .program-step, .program-step--2 { display: flex; flex-direction: column; align-items: stretch; gap: 28px; padding-block: 32px; }
+  .program-story { max-width: none; }
+  .program-label { margin-bottom: 18px; gap: 16px; }
+  .program-number { font-size: 2.75rem; }
+  .program-story h3 { max-width: 350px; font-size: 2rem; }
+  .program-description { max-width: 430px; line-height: 1.75; }
+  .program-media video { aspect-ratio: 16 / 10; }
+  .program-step--2 video { aspect-ratio: 16 / 9; }
+  .program-culmination { margin-top: 24px; }
+  .home-reflection { padding-block: 8px 64px; }
+  .reflection-grid { display: flex; flex-direction: column; align-items: stretch; gap: 28px; padding-top: 36px; }
+  .reflection-quote { font-size: 1.625rem; line-height: 1.4; margin-top: 18px; }
+  .reflection-attribution { margin-top: 20px; }
+}
+
+/* Chapters share one reading axis. The sequence alone determines grid height;
+   the introduction sticks within that grid, never within an extra scroll track. */
+.programs-inner { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 72px; align-items: start; }
+.programs-intro { display: block; position: sticky; top: 40px; padding-bottom: 0; }
+.programs-intro h2 { font-size: clamp(2.75rem, 3.6vw, 3.25rem); }
+.programs-intro-description { margin-top: 28px; font-size: 1.0625rem; }
+.program-sequence { min-width: 0; }
+.program-step, .program-step--2 { display: block; padding-block: 36px 48px; }
+.program-step:first-child { padding-top: 0; border-top: 0; }
+.program-story, .program-step--2 .program-story { max-width: none; width: 100%; justify-self: stretch; }
+.program-label { margin-bottom: 18px; }
+.program-story h3 { font-size: clamp(2rem, 3vw, 2.75rem); text-wrap: initial; }
+.program-description { max-width: 580px; margin-top: 16px; }
+.program-media { margin-top: 28px; }
+.program-media video, .program-step--2 video { aspect-ratio: 16 / 9; object-fit: contain; }
+.program-culmination { max-width: 580px; margin-top: 20px; padding-top: 14px; }
+.program-step:last-child { padding-bottom: 0; }
+/* One explicit inter-section pause, independent of chapter or sticky height. */
+.home-reflection { padding-top: 40px; }
+.reflection-grid { padding-top: 40px; }
+@media (max-width: 1199px) {
+  .programs-inner { display: block; }
+  .programs-intro { position: static; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: end; padding-bottom: 48px; }
+  .programs-intro-description { margin-top: 0; }
+  .program-story { display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; }
+  .program-label { grid-column: 1 / -1; }
+  .program-description { margin-top: 0; }
+  .program-culmination { grid-column: 2; }
+  .program-media { margin-top: 28px; }
+}
+@media (max-width: 699px) {
+  .programs-intro, .program-story { display: block; }
+  .programs-intro { padding-bottom: 36px; }
+  .programs-intro h2 { font-size: 2.75rem; }
+  .programs-intro-description { margin-top: 24px; font-size: 1rem; }
+  .program-step, .program-step--2 { padding-block: 28px 32px; }
+  .program-story h3 { font-size: 2rem; }
+  .program-description { margin-top: 18px; }
+  .program-media { margin-top: 24px; }
+  .home-reflection { padding-top: 28px; }
+  .reflection-grid { padding-top: 28px; }
+}

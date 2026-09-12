@@ -1,0 +1,266 @@
+/* Scoped to the homepage opening. The approved sections below are untouched. */
+.home-opening-nav {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 50;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.home-opening-nav__inner {
+  height: 88px;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+.home-opening-nav__brand {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+.home-opening-nav__brand img {
+  width: 160px;
+  height: auto;
+  filter: brightness(0) invert(1);
+}
+.home-opening-nav__links {
+  display: flex;
+  gap: 36px;
+}
+.home-opening-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.home-opening-nav a:hover {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+}
+.home-opening-nav__menu {
+  display: none;
+}
+.home-opening-nav a:focus-visible,
+.home-opening-nav summary:focus-visible,
+.home-opening-hero a:focus-visible,
+.home-opening-hero button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 5px;
+}
+.home-opening-hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: flex-end;
+  min-height: 700px;
+  height: 100svh;
+  background: #191b18;
+  color: #fff;
+}
+.home-opening-hero__video {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 42%;
+}
+/* Contrast follows the overlaid text;
+the centre of the footage stays clear. */
+.home-opening-hero__shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(ellipse 70% 58% at 0% 67%, #10151080 0%, #1015104d 45%, #10151000 100%), linear-gradient(180deg, #101510a3 0%, #10151000 24%), linear-gradient(0deg, #101510d9 0%, #10151099 22%, #10151026 48%, #10151000 68%);
+}
+.home-opening-hero__content {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding: 180px 40px 128px;
+}
+.home-opening-hero h1 {
+  margin: 0;
+  font-size: clamp(68px, 7.5vw, 108px);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -.045em;
+}
+.home-opening-hero__content p {
+  max-width: 570px;
+  text-wrap: balance;
+  margin: 24px 0 0;
+  font-size: 22px;
+  line-height: 1.5;
+  color: #f6f1e8;
+}
+.home-opening-hero__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px 28px;
+  margin-top: 28px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.home-opening-hero__actions a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+}
+.home-opening-hero__primary {
+  padding: 12px 24px;
+  background: #f6f1e8;
+  color: #191b18;
+}
+.home-opening-hero__primary:hover {
+  background: #fff;
+}
+.home-opening-hero__secondary {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-color: #ffffff80;
+  gap: 7px;
+  white-space: nowrap;
+}
+.home-opening-hero__secondary svg {
+  width: 12px;
+  height: 12px;
+  flex: none;
+}
+.home-opening-hero__secondary:hover {
+  text-decoration-color: #fff;
+}
+.home-opening-hero__playback {
+  position: absolute;
+  right: max(40px, calc((100% - 1360px) / 2));
+  bottom: 64px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 0 8px 12px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  line-height: 1.5;
+  color: #e0e1dc;
+}
+.home-opening-hero__playback[hidden] {
+  display: none;
+}
+.home-opening-hero__playback:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+/* Native controls remain available if JavaScript does not run. */
+.home-opening-hero:has(video[controls]) .home-opening-hero__content {
+  padding-bottom: 100px;
+  pointer-events: none;
+}
+.home-opening-hero:has(video[controls]) .home-opening-hero__actions a {
+  pointer-events: auto;
+}
+@media (max-width: 1023px) {
+  .home-opening-nav__inner {
+    padding-inline: 28px;
+    height: 80px;
+  }
+  .home-opening-nav__links {
+    gap: 24px;
+  }
+  .home-opening-hero__content {
+    padding-inline: 28px;
+  }
+  .home-opening-hero__playback {
+    right: 28px;
+  }
+}
+@media (max-width: 639px) {
+  .home-opening-nav__inner {
+    height: calc(76px + env(safe-area-inset-top));
+    padding-top: env(safe-area-inset-top);
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
+  }
+  .home-opening-nav__brand img {
+    width: 148px;
+  }
+  .home-opening-nav__links {
+    display: none;
+  }
+  .home-opening-nav__menu {
+    display: block;
+  }
+  .home-opening-nav__menu summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    cursor: pointer;
+    list-style: none;
+  }
+  .home-opening-nav__menu summary::-webkit-details-marker {
+    display: none;
+  }
+  .home-opening-nav__menu[open] summary span {
+    transform: rotate(45deg);
+  }
+  .home-opening-nav__drawer {
+    position: absolute;
+    inset: calc(76px + env(safe-area-inset-top)) 0 auto;
+    padding: 12px 20px 20px;
+    background: #f6f1e8;
+    color: #191b18;
+  }
+  .home-opening-nav__drawer a {
+    display: flex;
+    min-height: 48px;
+  }
+  .home-opening-nav__drawer a:focus-visible {
+    outline-color: #191b18;
+  }
+  .home-opening-hero {
+    min-height: max(640px, 100svh);
+    height: 100svh;
+    height: 100dvh;
+  }
+  .home-opening-hero__video {
+    object-position: 60% 42%;
+  }
+  .home-opening-hero__content {
+    padding: 144px max(20px, env(safe-area-inset-right)) calc(clamp(144px, 20svh, 180px) + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+  }
+  .home-opening-hero h1 {
+    font-size: clamp(36px, 11.5vw, 68px);
+    line-height: 1.06;
+    letter-spacing: -.04em;
+  }
+  .home-opening-hero__content p {
+    max-width: 360px;
+    margin-top: 22px;
+    font-size: 18px;
+    line-height: 1.55;
+  }
+  .home-opening-hero__actions {
+    gap: 12px 22px;
+    margin-top: 24px;
+  }
+  .home-opening-hero__primary {
+    padding-inline: 20px;
+  }
+  .home-opening-hero__playback {
+    right: max(20px, env(safe-area-inset-right));
+    bottom: max(20px, env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 359px) {
+  .home-opening-hero__actions { gap: 12px 16px; }
+  .home-opening-hero__primary { padding-inline: 16px; }
+}

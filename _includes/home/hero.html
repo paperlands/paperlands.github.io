@@ -1,38 +1,54 @@
-<section class="relative flex min-h-[100svh] items-end overflow-hidden bg-black pt-16 text-white">
-  <div class="absolute inset-0">
-    <div class="flex items-center justify-center h-full px-5 pt-20 lg:px-10">
-      <div class="h-full max-h-[82vh] w-full max-w-[1440px] opacity-75">
-        {% include home/media.html
-          media_type="video"
-          src="/assets/lib/home/hero/hero.mp4"
-          poster="/assets/lib/landing/3DWaves.webp"
-          alt="Students using PaperLand to explore mathematics"
-          fallback="Add hero-loop.mp4 and hero-poster.jpg"
-          height="min-h-[70vh] h-full"
-        %}
-        <!-- {% include home/media.html
-          media_type="video"
-          src="/assets/home/hero/hero-loop.mp4"
-          poster="/assets/home/hero/hero-poster.jpg"
-          alt="Students using PaperLand to explore mathematics"
-          fallback="Add hero-loop.mp4 and hero-poster.jpg"
-          height="min-h-[70vh] h-full"
-        %} -->
-      </div>
-    </div>
-    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-black/10"></div>
-  </div>
-
-  <div class="relative z-10 mx-auto w-full max-w-[1440px] px-5 pb-14 lg:px-10 lg:pb-20">
-    <div class="max-w-5xl">
-      <h1 class="text-5xl font-semibold leading-[0.95] tracking-[-0.045em] sm:text-7xl lg:text-[6.7rem]">
-        <!-- Reimagine Mathematics -->
-         Mathematics Reimagined
-      </h1>
-      <p class="max-w-3xl text-xl leading-8 mt-7 text-white/75 sm:text-2xl">
-        <!-- A computational approach to create mathematical objects, play with them and discover their hidden beauty. -->
-        Coding mathematical visualisations made accessible for students. 
-      </p>
+<section class="home-opening-hero" aria-labelledby="home-opening-title">
+  <video id="home-opening-video" class="home-opening-hero__video"
+    muted loop playsinline preload="metadata" controls
+    poster="/assets/lib/landing/3DWaves.webp"
+    aria-label="Students using PaperLand to explore mathematics">
+    <source src="/assets/lib/home/hero/hero.mp4" type="video/mp4">
+  </video>
+  <div class="home-opening-hero__shade" aria-hidden="true"></div>
+  <div class="home-opening-hero__content">
+    <h1 id="home-opening-title">Mathematics<br>Reimagined</h1>
+    <p>Coding mathematical visualisations made accessible for students.</p>
+    <div class="home-opening-hero__actions">
+      <a class="home-opening-hero__primary internal-link" href="/#work-with-us">Talk to us</a>
+      <a class="home-opening-hero__secondary" href="https://dojo.paperland.sg/welcome">Enter PaperLand <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 13 13 3M3 3h10v10"/></svg></a>
     </div>
   </div>
+  <button class="home-opening-hero__playback" type="button" aria-controls="home-opening-video" hidden>
+    <span aria-hidden="true">▷</span> <span data-playback-label>Play video</span>
+  </button>
 </section>
+<script>
+(() => {
+  const video = document.getElementById('home-opening-video');
+  const button = document.querySelector('.home-opening-hero__playback');
+  const label = button.querySelector('[data-playback-label]');
+  const icon = button.firstElementChild;
+  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const sync = () => {
+    label.textContent = video.paused ? 'Play video' : 'Pause video';
+    icon.textContent = video.paused ? '▷' : 'Ⅱ';
+  };
+  video.controls = false;
+  button.hidden = false;
+  video.addEventListener('play', sync);
+  video.addEventListener('pause', sync);
+  button.addEventListener('click', () => {
+    if (video.paused) video.play().catch(sync);
+    else video.pause();
+  });
+  // Never start motion before checking the visitor's preference.
+  if (!motion.matches) video.play().catch(sync);
+  motion.addEventListener('change', () => {
+    if (motion.matches) video.pause();
+  });
+  const menu = document.querySelector('.home-opening-nav__menu');
+  menu.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      menu.open = false;
+      menu.querySelector('summary').focus();
+    }
+  });
+  menu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => { menu.open = false; }));
+})();
+</script>

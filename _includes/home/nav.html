@@ -1,66 +1,20 @@
-<header class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/70 text-white backdrop-blur-md">
-  <div class="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-5 lg:px-10">
-    <a href="/" class="flex items-center" aria-label="PaperLand home">
-      <img src="/assets/bannerpaperlang.png" alt="PaperLand" class="h-8 w-auto brightness-0 invert">
+<header class="home-opening-nav">
+  <div class="home-opening-nav__inner">
+    <a href="/" class="home-opening-nav__brand" aria-label="PaperLand home">
+      <img src="/assets/bannerpaperlang.png" alt="PaperLand" width="160" height="32">
     </a>
-
-    <nav class="hidden items-center gap-7 text-sm lg:flex" aria-label="Primary navigation">
-      <a href="/approach" class="text-white/75 transition hover:text-white">
-        Our Approach
-      </a>
-      <a href="/an" class="text-white/75 transition hover:text-white">
-        Offline Download
-      </a>
-      <a href="/#programs" class="text-white/75 transition hover:text-white">
-        Programs
-      </a>
+    <nav class="home-opening-nav__links" aria-label="Primary navigation">
+      <a href="/approach">Our Approach</a>
+      <a href="/an">Offline Download</a>
+      <a href="/#programs">Programs</a>
     </nav>
-
-    <div class="hidden items-center gap-3 lg:flex">
-      <a href="https://dojo.paperland.sg/welcome"
-         class="hidden text-sm text-white/75 transition hover:text-white md:inline">
-        Enter PaperLand ↗
-      </a>
-
-      <a href="/#work-with-us"
-         class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-black transition hover:bg-white/90">
-        Talk to us
-      </a>
-    </div>
-
-    <details class="relative lg:hidden">
-      <summary class="cursor-pointer list-none rounded-full border border-white/20 px-4 py-2 text-sm font-medium text-white">
-        Menu
-      </summary>
-
-      <div class="absolute right-0 mt-3 w-64 overflow-hidden rounded-2xl border border-white/10 bg-[#111] p-2 shadow-2xl">
-        <a href="/approach"
-           class="block rounded-xl px-4 py-3 text-sm text-white/75 hover:bg-white/5 hover:text-white">
-          Our Approach
-        </a>
-
-        <a href="/an"
-           class="block rounded-xl px-4 py-3 text-sm text-white/75 hover:bg-white/5 hover:text-white">
-          Offline Download
-        </a>
-
-        <a href="/#programs"
-           class="block rounded-xl px-4 py-3 text-sm text-white/75 hover:bg-white/5 hover:text-white">
-          Programs
-        </a>
-
-        <div class="my-2 border-t border-white/10"></div>
-
-        <a href="https://dojo.paperland.sg/welcome"
-           class="block rounded-xl px-4 py-3 text-sm text-white/75 hover:bg-white/5 hover:text-white">
-          Enter PaperLand ↗
-        </a>
-
-        <a href="/#work-with-us"
-           class="mt-1 block rounded-xl bg-white px-4 py-3 text-center text-sm font-semibold text-black">
-          Talk to us
-        </a>
-      </div>
+    <details class="home-opening-nav__menu">
+      <summary>Menu <span aria-hidden="true">+</span></summary>
+      <nav class="home-opening-nav__drawer" aria-label="Mobile navigation">
+        <a href="/approach">Our Approach</a>
+        <a href="/an">Offline Download</a>
+        <a href="/#programs">Programs</a>
+      </nav>
     </details>
   </div>
 </header>
