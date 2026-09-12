@@ -1,41 +1,33 @@
-<section id="student-reflection" class="px-5 py-20 bg-white sm:py-24 lg:px-10 lg:py-28">
-  <div class="mx-auto max-w-[1200px]">
+<section id="student-reflection" class="home-reflection" aria-labelledby="reflection-label">
+  <div class="reflection-inner">
+    <p id="reflection-label" class="reflection-label"><span aria-hidden="true">//</span> Student reflection</p>
 
-    <div class="grid gap-8 lg:grid-cols-12 lg:items-center">
-
-      <!-- Video -->
-      <div class="lg:col-span-7">
-        <div class="overflow-hidden rounded-[1.75rem] bg-black">
-          {% assign reflection_poster = site.static_files | where: "path", "/assets/lib/home/reflections/tanha-poster.jpg" | first %}
-          <video
-            class="object-cover w-full aspect-video"
-            src="/assets/lib/home/reflections/tanha.mp4"
-            {% if reflection_poster %}poster="{{ reflection_poster.path | relative_url }}"{% endif %}
-            controls
-            playsinline
-            preload="metadata"
-          >
-            Your browser does not support the video tag.
-          </video>
-        </div>
+    <div class="reflection-grid">
+      <div class="reflection-media">
+        <span class="reflection-corner reflection-corner--top" aria-hidden="true"></span>
+        <span class="reflection-corner reflection-corner--bottom" aria-hidden="true"></span>
+        {% assign reflection_poster = site.static_files | where: "path", "/assets/lib/home/reflections/tanha-poster.jpg" | first %}
+        <video
+          class="reflection-video"
+          src="/assets/lib/home/reflections/tanha.mp4"
+          {% if reflection_poster %}poster="{{ reflection_poster.path | relative_url }}"{% endif %}
+          controls
+          playsinline
+          preload="metadata"
+        >
+          Your browser does not support the video tag.
+        </video>
       </div>
 
-      <!-- Reflection -->
-      <div class="lg:col-span-4 lg:col-start-9">
-        <p class="font-mono text-xs uppercase tracking-[0.28em] text-black/55">
-          Student reflection
-        </p>
-
-        <blockquote class="mt-5 text-3xl font-semibold leading-[1.18] tracking-[-0.03em] text-black sm:text-4xl">
+      <div class="reflection-story">
+        <div class="reflection-mark" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </div>
+        <blockquote>
           “... just that the stuff that I learned in school is like very applicable here, and I like that ... I learn something new every day, so that's definitely nice!”
         </blockquote>
-
-        <p class="mt-6 text-sm text-black/55">
-          Secondary 2 student
-        </p>
+        <p class="reflection-attribution">Secondary 2 student</p>
       </div>
-
     </div>
-
   </div>
 </section>
