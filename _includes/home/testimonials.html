@@ -17,6 +17,9 @@
         >
           Your browser does not support the video tag.
         </video>
+        <button class="reflection-play" type="button" aria-label="Play student reflection">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m9 6 9 6-9 6V6Z" fill="currentColor" /></svg>
+        </button>
       </div>
 
       <div class="reflection-story">
@@ -31,3 +34,23 @@
     </div>
   </div>
 </section>
+
+<script>
+  (() => {
+    const video = document.querySelector('.reflection-video');
+    const playButton = document.querySelector('.reflection-play');
+    if (!video || !playButton) return;
+
+    const syncPlayAffordance = () => {
+      playButton.hidden = !video.paused && !video.ended;
+    };
+
+    playButton.addEventListener('click', () => {
+      const playback = video.play();
+      if (playback) playback.catch(() => {});
+    });
+
+    ['play', 'pause', 'ended'].forEach((eventName) => video.addEventListener(eventName, syncPlayAffordance));
+    syncPlayAffordance();
+  })();
+</script>
