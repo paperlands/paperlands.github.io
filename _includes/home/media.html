@@ -9,7 +9,7 @@
     <video
       class="absolute inset-0 h-full w-full"
       style="object-fit: {{ media_fit }}; object-position: {{ media_position }};"
-      autoplay muted loop playsinline preload="metadata"
+      data-editorial-video muted loop playsinline preload="none"
       {% if include.poster %}poster="{{ include.poster }}"{% endif %}
       aria-label="{{ include.alt }}"
       onerror="this.style.display='none'"

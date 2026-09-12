@@ -1,101 +1,42 @@
-<footer class="bg-black px-5 py-12 text-white lg:px-10 lg:py-16">
-  <div class="mx-auto max-w-[1440px]">
-    <div class="grid gap-10 border-b border-white/10 pb-10 lg:grid-cols-12 lg:pb-12">
-
-      <div class="lg:col-span-5">
-        <a href="/" class="inline-flex" aria-label="PaperLand home">
-          <img src="/assets/bannerpaperlang.png" alt="PaperLand" class="h-9 w-auto brightness-0 invert">
+<footer class="home-footer">
+  <div class="footer-inner">
+    <div class="footer-primary">
+      <div class="footer-identity">
+        <a href="/" class="footer-logo" aria-label="PaperLand home">
+          <img src="/assets/bannerpaperlang.png" alt="PaperLand">
         </a>
-
-        <p class="mt-5 max-w-md text-2xl font-semibold leading-tight tracking-[-0.02em] text-white">
-          Reimagine Mathematics Exploration
-        </p>
-
-        <p class="mt-4 max-w-md text-sm leading-6 text-white/55">
-          A computational approach for students to play with mathematical ideas, create with them, and make their beauty visible.
-        </p>
+        <p class="footer-statement">Reimagine Mathematics Exploration</p>
+        <p class="footer-description">A computational approach for students to play with mathematical ideas, create with them, and make their beauty visible.</p>
       </div>
 
-      <div class="grid gap-8 sm:grid-cols-2 lg:col-span-4">
+      <nav class="footer-nav" aria-label="Footer navigation">
         <div>
-          <p class="font-mono text-[10px] uppercase tracking-[0.22em] text-white/55">
-            Explore
-          </p>
-
-          <div class="mt-4 flex flex-col gap-3 text-sm">
-            <a href="/approach" class="text-white/60 transition hover:text-white">
-              Our Approach
-            </a>
-            <a href="/an" class="text-white/60 transition hover:text-white">
-              Offline Download
-            </a>
-            <a href="/#programs" class="text-white/60 transition hover:text-white">
-              Programs
-            </a>
-            <a href="https://dojo.paperland.sg/welcome"
-               class="text-white/60 transition hover:text-white">
-              Enter PaperLand ↗
-            </a>
-            <a href="/#work-with-us" class="text-white/60 transition hover:text-white">
-              Talk to us
-            </a>
-          </div>
+          <p class="editorial-label">Explore</p>
+          <a href="/approach">Our Approach</a>
+          <a href="/an">Offline Download</a>
+          <a href="/#programs">Programs</a>
+          <a href="https://dojo.paperland.sg/welcome">Enter PaperLand <span aria-hidden="true">↗</span></a>
+          <a href="/#work-with-us">Talk to us</a>
         </div>
-
         <div>
-          <p class="font-mono text-[10px] uppercase tracking-[0.22em] text-white/55">
-            Follow
-          </p>
-
-          <div class="mt-4 flex flex-col gap-3 text-sm">
-            <a href="https://www.youtube.com/@realPaperLand"
-               target="_blank"
-               rel="noopener noreferrer"
-               class="text-white/60 transition hover:text-white">
-              YouTube ↗
-            </a>
-            <a href="https://www.linkedin.com/company/paperlands"
-               target="_blank"
-               rel="noopener noreferrer"
-               class="text-white/60 transition hover:text-white">
-              LinkedIn ↗
-            </a>
-            <a href="https://www.instagram.com/paperland.sg/"
-               target="_blank"
-               rel="noopener noreferrer"
-               class="text-white/60 transition hover:text-white">
-              Instagram ↗
-            </a>
-            <a href="https://www.tiktok.com/@paperland.sg"
-               target="_blank"
-               rel="noopener noreferrer"
-               class="text-white/60 transition hover:text-white">
-              TikTok ↗
-            </a>
-          </div>
+          <p class="editorial-label">Follow</p>
+          <a href="https://www.youtube.com/@realPaperLand" target="_blank" rel="noopener noreferrer">YouTube <span aria-hidden="true">↗</span></a>
+          <a href="https://www.linkedin.com/company/paperlands" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
+          <a href="https://www.instagram.com/paperland.sg/" target="_blank" rel="noopener noreferrer">Instagram <span aria-hidden="true">↗</span></a>
+          <a href="https://www.tiktok.com/@paperland.sg" target="_blank" rel="noopener noreferrer">TikTok <span aria-hidden="true">↗</span></a>
         </div>
+      </nav>
+
+      <div class="footer-invitation">
+        <p class="editorial-label">Work with us</p>
+        <p>Curious what this could look like for your students?</p>
+        <a href="/#work-with-us">Talk to us <span aria-hidden="true">→</span></a>
       </div>
-
-      <div class="lg:col-span-3">
-        <p class="font-mono text-[10px] uppercase tracking-[0.22em] text-white/55">
-          Work with us
-        </p>
-
-        <p class="mt-4 text-sm leading-6 text-white/50">
-          Curious what this could look like for your students?
-        </p>
-
-        <a href="/#work-with-us"
-           class="mt-5 inline-flex rounded-full bg-white px-5 py-3 text-sm font-semibold text-black transition hover:bg-white/90">
-          Talk to us
-        </a>
-      </div>
-
     </div>
 
-    <div class="flex flex-col gap-3 pt-6 text-xs text-white/55 sm:flex-row sm:items-center sm:justify-between">
+    <div class="footer-meta">
       <p>© {{ 'now' | date: "%Y" }} PaperLand</p>
-      <a href="/" class="transition hover:text-white/60">Back to home ↑</a>
+      <a href="/">Back to home <span aria-hidden="true">↑</span></a>
     </div>
   </div>
 </footer>

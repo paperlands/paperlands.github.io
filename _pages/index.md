@@ -12,6 +12,7 @@ nav_color: white
 {% include home/hero.html %}
 {% include home/programs.html %}
 {% include home/testimonials.html %}
+{% include home/different.html %}
 {% include home/explorations.html %}
 {% include home/library.html %}
 {% include home/contactus.html %}

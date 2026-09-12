@@ -1,44 +1,85 @@
-<section id="explore" class="bg-[#101010] px-5 py-24 text-white sm:py-32 lg:px-10 lg:py-36">
-  <div class="mx-auto max-w-[1440px]">
-    <div class="grid gap-8 lg:grid-cols-12 lg:items-end">
-      <div class="lg:col-span-8">
-        <p class="mb-4 font-mono text-xs uppercase tracking-[0.28em] text-[#ffb76f]">What's possible?</p>
-        <h2 class="text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl lg:text-7xl">Familiar concepts. New possibilities.</h2>
-      </div>
-      <div class="lg:col-span-4">
-        <p class="text-lg leading-8 text-white/55">Start with ideas students already meet in mathematics, then use computation to see how far they can go!</p>
-      </div>
-    </div>
-
-    <div class="grid gap-5 mt-14 md:grid-cols-2 lg:mt-20 lg:grid-cols-12">
-      <div class="lg:col-span-7">
-        {% include home/media.html media_type="video" src="/assets/lib/landing/fibonacci_spiral.webm" alt="A computational exploration of number patterns" fallback="Add number-patterns.mp4" height="min-h-[360px] lg:min-h-[500px]" %}
-        <p class="mt-3 font-mono text-xs uppercase tracking-[0.2em] text-white/55">Number Patterns</p>
-      </div>
-      <div class="lg:col-span-5">
-        {% include home/media.html media_type="video" src="/assets/lib/landing/tree_fractal.webm" alt="A computational exploration of recursion" fallback="Add recursion.mp4" height="min-h-[360px] lg:min-h-[500px]" %}
-        <p class="mt-3 font-mono text-xs uppercase tracking-[0.2em] text-white/55">Recursion &amp; Fractals</p>
-      </div>
-      <div class="lg:col-span-4">
-        {% include home/media.html media_type="video" src="/assets/lib/home/explorations/pursuit.mp4" alt="A computational exploration of pursuit curves" fallback="Add pursuit-curves.mp4" height="min-h-[300px]" %}
-        <p class="mt-3 font-mono text-xs uppercase tracking-[0.2em] text-white/55">Pursuit Curves</p>
-      </div>
-      <div class="lg:col-span-4">
-        {% include home/media.html media_type="video" src="/assets/lib/home/explorations/chaos-game.mp4" alt="A chaos game generating a fractal" fallback="Add chaos-fractals.mp4" height="min-h-[300px]" %}
-        <p class="mt-3 font-mono text-xs uppercase tracking-[0.2em] text-white/55">Randomness &amp; Chaos Games</p>
-      </div>
-      <div class="lg:col-span-4">
-        {% include home/media.html media_type="video" src="/assets/lib/landing/sine_curve_with_code.webm" alt="A computational exploration of trigonometric oscillations" fallback="Add oscillations.mp4" height="min-h-[300px]" %}
-        <p class="mt-3 font-mono text-xs uppercase tracking-[0.2em] text-white/55">Trigonometry &amp; Oscillations</p>
-      </div>
-    </div>
-
-    <div class="flex flex-col gap-6 pt-8 mt-16 border-t border-white/10 sm:flex-row sm:items-end sm:justify-between lg:mt-20">
+<section id="explore" class="home-explorations" aria-labelledby="explorations-title">
+  <div class="editorial-inner">
+    <header class="editorial-intro editorial-intro--dark">
       <div>
-        <p class="text-2xl font-semibold tracking-[-0.02em] sm:text-3xl">And we're only getting started.</p>
-        <p class="max-w-2xl mt-2 text-sm leading-6 text-white/55">We are continually developing new ways for students to explore mathematics through computation.</p>
+        <p class="editorial-eyebrow">What's possible?</p>
+        <h2 id="explorations-title" class="editorial-heading">Familiar concepts. New possibilities.</h2>
       </div>
-      <a href="/lesson-plans" class="inline-flex items-center justify-center px-5 py-3 text-sm font-semibold text-black transition bg-white rounded-full shrink-0 hover:bg-white/90">Explore lesson plans →</a>
+      <p>Start with ideas students already meet in mathematics, then use computation to see how far they can go!</p>
+    </header>
+
+    <div class="explorations-grid">
+      <figure class="exploration exploration--number-patterns">
+        <div class="exploration-media">
+          {% include home/media.html media_type="video" src="/assets/lib/landing/fibonacci_spiral.webm" alt="A computational exploration of number patterns" fallback="Add number-patterns.mp4" height="min-h-[360px]" %}
+        </div>
+        <figcaption class="editorial-label">Number Patterns</figcaption>
+      </figure>
+
+      <figure class="exploration exploration--recursion">
+        <div class="exploration-media">
+          {% include home/media.html media_type="video" src="/assets/lib/landing/tree_fractal.webm" alt="A computational exploration of recursion" fallback="Add recursion.mp4" height="min-h-[360px]" %}
+        </div>
+        <figcaption class="editorial-label">Recursion &amp; Fractals</figcaption>
+      </figure>
+
+      <figure class="exploration">
+        <div class="exploration-media">
+          {% include home/media.html media_type="video" src="/assets/lib/home/explorations/pursuit.mp4" alt="A computational exploration of pursuit curves" fallback="Add pursuit-curves.mp4" height="min-h-[300px]" %}
+        </div>
+        <figcaption class="editorial-label">Pursuit Curves</figcaption>
+      </figure>
+
+      <figure class="exploration">
+        <div class="exploration-media">
+          {% include home/media.html media_type="video" src="/assets/lib/home/explorations/chaos-game.mp4" alt="A chaos game generating a fractal" fallback="Add chaos-fractals.mp4" height="min-h-[300px]" %}
+        </div>
+        <figcaption class="editorial-label">Randomness &amp; Chaos Games</figcaption>
+      </figure>
+
+      <figure class="exploration">
+        <div class="exploration-media">
+          {% include home/media.html media_type="video" src="/assets/lib/landing/sine_curve_with_code.webm" alt="A computational exploration of trigonometric oscillations" fallback="Add oscillations.mp4" height="min-h-[300px]" %}
+        </div>
+        <figcaption class="editorial-label">Trigonometry &amp; Oscillations</figcaption>
+      </figure>
+    </div>
+
+    <div class="editorial-closing editorial-closing--dark explorations-closing">
+      <div>
+        <p class="explorations-closing-title">And we're only getting started.</p>
+        <p>We are continually developing new ways for students to explore mathematics through computation.</p>
+      </div>
+      <a href="/lesson-plans">Explore lesson plans <span aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>
+
+<script>
+  (() => {
+    const videos = [...document.querySelectorAll('[data-editorial-video]')];
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    if (reducedMotion.matches || !('IntersectionObserver' in window)) {
+      videos.forEach((video) => video.pause());
+      return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (document.hidden || !entry.isIntersecting || entry.intersectionRatio < 0.35) {
+          entry.target.pause();
+          return;
+        }
+        entry.target.muted = true;
+        const playback = entry.target.play();
+        if (playback) playback.catch(() => {});
+      });
+    }, { threshold: [0, 0.35, 0.7], rootMargin: '10% 0px' });
+
+    videos.forEach((video) => observer.observe(video));
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) videos.forEach((video) => video.pause());
+    });
+  })();
+</script>

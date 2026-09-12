@@ -1,182 +1,71 @@
-<section id="library" class="bg-[#f6f1e8] px-5 py-24 sm:py-32 lg:px-10 lg:py-36">
-  <div class="mx-auto max-w-[1440px]">
-
-    <div class="grid gap-8 lg:grid-cols-12 lg:items-end">
-      <div class="lg:col-span-8">
-        <p class="mb-4 font-mono text-xs uppercase tracking-[0.28em] text-black/55">
-          Want to go deeper?
-        </p>
-
-        <h2 class="text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl">
-          Ideas and stories from PaperLand
-        </h2>
+<section id="library" class="home-library" aria-labelledby="library-title">
+  <div class="editorial-inner">
+    <header class="editorial-intro">
+      <div>
+        <p class="editorial-eyebrow">Want to go deeper?</p>
+        <h2 id="library-title" class="editorial-heading">Ideas and stories from PaperLand</h2>
       </div>
+      <p>Read our thinking, follow stories from the field and watch mathematical ideas come to life.</p>
+    </header>
 
-      <div class="lg:col-span-4">
-        <p class="text-lg leading-8 text-black/60">
-          Read our thinking, follow stories from the field and watch mathematical ideas come to life.
-        </p>
-      </div>
-    </div>
-
-    <div class="grid gap-5 mt-14 lg:mt-20 lg:grid-cols-12">
-
-      <!-- Featured blog -->
-      <article class="overflow-hidden rounded-[1.75rem] bg-[#111] text-white lg:col-span-7">
-        <a href="/beginnings" class="block group">
-          <div class="p-5 sm:p-6">
-            <div class="relative min-h-[320px] overflow-hidden rounded-[1.5rem] bg-neutral-900 lg:min-h-[420px]">
-              <img
-                src="/assets/lib/kids.jpg"
-                alt="Beginnings"
-                class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.02]"
-                loading="lazy"
-              >
-              <div class="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent"></div>
-            </div>
+    <div class="library-layout">
+      <article class="library-feature">
+        <a href="/beginnings" class="library-feature-link">
+          <div class="library-feature-media">
+            <img src="/assets/lib/kids.jpg" alt="Beginnings" loading="lazy">
           </div>
-
-          <div class="px-6 pb-7 sm:px-8 sm:pb-8">
-            <div class="flex items-center gap-3">
-              <p class="font-mono text-xs uppercase tracking-[0.22em] text-[#ffb76f]">
-                Blog
-              </p>
-              <span class="text-xs text-white/55">July 21, 2024</span>
+          <div class="library-feature-copy">
+            <div class="library-meta">
+              <p class="editorial-label">Blog</p>
+              <span>July 21, 2024</span>
             </div>
-
-            <h3 class="mt-3 max-w-2xl text-3xl font-semibold leading-tight tracking-[-0.025em]">
-              Beginnings
-            </h3>
-
-            <p class="max-w-2xl mt-4 leading-7 text-white/60">
-              On computation as a medium for thinking, interacting, teaching and learning together.
-            </p>
-
-            <span class="inline-flex mt-6 text-sm font-semibold underline underline-offset-4">
-              Read the blog →
-            </span>
+            <h3>Beginnings</h3>
+            <p>On computation as a medium for thinking, interacting, teaching and learning together.</p>
+            <span class="editorial-text-link">Read the blog <span aria-hidden="true">→</span></span>
           </div>
         </a>
       </article>
 
-      <div class="grid gap-5 lg:col-span-5">
-
-        <!-- Story -->
-        <article class="rounded-[1.75rem] border border-black/10 bg-white p-5 sm:p-6">
-          <a
-            href="https://www.youtube.com/watch?v=aJ8Me8VZU8c"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="block group"
-          >
-            <div class="relative min-h-[220px] overflow-hidden rounded-[1.5rem] bg-neutral-900">
-              <img
-                src="https://img.youtube.com/vi/aJ8Me8VZU8c/hqdefault.jpg"
-                alt="The National Young Gambian Math Leaders"
-                class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.02]"
-                loading="lazy"
-              >
-
-              <div class="absolute inset-0 flex items-center justify-center transition bg-black/10 group-hover:bg-black/20">
-                <div class="flex items-center justify-center text-lg text-black bg-white rounded-full shadow-lg h-14 w-14">
-                  ▶
-                </div>
-              </div>
+      <div class="library-secondary">
+        <article class="library-item">
+          <a href="https://www.youtube.com/watch?v=aJ8Me8VZU8c" target="_blank" rel="noopener noreferrer">
+            <div class="library-item-media">
+              <img src="https://img.youtube.com/vi/aJ8Me8VZU8c/hqdefault.jpg" alt="The National Young Gambian Math Leaders" loading="lazy">
+              <span class="library-play" aria-hidden="true">▶</span>
             </div>
-
-            <div class="pt-5">
-              <p class="font-mono text-xs uppercase tracking-[0.22em] text-[#a65312]">
-                Story
-              </p>
-
-              <h3 class="mt-3 text-2xl font-semibold tracking-[-0.02em]">
-                YMA × PaperLand
-              </h3>
-
-              <p class="mt-2 text-sm font-medium text-black/55">
-                The National Young Gambian Math Leaders
-              </p>
-
-              <p class="mt-3 leading-7 text-black/55">
-                Follow the story of young mathematical leaders building, exploring and sharing mathematics with their communities.
-              </p>
-
-              <span class="inline-flex mt-5 text-sm font-semibold underline underline-offset-4">
-                Watch the story ↗
-              </span>
+            <div class="library-item-copy">
+              <p class="editorial-label">Story</p>
+              <h3>YMA × PaperLand</h3>
+              <p class="library-kicker">The National Young Gambian Math Leaders</p>
+              <p>Follow the story of young mathematical leaders building, exploring and sharing mathematics with their communities.</p>
+              <span class="editorial-text-link">Watch the story <span aria-hidden="true">↗</span></span>
             </div>
           </a>
         </article>
 
-        <!-- Video creation -->
-        <article class="rounded-[1.75rem] border border-black/10 bg-white p-5 sm:p-6">
-          <a
-            href="https://www.youtube.com/watch?v=7WFR32Q6ZE0"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="block group"
-          >
-            <div class="relative min-h-[220px] overflow-hidden rounded-[1.5rem] bg-neutral-900">
-              <img
-                src="https://img.youtube.com/vi/7WFR32Q6ZE0/hqdefault.jpg"
-                alt="What if we forget sine?"
-                class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.02]"
-                loading="lazy"
-              >
-
-              <div class="absolute inset-0 flex items-center justify-center transition bg-black/10 group-hover:bg-black/20">
-                <div class="flex items-center justify-center text-lg text-black bg-white rounded-full shadow-lg h-14 w-14">
-                  ▶
-                </div>
-              </div>
+        <article class="library-item">
+          <a href="https://www.youtube.com/watch?v=7WFR32Q6ZE0" target="_blank" rel="noopener noreferrer">
+            <div class="library-item-media">
+              <img src="https://img.youtube.com/vi/7WFR32Q6ZE0/hqdefault.jpg" alt="What if we forget sine?" loading="lazy">
+              <span class="library-play" aria-hidden="true">▶</span>
             </div>
-
-            <div class="pt-5">
-              <p class="font-mono text-xs uppercase tracking-[0.22em] text-[#a65312]">
-                Video
-              </p>
-
-              <h3 class="mt-3 text-2xl font-semibold tracking-[-0.02em]">
-                What if we forget sine?
-              </h3>
-
-              <p class="mt-3 leading-7 text-black/55">
-                A mathematical thought experiment brought to life through visual storytelling.
-              </p>
-
-              <span class="inline-flex mt-5 text-sm font-semibold underline underline-offset-4">
-                Watch the video ↗
-              </span>
+            <div class="library-item-copy">
+              <p class="editorial-label">Video</p>
+              <h3>What if we forget sine?</h3>
+              <p>A mathematical thought experiment brought to life through visual storytelling.</p>
+              <span class="editorial-text-link">Watch the video <span aria-hidden="true">↗</span></span>
             </div>
           </a>
         </article>
-
       </div>
     </div>
 
-    <div class="flex flex-col gap-5 mt-12 border-t border-black/10 pt-7 sm:flex-row sm:items-center sm:justify-between">
-      <p class="max-w-2xl text-sm leading-6 text-black/55">
-        More ideas, reflections, creations and stories from our mathematical adventures.
-      </p>
-
-      <div class="flex flex-wrap gap-3">
-        <a
-          href="/blog"
-          class="inline-flex items-center justify-center px-5 py-3 text-sm font-semibold text-black transition border rounded-full border-black/15 hover:border-black/35"
-        >
-          Read more →
-        </a>
-
-        <a
-          href="https://www.youtube.com/@realPaperLand"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center justify-center px-5 py-3 text-sm font-semibold text-black transition border rounded-full border-black/15 hover:border-black/35"
-        >
-          Watch more ↗
-        </a>
+    <div class="editorial-closing library-closing">
+      <p>More ideas, reflections, creations and stories from our mathematical adventures.</p>
+      <div class="library-links">
+        <a href="/blog">Read more <span aria-hidden="true">→</span></a>
+        <a href="https://www.youtube.com/@realPaperLand" target="_blank" rel="noopener noreferrer">Watch more <span aria-hidden="true">↗</span></a>
       </div>
     </div>
-
   </div>
 </section>

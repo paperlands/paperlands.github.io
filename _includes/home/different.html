@@ -1,67 +1,58 @@
-<section id="different" class="bg-[#f6f1e8] px-5 py-20 sm:py-24 lg:px-10 lg:py-28">
-  <div class="mx-auto max-w-[1440px]">
-    <div class="grid gap-8 lg:grid-cols-12 lg:items-end">
-      <div class="lg:col-span-8">
-        <p class="mb-4 font-mono text-xs uppercase tracking-[0.28em] text-black/45">Why a computational approach</p>
-        <h2 class="text-4xl font-semibold leading-[1.02] tracking-[-0.035em] sm:text-6xl">
-          A new medium for exploring mathematics
-        </h2>
+<section id="different" class="home-different" aria-labelledby="different-title">
+  <div class="editorial-inner">
+    <header class="different-intro">
+      <div>
+        <p class="editorial-eyebrow">Why a computational approach</p>
+        <h2 id="different-title" class="editorial-heading">A new medium for exploring mathematics</h2>
       </div>
-      <div class="lg:col-span-4">
-        <p class="text-lg leading-8 text-black/60">
-          "What a computer is to me is the most remarkable tool that we have ever come up with, and it's the equivalent of a bicycle for our minds"<br>
-          ~ Steve Jobs
-        </p>
+
+      <blockquote class="different-quote">
+        <p>"What a computer is to me is the most remarkable tool that we have ever come up with, and it's the equivalent of a bicycle for our minds"</p>
+        <cite>~ Steve Jobs</cite>
+      </blockquote>
+    </header>
+
+    <div class="different-composition">
+      <article class="different-idea different-idea--primary">
+        <div class="different-media">
+          {% include home/media.html media_type="video" src="/assets/lib/landing/fibonacci_spiral.webm" alt="A mathematical object being constructed step by step" fallback="Add thinking-by-building.mp4" height="min-h-[210px]" %}
+        </div>
+        <div class="different-copy">
+          <p class="editorial-label">Thinking by building</p>
+          <p>Ever thought you understood something until you tried writing it down?
+            Coding does the same for mathematics: forcing students to examine each step and how it shapes the whole.</p>
+        </div>
+      </article>
+
+      <div class="different-secondary">
+        <article class="different-idea">
+          <div class="different-media different-media--wide">
+            {% include home/media.html media_type="video" src="/assets/lib/landing/polygon_fill.webm" alt="A mathematical sequence changing when its rule changes" fallback="Add freedom-to-experiment.mp4" height="min-h-[210px]" %}
+          </div>
+          <div class="different-copy">
+            <p class="editorial-label">Freedom to Experiment</p>
+            <p>What happens if Fibonacci adds the 2nd and 3rd most recent terms instead?
+              Challenge the rule, see what happens, and don't take the formula for granted.</p>
+          </div>
+        </article>
+
+        <article class="different-idea">
+          <div class="different-media different-media--wide">
+            {% include home/media.html media_type="video" src="/assets/lib/landing/sine_curve_with_code.webm" alt="A creative mathematical model inspired by the world around us" fallback="Add unlimited-creativity.mp4" height="min-h-[210px]" %}
+          </div>
+          <div class="different-copy">
+            <p class="editorial-label">Unlimited Creativity</p>
+            <p>How can I make my tree more lifelike?
+              Modelling the world around us invites students to notice, use and reshape the mathematics hidden within it.</p>
+          </div>
+        </article>
       </div>
     </div>
 
-    <div class="mt-12 grid gap-px overflow-hidden rounded-[1.5rem] border border-black/10 bg-black/10 md:grid-cols-3 lg:mt-16">
-      <article class="bg-[#111] p-6 text-white sm:p-8">
-        <div class="mb-6">
-          <!-- {% include home/media.html media_type="video" src="/assets/home/approach/thinking-by-building.mp4" alt="A mathematical object being constructed step by step" fallback="Add thinking-by-building.mp4" height="min-h-[210px]" %} -->
-          {% include home/media.html 
-            media_type="video" 
-            src="/assets/lib/landing/fibonacci_spiral.webm" 
-            alt="A mathematical object being constructed step by step" fallback="Add thinking-by-building.mp4" height="min-h-[210px]" %}
-        </div>
-        <p class="font-mono text-xs uppercase tracking-[0.22em] text-[#ffb76f]">Thinking by building</p>
-        <p class="mt-3 leading-7 text-white/65">
-          Ever thought you understood something until you tried writing it down?
-          Coding does the same for mathematics: forcing students to examine each step and how it shapes the whole.
-        </p>
-      </article>
-
-      <article class="bg-[#111] p-6 text-white sm:p-8">
-        <div class="mb-6">
-          <!-- {% include home/media.html media_type="video" src="/assets/home/approach/freedom-to-experiment.mp4" alt="A mathematical sequence changing when its rule changes" fallback="Add freedom-to-experiment.mp4" height="min-h-[210px]" %} -->
-          {% include home/media.html media_type="video" src="/assets/lib/landing/polygon_fill.webm" alt="A mathematical sequence changing when its rule changes" fallback="Add freedom-to-experiment.mp4" height="min-h-[210px]" %}
-        </div>
-        <p class="font-mono text-xs uppercase tracking-[0.22em] text-[#ffb76f]">Freedom to Experiment</p>
-        <p class="mt-3 leading-7 text-white/65">
-          What happens if Fibonacci adds the 2nd and 3rd most recent terms instead?
-          Challenge the rule, see what happens, and don't take the formula for granted.
-        </p>
-      </article>
-
-      <article class="bg-[#111] p-6 text-white sm:p-8">
-        <div class="mb-6">
-          <!-- {% include home/media.html media_type="video" src="/assets/home/approach/unlimited-creativity.mp4" alt="A creative mathematical model inspired by the world around us" fallback="Add unlimited-creativity.mp4" height="min-h-[210px]" %} -->
-          {% include home/media.html media_type="video" src="/assets/lib/landing/sine_curve_with_code.webm" alt="A creative mathematical model inspired by the world around us" fallback="Add unlimited-creativity.mp4" height="min-h-[210px]" %}
-        </div>
-        <p class="font-mono text-xs uppercase tracking-[0.22em] text-[#ffb76f]">Unlimited Creativity</p>
-        <p class="mt-3 leading-7 text-white/65">
-          How can I make my tree more lifelike?
-          Modelling the world around us invites students to notice, use and reshape the mathematics hidden within it.
-        </p>
-      </article>
-    </div>
-
-    <div class="flex flex-col gap-4 pt-6 mt-8 border-t border-black/10 sm:flex-row sm:items-center sm:justify-between">
-      <p class="max-w-3xl text-sm leading-6 text-black/55">
-        Students shouldn't have to wait until university to experience mathematics as something they can explore, build and create with.
-        PaperLand is making computational mathematical exploration accessible much earlier.
-      </p>
-      <a href="/approach" class="text-sm font-semibold underline shrink-0 underline-offset-4">Explore our approach →</a>
+    <div class="editorial-closing different-closing">
+      <p>Students shouldn't have to wait until university to experience mathematics as something they can explore, build and create with.
+        PaperLand is making computational mathematical exploration accessible much earlier.</p>
+      <a href="/approach">Explore our approach <span aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>
