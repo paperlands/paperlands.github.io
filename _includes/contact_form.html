@@ -1,24 +1,71 @@
 <!-- https://india.fly.dev/proxy/apps/guru/work -->
-<form id="lettertopaperland" class="flex flex-col p-6 space-y-4 rounded-md shadow-md bg-primary-light" accept-charset="UTF-8" action="https://book.paperland.sg/proxy/apps/guru/work" method="POST">
+<form id="lettertopaperland" class="flex w-full min-w-0 max-w-full flex-col space-y-4 {% if include.form_class %}{{ include.form_class }}{% else %}rounded-md bg-primary-light p-4 shadow-md sm:p-6{% endif %}" accept-charset="UTF-8" action="https://book.paperland.sg/proxy/apps/guru/work" method="POST">
   <label for="name-input" class="font-medium text-gray-700">Name*</label>
-  <input id="name-input" type="text" name="name" placeholder="Alan Kay" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" />
+  <input id="name-input" type="text" name="name" placeholder="Alan Kay" class="w-full min-w-0 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" />
 
   <label for="email-input" class="font-medium text-gray-700">Email*</label>
-  <input id="email-input" type="email" name="email" placeholder="alan@paperland.sg" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" />
+  <input id="email-input" type="email" name="email" placeholder="alan@paperland.sg" class="w-full min-w-0 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" />
 
   <label for="message-input" class="font-medium text-gray-700">{% if include.message_label %}{{ include.message_label }}{% else %}Message*{% endif %}</label>
-  <textarea id="message-input" name="message" rows="4" placeholder="{% if include.message_placeholder %}{{ include.message_placeholder }}{% else %}Tell us briefly about your context or background{% endif %}" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+  <textarea id="message-input" name="message" rows="4" placeholder="{% if include.message_placeholder %}{{ include.message_placeholder }}{% else %}Tell us briefly about your context or background{% endif %}" class="w-full min-w-0 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
 
   <input type="hidden" name="return_url" value="{{ page.url | absolute_url }}" />
 
-  <div class="flex justify-center">
-  <script
-    src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-    async
-    defer
-  ></script>
-  <div class="cf-turnstile" data-sitekey="0x4AAAAAACugliz5rFIg0aRA" data-theme="light"></div>
+  <!--
+    Turnstile flexible is width 100% with a 300px minimum; compact is 150px.
+    Render explicitly from the host width so the widget never exceeds the form.
+  -->
+  <div id="cf-turnstile-host" class="w-full min-w-0">
+    <div id="cf-turnstile-widget" class="flex w-full justify-center"></div>
   </div>
+  <script>
+    (function () {
+      var SITEKEY = "0x4AAAAAACugliz5rFIg0aRA";
+      var FLEXIBLE_MIN_PX = 300;
+      var host = document.getElementById("cf-turnstile-host");
+      var target = document.getElementById("cf-turnstile-widget");
+      if (!host || !target) return;
+
+      var widgetId = null;
+      var currentSize = null;
+      var booted = false;
+
+      function desiredSize() {
+        return host.clientWidth < FLEXIBLE_MIN_PX ? "compact" : "flexible";
+      }
+
+      function render() {
+        if (!window.turnstile) return;
+        var next = desiredSize();
+        if (widgetId !== null && next === currentSize) return;
+        // Keep a solved token if the viewport crosses 300px after success.
+        if (widgetId !== null && turnstile.getResponse(widgetId)) return;
+        if (widgetId !== null) {
+          turnstile.remove(widgetId);
+          widgetId = null;
+        }
+        currentSize = next;
+        widgetId = turnstile.render(target, {
+          sitekey: SITEKEY,
+          theme: "light",
+          size: next
+        });
+      }
+
+      function boot() {
+        if (booted || !window.turnstile) return;
+        booted = true;
+        render();
+        if (typeof ResizeObserver !== "undefined") {
+          new ResizeObserver(render).observe(host);
+        }
+      }
+
+      window.onloadTurnstileCallback = boot;
+      if (window.turnstile) boot();
+    })();
+  </script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&amp;onload=onloadTurnstileCallback" defer></script>
   
   <button type="submit" class="px-4 py-2 {{ include.button_text_class | default: 'text-white' }} rounded-md bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary">{% if include.button_text %}{{ include.button_text }}{% else %}Book a call{% endif %}</button>
 </form>
