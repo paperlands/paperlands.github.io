@@ -1,6 +1,6 @@
 title:               "PaperLand : where math Lives"
 include:             ['_pages']
-exclude:             ['_includes/notes_graph.json']
+exclude:             ['_includes/notes_graph.json', 'design']
 # You may need to change the base URL depending on your deploy configuration.
 url: "https://paperland.sg"
 baseurl:             ''
@@ -20,7 +20,6 @@ open_external_links_in_new_tab: true
 embed_tweets: false
 
 permalink:           pretty
-relative_permalinks: false
 
 plugins:
   - jekyll-last-modified-at
@@ -28,27 +27,33 @@ plugins:
   - jekyll-tailwind
   - jekyll-redirect-from
 
-sass:
-  sass_dir:          _sass
-  style:            :compressed
-
 collections:
   notes:
     output: true
     permalink: /:slug
 
 defaults:
+  # Both scopes deliberately avoid a `*` in `path`.
+  #
+  # Jekyll's FrontmatterDefaults#applies_path? takes a Dir.glob branch whenever
+  # the scope path contains a wildcard, and then iterates that globbed list
+  # doing Pathname#relative_path_from FOR EVERY FILE. With `path: "**/*"` that
+  # globbed the entire 131MB source tree and ran ~86,000 Pathname allocations
+  # per build, inside `StaticFile#write?`, inside the CLEANUP phase.
+  #
+  # An empty path matches everything without globbing (`applies_path?` returns
+  # true for an empty string), and a plain directory prefix takes the cheap
+  # `start_with?` branch. Same behaviour, none of the globbing.
   - scope:
-      path: "**/*"
+      path: ""
     values:
       layout: "default"
   - scope:
-      path: "_notes/**/*.md"
+      path: "_notes/"
     values:
       layout: "note"
 
 tailwind:
-  config: tailwind.config.js
   input: assets/css/app.css
   output: _site/assets/css/app.css
   minify: true

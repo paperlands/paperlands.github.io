@@ -1,0 +1,78 @@
+{%- comment -%}
+  Primitive <video>. Markup only — playback lives in assets/js/media-video.js
+  (layouts pull it in via media/boot.html).
+
+  Catalog: _data/media.yml. Pass `id` and/or explicit src fields.
+  Explicit params win over the catalog.
+
+  Params:
+    id       catalog key
+    src poster av1 webm alt width height
+    mode     loop (default) | hover | hero (hero = no box wrap; fill supplies the still)
+    group    carousel group. If any member has data-media-decode or
+             data-media-active, only those attach. After changing marks,
+             paperlandMedia.sync().
+    class    extra classes
+    loop     set to false to play once (carousels)
+  Locals are media_* so they do not leak into the next include on the page.
+{%- endcomment -%}
+{%- assign media_clip = site.data.media[include.id] -%}
+{%- capture media_src -%}{{ include.src | default: media_clip.src }}{%- endcapture -%}
+{%- assign media_src = media_src | strip -%}
+{%- if media_src != '' -%}
+{%- capture media_poster -%}{{ include.poster | default: media_clip.poster }}{%- endcapture -%}
+{%- capture media_av1 -%}{{ include.av1 | default: media_clip.av1 }}{%- endcapture -%}
+{%- capture media_webm -%}{{ include.webm | default: media_clip.webm }}{%- endcapture -%}
+{%- capture media_alt -%}{{ include.alt | default: media_clip.alt }}{%- endcapture -%}
+{%- capture media_width -%}{{ include.width | default: media_clip.width }}{%- endcapture -%}
+{%- capture media_height -%}{{ include.height | default: media_clip.height }}{%- endcapture -%}
+{%- capture media_mode -%}{{ include.mode | default: 'loop' }}{%- endcapture -%}
+{%- assign media_poster = media_poster | strip -%}
+{%- assign media_av1 = media_av1 | strip -%}
+{%- assign media_webm = media_webm | strip -%}
+{%- assign media_alt = media_alt | strip -%}
+{%- assign media_width = media_width | strip -%}
+{%- assign media_height = media_height | strip -%}
+{%- assign media_mode = media_mode | strip -%}
+{%- if media_src contains '://' -%}
+  {%- assign media_src_url = media_src -%}
+{%- else -%}
+  {%- assign media_src_url = media_src | relative_url -%}
+{%- endif -%}
+{%- assign media_poster_url = '' -%}
+{%- if media_poster != '' -%}
+  {%- if media_poster contains '://' -%}
+    {%- assign media_poster_url = media_poster -%}
+  {%- else -%}
+    {%- assign media_poster_url = media_poster | relative_url -%}
+  {%- endif -%}
+{%- endif -%}
+{%- assign media_av1_url = '' -%}
+{%- if media_av1 != '' -%}
+  {%- if media_av1 contains '://' -%}
+    {%- assign media_av1_url = media_av1 -%}
+  {%- else -%}
+    {%- assign media_av1_url = media_av1 | relative_url -%}
+  {%- endif -%}
+{%- endif -%}
+{%- assign media_webm_url = '' -%}
+{%- if media_webm != '' -%}
+  {%- if media_webm contains '://' -%}
+    {%- assign media_webm_url = media_webm -%}
+  {%- else -%}
+    {%- assign media_webm_url = media_webm | relative_url -%}
+  {%- endif -%}
+{%- endif -%}
+{%- assign media_ar_w = media_width -%}
+{%- assign media_ar_h = media_height -%}
+{%- if media_ar_w == '' or media_ar_h == '' -%}
+  {%- assign media_ar_w = '16' -%}
+  {%- assign media_ar_h = '9' -%}
+{%- endif -%}
+{%- capture media_attrs -%}data-media="video" data-media-mode="{{ media_mode }}" data-src="{{ media_src_url }}"{% if media_av1_url != '' %} data-src-av1="{{ media_av1_url }}"{% endif %}{% if media_webm_url != '' %} data-src-webm="{{ media_webm_url }}"{% endif %}{% if media_poster_url != '' %} poster="{{ media_poster_url }}"{% endif %}{% if include.group %} data-media-group="{{ include.group }}"{% endif %}{% if media_width != '' %} width="{{ media_width }}"{% endif %}{% if media_height != '' %} height="{{ media_height }}"{% endif %}{% if include.loop == false or include.loop == 'false' %}{% else %} loop{% endif %} muted playsinline webkit-playsinline preload="none" disablepictureinpicture disableremoteplayback aria-label="{{ media_alt | escape }}"{%- endcapture -%}
+{%- if media_mode == 'hero' -%}
+<video class="{{ include.class }}" {{ media_attrs }}></video>
+{%- else -%}
+<div class="media-clip {{ include.class }}" style="aspect-ratio: {{ media_ar_w }} / {{ media_ar_h }};">{% if media_poster_url != '' %}<img class="media-clip-poster" src="{{ media_poster_url }}" alt="" decoding="async" aria-hidden="true">{% endif %}<video class="media-clip-el" {{ media_attrs }}></video></div>
+{%- endif -%}
+{%- endif -%}

@@ -1,13 +1,13 @@
 <!-- https://india.fly.dev/proxy/apps/guru/work -->
 <form id="lettertopaperland" class="flex flex-col p-6 space-y-4 rounded-md shadow-md bg-primary-light" accept-charset="UTF-8" action="https://book.paperland.sg/proxy/apps/guru/work" method="POST">
   <label for="name-input" class="font-medium text-gray-700">Name*</label>
-  <input id="name-input" type="text" name="name" placeholder="Alan Kay" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" />
+  <input id="name-input" type="text" name="name" placeholder="Alan Kay" class="w-full p-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-primary" />
 
   <label for="email-input" class="font-medium text-gray-700">Email*</label>
-  <input id="email-input" type="email" name="email" placeholder="alan@paperland.sg" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary" />
+  <input id="email-input" type="email" name="email" placeholder="alan@paperland.sg" class="w-full p-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-primary" />
 
   <label for="message-input" class="font-medium text-gray-700">{% if include.message_label %}{{ include.message_label }}{% else %}Message*{% endif %}</label>
-  <textarea id="message-input" name="message" rows="4" placeholder="{% if include.message_placeholder %}{{ include.message_placeholder }}{% else %}Tell us briefly about your context or background{% endif %}" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+  <textarea id="message-input" name="message" rows="4" placeholder="{% if include.message_placeholder %}{{ include.message_placeholder }}{% else %}Tell us briefly about your context or background{% endif %}" class="w-full p-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-primary"></textarea>
 
   <input type="hidden" name="return_url" value="{{ page.url | absolute_url }}" />
 
@@ -20,14 +20,14 @@
   <div class="cf-turnstile" data-sitekey="0x4AAAAAACugliz5rFIg0aRA" data-theme="light"></div>
   </div>
   
-  <button type="submit" class="px-4 py-2 text-white rounded-md bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary">{% if include.button_text %}{{ include.button_text }}{% else %}Book a call{% endif %}</button>
+  <button type="submit" class="px-4 py-2 text-white rounded-md bg-primary hover:bg-primary-dark focus:outline-hidden focus:ring-2 focus:ring-primary">{% if include.button_text %}{{ include.button_text }}{% else %}Book a call{% endif %}</button>
 </form>
 
 <div class="fixed z-50 hidden bottom-4 right-4" id="toast-good">
   <div class="flex items-center p-4 text-green-700 bg-green-100 border border-green-400 rounded-md shadow-md" >
       <i class="mr-2 fa fa-check-circle"></i>
       <span>Sent! To the desks <a class="text-blue-600 underline" href="/about"><b>@paperland</b></a></span>
-      <button class="ml-auto text-gray-500 hover:text-gray-700 focus:outline-none" onclick="document.getElementById('toast-good').style.display = 'none';">X</button>
+      <button class="ml-auto text-gray-500 hover:text-gray-700 focus:outline-hidden" onclick="document.getElementById('toast-good').style.display = 'none';">X</button>
   </div>
 </div>
 
@@ -35,7 +35,7 @@
   <div class="flex items-center p-4 text-red-700 bg-red-100 border border-red-400 rounded-md shadow-md">
     <i class="mr-2 fa fa-check-circle"></i>
       <span>If you are human, please try again!  </span>
-      <button class="ml-auto text-gray-500 hover:text-gray-700 focus:outline-none" onclick="document.getElementById('toast-bad').style.display = 'none';">X</button>
+      <button class="ml-auto text-gray-500 hover:text-gray-700 focus:outline-hidden" onclick="document.getElementById('toast-bad').style.display = 'none';">X</button>
   </div>
 </div>
 

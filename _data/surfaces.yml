@@ -1,0 +1,190 @@
+# =============================================================================
+# surfaces.yml — the architecture boundary, in one machine-readable place
+# =============================================================================
+#
+# The site is not one design system and pretending otherwise is the root of the
+# mess documented in design/architecture.org. It is three surfaces with three
+# different fates:
+#
+#   core    Reinvented. Owns the new design grammar. No legacy assumptions.
+#   legacy  Frozen. Must render exactly as it does today. Not refactored,
+#           not deleted, not allowed to justify keeping anything global.
+#   sealed  Twilight. Distinctive and self-contained: its own layout, its own
+#           canvas, its own fonts, its own 82-utility vocabulary. Kept whole.
+#
+# The boundary is STRUCTURAL as well as declarative. Legacy lives in its own
+# directories, so separation is visible in the filesystem and enforceable by
+# test rather than by memory:
+#
+#   _pages/legacy/**      _layouts/legacy/**      _includes/legacy/**
+#   _pages/redirects/**   (URL-preservation stubs: not content, not legacy)
+#
+# Jekyll resolves nested layouts as `legacy/landing` (LayoutReader#layout_name
+# joins the path with dots), so this costs nothing at build time.
+#
+# `design/probe/surfaces.py` asserts three things:
+#   1. every built route is classified exactly once;
+#   2. NO artefact outside the legacy directories references a legacy layout or
+#      include — this is the leakage check, and it is the one that matters;
+#   3. declared-but-unbuilt and removed-but-rebuilt routes are reported.
+#
+# Adding a route means classifying it here. There is no default, deliberately:
+# an unclassified page is how a surface leaks back into the global cascade.
+
+boundary:
+  legacy_dirs:
+    - _pages/legacy
+    - _pages/redirects
+    - _layouts/legacy
+    - _includes/legacy
+
+core:
+  description: >-
+    The durable product surface. Front page, the Library of notes, and the
+    standing marketing pages. This is where the design grammar is being
+    rewritten, driven by the Helios homepage.
+  layouts:
+    - page
+    - note
+    - canvas
+  routes:
+    - /
+    - /about
+    - /approach
+    - /lan
+    - /lesson-plans
+    - /mlp
+    # One route per file in _notes/ (collection permalink /:slug).
+    # Listed rather than wildcarded: adding a note should require
+    # classifying it.
+    - /a-computational-spirit-to-learning-mathematics
+    - /beginnings
+    - /why-must-i-learn-this
+
+legacy:
+  description: >-
+    Four campaign pages from earlier programmes — a film festival and three
+    school/partner initiatives. Frozen: they keep the current frame, the
+    current utilities and their inline CSS/JS. They are the reason the
+    document frame and the two `!important` globals still exist globally, and
+    that is an accepted cost rather than a reason to change them.
+  layouts:
+    - legacy/darkpage
+  routes:
+    - /gmff
+    - /rgs
+    - /sjii
+    - /stpat
+
+sealed:
+  description: >-
+    Twilight — the chart-sky surface. Distinctive rather than inconsistent:
+    it shares a nav, a footer and a deployment with everything else, but owns
+    its own document (it does not include head.html), its own full-viewport
+    canvas and its own typographic vocabulary. Exempt from the theme system
+    by design. It is not a candidate for
+    unification; the only shared obligation is that if it ever plays video it
+    uses the shared player.
+  layouts:
+    - twilight
+  routes:
+    - /tjc
+    - /tjc/nationaldaychallenge
+
+# Routes that exist in the build but are not pages a reader navigates to.
+# Listed explicitly so the "every route is classified" assertion stays honest
+# instead of being satisfied by an allow-list nobody reads.
+redirects:
+  description: >-
+    URL-preservation stubs. NOT legacy, and not one thing either: they exist for
+    three different reasons and a page belongs to one of them. All seventeen
+    share a single layout (_layouts/redirect.html, deliberately outside
+    legacy/ because no legacy route uses it) which emits a meta refresh, a
+    canonical link and a JS replace, so crawlers and readers are both served.
+    Every one is excluded from the sitemap.
+
+    They should never be staged or deleted. A stub costs ~150 bytes plus the
+    shared layout, and it is the cheapest infrastructure on the site: the whole
+    point is that a link sitting in someone's Notion page, a school portal or a
+    campaign email keeps working.
+  layouts:
+    - redirect
+
+  # Three kinds, recorded separately because they have different lifetimes:
+  # lesson material belongs elsewhere but may be brought in-house; campaign
+  # stubs expire with their campaign; internal stubs exist because a page was
+  # deliberately retired in favour of a surviving one.
+  kinds:
+    lesson_material:
+      description: >-
+        Lesson plans, festival material and concept pages that live on Notion.
+        Kept so the short paperland.sg URLs that were shared keep resolving.
+        These are the ones most likely to be brought in-house later, at which
+        point the stub becomes a real page rather than an external hop.
+      routes:
+        - /arc
+        - /chain-of-squares
+        - /gemstone
+        - /gemstoneR
+        - /heartbeat
+        - /kepler
+        - /monster-face
+        - /moving-patterns
+        - /random
+        - /similar-triangles
+        - /gmff-rules
+        - /gmff-rubrics
+
+    campaign:
+      description: >-
+        Partner and campaign destinations — an EtonHouse landing page and a
+        Google Form. These have a shelf life; when the campaign ends the stub
+        can be retired, unlike the other two kinds.
+      routes:
+        - /eh-landing
+        - /eh-promo-jul25
+
+    internal:
+      description: >-
+        Pages retired in favour of a surviving one. Unlike the other two these
+        redirect within the site, so they are also the record of what absorbed
+        what.
+      routes:
+        - /dojo          # -> /approach, absorbed by the approach page
+        - /teachers      # -> /approach, workshop content superseded
+        - /workshop      # -> /mlp, workshop content superseded
+
+  # The flat list is what surfaces.py asserts against; `kinds` above is the
+  # documentation. Both are checked to agree.
+  routes:
+    - /arc
+    - /chain-of-squares
+    - /dojo
+    - /eh-landing
+    - /eh-promo-jul25
+    - /gemstone
+    - /gemstoneR
+    - /gmff-rubrics
+    - /gmff-rules
+    - /heartbeat
+    - /kepler
+    - /monster-face
+    - /moving-patterns
+    - /random
+    - /similar-triangles
+    - /teachers
+    - /workshop
+
+non_navigational:
+  - /404
+  - /turtle          # full-viewport Turtling IDE, an application shell not a document
+
+# Removed this pass. Kept as a record so the deletion is visible rather than
+# discovered later.
+removed:
+  # Deleted routes. Listed so surfaces.py can fail if one is ever built again.
+  # The reason is one line; the detail is in git.
+  - /pricing            # orphaned, no inbound links; 26KB of inline CSS/JS on a page nothing linked to
+  - /mathland           # orphaned, same
+  - /workshop_bw        # never built — front matter commented out in 22cbb44, dead for months
+  - /teachers_workshop  # never built, same cause

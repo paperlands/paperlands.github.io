@@ -1,0 +1,79 @@
+{%- comment -%}
+  The standing navigation. Reads _data/nav.yml — one source for every link, so
+  the desktop bar, the mobile panel and the Helios folio nav cannot drift.
+
+  Params:
+    tone    "light" | "dark" — the surface the nav SITS ON, not the ink colour.
+            Defaults to site.data.nav.default_tone.
+            light = over a light background -> dark ink
+            dark  = over a dark/photographic background -> light ink
+
+  Call sites pass nothing and get the light tone. Pages that sit over a dark
+  hero set `nav_tone: dark` in front matter (see _layouts/default.html).
+
+  The markup is deliberately data-attribute driven, not id driven: the previous
+  version queried #mobile-menu, #mobile-menu-overlay and #mobile-menu-close by
+  global id from an inline script, which meant a second nav on a page would
+  collide. Behaviour lives in assets/js/nav.js and scopes to this root.
+{%- endcomment -%}
+{%- assign nav = site.data.nav -%}
+{%- assign tone = include.tone | default: page.nav_tone | default: nav.default_tone | default: 'light' -%}
+
+<nav class="site-nav" data-tone="{{ tone }}" data-nav-root aria-label="Primary">
+  <div class="px-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
+    <div class="relative flex items-center justify-between h-16">
+
+      <div class="site-nav__brand">
+        <a href="{{ nav.brand.href | relative_url }}" class="flex items-center">
+          <img src="{{ nav.brand.logo | relative_url }}" alt="{{ nav.brand.alt }}" class="h-10" />
+        </a>
+      </div>
+
+      <div class="flex-1 hidden sm:flex sm:justify-end">
+        <div class="flex justify-end gap-1">
+          {%- for key in nav.nav -%}
+            {%- assign link = nav.links[key] -%}
+            <a href="{{ link.href }}" class="site-nav__link"
+               {% if page.url == link.href %}aria-current="page"{% endif %}>{{ link.label }}</a>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      <div class="relative flex items-center sm:hidden">
+        <button type="button" data-nav-open
+                class="relative inline-flex items-center justify-center p-2 rounded-md site-nav__link"
+                aria-controls="site-nav-panel" aria-expanded="false">
+          <span class="sr-only">Open main menu</span>
+          <svg class="block size-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="site-nav__overlay sm:hidden" data-nav-overlay aria-hidden="true"></div>
+
+  <div class="site-nav__panel sm:hidden" id="site-nav-panel" data-nav-panel aria-hidden="true">
+    <div class="flex flex-col h-full">
+      <div class="flex justify-end p-4">
+        <button type="button" data-nav-close
+                class="inline-flex items-center justify-center p-2 rounded-md site-nav__link"
+                aria-label="Close menu">
+          <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="flex-1 px-4 pb-4 space-y-1 overflow-y-auto">
+        {%- for key in nav.mobile_nav -%}
+          {%- assign link = nav.links[key] -%}
+          <a href="{{ link.href }}" class="site-nav__link"
+             {% if page.url == link.href %}aria-current="page"{% endif %}>{{ link.label }}</a>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script src="{{ '/assets/js/nav.js' | relative_url }}" defer></script>

@@ -1,0 +1,27 @@
+{%- comment -%}
+  Helios's folio nav: brand mark plus a short link list and actions, drawn from
+  the SAME _data/nav.yml as the standing nav. It is a different shape, not a
+  different source — "Our Approach" cannot read one way here and another way in
+  the standing nav.
+
+  Params: tone (defaults to dark, which is what the folio surface is).
+
+  The wordmark is not this element. Helios draws its own emblem with the scroll
+  build; this nav carries an invisible, focusable link so the identity is still
+  reachable by keyboard and still has a hit area. See _includes/home/wordmark.html.
+{%- endcomment -%}
+{%- assign nav = site.data.nav -%}
+{%- assign tone = include.tone | default: 'dark' -%}
+
+<nav class="site-nav folio-nav" data-tone="{{ tone }}" aria-label="Primary">
+  <a class="folio-nav__mark" href="{{ nav.brand.href | relative_url }}">{{ nav.brand.label }}</a>
+  <div class="folio-nav__plates">
+    {%- for key in nav.folio.links -%}
+      {%- assign link = nav.links[key] -%}
+      <a href="{{ link.href }}" {% if page.url == link.href %}aria-current="page"{% endif %}>{{ link.label }}</a>
+    {%- endfor -%}
+    {%- for action in nav.folio.actions -%}
+      <a href="{{ action.href }}"{% if action.primary %} class="folio-nav__enter"{% endif %}>{{ action.label }}</a>
+    {%- endfor -%}
+  </div>
+</nav>

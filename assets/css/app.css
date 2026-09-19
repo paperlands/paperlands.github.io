@@ -1,119 +1,90 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* ==========================================================================
+   app.css — the single stylesheet
+   --------------------------------------------------------------------------
+   This is the only CSS the site loads. It is compiled by the Tailwind v4 CLI
+   (via the jekyll-tailwind gem's post_write hook) into _site/assets/css/app.css.
 
-@layer base {
-  @font-face {
-    font-family: "paperLang";
-    src: url('/assets/fonts/paperLang.woff2') format('woff2'),
-         url('/assets/fonts/paperLang.woff') format('woff'),
-         url("/assets/fonts/paperLang.ttf") format("truetype"),
-  }
-}
+   Order is the architecture. Tailwind v4 emits
+       @layer theme, base, components, utilities;
+   so authored CSS declares its own intent by picking a layer:
 
+     core/tokens.css      @theme      the design contract — values only
+     core/document.css    @layer base/components  long-form reading surface
+     core/media.css       @layer components/utilities  video + image surfaces
+     core/typography.css  @layer base  heading scale (base theme)
+     core/app-shell.css   @layer base  full-viewport shells opt out
+     components/nav.css   @layer components  navigation (light + dark tones)
+     components/twilight.css  @layer components  Twilight, sealed
+     components/utils.css @layer utilities   one-off helpers
 
-/* Twilight theme primitives (see _layouts/twilight.html).
-   Only emitted when the class names appear in content-globbed files. */
-@layer components {
-  /* Corner-bracket phosphor frame — the twilight card surface. */
-  .tw-frame {
-    position: relative;
-    border: 1px solid theme(colors.phosphor/20%);
-    background-color: theme(colors.twilight/55%);
-    backdrop-filter: blur(3px);
-    transition: all 450ms;
-  }
-  .tw-frame:hover {
-    transform: translateY(-3px);
-    border-color: theme(colors.phosphor/55%);
-    box-shadow: 0 0 28px rgb(240 168 61 / 0.13), inset 0 0 24px rgb(240 168 61 / 0.05);
-  }
-  .tw-frame::before,
-  .tw-frame::after {
-    content: '';
-    position: absolute;
-    height: 11px;
-    width: 11px;
-    transition: all 450ms;
-  }
-  .tw-frame::before {
-    left: -1px;
-    top: -1px;
-    z-index: 1;
-    border-left: 1px solid theme(colors.phosphor);
-    border-top: 1px solid theme(colors.phosphor);
-  }
-  .tw-frame::after {
-    right: -1px;
-    bottom: -1px;
-    border-right: 1px solid theme(colors.phosphor);
-    border-bottom: 1px solid theme(colors.phosphor);
-  }
-  .tw-frame:hover::before,
-  .tw-frame:hover::after {
-    height: 22px;
-    width: 22px;
-  }
+   Nothing here should be unlayered. Unlayered CSS silently outranks every
+   layer, which is exactly how the previous two-stylesheet arrangement ended
+   up with the blog's `!important` rules governing cinematic pages.
 
-  /* Mono section label with phosphor glow. */
-  .tw-kicker {
-    font-family: theme(fontFamily.mono);
-    font-size: 0.62rem;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.32em;
-    color: theme(colors.phosphor);
-    text-shadow: 0 0 8px rgb(240 168 61 / 0.5);
-  }
+   Tailwind v3's tailwind.config.js is retired: tokens live in core/tokens.css
+   as `@theme`. The gem still passes `--config tailwind.config.js`; the v4 CLI
+   ignores unknown flags, so no build plumbing had to change. Do not re-add a
+   JS config without rewriting that assumption.
+   ========================================================================== */
 
-  /* Tick-mark section separator: <div class="tw-rule" role="separator"></div> */
-  .tw-rule {
-      margin-top: clamp(4rem, 10vh, 7rem);
-      margin-bottom: clamp(4rem, 10vh, 7rem);
-      border: none;
-      height: auto;
-      background: none;
-      text-align: center;
+/* Automatic source detection, with one exclusion.
 
-      &::before {
-          content: '☙ ——— ✦ ——— ❧';
-          display: block;
-          font-size: 0.78rem;
-          letter-spacing: 0.15em;
-          color: theme(colors.phosphor / 45%);
-          font-family: "Lora", Georgia, 'Book Antiqua', Palatino, serif;
-          line-height: 1;
-      }
-  }
-  /* Small mono bordered tag (the [n] 連結 badges). */
-  .tw-chip {
-    border: 1px solid theme(colors.phosphor/20%);
-    background-color: theme(colors.twilight/65%);
-    padding: 0.25rem 0.5rem;
-    font-family: theme(fontFamily.mono);
-    font-size: 0.58rem;
-    letter-spacing: 0.14em;
-    color: theme(colors.phosphor);
-    text-shadow: 0 0 6px rgb(240 168 61 / 0.55);
-  }
+   `source(none)` was tried and rejected. It was meant to avoid scanning 56MB of
+   video masters in design/, but Tailwind already ignores binary files (images,
+   video, zip), CSS files, .gitignore'd paths and lockfiles — so it bought
+   nothing and cost a real failure mode: a new collection, directory or JS module
+   would be invisible to the scanner and produce silently missing styles. It also
+   omitted assets/, which is where assets/js/home/ lives.
 
-  @media (prefers-reduced-motion: reduce) {
-    .tw-frame,
-    .tw-frame::before,
-    .tw-frame::after {
-      transition: none;
-    }
-  }
-}
+   design/ is excluded because it holds prototype HTML (the Helios hifi and three
+   earlier iterations) whose classes are not part of the shipped site. */
+@import "tailwindcss";
 
-@layer utilities {
-      /* Hide scrollbar for Chrome, Safari and Opera */
-      .no-scrollbar::-webkit-scrollbar {
-          display: none;
-      }
-     /* Hide scrollbar for IE, Edge and Firefox */
-      .no-scrollbar {
-          -ms-overflow-style: none;  /* IE and Edge */
-          scrollbar-width: none;  /* Firefox */
-    }
-}
+/* Official plugins. v4 loads these in CSS rather than JS.
+   @tailwindcss/container-queries is NOT here: `@container` is core in v4. */
+@plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/forms";
+
+@source not "../../design";
+
+/* Safelist for classes COMPOSED at build time.
+   `_includes/media/hero.html` emits `h-[{{mobile}}] md:h-[{{desktop}}]`
+   from Liquid params, so the finished class never appears in any source file
+   and the scanner cannot see it. These are the values currently passed; a new
+   value must be added here or it will silently not apply.
+
+   This bit us once already: the rule for `md:h-[56vh]` existed in the previous
+   build only because a DELETED page (workshop_bw.md) happened to contain that
+   string literally. Deleting the dead file removed the live rule.
+
+   `design/probe/coverage.py` now asserts that every class in the built HTML
+   resolves to a selector, so this class of failure fails loudly instead. */
+@source inline("h-[70dvh]");
+@source inline("md:h-[100dvh]");
+@source inline("h-[70vh]");
+@source inline("h-[44vh]");
+@source inline("md:h-[80vh]");
+@source inline("md:h-[56vh]");
+
+/* ---- the design contract -------------------------------------------------
+   Must come before anything that consumes a token. ------------------------ */
+@import "./core/tokens.css";
+
+/* ---- foundations -------------------------------------------------------- */
+/* layer(base) is REQUIRED, not cosmetic: normalize.css is a vendored file with
+   32 unlayered rules. Unlayered CSS outranks every layer, so its
+   `body { margin: 0 }` silently defeated the document frame's `margin: 0 auto`
+   and de-centred every page. Wrapping at import keeps the vendor file pristine. */
+/* syntax.css was culled: .highlight appeared on zero built pages — none of the
+   three notes contains a code block. _plugins/markdown-highlighter.rb remains,
+   so code still renders; it is simply unstyled. Restoring highlighting is one
+   @import plus the file from git history. */
+@import "./core/app-shell.css";
+@import "./core/document.css";
+@import "./core/media.css";
+@import "./core/typography.css";
+
+/* ---- components --------------------------------------------------------- */
+@import "./components/nav.css";
+@import "./components/twilight.css";
+@import "./components/utils.css";

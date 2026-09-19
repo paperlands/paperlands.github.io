@@ -1,0 +1,54 @@
+{% comment %}
+  _includes/gmff/finalist_card.html
+  ───────────────────────────────────────────────────────────────
+  Parameters:
+    film    {object}  — unranked film from site.data.gmff_results.films
+  No rank, no score, no number label — compact selection tile only.
+  ───────────────────────────────────────────────────────────────
+{% endcomment %}
+
+{% assign f = include.film %}
+
+
+<div class="finalist-card">
+
+  <!-- Watch local film -->
+  {% if f.video_url %}
+  <button type="button" class="finalist-watch-panel block" data-gmff-video="{{ f.video_url }}" data-gmff-title="{{ f.title | escape }}" data-gmff-school="{{ f.school | escape }}" aria-label="Watch {{ f.title }}">
+    <div class="finalist-watch-inner">
+      <svg class="finalist-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <polygon points="5,3 19,12 5,21"/>
+      </svg>
+      <span class="finalist-watch-label">Watch Film</span>
+    </div>
+  </button>
+  {% endif %}
+
+  <!-- Info -->
+  <div class="p-3 flex flex-col gap-2 flex-1">
+    <div>
+      <h4 class="font-display font-bold text-xs text-gray-300 leading-snug">{{ f.title }}</h4>
+      <p class="font-mono text-[10px] mt-1 leading-snug" style="color:rgba(249,115,22,0.45)">{{ f.school }}</p>
+    </div>
+
+    {% if f.members.size > 0 %}
+      <div class="pt-2 mt-auto" style="border-top:1px solid rgba(255,255,255,0.05)">
+        <ul class="space-y-0.5">
+          {% for member in f.members %}
+            <li class="flex items-baseline justify-between gap-1">
+              <span class="font-body text-xs" style="color:rgba(249,115,22,0.45)">
+                {{ member.name }}
+              </span>
+              {% if member.grade %}
+                <span class="font-mono text-[9px] shrink-0" style="color:rgba(249,115,22,0.25)">
+                  {{ member.grade }}
+                </span>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  </div>
+
+</div>

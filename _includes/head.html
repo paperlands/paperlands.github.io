@@ -7,17 +7,16 @@
 
   <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.title }}{% endif %}">
 
-{% if page.onlytailwind  %}
+  {%- comment -%} One stylesheet. Everything else is a layer inside it
+     (see assets/css/app.css). {%- endcomment -%}
   <link rel="stylesheet" href="{{ "/assets/css/app.css" | relative_url }}">
-  {% else %}
-  <link rel="stylesheet" href="{{ "/assets/css/app.css" | relative_url }}">
-  <link rel="stylesheet" href="{{ site.baseurl }}/styles.css">
-{% endif %}
-  <!-- <link
-      rel="stylesheet"
-      href="assets/css/paper.min.css"
-    /> -->
-  <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
+  {%- comment -%} The type system: Cinzel (display), Cormorant Garamond (serif),
+     EB Garamond (body). paperLang is @font-face'd from assets/fonts. One
+     request; layouts may add families via `google_fonts` (Twilight adds IBM
+     Plex Mono). {%- endcomment -%}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
   {% if layout.google_fonts %}<link href="https://fonts.googleapis.com/css2?{{ layout.google_fonts }}&display=swap" rel="stylesheet">{% endif %}
 
   <meta property="og:site_name" content="{{ site.title }}">

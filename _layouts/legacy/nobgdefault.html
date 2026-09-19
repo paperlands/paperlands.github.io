@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth motion-reduce:scroll-auto">
+    {% include head.html %}
+    <body class="">
+        
+        <div class="wrapper">
+      <main>{{ content }}</main>
+      <!-- <footer>{% include footer.html %}</footer> -->
+    </div>
+
+    {% include link-previews.html wrapperQuerySelector="content" %}
+    {% include media/boot.html %}
+  </body>
+</html>

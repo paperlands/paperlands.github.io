@@ -1,0 +1,92 @@
+# Named clips. Pages pass `id:` to {% include media/video.html %}.
+# Explicit src/poster/av1 on the include override the catalog.
+#
+# Fields: src (required), poster, av1, webm, width, height, alt
+# width/height reserve the box so lazy attach cannot collapse the page.
+
+waves:
+  src: /assets/lib/landing/3DWaves_small.webm
+  poster: /assets/lib/landing/3DWaves.webp
+  alt: Waves in 3D
+  width: 1280
+  height: 720
+
+spring:
+  src: /assets/lib/landing/spring.webm
+  poster: /assets/lib/landing/spring.webp
+  alt: Spring animation
+  width: 1280
+  height: 720
+
+hero:
+  src: /assets/lib/landing/hero_video.mp4
+  poster: /assets/lib/landing/3DWaves.webp
+  alt: Math x Computation hero video
+  width: 1920
+  height: 1080
+
+polygon:
+  src: /assets/lib/landing/polygon.mp4
+  alt: polygon animation
+  width: 1918
+  height: 936
+
+sine_curve:
+  src: /assets/lib/landing/sine_curve.webm
+  alt: sine curve animation
+  width: 1096
+  height: 720
+
+fibonacci:
+  src: /assets/lib/landing/fibonacci.webm
+  alt: fibonacci animation
+  width: 1402
+  height: 966
+
+xsinx:
+  src: /assets/lib/landing/xsinx.mp4
+  alt: xsin(x) animation
+  width: 1918
+  height: 936
+
+tree:
+  src: /assets/lib/landing/tree.mp4
+  alt: tree animation
+  width: 762
+  height: 544
+
+prime_numbers:
+  src: /assets/lib/landing/prime_numbers.webm
+  alt: trigonometric unit circle animation
+  width: 684
+  height: 562
+
+shell:
+  src: /assets/lib/landing/shell.mp4
+  alt: shell animation
+  width: 936
+  height: 698
+
+benz:
+  src: /assets/lib/landing/benz.mp4
+  alt: benz animation
+  width: 662
+  height: 474
+
+star:
+  src: /assets/lib/landing/star.webm
+  alt: star animation
+  width: 720
+  height: 540
+
+workshop_hero:
+  src: /assets/lib/landing/workshop_hero_video.mp4
+  alt: workshop hero video
+  width: 1920
+  height: 1080
+
+knowledge_park:
+  src: /assets/lib/landing/knowledge_park.mp4
+  alt: student care center workshop
+  width: 848
+  height: 464

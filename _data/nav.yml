@@ -1,0 +1,81 @@
+# =============================================================================
+# nav.yml — the single source of truth for site navigation
+# =============================================================================
+#
+# One file, so a link cannot drift between the desktop nav, the mobile menu and
+# the Helios folio nav. Previously every one of those carried its own literal
+# `href`, and they had already diverged: the desktop nav showed five links, the
+# mobile menu added a "Home" entry the desktop nav did not have, and Helios's
+# folio nav showed a different set again.
+#
+# Structure: `links` is a KEYED dictionary — the canonical label and target for
+# each destination. `nav` and `folio` are ORDERED lists of those keys. A label
+# or href is therefore edited in exactly one place, and a nav is reordered by
+# moving a key.
+
+brand:
+  label: PaperLand
+  href: /
+  # The wordmark image. Helios draws its own emblem instead and ignores this.
+  logo: /assets/bannerpaperlang.png
+  alt: PaperLand
+
+links:
+  home:
+    label: Home
+    href: /
+  approach:
+    label: Our Approach
+    href: /approach
+  download:
+    label: Download
+    href: /lan
+  mlp:
+    label: Math Leaders Program
+    short: MLP
+    href: /mlp
+  blog:
+    label: Blog
+    href: /#blog
+  contact:
+    label: Contact Us
+    href: /#contact
+
+# The standing nav. Used by every layout except Helios.
+nav:
+  - approach
+  - download
+  - mlp
+  - blog
+  - contact
+
+# The mobile menu is the desktop list plus Home, because on a phone the logo is
+# the only other way back. Kept as its own list rather than a template hack so
+# the difference is visible and deliberate.
+mobile_nav:
+  - home
+  - approach
+  - download
+  - mlp
+  - blog
+  - contact
+
+# The Helios folio nav: brand, a short link list, then actions. Same keys, so
+# "Our Approach" cannot read differently here than it does in the standing nav.
+folio:
+  links:
+    - approach
+    - blog
+  actions:
+    - label: Enter
+      href: https://dojo.paperland.sg/welcome
+      primary: true
+    - label: Join Us
+      href: /#contact
+
+# Tone is about the surface the nav SITS ON, not the colour of the nav itself:
+#   light = nav over a light background, so ink is dark
+#   dark  = nav over a dark or photographic background, so ink is light
+# This replaces the old `page.nav_color == 'white'` test, which named the ink
+# colour rather than the surface and was easy to set backwards.
+default_tone: light

@@ -1,0 +1,225 @@
+/* ==========================================================================
+   core/media.css — video/image surfaces
+   --------------------------------------------------------------------------
+   Moved verbatim out of the tailwind entry. `media-hero` is the
+   full-bleed masthead; `media-clip` is the inline aspect-locked box.
+
+   These surfaces must be able to escape the document frame in
+   `core/document.css`, which is why the `100vw` / negative-margin breakout
+   exists below. When the frame becomes Library-only, the breakout goes too.
+
+   Playback lives in assets/js/media-video.js — this file only sizes and
+   reveals. `[data-ready]` is set by the player, never by a stylesheet.
+   ========================================================================== */
+
+@layer components {
+  /* Break out of the document frame and sit under the transparent nav (h-16). */
+  .media-hero {
+    position: relative;
+    isolation: isolate;
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+  }
+
+  html:has(.media-hero) {
+    overflow-x: clip;
+  }
+
+  body:has(> nav) .media-hero--masthead {
+    margin-top: -4rem; /* nav h-16 */
+  }
+
+  .media-hero-fill {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+
+  /* Still paints the section; the video fades in over it. */
+  .media-hero-video {
+    opacity: 0;
+    transition: opacity 0.6s ease-in;
+  }
+
+  .media-hero-video[data-ready] {
+    opacity: 1;
+  }
+
+  /* Inline clips: lock the box so attach/pause cannot resize the page. */
+  .media-clip {
+    display: block;
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: #0b0b0b;
+  }
+
+  .media-clip-poster,
+  .media-clip-el {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+  }
+
+  .media-clip-el {
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    z-index: 1;
+  }
+
+  .media-clip-el[data-ready] {
+    opacity: 1;
+  }
+
+  /* Stack: overlapping plates. Strip: a horizontal sequence.
+     Writer only marks; these rules are the look of the surface. */
+  [data-media-carousel] {
+    position: relative;
+  }
+
+  .media-stack {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    background: #0b0b0b;
+  }
+
+  .media-stack [data-media-cell] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+
+  .media-stack [data-media-cell]:first-child,
+  .media-stack [data-media-cell]:has([data-media-active]) {
+    opacity: 1;
+  }
+
+  .media-stack [data-media-cell]:has([data-media-active]) {
+    z-index: 1;
+  }
+
+  .media-stack [data-media-cell] .media-clip {
+    width: 100%;
+    height: 100%;
+  }
+
+  .media-stack-copy {
+    position: absolute;
+    left: 1.25rem;
+    bottom: 3.5rem;
+    z-index: 2;
+    max-width: min(90%, 28rem);
+    pointer-events: none;
+    color: #fff;
+  }
+
+  .media-stack-kicker {
+    margin: 0 0 0.2rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    opacity: 0.8;
+  }
+
+  .media-stack-copy h2 {
+    margin: 0;
+    font-size: clamp(1.6rem, 4vw, 2.8rem);
+    line-height: 1.05;
+  }
+
+  .media-stack-copy p {
+    margin: 0.3rem 0 0;
+    opacity: 0.8;
+  }
+
+  .media-rail {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1rem;
+    justify-content: flex-end;
+    padding: 0.6rem 1rem;
+  }
+
+  [data-media-carousel="stack"] .media-rail {
+    position: absolute;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    z-index: 2;
+  }
+
+  .media-rail button {
+    background: none;
+    border: 0;
+    padding: 0;
+    color: inherit;
+    opacity: 0.45;
+    cursor: pointer;
+    font: inherit;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 0.68rem;
+  }
+
+  .media-rail button.is-on {
+    opacity: 1;
+  }
+
+  .media-strip {
+    display: flex;
+    gap: 1.25rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.5rem 1.25rem 1rem;
+  }
+
+  .media-pane {
+    flex: none;
+    width: min(62vw, 22rem);
+    scroll-snap-align: center;
+  }
+
+  .media-pane-meta {
+    padding-top: 0.7rem;
+  }
+
+  .media-pane-meta h3 {
+    margin: 0;
+    font-size: clamp(1.2rem, 2.2vw, 1.8rem);
+    font-style: italic;
+    line-height: 1.1;
+  }
+
+  .media-pane-meta p {
+    margin: 0.2rem 0 0;
+    opacity: 0.75;
+  }
+
+
+@layer utilities {
+  /* Motion is a privilege the player grants, never a default. These sit in
+     `utilities` so they outrank Tailwind's own animation utilities. */
+  @media (prefers-reduced-motion: reduce) {
+    .media-hero-video,
+    .media-clip-el {
+      opacity: 0;
+      transition: none;
+    }
+
+    .animate-fade-in {
+      animation: none;
+    }
+  }
+}

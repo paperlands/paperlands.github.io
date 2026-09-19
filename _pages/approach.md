@@ -5,23 +5,21 @@ excerpt: We believe that the world would be a better place if the processes we s
 image: /assets/lib/beauty_first.png
 id: approach
 permalink: /approach
-nav_color: white
+nav_tone: dark
 ---
 
-<section class="h-[70vh] animate-fade-in md:h-[80vh]">
-  <video class="absolute top-0 left-0 w-screen h-[100vh] object-cover brightness-[40%] -z-10" 
-    src="/assets/lib/landing/hero_video.mp4" 
-    poster="/assets/lib/landing/3DWaves.webp" 
-    alt="Math x Computation hero video" 
-    autoplay loop muted playsinline 
-  />
-
-  <div class="flex flex-col items-center justify-center mt-40">
-    <h1 class="text-6xl tracking-tighter text-center text-white font-paperlang lg:text-9xl">Our Approach</h1>
-    <div class="my-6 text-lg text-center text-white lg:my-8 lg:text-2xl font-paperlang">Learning Mathematics through <span class="text-primary">Creation</span></div>
-    <a class="px-5 py-2 transition rounded-md  font-paperlang text-primary-light bg-primary hover:brightness-110" href="#contact">Enquire Further</a>
-  </div>
-</section>
+{% include media/hero.html
+  id="hero"
+  height_mobile="70vh"
+  height_desktop="80vh"
+  title="Our Approach"
+  title_class="text-6xl tracking-tighter text-center text-white font-paperlang lg:text-9xl"
+  subtitle="Learning Mathematics through <span class='text-primary'>Creation</span>"
+  subtitle_class="my-6 text-lg text-center text-white lg:my-8 lg:text-2xl font-paperlang"
+  action_link="#contact"
+  action_words="Enquire Further"
+  overlay_class="relative z-10 flex flex-col items-center justify-center h-full px-4 mt-40"
+%}
 
 <!-- Discovering mathematics section -->
 <section class="mt-24 mb-8 lg:mx-32 animate-fade-in">
@@ -47,7 +45,7 @@ Here at <strong class="text-orange-850">PaperLand</strong>, we are building the 
             <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/wan_workshop_16x9.jpg" alt="abstraction workshop">
         </div>
         <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/sine_curve.webm" alt="sine curve animation" autoplay loop muted playsinline />
+            {% include media/video.html id="sine_curve" class="h-auto max-w-full rounded-lg" %}
         </div>
         <div>
             <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/knowledge_park_16x9.webp" alt="student care center workshop">
@@ -55,13 +53,13 @@ Here at <strong class="text-orange-850">PaperLand</strong>, we are building the 
     </div>
     <div class="grid gap-4">
         <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/polygon.mp4" alt="polygon animation" autoplay loop muted playsinline />
+            {% include media/video.html id="polygon" class="h-auto max-w-full rounded-lg" %}
         </div>
         <div>
             <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/senang_16x9.webp" alt="student care center workshop">
         </div>
         <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/fibonacci.webm" alt="prime numbers animation" autoplay loop muted playsinline />
+            {% include media/video.html id="fibonacci" class="h-auto max-w-full rounded-lg" %}
         </div>
     </div>
 </div>
@@ -85,13 +83,13 @@ The world of computation and mathematics is very deep and we have only just scra
 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
     <div class="hidden sm:grid sm:gap-4">
         <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/xsinx.mp4" alt="xsin(x) animation" autoplay loop muted playsinline />
+            {% include media/video.html id="xsinx" class="h-auto max-w-full rounded-lg" %}
         </div>
         <div>
             <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/SUTD_calculus_16x9.jpg" alt="calculus workshop">
         </div>
         <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/tree.mp4" alt="tree animation" autoplay loop muted playsinline />
+            {% include media/video.html id="tree" class="h-auto max-w-full rounded-lg" %}
         </div>
     </div>
     <div class="grid gap-4">
@@ -99,7 +97,7 @@ The world of computation and mathematics is very deep and we have only just scra
             <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/ca_workshop_16x9.jpg" alt="cellular automaton workshop">
         </div>
         <div>
-            <video class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/prime_numbers.webm" alt="trigo unit circle animation" autoplay loop muted playsinline />
+            {% include media/video.html id="prime_numbers" class="h-auto max-w-full rounded-lg" %}
         </div>
         <div>
             <img class="h-auto max-w-full rounded-lg" src="/assets/lib/landing/stpats_discord_bot_workshop_16x9.jpg" alt="stpats workshop">
@@ -119,8 +117,7 @@ The world of computation and mathematics is very deep and we have only just scra
       Email us at <a class="underline" href="mailto:info@paperland.sg">info@paperland.sg</a>
     </div>
     
-    {% include contact_form.html
-      href="/dojo" %}
+    {% include contact_form.html %}
   </div>
 </section>
 

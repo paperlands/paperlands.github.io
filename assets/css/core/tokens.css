@@ -1,0 +1,232 @@
+/* ==========================================================================
+   core/tokens.css — the design contract
+   --------------------------------------------------------------------------
+   Every value a theme may rely on is declared here, once, in Tailwind v4's
+   `@theme`. Nothing else in the codebase should introduce a raw colour,
+   font stack or duration.
+
+   The palette below is FROZEN from the retired tailwind.config.js. Those
+   values were Material-derived overrides of Tailwind's defaults, and 34
+   utility classes across the site render them. They are carried across
+   verbatim so the v3 -> v4 migration changes no pixels; re-theming is a
+   deliberate, separate act.
+
+   Namespace (v4): --color-*  --font-*  --spacing-*  --shadow-*  --animate-*
+   ========================================================================== */
+/* --------------------------------------------------------------------------
+   The paperLang face. Lives here because it IS a token: --font-paperlang
+   below refers to it, and a family token without its @font-face is the same
+   class of bug as a colour token with no value.
+
+   This was silently lost when assets/css/app.css was rewritten as the
+   import-based entry — the declaration had been in the old v3 entry, and
+   nothing in the acceptance suite noticed, because the suite verified
+   classes and routes but never asset references. design/probe/assets.py now
+   asserts that every url() in the built stylesheet resolves.
+   -------------------------------------------------------------------------- */
+@font-face {
+  font-family: "paperLang";
+  src: url("/assets/fonts/paperLang.woff2") format("woff2"),
+       url("/assets/fonts/paperLang.woff") format("woff"),
+       url("/assets/fonts/paperLang.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@theme {
+  /* ---- palette (frozen from the v3 config: values are load-bearing) ---- */
+  --color-amber-50: #fff8e1;
+  --color-amber-300: #ffd54f;
+  --color-amber-400: #ffca28;
+  --color-amber-500: #ffc107;
+  --color-amber-600: #ffb300;
+  --color-amber-700: #ffa000;
+  --color-amber-900: #ff6f00;
+  --color-blue-100: #bbdefb;
+  --color-blue-200: #90caf9;
+  --color-blue-500: #2196f3;
+  --color-blue-600: #1e88e5;
+  --color-blue-700: #1976d2;
+  --color-blue-800: #1565c0;
+  --color-gray-50: #fafafa;
+  --color-gray-100: #f5f5f5;
+  --color-gray-200: #eeeeee;
+  --color-gray-300: #e0e0e0;
+  --color-gray-400: #bdbdbd;
+  --color-gray-500: #9e9e9e;
+  --color-gray-600: #757575;
+  --color-gray-700: #616161;
+  --color-gray-800: #424242;
+  --color-gray-900: #212121;
+  --color-green-100: #c8e6c9;
+  --color-green-200: #a5d6a7;
+  --color-green-400: #66bb6a;
+  --color-green-500: #4caf50;
+  --color-green-600: #43a047;
+  --color-green-700: #388e3c;
+  --color-green-800: #2e7d32;
+  --color-green-900: #1b5e20;
+  --color-indigo-100: #c5cae9;
+  --color-indigo-200: #9fa8da;
+  --color-indigo-600: #3949ab;
+  --color-indigo-800: #283593;
+  --color-indigo-900: #1a237e;
+  --color-orange-100: #ffe0b2;
+  --color-orange-400: #ffa726;
+  --color-orange-500: #ff9800;
+  --color-orange-600: #fb8c00;
+  --color-orange-700: #f57c00;
+  --color-orange-800: #ef6c00;
+  --color-orange-850: #E95B00;
+  --color-orange-900: #e65100;
+  --color-orange-950: #D14900;
+  --color-purple-100: #e1bee7;
+  --color-purple-200: #ce93d8;
+  --color-purple-600: #8e24aa;
+  --color-purple-800: #6a1b9a;
+  --color-red-100: #ffcdd2;
+  --color-red-400: #ef5350;
+  --color-red-600: #e53935;
+  --color-red-700: #d32f2f;
+
+  /* ---- brand semantics ---- */
+  --color-primary-light: #ffebd3;
+  --color-primary: #ff9933;
+  --color-primary-dark: #d97c00;
+  --color-secondary-light: #ededed;
+  --color-secondary: #333333;
+  --color-secondary-dark: #050009;
+  --color-text-light: #4a2329;
+  --color-text: #1f060e;
+  --color-background: #fdf6e3;
+  /* Helios's two load-bearing surfaces. --brand is already --primary
+     (#ff9933) so it is NOT duplicated here; these two are new values that the
+     folio surface needs and the palette had no name for. */
+  --color-cream: #f6e6c4;
+  --color-night: #140806;
+  --color-plate: #1a0c08;
+  --color-ember: #d45a14;
+  --color-ridge: #8b2e0c;
+  --color-sage: #9ca3af;
+  --color-stone-warm: #78716c;
+  --color-ink: #1f2937;
+  --color-twilight: rgb(22 15 27);
+  --color-phosphor: rgb(240 168 61);
+  --color-ember: rgb(217 111 55);
+  --color-gold: rgb(241 219 164);
+  --color-mute: rgb(151 140 162);
+  --color-dim: rgb(93 83 102);
+
+  /* ---- type -------------------------------------------------------------
+     Four families, one per role. Nothing in the codebase should name a
+     family directly; components read a role.
+
+       display  Cinzel            inscriptions, kickers, small-caps labels
+       serif    Cormorant Garamond  display italic, headings, verse
+       body     EB Garamond       running text, UI, nav
+       paperlang paperLang        the hand-drawn brand face
+
+     Fallback stacks are load-bearing: Tailwind's preflight sets the document
+     font from --font-sans, so truncating it changes every unstyled glyph.
+     ---------------------------------------------------------------------- */
+  --font-display: Cinzel, Georgia, serif;
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-body: "EB Garamond", Georgia, "Times New Roman", serif;
+  --font-sans: "EB Garamond", Georgia, "Times New Roman", serif,
+    ui-sans-serif, system-ui, sans-serif;
+  --font-paperlang: paperLang, "Cormorant Garamond", Georgia, serif;
+
+  /* Twilight is sealed and owns its own vocabulary; IBM Plex Mono stays for it.
+     orbitron/rajdhani are deliberately absent: they were never loaded by any
+     layout, so every use of them has always rendered as a fallback. */
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* ---- motion ---- */
+  --animate-grid-scroll: gridScroll 20s linear infinite;
+  --animate-flicker: flicker 4s steps(1) infinite;
+  --animate-scan: scanline 6s linear infinite;
+  --animate-pulse-border: pulseBorder 2s ease-in-out infinite;
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-marquee2: marquee2 50s linear infinite;
+  --animate-fade: fadeIn 1s ease-in-out;
+  --animate-fadeout: fadeOut 5s forwards;
+  --animate-pulse-slow: pulse 3s infinite;
+  --animate-bounce-subtle: bounce 2s infinite;
+  --animate-fade-in: fadeUp 0.6s ease-out;
+  --animate-slide-up: slideUp 0.8s ease-out;
+  --animate-drift: drift 8s ease-in-out infinite;
+  --animate-shimmer: shimmer 3s ease-in-out infinite;
+  --animate-riseUp: riseUp 0.65s ease both;
+
+  /* ---- scales the v3 config extended ---- */
+  --spacing-7: 1.75rem;
+  --spacing-9: 2.25rem;
+  --spacing-28: 7rem;
+  --spacing-80: 20rem;
+  --spacing-96: 24rem;
+  --scale-30: .3;
+  --shadow-outline: 0 0 0 3px rgba(101, 31, 255, 0.4);
+  --height-1/2: 50%;
+
+  /* ---- keyframes ---- */
+  @keyframes gridScroll {
+    0% { backgroundPosition: 0 0; }
+    100% { backgroundPosition: 0 80px; }
+  }
+  @keyframes flicker {
+    0%, 95%, 100% { opacity: 1; }
+    96% { opacity: 0.85; }
+    97% { opacity: 1; }
+    98% { opacity: 0.9; }
+  }
+  @keyframes scanline {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100vh); }
+  }
+  @keyframes pulseBorder {
+    0%, 100% { boxShadow: 0 0 4px #F97316, inset 0 0 4px rgba(249,115,22,0.1); }
+    50% { boxShadow: 0 0 12px #F97316, inset 0 0 8px rgba(249,115,22,0.2); }
+  }
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(1deg); }
+  }
+  @keyframes shimmer {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.7; }
+  }
+  @keyframes riseUp {
+    0% { opacity: 0; transform: translateY(28px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes drift {
+    0%, 100% { transform: translateX(0px) translateY(0px) rotate(0deg);; }
+    33% { transform: translateX(30px) translateY(-10px) rotate(2deg);; }
+    66% { transform: translateX(-20px) translateY(-15px) rotate(-1deg);; }
+  }
+  @keyframes marquee2 {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes fadeUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideUp {
+    0% { opacity: 0; transform: translateY(40px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+}

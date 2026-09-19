@@ -2,10 +2,9 @@
 title: Turtle
 id: turtle
 layout: canvas
-onlytailwind: true
 permalink: /turtle
 ---
-<!-- ! This page has been redirected to /dojo -->
+<!-- ! Superseded: /dojo now redirects to /approach; this page is the Turtling IDE. -->
 <canvas id="canvas" class="fixed w-full h-full animate-fade transition duration-200 bg-inherit"></canvas>
 <div id="runenv" class="fixed top-20 w-5/12 h-screen ">
    

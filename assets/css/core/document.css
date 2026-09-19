@@ -1,0 +1,299 @@
+/* ==========================================================================
+   core/document.css — the long-form reading surface
+   --------------------------------------------------------------------------
+   Ported from the retired `_sass/_style.scss` + `styles.scss`. It is the
+   Tufte-derived apparatus the Library (notes/blog) is built on: a measured
+   column, sidenotes and marginnotes, backlink boxes, and reflowed
+   recommendations for narrow screens.
+
+   KNOWN DEBT — scheduled for rebuild, not for copying forward:
+     * `body` here is the *global* page frame (64em, 4vh/6vw). It is applied
+       to every page, including cinematic full-bleed ones, which then have to
+       escape it with `calc(50% - 50vw)` hacks. The frame belongs to the
+       Library theme, not the document.
+     * The two rules marked `[global]` below carry `!important` and are
+       inherited by the whole site. They are the clearest example of the
+       blog's concerns leaking into every other surface.
+   Retained verbatim for now so this migration is verifiable as behaviour-
+   preserving. Both are removed deliberately when the Library theme is built.
+   ========================================================================== */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Application shells opt out: _layouts/canvas.html is a full-viewport IDE,
+     not a document. Before this migration it escaped the frame by loading only
+     the Tailwind bundle; now the escape is named. */
+  body:not([data-shell="app"]) {
+    font-family: var(--font-body);
+    margin: 0 auto;
+    line-height: 1.7;
+    padding: 4vh 6vw;
+    overflow-x: hidden;
+    color: #333333;
+    font-size: 1rem;
+    counter-reset: sidenote-counter;
+    max-width: 64em;
+  }
+
+  @media (min-width: 820px) {
+    body:not([data-shell="app"]) {
+      font-size: 1.2rem;
+    }
+  }
+
+  time {
+    display: block;
+    color: inherit;
+    margin: 0.5em 0 1em;
+  }
+
+  footer {
+    margin: 2em 0;
+    font-size: 0.8em;
+    color: hsl(0deg 0% 36%);
+    padding-top: 1em;
+  }
+
+  blockquote {
+    padding: 1.5em;
+    margin: 0;
+    font-size: 0.88em;
+    background: rgb(254 254 254 / 0%);
+    border-radius: 4px;
+  }
+
+  blockquote p {
+    margin: 0;
+  }
+
+  hr {
+    border: none;
+    color: #ff9933;
+    overflow: visible;
+    text-align: center;
+    height: 2px;
+  }
+
+  hr::after {
+    content: "☙ —— ›– ✧ –‹ —— ❧ ";
+    position: relative;
+    top: -14px;
+    color: #ff9933;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    line-height: 1.3;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  code {
+    background: rgb(255 232 188 / 20%);
+    padding: 0.1em 0.2em;
+    border-radius: 4px;
+  }
+
+  /* [global] every childless link on the site */
+  a:not(:has(*)) {
+    transition: background 300ms;
+    padding: 0 0.1em;
+    text-decoration: none;
+    color: hsl(0deg 0% 10%);
+  }
+
+  a:not(:has(*)):hover {
+    color: white !important;
+    background: #000000;
+  }
+
+  a:not(:has(*))::after {
+    position: relative;
+    top: -0.5em;
+    font-size: 0.7em;
+    color: #aaaaaa;
+  }
+
+  a:not(:has(*)).internal-link::after,
+  a:not(:has(*)).footnote::after,
+  a:not(:has(*)).reversefootnote::after {
+    content: "";
+  }
+
+  /* [global] every focusable element on the site */
+  *:focus {
+    background: #ffe8bc !important;
+    color: black !important;
+  }
+
+  .invalid-link {
+    color: #444444;
+    cursor: help;
+    background: #fafafa;
+    padding: 0 0.1em;
+  }
+
+  .invalid-link-brackets {
+    color: #cccccc;
+    cursor: help;
+  }
+
+  content a.internal-link {
+    border-color: #8b88e6;
+    background-color: #ff9933;
+  }
+
+  input.margin-toggle {
+    display: none;
+  }
+
+  label.sidenote-number {
+    display: inline;
+  }
+
+  label.margin-toggle:not(.sidenote-number) {
+    display: none;
+  }
+}
+
+@layer components {
+
+  /* Link-preview tooltip (see _includes/link-previews.html) */
+  .tooltip-wrapper {
+    background: white;
+    padding: 1em;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+    overflow: hidden;
+    position: absolute;
+    width: 400px;
+    height: 250px;
+    font-size: 0.8em;
+    box-shadow: 0 5px 10px rgb(0 0 0 / 10%);
+    opacity: 0;
+    transition: opacity 100ms;
+  }
+
+  .tooltip-wrapper::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    bottom: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: linear-gradient(to bottom, rgb(255 255 255 / 0%), rgb(255 255 255 / 70%) 80%);
+    width: 100%;
+    height: 75px;
+  }
+
+  /* Marginalia — the Tufte apparatus the Library must keep */
+  .sidenote {
+    float: right;
+    clear: right;
+    margin-right: -50%;
+    width: 40%;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    opacity: 0.75;
+    vertical-align: baseline;
+    position: relative;
+  }
+
+  .sidenote::before {
+    content: counter(sidenote-counter) " ";
+    position: relative;
+    vertical-align: baseline;
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    top: -0.5rem;
+    opacity: 0.75;
+  }
+
+  .marginnote {
+    float: right;
+    clear: right;
+    margin-right: -50%;
+    width: 42%;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    opacity: 0.75;
+    vertical-align: baseline;
+    position: relative;
+  }
+
+  .sidenote-number {
+    counter-increment: sidenote-counter;
+  }
+
+  .sidenote-number::after {
+    content: counter(sidenote-counter);
+    position: relative;
+    vertical-align: baseline;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    top: -0.5rem;
+  }
+
+  .backlink-box {
+    background: rgb(254 254 254 / 0%);
+    padding: 1em;
+    border-radius: 4px;
+  }
+
+
+
+  @media (max-width: 76em) {
+    .sidenote,
+    .marginnote {
+      margin-right: -40%;
+      width: 30%;
+    }
+  }
+
+  @media (max-width: 60em) {
+    label.margin-toggle:not(.sidenote-number) {
+      display: inline;
+    }
+
+    .sidenote,
+    .marginnote {
+      display: none;
+    }
+
+    .margin-toggle:checked + .sidenote,
+    .margin-toggle:checked + .marginnote {
+      display: block;
+      float: left;
+      left: 1rem;
+      clear: both;
+      width: 95%;
+      margin: 1rem 2.5%;
+      vertical-align: baseline;
+      position: relative;
+    }
+
+    .margin-toggle {
+      border-bottom: thin #444444 dotted;
+      color: #3498db;
+    }
+
+    label {
+      cursor: pointer;
+    }
+
+    .sidenote-number.sidenote-number {
+      border-bottom: none;
+    }
+  }
+}

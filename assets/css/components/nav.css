@@ -1,0 +1,116 @@
+/* ==========================================================================
+   components/nav.css — the site navigation
+   --------------------------------------------------------------------------
+   One component, two surfaces. `data-tone` describes the surface the nav SITS
+   ON, not the colour of the nav:
+
+     data-tone="light"  the nav is over a light background -> dark ink
+     data-tone="dark"   the nav is over a dark or photographic background
+                        -> light ink
+
+   That naming is deliberate. The previous test was `page.nav_color == 'white'`,
+   which named the ink rather than the surface, and so was easy to set backwards
+   — and in practice it only recoloured the links, leaving everything else on
+   defaults.
+
+   A nav is legible over its surface when the ink is derivable from one place,
+   so each tone sets a small local ink/accent pair and every part of the nav
+   reads from those. Deliberately NOT global semantic tokens: a nav needs two
+   values, not a theme system, and a token layer with one consumer is
+   abstraction ahead of evidence.
+   ========================================================================== */
+
+@layer components {
+  .site-nav {
+    position: relative;
+    z-index: 30;
+    background: transparent;
+  }
+
+  .site-nav[data-tone="light"] {
+    --nav-ink: var(--color-text);
+    --nav-ink-muted: color-mix(in srgb, var(--color-text) 72%, transparent);
+    --nav-accent: var(--color-primary);
+    --nav-hover-bg: color-mix(in srgb, var(--color-text) 7%, transparent);
+    --nav-line: color-mix(in srgb, var(--color-text) 18%, transparent);
+    --nav-panel: var(--color-background);
+  }
+
+  .site-nav[data-tone="dark"] {
+    --nav-ink: var(--color-cream);
+    --nav-ink-muted: color-mix(in srgb, var(--color-cream) 74%, transparent);
+    --nav-accent: var(--color-primary);
+    --nav-hover-bg: color-mix(in srgb, var(--color-cream) 12%, transparent);
+    --nav-line: color-mix(in srgb, var(--color-cream) 24%, transparent);
+    --nav-panel: var(--color-night);
+  }
+
+  .site-nav__brand {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .site-nav__link {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    color: var(--nav-ink);
+    border-radius: 0.375rem;
+    text-decoration: none;
+    transition: background-color 200ms, color 200ms;
+  }
+
+  .site-nav__link:hover {
+    background-color: var(--nav-hover-bg);
+  }
+
+  .site-nav__link[aria-current="page"] {
+    color: var(--nav-accent);
+  }
+
+  /* Mobile panel + its backdrop. Kept in the component rather than inline in
+     the template so the tone variables apply without duplication. */
+  .site-nav__overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: color-mix(in srgb, var(--color-night) 50%, transparent);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 300ms ease-in-out;
+  }
+
+  .site-nav__overlay.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .site-nav__panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 50;
+    width: 50%;
+    height: 100%;
+    background: var(--nav-panel);
+    transform: translateX(100%);
+    transition: transform 300ms ease-in-out;
+    box-shadow: -0.5rem 0 1.5rem rgb(0 0 0 / 25%);
+  }
+
+  .site-nav__panel.is-open {
+    transform: translateX(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-nav__overlay,
+    .site-nav__panel,
+    .site-nav__link {
+      transition: none;
+    }
+  }
+}

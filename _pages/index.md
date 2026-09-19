@@ -5,7 +5,7 @@ excerpt: We believe that the world would be a better place if the processes we s
 image: /assets/lib/beauty_first.png
 id: home
 permalink: /
-nav_color: white
+nav_tone: dark
 
 approach_gallery:
   - type: video
@@ -68,7 +68,7 @@ yt_gallery:
     title: What if Pythagoras Theorem was forgotten? 
 ---
 
-{% include hero_video.html
+{% include media/hero.html
    video_src="/assets/lib/landing/3DWaves_small.webm"
    poster="/assets/lib/landing/3DWaves.webp"
    title="where math <span class='text-primary'>Lives.</span>"
@@ -243,7 +243,6 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>  
     
     {% include contact_form.html
-      href="/dojo"
       message_placeholder="Ask us anything!"
       button_text="Send!"
       %}

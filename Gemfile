@@ -15,4 +15,4 @@ gem "nokogiri"
 gem "jekyll-redirect-from"
 
 
-gem "tailwindcss-ruby", "~> 3.4"
+gem "tailwindcss-ruby", "~> 4.3"

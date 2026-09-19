@@ -1,0 +1,59 @@
+{%- comment -%}
+  Full-bleed page hero (the original filling background).
+  Poster paints the section immediately; video fades in via CSS
+  [data-ready] — not Tailwind arbitrary variants (those get HTML-escaped).
+
+  Params: id (catalog) or src / video_src, poster, alt / video_alt,
+          title, subtitle, action_link, action_words, action_subtitle,
+          height_mobile (70dvh), height_desktop (75dvh), class, overlay_class.
+{%- endcomment -%}
+{%- assign media_hero_src = include.src | default: include.video_src -%}
+{%- assign media_hero_poster = include.poster | default: site.data.media[include.id].poster -%}
+{%- assign media_hero_alt = include.alt | default: include.video_alt | default: site.data.media[include.id].alt | default: 'Hero video background' -%}
+{%- assign media_h_m = include.height_mobile | default: '70dvh' -%}
+{%- assign media_h_d = include.height_desktop | default: '75dvh' -%}
+{%- assign media_hero_poster_url = '' -%}
+{%- if media_hero_poster -%}
+  {%- if media_hero_poster contains '://' -%}
+    {%- assign media_hero_poster_url = media_hero_poster -%}
+  {%- else -%}
+    {%- assign media_hero_poster_url = media_hero_poster | relative_url -%}
+  {%- endif -%}
+{%- endif -%}
+<section class="media-hero media-hero--masthead relative overflow-hidden h-[{{ media_h_m }}] md:h-[{{ media_h_d }}] {{ include.class }}">
+  {% if media_hero_poster_url != '' %}
+  <div class="media-hero-fill brightness-[40%]"
+       style="background-image: url('{{ media_hero_poster_url }}'); background-size: cover; background-position: center;"
+       aria-hidden="true"></div>
+  {% endif %}
+  {% include media/video.html
+    id=include.id
+    src=media_hero_src
+    poster=media_hero_poster
+    av1=include.av1
+    webm=include.webm
+    alt=media_hero_alt
+    width=include.width
+    height=include.height
+    mode="hero"
+    group=include.group
+    class="media-hero-fill media-hero-video brightness-[40%]"
+  %}
+  <div class="{{ include.overlay_class | default: 'relative z-10 flex flex-col items-center h-full px-4 mt-[10dvh] mb-[35dvh] md:mt-[25dvh] md:mb-[45dvh] lg:mt-[15dvh] lg:mb-[25dvh] animate-fade-in' }}">
+    {% if include.title %}
+    <h1 class="{{ include.title_class | default: 'text-6xl tracking-tighter text-center text-white font-paperlang lg:text-8xl' }}">
+      {{ include.title }}
+    </h1>
+    {% endif %}
+    {% if include.subtitle %}
+    <div class="{{ include.subtitle_class | default: 'my-4 text-lg text-center text-white lg:my-8 lg:text-3xl' }}">
+      {{ include.subtitle }}
+    </div>
+    {% endif %}
+    {% if include.action_link %}
+    <a class="px-4 py-2 my-4 rounded-md bg-primary text-primary-light font-paperlang" href="{{ include.action_link }}">{{ include.action_words }}</a>
+    {{ include.action_subtitle }}
+    {% endif %}
+    {{ include.content }}
+  </div>
+</section>
