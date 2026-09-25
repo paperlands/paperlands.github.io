@@ -1,0 +1,14 @@
+/* ==========================================================================
+   components/folio.css — cinematic document
+   --------------------------------------------------------------------------
+   `_layouts/folio.html` sets `data-theme="folio"`. Values stay here, not in
+   `@theme`. Bind media slots only when a second look needs a different
+   value than media.css already defaults.
+   ========================================================================== */
+
+@layer components {
+  [data-theme="folio"] {
+    color: #f6e6c4;
+    background: #140806;
+  }
+}

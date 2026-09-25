@@ -1,0 +1,1312 @@
+/* ==========================================================================
+   components/helios.css — the Helios look
+   --------------------------------------------------------------------------
+   A *look*, not a page and not a media surface. Bound by `_pages/helios.md`
+   declaring `look: helios`, which `_layouts/folio.html` writes as
+   data-look="helios" on <body>.
+
+   THE RULE: a look binds published attributes, never another component's
+   classes.
+
+   `media.css` and `nav.css` own their markup and may rename any class in them
+   at any time. What they *publish* is attributes:
+
+     data-media-surface="fill|plate|pane|box"   the placement
+     data-media-carousel="stack|strip"          the behaviour
+     data-media-slot="frame|copy|kicker|title|slate|rail"
+     data-media-to / data-media-cell / data-media-track
+     data-media-active / data-media-decode      the marks the player reads
+     data-nav-mark                              the nav's focusable brand link
+
+   And what the *writer* owns (not a slot, never bound here):
+
+     data-media-copy="title|slate"              where text may be written
+
+   Look-owned runtime state is namespaced the same way: `data-helios-copy="in"`.
+   `design/probe/looks.py` fails if a look binds a class that is not its own, or
+   an attribute (or attribute value) that no built page publishes. That rule is
+   the reason this file has no `.media-*` selector in it.
+
+   LAYERING. The look lives in `@layer components`, the same layer as the
+   surfaces it binds — and it does NOT declare a sub-layer. Measured in
+   Chromium: a nested layer is subordinate to its parent, so
+   `@layer components.helios` loses to `@layer components` whatever the
+   specificity or source order. (`@layer utilities` does outrank it, because
+   `utilities` is a *sibling* declared after `components`.)
+
+   So precedence here is carried by selector specificity. Every rule below is
+   written `[data-look="helios"] …`, and wherever media.css also uses a
+   two-part selector the look adds the carousel qualifier as a third. No rule
+   in this file depends on which `@import` in app.css comes first.
+
+   Every Tailwind utility still outranks the look — correct for a default a
+   caller may override.
+
+   Motion overrides live in `@layer utilities`, matching core/media.css: they
+   must beat Tailwind's own `animate-*` utilities, and `components` would not.
+
+   PAINT IS NOT HERE. `components/folio.css` already paints the folio theme
+   (night ground, cream ink) on `[data-theme="folio"]`. Repeating it here would
+   tie the look to the document and stop it nesting inside another theme. The
+   look declares vocabulary and bindings only.
+
+   PALETTE is deliberately local. `--helios-brand` (#ff9933) equals
+   `--color-primary`, and that is not evidence of a shared model — see
+   design/architecture.org, "Does the folio palette become the site palette?".
+   Nothing here is promoted to core/tokens.css or to @theme; a look that mints
+   utilities is how this codebase acquired a 75-token palette.
+
+   One url(): assets/lib/helios-grain.svg. A real file, not a data URI, so it is
+   cacheable across pages and so `design/probe/assets.py` can verify it. (That
+   probe now also skips data URIs correctly; the previous regex split a quoted
+   data URI at the first `)` and reported the fragment as a missing file.)
+   ========================================================================== */
+
+@layer components {
+  /* ---- vocabulary, scoped to the look -------------------------------- */
+  [data-look="helios"] {
+    --helios-brand: #ff9933;
+    --helios-cream: #f6e6c4;
+    --helios-verse: #f2d2b0;
+    --helios-ember: #d45a14;
+    --helios-ridge: #8b2e0c;
+    --helios-night: #140806;
+    --helios-air: #140910;
+    --helios-ease: cubic-bezier(.22, 1, .36, 1);
+    --helios-gutter: clamp(1.25rem, 4.2vw, 4.2rem);
+    --helios-verse-size: clamp(1.32rem, 2.05vw, 1.82rem);
+    --helios-verse-lh: 1.05;
+    --helios-verse-ls: 0.018em;
+    /* Act one's own scale. The verse token above is shared with act two's head,
+       so the hero's copy reads from these instead: bigger, and free to move
+       without dragging "In who we become" with it. */
+    --helios-hero-thesis: clamp(2.9rem, 8.1vw, 8.4rem);
+    --helios-hero-verse: clamp(1.45rem, 2.35vw, 2.15rem);
+    --helios-hero-action: clamp(2.2rem, 4.7vw, 4.15rem);
+    --helios-hero-slate: clamp(1.12rem, 1.62vw, 1.45rem);
+    --helios-see-verse: clamp(1.28rem, 1.9vw, 1.62rem);
+    --helios-see-thesis: clamp(2.7rem, 6.1vw, 5.6rem);
+    /* Where the copy sits. Not the seam between the thesis and the card — the
+       block they form, centred on the 45% eye line: the reference's
+       `#copy { top: 45% }`, and it is the screen being measured, so the unit is
+       svh like the act itself, not a share of the act. The halves mirror what
+       the two rules below set (thesis 2 lines x 1.2; action 0.98 + its 0.2em of
+       air; slate 1.2 + its margin), because a seam at the middle is not a centre
+       when the two boxes are 280px and 108px tall. */
+    --helios-copy-center: 45svh;
+    --helios-copy-air: 1.2rem;
+    --helios-copy-thesis-h: calc(var(--helios-hero-thesis) * 2.4);
+    --helios-copy-card-h: calc(
+      var(--helios-hero-action) * 1.18 + var(--helios-hero-slate) * 1.2 + 0.12rem
+    );
+    --helios-glow:
+      0.045em 0.032em 0 rgb(255 153 51 / 0.62),
+      0 0 0.38em rgb(255 153 51 / 0.58),
+      0 0 1.05em rgb(255 153 51 / 0.28);
+  }
+
+  /* The nav keeps its link and hit area; the drawn identity covers it. The
+     ring lands on the drawn twin because the link itself is opacity 0, and an
+     outline on an invisible element is invisible. */
+  [data-look="helios"] [data-nav-mark] {
+    opacity: 0;
+  }
+
+  [data-look="helios"]:has([data-nav-mark]:focus-visible) .helios-wordmark {
+    outline: 1px solid var(--helios-brand);
+    outline-offset: 4px;
+  }
+
+  /* ---- air ------------------------------------------------------------ */
+  [data-look="helios"] .helios-air {
+    position: fixed;
+    inset: -20%;
+    z-index: 90;
+    pointer-events: none;
+    opacity: 0.2;
+    mix-blend-mode: overlay;
+    background-size: 220px 220px;
+    background-image: url("/assets/lib/helios-grain.svg");
+    animation: helios-grain 1.2s steps(2) infinite;
+  }
+
+  [data-look="helios"] .helios-silk {
+    position: fixed;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    opacity: 0.18;
+    mix-blend-mode: multiply;
+    background: linear-gradient(180deg, rgb(212 90 20 / 0.22), rgb(20 8 6 / 0.55));
+  }
+
+  /* ---- the identity: the mark assembles ------------------------------- */
+  /* At rest this is the banner. Inside the first act it is the pieces, carried
+     from unbuilt to built on scroll distance. The look owns the choreography
+     slots (data-helios-build / -dawn / -light / -shade / -word / -banner) and
+     the geometry the pieces declare with data-from / data-to / data-turn;
+     assets/js/home/helios.js owns the clock and nothing else. */
+  [data-look="helios"] .helios-wordmark {
+    position: fixed;
+    z-index: 91;
+    left: 1.6rem;
+    top: 0.9rem;
+    width: min(12rem, calc(100vw - 12rem));
+    aspect-ratio: 1280 / 250;
+    pointer-events: none;
+    /* the corner the mark is born in, and where this element sits — kept as a
+       pair so the offset stays correct when the narrow block moves it */
+    --helios-wm-root-left: 1.6rem;
+    --helios-wm-root-top: 0.9rem;
+    --helios-wm-hero-left: 1.5rem;
+    --helios-wm-hero-top: 1.15rem;
+    --helios-wm-mark: clamp(1.2rem, 2.4vw, 1.7rem);
+    --helios-wm-veil: 0.4;
+  }
+
+  [data-look="helios"] .helios-wordmark::before {
+    content: "";
+    position: absolute;
+    inset: -2.2rem -6.5rem -3rem -3rem;
+    z-index: 0;
+    pointer-events: none;
+    opacity: var(--helios-wm-veil);
+    background: radial-gradient(ellipse 58% 72% at 30% 42%,
+      rgb(20 12 8 / 0.42) 0%,
+      rgb(42 18 14 / 0.2) 40%,
+      rgb(232 160 32 / 0.05) 64%,
+      transparent 80%);
+    filter: blur(22px);
+  }
+
+  [data-look="helios"] .helios-wordmark__art {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    transform-origin: 0 0;
+    filter: drop-shadow(0 0 0.55rem rgb(255 153 51 / 0.3));
+  }
+
+  /* "In" holds the identity while the mark is unbuilt, then lifts away. */
+  [data-look="helios"] .helios-wordmark__in {
+    display: none;
+    position: absolute;
+    left: calc(var(--helios-wm-hero-left) - var(--helios-wm-root-left));
+    top: calc(var(--helios-wm-hero-top) - var(--helios-wm-root-top) + 2px);
+    z-index: 1;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: calc(var(--helios-wm-mark) * 0.86);
+    letter-spacing: 0.04em;
+    line-height: 1;
+    color: var(--helios-verse);
+    padding-right: 0.26em;
+    transform-origin: right bottom;
+  }
+
+  /* Banner at rest, pieces while writing. */
+  [data-look="helios"] [data-helios-blocks],
+  [data-look="helios"] [data-helios-dawn],
+  [data-look="helios"] [data-helios-light],
+  [data-look="helios"] [data-helios-shade],
+  [data-look="helios"] [data-helios-word] {
+    display: none;
+  }
+
+  [data-look="helios"] .helios-wordmark[data-helios-writing="on"] [data-helios-blocks],
+  [data-look="helios"] .helios-wordmark[data-helios-writing="on"] [data-helios-dawn],
+  [data-look="helios"] .helios-wordmark[data-helios-writing="on"] [data-helios-light],
+  [data-look="helios"] .helios-wordmark[data-helios-writing="on"] [data-helios-shade],
+  [data-look="helios"] .helios-wordmark[data-helios-writing="on"] [data-helios-word] {
+    display: inline;
+  }
+
+  [data-look="helios"] .helios-wordmark[data-helios-writing="on"] [data-helios-banner] {
+    display: none;
+  }
+
+  [data-look="helios"] .helios-wordmark[data-helios-writing="on"] .helios-wordmark__in {
+    display: block;
+  }
+
+  /* Document y is native (the Library frame opts into interpolation, not
+     this page). Acts are svh-tall so the ticker is a seam on act one.
+     Nested x (the strip) is the only snap; media.css owns that axis.
+     Attach/unbind must not become scroll anchors. */
+
+  [data-look="helios"] .helios-act {
+    height: 100svh;
+    max-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    overflow-anchor: none;
+  }
+
+  /* ---- act one: the hero --------------------------------------------- */
+  [data-look="helios"] .helios-hero {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  [data-look="helios"] .helios-hero [data-media-surface="fill"] {
+    height: 100%;
+    margin: 0;
+  }
+
+  /* The plate grade — the reference's goldcast. Contrast up, colour pulled
+     toward the print, on the still and the film alike. Coarse pointers keep
+     their pixels: a filter over a full-viewport video is not free. */
+  [data-look="helios"] [data-media-surface="fill"] [data-media="video"],
+  [data-look="helios"] [data-media-surface="fill"] [data-media-slot="frame"] img {
+    filter: contrast(1.12) saturate(0.85) sepia(0.28) hue-rotate(-12deg);
+  }
+
+  @media (pointer: coarse), (max-width: 700px) {
+    [data-look="helios"] [data-media-surface="fill"] [data-media="video"],
+    [data-look="helios"] [data-media-surface="fill"] [data-media-slot="frame"] img {
+      filter: none;
+    }
+  }
+
+  /* Scrim: inside the fill box, above the plate, below the slots that carry
+     text. A page-level overlay would paint above the carousel's own copy,
+     because the carousel is an isolated stacking context; media.css paints
+     its slots at z-index 2, so this sits at 1. */
+  [data-look="helios"] [data-media-surface="fill"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      linear-gradient(90deg, rgb(20 8 6 / 0.88) 0%, rgb(20 8 6 / 0.2) 46%, transparent 68%),
+      linear-gradient(180deg, transparent 30%, rgb(20 8 6 / 0.55) 72%, rgb(20 8 6 / 0.94) 100%);
+  }
+
+  [data-look="helios"] .helios-thesis {
+    position: absolute;
+    z-index: 6;
+    left: var(--helios-gutter);
+    /* The block's centre at 45%: the thesis' own bottom edge lands 0.6rem above
+       the card's top, and the card's height is already known here. */
+    top: auto;
+    bottom: calc(
+      100% - var(--helios-copy-center)
+      + (var(--helios-copy-card-h) + var(--helios-copy-air) - var(--helios-copy-thesis-h)) / 2
+    );
+    margin: 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: var(--helios-hero-thesis);
+    line-height: 1.2;
+    letter-spacing: -0.016em;
+    white-space: nowrap;
+    color: var(--helios-cream);
+  }
+
+  [data-look="helios"] .helios-thesis em {
+    font-style: italic;
+    color: var(--helios-brand);
+    text-shadow: var(--helios-glow);
+  }
+
+  /* ---- the card: the shared copy slot --------------------------------- */
+  /* The reference composes the card as a row: the verse "In how we" on the
+     action's baseline, the slate under the action. The writer hands us three
+     siblings, so the row is a two-column grid here instead of nested
+     .how/.verb wrappers — same composition, published slots only. */
+  [data-look="helios"] [data-media-slot="copy"] {
+    left: var(--helios-gutter);
+    top: calc(
+      var(--helios-copy-center)
+      + (var(--helios-copy-thesis-h) + var(--helios-copy-air) - var(--helios-copy-card-h)) / 2
+    );
+    bottom: auto;
+    max-width: min(92vw, 46rem);
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: start;
+    align-items: baseline;
+    color: var(--helios-cream);
+  }
+
+  [data-look="helios"] [data-media-slot="kicker"] {
+    grid-area: 1 / 1;
+    margin: 0;
+    /* The row's gap is the verse's own padding, as in the reference — 0.32em
+       of the verse, not of this box. */
+    padding-right: 0.32em;
+    white-space: nowrap;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: var(--helios-hero-verse);
+    line-height: var(--helios-verse-lh);
+    letter-spacing: var(--helios-verse-ls);
+    text-transform: none;
+    opacity: 1;
+    color: var(--helios-verse);
+  }
+
+  [data-look="helios"] [data-media-carousel="stack"] [data-media-slot="title"] {
+    grid-area: 1 / 2;
+    margin: 0;
+    /* Air under the action, but not the reference's whole stride: the mask it
+       used carried 0.22em of padding plus 0.12em of its own line box, and at
+       this size that reads as two separate blocks. 0.2em keeps the subtitle
+       close enough to be the same caption and still clear of the descenders. */
+    padding: 0 0 0.2em;
+    text-transform: lowercase;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: var(--helios-hero-action);
+    line-height: 0.98;
+    letter-spacing: -0.015em;
+    color: var(--helios-brand);
+    text-shadow: var(--helios-glow);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.14em;
+    text-decoration-color: color-mix(in srgb, var(--helios-brand) 62%, var(--helios-cream));
+  }
+
+  [data-look="helios"] [data-media-carousel="stack"] [data-media-slot="slate"] {
+    grid-area: 2 / 2;
+    margin: 0.12rem 0 0;
+    font-size: var(--helios-hero-slate);
+    line-height: 1.2;
+    letter-spacing: 0.012em;
+    font-style: italic;
+    opacity: 1;
+    color: color-mix(in srgb, var(--helios-cream) 78%, transparent);
+  }
+
+  /* The writer sets the text; the look makes its arrival an event. The state
+     is look-owned and namespaced, so it cannot be confused with the writer's
+     own `aria-current` on the rail. */
+  [data-look="helios"] [data-media-slot="copy"] [data-media-slot="title"],
+  [data-look="helios"] [data-media-slot="copy"] [data-media-slot="slate"] {
+    opacity: 0;
+  }
+
+  [data-look="helios"] [data-media-slot="copy"][data-helios-copy="in"] [data-media-slot="title"] {
+    animation: helios-lift 0.6s var(--helios-ease) forwards;
+  }
+
+  [data-look="helios"] [data-media-slot="copy"][data-helios-copy="in"] [data-media-slot="slate"] {
+    animation: helios-lift 0.7s var(--helios-ease) 80ms forwards;
+  }
+
+  /* The swap is a cross-fade, not a flash — the reference's own timing for the
+     stage (04-helios: `#stage .slide`, opacity 1.2s). media.css cuts at 0.6s
+     ease for the generic surface; the look adds the carousel qualifier. */
+  [data-look="helios"] [data-media-carousel="stack"] [data-media-cell] {
+    transition: opacity 1.2s var(--helios-ease);
+  }
+
+  /* One flash, and the scroll fires it: `assets/js/home/helios.js` sets the
+     state at the seam where the sun is up and the banner is whole. A clip
+     swap never touches it. */
+  [data-look="helios"] .helios-flash {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0;
+    background: #ffe27a;
+    mix-blend-mode: screen;
+  }
+
+  [data-look="helios"] .helios-flash[data-helios-flash="on"] {
+    animation: helios-flash 0.9s var(--helios-ease);
+  }
+
+  [data-look="helios"] .helios-play {
+    position: absolute;
+    inset: auto 0 0;
+    z-index: 6;
+    height: 3px;
+    background: rgb(246 230 196 / 0.15);
+  }
+
+  [data-look="helios"] .helios-play i {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--helios-ember);
+    transform: translateZ(0);
+  }
+
+  /* ---- the ticker ----------------------------------------------------- */
+  [data-look="helios"] .helios-ticker {
+    flex: 0 0 auto;
+    border-block: 2px solid var(--helios-ridge);
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 0.45rem 0;
+    background: var(--helios-ember);
+    color: var(--helios-night);
+  }
+
+  [data-look="helios"] .helios-ticker__track {
+    display: inline-block;
+    animation: helios-crawl 28s linear infinite;
+  }
+
+  [data-look="helios"] .helios-ticker b {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: clamp(15px, 2.2vw, 26px);
+    padding: 0 0.6rem;
+  }
+
+  [data-look="helios"] .helios-ticker i {
+    font-style: normal;
+    opacity: 0.45;
+    padding: 0 0.2rem;
+  }
+
+  /* ---- the interval: anyone can -------------------------------------- */
+  /* One sky for the interval and the people. Painted on the wrapper, not on
+     each act, so the seam cannot invent a new climate. Violet and ember cross
+     the boundary the way they cross a single picture. */
+  [data-look="helios"] .helios-twilight {
+    background:
+      radial-gradient(ellipse 56% 30% at 76% 20%, rgb(41 29 87 / 0.58), transparent 70%),
+      radial-gradient(ellipse 42% 22% at 16% 34%, rgb(212 90 20 / 0.09), transparent 72%),
+      radial-gradient(ellipse 50% 24% at 82% 47%, rgb(232 160 32 / 0.14), transparent 68%),
+      radial-gradient(ellipse 64% 28% at 70% 56%, rgb(41 29 87 / 0.32), transparent 74%),
+      var(--helios-air);
+  }
+
+
+  /* After the cinema, before the people. One night, two lights. The violet is
+     the twilight and the ember is already in it — the way the prior holds a sun
+     and a shadow in one sky, and gold living in indigo. The next act does not
+     change climate. Masks retire the editor. The arc may leave the frame. */
+  [data-look="helios"] .helios-see {
+    --helios-see-night: #110a16;
+    --helios-see-violet: 41 29 87;
+    --helios-see-mist: #d4c4ee;
+    --helios-see-step: clamp(1.1rem, 5.2vw, 4.6rem);
+    position: relative;
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    background: transparent;
+  }
+
+  [data-look="helios"] .helios-see__field {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+
+  [data-look="helios"] .helios-see__object {
+    position: absolute;
+    margin: 0;
+    mix-blend-mode: screen;
+    animation: helios-breathe 22s var(--helios-ease) infinite alternate;
+  }
+
+  [data-look="helios"] .helios-see__object img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* The clip's box is transparent. Screen blend is the knockout: black in the
+     film becomes the night, so a plate never reads. H.264 cannot store alpha. */
+  [data-look="helios"] .helios-see [data-media-slot="frame"] {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    background: transparent;
+    overflow: hidden;
+  }
+
+  /* The field. White, so it cannot collide with the films. Black falls away;
+     the lines stay silver. Kept off the sentence, and off the editor. */
+  [data-look="helios"] .helios-see__object--force {
+    width: 72%;
+    aspect-ratio: 16 / 10;
+    right: -8%;
+    top: 4%;
+    opacity: 0.2;
+    --helios-drift-x: 0.6%;
+    --helios-drift-y: -0.4%;
+    animation-duration: 32s;
+    -webkit-mask-image:
+      linear-gradient(90deg, transparent 0%, #000 24%, #000 88%, transparent 100%),
+      radial-gradient(ellipse 70% 66% at 64% 48%, #000 16%, transparent 74%);
+    mask-image:
+      linear-gradient(90deg, transparent 0%, #000 24%, #000 88%, transparent 100%),
+      radial-gradient(ellipse 70% 66% at 64% 48%, #000 16%, transparent 74%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+
+  [data-look="helios"] .helios-see__object--force img,
+  [data-look="helios"] .helios-see__object--force [data-media="video"] {
+    object-position: 68% 46%;
+  }
+
+  /* The mass. The coloured arc is the unfinished line; the viewport, not the
+     mask, cuts it. The mask only retires the editor. */
+  [data-look="helios"] .helios-see__object--mass {
+    width: 46%;
+    aspect-ratio: 16 / 10;
+    right: -4%;
+    top: -6%;
+    opacity: 0.9;
+    --helios-drift-x: -1.6%;
+    --helios-drift-y: 1.2%;
+    animation-duration: 22s;
+    -webkit-mask-image:
+      linear-gradient(90deg, transparent 0%, #000 26%, #000 100%),
+      radial-gradient(ellipse 78% 72% at 64% 52%, #000 28%, transparent 76%);
+    mask-image:
+      linear-gradient(90deg, transparent 0%, #000 26%, #000 100%),
+      radial-gradient(ellipse 78% 72% at 64% 52%, #000 28%, transparent 76%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+
+  [data-look="helios"] .helios-see__object--mass img,
+  [data-look="helios"] .helios-see__object--mass [data-media="video"] {
+    object-position: 76% 46%;
+  }
+
+  [data-look="helios"] .helios-see__object--echo {
+    width: 32%;
+    aspect-ratio: 5 / 4;
+    right: 8%;
+    bottom: 6%;
+    opacity: 0.86;
+    --helios-drift-x: 0.8%;
+    --helios-drift-y: -1.4%;
+    animation-duration: 26s;
+    -webkit-mask-image: radial-gradient(ellipse 70% 68% at 62% 42%, #000 18%, transparent 74%);
+    mask-image: radial-gradient(ellipse 70% 68% at 62% 42%, #000 18%, transparent 74%);
+  }
+
+  [data-look="helios"] .helios-see__object--echo img,
+  [data-look="helios"] .helios-see__object--echo [data-media="video"] {
+    object-position: 72% 36%;
+  }
+
+  /* The fragment. The wheel draws in the upper half of its frame; the crop
+     keeps that, and lets a few spokes leave the left edge. */
+  [data-look="helios"] .helios-see__object--fragment {
+    width: 34%;
+    aspect-ratio: 16 / 11;
+    left: -8%;
+    bottom: 2%;
+    opacity: 0.9;
+    --helios-drift-x: 0.6%;
+    --helios-drift-y: 0.9%;
+    animation-duration: 18s;
+    -webkit-mask-image: radial-gradient(ellipse 62% 58% at 42% 38%, #000 12%, transparent 70%);
+    mask-image: radial-gradient(ellipse 62% 58% at 42% 38%, #000 12%, transparent 70%);
+  }
+
+  [data-look="helios"] .helios-see__object--fragment img,
+  [data-look="helios"] .helios-see__object--fragment [data-media="video"] {
+    object-position: 40% 30%;
+  }
+
+  /* The ribbon. One amber line, entering from the corner and leaving the
+     frame. No mask: the matte is the transparency. */
+  [data-look="helios"] .helios-see__object--ribbon {
+    width: 58%;
+    aspect-ratio: 1280 / 644;
+    left: -4%;
+    bottom: -16%;
+    opacity: 1;
+    --helios-drift-x: 0.4%;
+    --helios-drift-y: -0.8%;
+    animation-duration: 26s;
+  }
+
+  [data-look="helios"] .helios-see__object--ribbon img,
+  [data-look="helios"] .helios-see__object--ribbon [data-media="video"] {
+    object-position: 16% 82%;
+  }
+
+  [data-look="helios"] .helios-see__copy {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 var(--helios-gutter) 12vh;
+    max-width: min(48rem, 62%);
+  }
+
+  [data-look="helios"] .helios-see__head {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  [data-look="helios"] .helios-see__head .helios-verse {
+    margin: 0 0 0.22em;
+    font-size: var(--helios-see-verse);
+    color: color-mix(in srgb, var(--helios-see-mist) 46%, var(--helios-verse));
+  }
+
+  [data-look="helios"] .helios-see__line {
+    display: block;
+    margin: 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: var(--helios-see-thesis);
+    line-height: 0.96;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    color: var(--helios-cream);
+    text-shadow: 0 0 1.4rem rgb(17 10 22 / 0.85);
+  }
+
+  /* The step. The stress sits in, and the invitation follows it. Mist warmed
+     toward the cream, so the violet is a light in the night, not another ink. */
+  [data-look="helios"] .helios-see__line:last-child {
+    padding-left: var(--helios-see-step);
+  }
+
+  [data-look="helios"] .helios-see__line em {
+    font-style: italic;
+    font-weight: 500;
+    color: color-mix(in srgb, var(--helios-see-mist) 58%, var(--helios-cream));
+    text-shadow:
+      0 0 0.65rem rgb(212 196 238 / 0.4),
+      0 0 1.5rem rgb(var(--helios-see-violet) / 0.5),
+      0 0 2.1rem rgb(232 160 32 / 0.16);
+  }
+
+  [data-look="helios"] .helios-see__invite {
+    display: grid;
+    grid-template-columns: 1.35rem 1fr;
+    column-gap: 0.7rem;
+    align-items: start;
+    margin: 1.45rem 0 0 var(--helios-see-step);
+    max-width: 28rem;
+  }
+
+  [data-look="helios"] .helios-see__star {
+    font-size: 1.25rem;
+    line-height: 1.35;
+    color: color-mix(in srgb, var(--helios-see-mist) 50%, var(--helios-verse));
+  }
+
+  [data-look="helios"] .helios-see__lede {
+    margin: 0;
+    max-width: none;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(1.05rem, 1.4vw, 1.28rem);
+    line-height: 1.38;
+    letter-spacing: 0.01em;
+    color: color-mix(in srgb, var(--helios-see-mist) 42%, var(--helios-verse));
+  }
+
+  /* ---- the interval, rehearsed ---------------------------------------- */
+  /* The same night as the see act above, with the film's ribbon replaced by
+     a clear canvas the site turtle draws on. Nothing here needs a mask or a
+     blend: a transparent canvas is the matte. The program sits on the right as
+     a column of verse — a score, not a terminal — kindled from the program's
+     own clock; the status is the only terminal furniture. Two line states and
+     nothing else: dim, warm, and the one the walk is on. No token colours, on
+     purpose (design/interval.org). */
+  [data-look="helios"] .helios-interval__field {
+    overflow: hidden;
+  }
+
+  [data-look="helios"] .helios-interval__stroke {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    /* The figure fades out where the score begins. A mask is a compositor
+       operation, not a read-back: it costs no frame time. */
+    -webkit-mask-image: linear-gradient(90deg, #000 0, #000 62%, transparent 88%);
+    mask-image: linear-gradient(90deg, #000 0, #000 62%, transparent 88%);
+  }
+
+  /* The still: the finished figure, shown when motion is refused or the hatch
+     fails. Its ground is the same night, so it needs no blend — unlike the
+     ribbon film, which was H.264 and needed screen. */
+  [data-look="helios"] .helios-interval__still {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    -webkit-mask-image: linear-gradient(90deg, #000 0, #000 62%, transparent 88%);
+    mask-image: linear-gradient(90deg, #000 0, #000 62%, transparent 88%);
+  }
+
+  [data-look="helios"] .helios-interval__program {
+    position: absolute;
+    top: clamp(2.6rem, 7vh, 5rem);
+    right: var(--helios-gutter);
+    bottom: clamp(2.6rem, 7vh, 5rem);
+    /* The scrim's soft edge belongs beside the text, not under it: the box runs
+       2.5rem further left and that strip is padding, so the feather lands where
+       no glyph is. */
+    width: calc(min(25rem, 29vw) + 2.5rem);
+    padding-left: 2.5rem;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+    /* The column is an overlay, not wallpaper: a night scrim keeps the verse
+       legible where the figure passes behind it. */
+    /* Barely there on purpose. The figure does not pass *behind* the verse, it
+       fades out before reaching it (the canvas carries the mask, below), so the
+       column needs no panel — a wash to seat the type against the night is all.
+       A backdrop blur was tried and measured: over an animating WebGL canvas it
+       cost p95 16.8ms -> 33.3ms and 700ms of a 4s act. This costs nothing. */
+    background:
+      linear-gradient(180deg, rgb(20 8 6 / 0) 0, rgb(20 8 6 / 0.45) 7%, rgb(20 8 6 / 0.45) 93%, rgb(20 8 6 / 0) 100%),
+      linear-gradient(90deg, rgb(20 8 6 / 0) 0, rgb(20 8 6 / 0.45) 2.5rem, rgb(20 8 6 / 0.45) 100%);
+    /* The score is sized from its own box: 53 lines must fit the column at
+       any viewport, so the font is a share of this container's height, not of
+       the viewport's. */
+    container-type: size;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 3%, #000 97%, transparent 100%);
+    mask-image: linear-gradient(180deg, transparent 0, #000 3%, #000 97%, transparent 100%);
+  }
+
+
+  [data-look="helios"] .helios-interval__label {
+    margin: 0 0 1.1rem;
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--helios-see-mist) 58%, transparent);
+  }
+
+  [data-look="helios"] .helios-interval__verse {
+    margin: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: min(1.27cqh, 0.8rem);
+    line-height: 1.36;
+    letter-spacing: 0.015em;
+    white-space: pre;
+    tab-size: 2;
+    color: var(--helios-see-mist);
+  }
+
+
+  /* The language's own shapes. Hue is what a thing IS — a gesture, a block word,
+     the name a walk is given, an address, a number, punctuation, a comment — and
+     it never changes with the walk, which is the other axis and lives below.
+     Every one of these is a SOLID colour on purpose: a kind that leaned on
+     opacity would be erased by the walk's light exactly when a reader looks.
+     The tokenizer (home/helios-plang-tokens.js) decides the kind; these rules
+     decide the ink, and they are the whole of the look. */
+  [data-look="helios"] .helios-interval__tok--verb {
+    color: color-mix(in srgb, var(--helios-brand) 82%, var(--helios-see-mist));
+  }
+
+  [data-look="helios"] .helios-interval__tok--kw {
+    color: var(--helios-cream);
+  }
+
+  [data-look="helios"] .helios-interval__tok--def {
+    color: var(--helios-verse);
+    font-weight: 600;
+  }
+
+  [data-look="helios"] .helios-interval__tok--addr {
+    color: var(--helios-verse);
+  }
+
+  [data-look="helios"] .helios-interval__tok--cmt {
+    color: color-mix(in srgb, var(--helios-see-mist) 58%, var(--helios-night));
+    font-style: italic;
+  }
+
+  [data-look="helios"] .helios-interval__tok--name {
+    color: var(--helios-see-mist);
+  }
+
+  [data-look="helios"] .helios-interval__tok--num {
+    color: color-mix(in srgb, var(--helios-see-mist) 62%, var(--helios-night));
+  }
+
+  [data-look="helios"] .helios-interval__tok--op {
+    color: color-mix(in srgb, var(--helios-see-mist) 42%, var(--helios-night));
+  }
+
+  /* The current line, marked by position and light, never by hue: a caret in the
+     column's margin, where no glyph is. Cream, so amber keeps one meaning. */
+  [data-look="helios"] .helios-interval__line--lit::before {
+    content: "";
+    position: absolute;
+    left: -1.05rem;
+    top: 0.16em;
+    bottom: 0.16em;
+    width: 2px;
+    background: var(--helios-cream);
+    box-shadow: 0 0 0.5em rgb(246 230 196 / 0.7);
+  }
+
+  /* The score: a line is unread, warm once the walk has passed it, and lit while
+     the walk is on it. The loop's line lights again on every turn — that is the
+     rhythm of the program. Nothing here says what a word *is*: the rule that
+     drove highlighting was removed on purpose (design/interval.org), and these
+     three opacities are a look, not a contract — nothing asserts them, so the
+     next approach is free to replace them. */
+  [data-look="helios"] .helios-interval__line {
+    position: relative;
+    display: block;
+    opacity: 0.22;
+    transition: opacity 0.5s var(--helios-ease), color 0.5s var(--helios-ease), text-shadow 0.5s var(--helios-ease);
+  }
+  /* A movement's name. The mark is a comment in the program — nothing walks
+     it — so it is never kindled: it is the label on the door of the section
+     that follows. */
+  [data-look="helios"] .helios-interval__line--mark {
+    margin-top: 0.7em;
+    padding-left: 0.55em;
+    border-left: 1px solid color-mix(in srgb, var(--helios-see-mist) 34%, transparent);
+    opacity: 0.62;
+    /* Mist, not cream: the warm inks belong to the language, and a movement
+       title is this page's furniture. */
+    color: color-mix(in srgb, var(--helios-see-mist) 78%, var(--helios-night));
+    letter-spacing: 0.06em;
+  }
+
+  /* A comment. Nothing walks it either, but it is the program's prose, so it
+     reads warmer than an unread statement. */
+  [data-look="helios"] .helios-interval__line--note,
+  [data-look="helios"] .helios-interval__line--note.helios-interval__line--done {
+    opacity: 0.3;
+  }
+
+
+  [data-look="helios"] .helios-interval__line--done {
+    opacity: 0.78;
+  }
+
+  /* The current line, and one meaning only: the walk is here. With no syntax
+     highlighting there is no second axis for this colour to collide with. */
+  [data-look="helios"] .helios-interval__line--lit {
+    opacity: 1;
+    color: var(--helios-brand);
+    text-shadow:
+      0 0 0.3em rgb(255 153 51 / 0.5),
+      0 0 0.8em rgb(255 153 51 / 0.18);
+  }
+
+  [data-look="helios"] .helios-interval__status {
+    position: absolute;
+    left: var(--helios-gutter);
+    bottom: clamp(1.4rem, 5vh, 2.6rem);
+    z-index: 2;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--helios-brand) 70%, transparent);
+  }
+
+  @media (max-width: 1000px) {
+    [data-look="helios"] .helios-interval__program {
+      display: none;
+    }
+  }
+
+  /* ---- the interval, rehearsed: the note below the act ---------------- */
+  [data-look="helios"] .helios-interval__notes {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: clamp(3rem, 9vh, 6.5rem) var(--helios-gutter) clamp(4rem, 12vh, 8rem);
+  }
+
+  [data-look="helios"] .helios-interval__notes h2 {
+    margin: 0 0 0.6rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 2.6vw, 2.15rem);
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    color: var(--helios-cream);
+  }
+
+  [data-look="helios"] .helios-interval__notes h3 {
+    margin: 2.6rem 0 0.7rem;
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--helios-brand);
+  }
+
+  [data-look="helios"] .helios-interval__notes p,
+  [data-look="helios"] .helios-interval__notes li {
+    font-family: var(--font-serif);
+    font-size: 1.06rem;
+    font-style: italic;
+    line-height: 1.62;
+    color: color-mix(in srgb, var(--helios-see-mist) 62%, var(--helios-verse));
+  }
+
+  [data-look="helios"] .helios-interval__notes ul {
+    margin: 0.4rem 0 0;
+    padding-left: 1.15rem;
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  [data-look="helios"] .helios-interval__notes strong {
+    font-style: normal;
+    font-weight: 600;
+    color: var(--helios-cream);
+  }
+
+  [data-look="helios"] .helios-interval__notes em {
+    color: color-mix(in srgb, var(--helios-brand) 78%, var(--helios-cream));
+  }
+
+  [data-look="helios"] .helios-interval__notes code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.86em;
+    font-style: normal;
+    color: var(--helios-see-mist);
+    overflow-wrap: anywhere;
+  }
+
+  /* ---- act two: the strip -------------------------------------------- */
+  [data-look="helios"] .helios-who {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: transparent;
+  }
+
+  [data-look="helios"] .helios-who__head {
+    flex: 0 0 auto;
+    margin: 0;
+    padding: clamp(1.6rem, 4vh, 2.4rem) var(--helios-gutter) 0;
+  }
+
+  [data-look="helios"] .helios-verse {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: var(--helios-verse-size);
+    line-height: var(--helios-verse-lh);
+    letter-spacing: var(--helios-verse-ls);
+    color: var(--helios-verse);
+  }
+
+  [data-look="helios"] .helios-stress {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(2rem, 4vw, 3.35rem);
+    line-height: 0.98;
+    letter-spacing: -0.015em;
+    color: var(--helios-brand);
+    text-shadow: var(--helios-glow);
+  }
+
+  [data-look="helios"] [data-media-carousel="strip"] {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  [data-look="helios"] [data-media-track] {
+    flex: 1 1 auto;
+    min-height: 0;
+    align-items: stretch;
+    gap: 1.8rem;
+    padding: 1.4rem var(--helios-gutter) clamp(2.4rem, 6vh, 4rem);
+    scrollbar-width: none;
+    /* The strip dissolves at both edges rather than ending on a hard cut —
+       the reference's reel. The mask is the promise that more exists.
+       Overflow and overscroll stay on the surface: a look must not open a
+       y port on the track. */
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 11%, #000 89%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 11%, #000 89%, transparent 100%);
+  }
+
+  [data-look="helios"] [data-media-carousel="strip"] [data-media-cell] {
+    display: flex;
+    flex-direction: column;
+    width: min(62vw, 33rem);
+    height: 100%;
+  }
+
+  [data-look="helios"] [data-media-carousel="strip"] [data-media-slot="frame"] {
+    flex: 1 1 auto;
+    min-height: 0;
+    aspect-ratio: auto;
+    border: 1px solid color-mix(in srgb, var(--helios-verse) 30%, transparent);
+    box-shadow: 0 0 0 1px rgb(232 160 32 / 0.18), 0 18px 40px rgb(8 2 6 / 0.45);
+  }
+
+  [data-look="helios"] [data-media-carousel="strip"] [data-media-slot="frame"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgb(255 200 140 / 0.08), rgb(20 8 6 / 0.28));
+    mix-blend-mode: multiply;
+  }
+
+  [data-look="helios"] [data-media-carousel="strip"] [data-media-slot="title"] {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(1.35rem, 2.4vw, 2.1rem);
+    line-height: 1;
+    color: var(--helios-cream);
+  }
+
+  [data-look="helios"] [data-media-carousel="strip"] [data-media-slot="slate"] {
+    font-style: italic;
+    opacity: 0.75;
+    color: var(--helios-cream);
+  }
+
+  /* ---- the close ------------------------------------------------------ */
+  [data-look="helios"] .helios-colophon {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 1.6rem 2rem;
+    margin: 0;
+    font-size: inherit;
+    color: inherit;
+    border-top: 2px solid var(--helios-ridge);
+    padding: clamp(2.4rem, 7vh, 4.2rem) var(--helios-gutter);
+    background: var(--helios-night);
+  }
+
+  [data-look="helios"] .helios-colophon h2 {
+    flex: 1 1 18rem;
+    min-width: 0;
+    margin: 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(1.6rem, 4.2vw, 3.4rem);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    color: var(--helios-cream);
+  }
+
+  [data-look="helios"] .helios-colophon h2 em {
+    font-style: italic;
+    color: var(--helios-brand);
+    text-shadow: var(--helios-glow);
+  }
+
+  [data-look="helios"] .helios-seal {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.85rem 1.5rem;
+    border: 1px solid var(--helios-brand);
+    color: #ffe27a;
+    font-family: var(--font-display);
+    font-size: 0.68rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.35s var(--helios-ease), color 0.35s var(--helios-ease);
+  }
+
+  [data-look="helios"] .helios-seal:hover {
+    background: var(--helios-brand);
+    color: var(--helios-night);
+  }
+
+  /* ---- keyframes ------------------------------------------------------ */
+  @keyframes helios-grain {
+    0% { transform: translate(0, 0); }
+    50% { transform: translate(-2%, 1%); }
+    100% { transform: translate(1%, -2%); }
+  }
+
+  @keyframes helios-breathe {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(var(--helios-drift-x, 1%), var(--helios-drift-y, -1%), 0); }
+  }
+
+  @keyframes helios-crawl {
+    to { transform: translate3d(-50%, 0, 0); }
+  }
+
+  @keyframes helios-lift {
+    /* A lifted line, masked — not a fade. The insets are generously negative so
+       the opening clip never eats the brand glow (text-shadow paints outside
+       the border box). */
+    from { opacity: 0; transform: translateY(0.7rem); clip-path: inset(100% -1.2em -1.2em -1.2em); }
+    to { opacity: 1; transform: translateY(0); clip-path: inset(-1.2em); }
+  }
+
+  @keyframes helios-flash {
+    0% { opacity: 0; }
+    18% { opacity: 0.5; }
+    100% { opacity: 0; }
+  }
+
+  /* ---- narrow --------------------------------------------------------- */
+  @media (max-width: 640px) {
+    [data-look="helios"] .helios-wordmark {
+      --helios-wm-root-left: 1rem;
+      --helios-wm-root-top: 0.8rem;
+      left: var(--helios-wm-root-left);
+      top: var(--helios-wm-root-top);
+      width: min(9rem, calc(100vw - 8rem));
+    }
+
+    [data-look="helios"] .helios-thesis {
+      left: 12vw;
+      right: 4vw;
+      /* Anchored to the card, not to the top of the act: a top-percentage
+         thesis and a bottom-percentage copy converge on a short viewport, and
+         on a phone these two are one block, not two. 4.06rem is the card's own
+         height at these sizes (2.2rem action x 0.98, 0.2em of air, the slate's
+         0.12rem, 1.12rem slate x 1.2); 3rem is the air between the two. */
+      top: auto;
+      bottom: calc(18% + 7.06rem);
+      white-space: normal;
+      /* The narrow stage has its own factor: the hero token's vw is tuned for
+         the wide gutter, and on a phone it would shrink the thesis instead.
+         16vh bounds it again for a phone on its side, where the width is
+         tablet-sized and the height is not. */
+      font-size: min(clamp(2.9rem, 14.4vw, 6.4rem), 16vh);
+    }
+
+    [data-look="helios"] [data-media-slot="copy"] {
+      left: 12vw;
+      right: 4vw;
+      top: auto;
+      bottom: 18%;
+      max-width: none;
+    }
+
+    [data-look="helios"] [data-media-carousel="strip"] [data-media-cell] {
+      width: 84vw;
+    }
+
+    [data-look="helios"] .helios-see {
+      --helios-see-step: 0.35rem;
+    }
+
+    [data-look="helios"] .helios-see__copy {
+      max-width: none;
+      padding-bottom: 6vh;
+    }
+
+    [data-look="helios"] .helios-see__line {
+      font-size: min(clamp(2.45rem, 12.4vw, 4.2rem), 12vh);
+      white-space: normal;
+    }
+
+    [data-look="helios"] .helios-see__lede {
+      max-width: 22rem;
+    }
+
+    /* The wide field cannot sit beside the sentence here. One ghosted arc,
+       one quiet wheel. */
+    [data-look="helios"] .helios-see__object--echo {
+      display: none;
+    }
+
+    [data-look="helios"] .helios-see__object--mass {
+      width: 118%;
+      right: -52%;
+      top: -6%;
+      opacity: 0.5;
+    }
+
+    [data-look="helios"] .helios-see__object--ribbon {
+      width: 78%;
+      left: -18%;
+      bottom: -8%;
+      opacity: 0.7;
+    }
+
+
+    [data-look="helios"] .helios-see__object--fragment {
+      width: 42%;
+      left: -14%;
+      bottom: -10%;
+      opacity: 0.38;
+    }
+  }
+}
+
+/* Motion is a privilege the player grants and the look may withdraw. These sit
+   in `utilities` for the same reason core/media.css puts its overrides there:
+   they must outrank Tailwind's own `animate-*` utilities, which `components`
+   would not. */
+@layer utilities {
+  @media (prefers-reduced-motion: reduce) {
+    [data-look="helios"] .helios-air,
+    [data-look="helios"] .helios-ticker__track,
+    [data-look="helios"] .helios-see__object {
+      animation: none;
+    }
+
+    /* The build is a privilege too: whatever state the DOM is in, a reader who
+       asked for less motion gets the assembled mark, whole. */
+    [data-look="helios"] [data-helios-blocks],
+    [data-look="helios"] [data-helios-dawn],
+    [data-look="helios"] [data-helios-light],
+    [data-look="helios"] [data-helios-shade],
+    [data-look="helios"] [data-helios-word] {
+      display: none;
+    }
+
+    [data-look="helios"] [data-helios-banner] {
+      display: inline;
+    }
+
+    [data-look="helios"] [data-media-slot="copy"] [data-media-slot="title"],
+    [data-look="helios"] [data-media-slot="copy"] [data-media-slot="slate"] {
+      opacity: 1;
+      animation: none;
+      transform: none;
+    }
+
+    [data-look="helios"] .helios-flash[data-helios-flash="on"] {
+      animation: none;
+    }
+  }
+}

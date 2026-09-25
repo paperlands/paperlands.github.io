@@ -14,6 +14,8 @@
      core/typography.css  @layer base  heading scale (base theme)
      core/app-shell.css   @layer base  full-viewport shells opt out
      components/nav.css   @layer components  navigation (light + dark tones)
+   components/folio.css @layer components  cinematic theme (binds media slots)
+   components/helios.css @layer components  the Helios look (binds the same slots)
      components/twilight.css  @layer components  Twilight, sealed
      components/utils.css @layer utilities   one-off helpers
 
@@ -47,24 +49,7 @@
 
 @source not "../../design";
 
-/* Safelist for classes COMPOSED at build time.
-   `_includes/media/hero.html` emits `h-[{{mobile}}] md:h-[{{desktop}}]`
-   from Liquid params, so the finished class never appears in any source file
-   and the scanner cannot see it. These are the values currently passed; a new
-   value must be added here or it will silently not apply.
-
-   This bit us once already: the rule for `md:h-[56vh]` existed in the previous
-   build only because a DELETED page (workshop_bw.md) happened to contain that
-   string literally. Deleting the dead file removed the live rule.
-
-   `design/probe/coverage.py` now asserts that every class in the built HTML
-   resolves to a selector, so this class of failure fails loudly instead. */
-@source inline("h-[70dvh]");
-@source inline("md:h-[100dvh]");
-@source inline("h-[70vh]");
-@source inline("h-[44vh]");
-@source inline("md:h-[80vh]");
-@source inline("md:h-[56vh]");
+/* Fill height is `--media-fill-h`, not composed `h-[…]` classes. */
 
 /* ---- the design contract -------------------------------------------------
    Must come before anything that consumes a token. ------------------------ */
@@ -86,5 +71,7 @@
 
 /* ---- components --------------------------------------------------------- */
 @import "./components/nav.css";
+@import "./components/folio.css";
+@import "./components/helios.css";
 @import "./components/twilight.css";
 @import "./components/utils.css";
