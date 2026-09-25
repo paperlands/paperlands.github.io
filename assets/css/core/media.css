@@ -1,34 +1,43 @@
 /* ==========================================================================
    core/media.css — video/image surfaces
    --------------------------------------------------------------------------
-   Moved verbatim out of the tailwind entry. `media-hero` is the
-   full-bleed masthead; `media-clip` is the inline aspect-locked box.
+   Clip boxes and carousel geometry. Fill is the full-bleed box (hero adapter
+   or stack). Height that varies by caller is `--media-fill-h` /
+   `--media-fill-h-md` (Liquid writes the values; CSS consumes them).
 
-   These surfaces must be able to escape the document frame in
-   `core/document.css`, which is why the `100vw` / negative-margin breakout
-   exists below. When the frame becomes Library-only, the breakout goes too.
+   Fill is 100% of its container. Inside `.wrapper` it breaks out with 100vw;
+   the document frame clips x. The surface does not write `html`.
 
-   Playback lives in assets/js/media-video.js — this file only sizes and
-   reveals. `[data-ready]` is set by the player, never by a stylesheet.
+   Playback: assets/js/media-video.js. `[data-ready]` is set by the player.
    ========================================================================== */
 
 @layer components {
-  /* Break out of the document frame and sit under the transparent nav (h-16). */
-  .media-hero {
+  /* Fill: cover the container (or the height slot). Same box for hero + stack. */
+  [data-media-surface="fill"] {
     position: relative;
     isolation: isolate;
+    width: 100%;
+    max-width: none;
+    height: var(--media-fill-h, 100svh);
+    overflow: hidden;
+    background: #0b0b0b;
+  }
+
+  .wrapper [data-media-surface="fill"] {
     width: 100vw;
     max-width: 100vw;
     margin-left: calc(50% - 50vw);
     margin-right: calc(50% - 50vw);
   }
 
-  html:has(.media-hero) {
-    overflow-x: clip;
+  @media (min-width: 768px) {
+    [data-media-surface="fill"] {
+      height: var(--media-fill-h-md, var(--media-fill-h, 100svh));
+    }
   }
 
-  body:has(> nav) .media-hero--masthead {
-    margin-top: -4rem; /* nav h-16 */
+  body:has(> nav:not(.folio-nav)) [data-media-surface="fill"] {
+    margin-top: calc(-1 * var(--frame-pad-y, 0px) - 4rem);
   }
 
   .media-hero-fill {
@@ -49,7 +58,6 @@
   .media-hero-video[data-ready] {
     opacity: 1;
   }
-
   /* Inline clips: lock the box so attach/pause cannot resize the page. */
   .media-clip {
     display: block;
@@ -57,6 +65,7 @@
     width: 100%;
     overflow: hidden;
     background: #0b0b0b;
+    aspect-ratio: var(--media-ar, 16 / 9);
   }
 
   .media-clip-poster,
@@ -80,17 +89,22 @@
     opacity: 1;
   }
 
-  /* Stack: overlapping plates. Strip: a horizontal sequence.
-     Writer only marks; these rules are the look of the surface. */
+  /* Stack: overlapping plates. Strip: a horizontal sequence. */
   [data-media-carousel] {
     position: relative;
   }
+
 
   .media-stack {
     position: relative;
     overflow: hidden;
     aspect-ratio: 16 / 9;
     background: #0b0b0b;
+  }
+
+  [data-media-surface="fill"] .media-stack {
+    aspect-ratio: auto;
+    height: 100%;
   }
 
   .media-stack [data-media-cell] {
@@ -112,6 +126,13 @@
   .media-stack [data-media-cell] .media-clip {
     width: 100%;
     height: 100%;
+    aspect-ratio: auto;
+  }
+
+  /* Fill is a cover box, not a 16:9 plate. The clip must follow the surface. */
+  [data-media-surface="fill"] .media-clip {
+    height: 100%;
+    aspect-ratio: auto;
   }
 
   .media-stack-copy {
@@ -180,7 +201,18 @@
     gap: 1.25rem;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-    overscroll-behavior: contain;
+    /* x ONLY, never the shorthand. `overflow-x: auto` makes this box a vertical
+       scroll container too — a `visible` axis computes to `auto` when the other
+       is neither `visible` nor `clip` — and it has nothing to scroll vertically,
+       so it sits permanently at its boundary. `overscroll-behavior: contain`
+       sets BOTH axes, so a vertical wheel or swipe over the strip was refused
+       and never chained to the page: the reader scrolled to the strip and
+       stopped. Measured: the page reached 720px of 929px and no further while
+       the pointer stayed over the band. The longhand keeps the intent (a
+       horizontal swipe must not trigger browser back/forward) and lets the
+       vertical axis through. design/probe/scroll.mjs holds this.
+       Do not 'tidy' this back into the shorthand. */
+    overscroll-behavior-x: contain;
     -webkit-overflow-scrolling: touch;
     padding: 0.5rem 1.25rem 1rem;
   }
@@ -207,6 +239,7 @@
     opacity: 0.75;
   }
 
+}
 
 @layer utilities {
   /* Motion is a privilege the player grants, never a default. These sit in
@@ -216,6 +249,10 @@
     .media-clip-el {
       opacity: 0;
       transition: none;
+    }
+
+    .media-stack [data-media-cell] {
+      transition-duration: 0.01ms;
     }
 
     .animate-fade-in {

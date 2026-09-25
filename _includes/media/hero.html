@@ -1,7 +1,7 @@
 {%- comment -%}
-  Full-bleed page hero (the original filling background).
-  Poster paints the section immediately; video fades in via CSS
-  [data-ready] — not Tailwind arbitrary variants (those get HTML-escaped).
+  Fill adapter: flow masthead, not a carousel. Geometry is the fill surface
+  (`data-media-surface="fill"`) and height slots, not composed Tailwind
+  classes. Copy overlay remains page composition.
 
   Params: id (catalog) or src / video_src, poster, alt / video_alt,
           title, subtitle, action_link, action_words, action_subtitle,
@@ -20,7 +20,7 @@
     {%- assign media_hero_poster_url = media_hero_poster | relative_url -%}
   {%- endif -%}
 {%- endif -%}
-<section class="media-hero media-hero--masthead relative overflow-hidden h-[{{ media_h_m }}] md:h-[{{ media_h_d }}] {{ include.class }}">
+<section class="{{ include.class }}" data-media-surface="fill" style="--media-fill-h: {{ media_h_m }}; --media-fill-h-md: {{ media_h_d }};">
   {% if media_hero_poster_url != '' %}
   <div class="media-hero-fill brightness-[40%]"
        style="background-image: url('{{ media_hero_poster_url }}'); background-size: cover; background-position: center;"

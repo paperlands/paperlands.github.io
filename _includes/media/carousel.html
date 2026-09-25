@@ -1,0 +1,80 @@
+{%- comment -%}
+  Default stack or strip. Markup only — marks live in assets/js/media-carousel.js.
+
+  kind     stack | strip
+  surface  plate | pane | fill
+           stack defaults to plate, strip to pane.
+           fill is the same writer in the hero box (viewport cover).
+  group    decoder group (required for a carousel)
+  items    array of { id and/or src, poster, title, slate, alt, width, height }
+  rail     set false to hide [data-media-to] buttons
+  class    extra classes on the root
+
+  Slots (the presentational contract). A look binds THESE, never the classes
+  above — the classes are this file's private business and may be renamed.
+  `design/probe/looks.py` fails if a look binds a slot that is not emitted
+  here, or a class that is not its own.
+
+    data-media-slot="copy"    the stack copy container
+    data-media-slot="kicker"  the verse above the title (stack)
+    data-media-slot="title"   the active title (stack) / one pane title (strip)
+    data-media-slot="slate"   the caption under the title
+    data-media-slot="rail"    the [data-media-to] button group
+
+  `data-media-copy="title|slate"` is NOT a slot: it is the writer's channel.
+  It appears only where assets/js/media-carousel.js may write text — once, in
+  the stack. A strip must never carry it, or the writer would overwrite every
+  pane's own title with the active cell's.
+{%- endcomment -%}
+{%- assign media_kind = include.kind | default: 'stack' -%}
+{%- assign media_group = include.group | default: include.id | default: 'carousel' -%}
+{%- assign media_surface = include.surface | default: '' | strip -%}
+{%- if media_surface == '' -%}
+  {%- if media_kind == 'strip' -%}{%- assign media_surface = 'pane' -%}
+  {%- else -%}{%- assign media_surface = 'plate' -%}
+  {%- endif -%}
+{%- endif -%}
+{%- assign media_rail = true -%}
+{%- if include.rail == false or include.rail == 'false' -%}{%- assign media_rail = false -%}{%- endif -%}
+{%- assign media_copy = true -%}
+{%- if include.copy == false or include.copy == 'false' -%}{%- assign media_copy = false -%}{%- endif -%}
+<section class="{{ include.class }}" data-media-carousel="{{ media_kind }}" data-media-surface="{{ media_surface }}" data-media-group="{{ media_group }}" aria-label="{{ include.label | default: media_group }}">
+  {%- if media_kind == 'strip' -%}
+  <div class="media-strip" data-media-track>
+    {%- for media_item in include.items -%}
+    <article class="media-pane" data-media-cell data-title="{{ media_item.title | escape }}" data-slate="{{ media_item.slate | default: media_item.caption | escape }}">
+      {% include media/video.html id=media_item.id src=media_item.src poster=media_item.poster alt=media_item.alt width=media_item.width height=media_item.height group=media_group loop=false %}
+      {%- if media_item.title or media_item.slate or media_item.caption -%}
+      <div class="media-pane-meta">
+        {%- if media_item.title -%}<h3 data-media-slot="title">{{ media_item.title }}</h3>{%- endif -%}
+        {%- assign media_slate = media_item.slate | default: media_item.caption -%}
+        {%- if media_slate -%}<p data-media-slot="slate">{{ media_slate }}</p>{%- endif -%}
+      </div>
+      {%- endif -%}
+    </article>
+    {%- endfor -%}
+  </div>
+  {%- else -%}
+  <div class="media-stack">
+    {%- for media_item in include.items -%}
+    <div data-media-cell data-title="{{ media_item.title | escape }}" data-slate="{{ media_item.slate | default: media_item.caption | escape }}">
+      {% include media/video.html id=media_item.id src=media_item.src poster=media_item.poster alt=media_item.alt width=media_item.width height=media_item.height group=media_group loop=false %}
+    </div>
+    {%- endfor -%}
+  </div>
+  {%- if media_copy -%}
+  <div class="media-stack-copy" data-media-slot="copy">
+    {%- if include.kicker -%}<p class="media-stack-kicker" data-media-slot="kicker">{{ include.kicker }}</p>{%- endif -%}
+    <h2 data-media-slot="title" data-media-copy="title"></h2>
+    <p data-media-slot="slate" data-media-copy="slate"></p>
+  </div>
+  {%- endif -%}
+  {%- endif -%}
+  {%- if media_rail -%}
+  <nav class="media-rail" data-media-rail data-media-slot="rail">
+    {%- for media_item in include.items -%}
+    <button type="button" data-media-to="{{ forloop.index0 }}">{{ media_item.title | default: forloop.index }}</button>
+    {%- endfor -%}
+  </nav>
+  {%- endif -%}
+</section>
