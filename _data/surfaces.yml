@@ -47,6 +47,7 @@ core:
     - page
     - note
     - canvas
+    - folio
   routes:
     - /
     - /about
@@ -54,6 +55,10 @@ core:
     - /lan
     - /lesson-plans
     - /mlp
+    - /helios-media
+    - /helios-dojo
+    - /helios-interval
+    - /helios
     # One route per file in _notes/ (collection permalink /:slug).
     # Listed rather than wildcarded: adding a note should require
     # classifying it.
