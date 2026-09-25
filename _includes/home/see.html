@@ -1,0 +1,45 @@
+{%- comment -%}
+  The interval. After the cinema, before the people.
+
+  "Anyone can." A collage of three, not a field of plates. The helix is the
+  ribbon: its black is the matte, and screen blend is the transparency this
+  file can pull off — H.264 has no alpha. Spiral and tree overlap it. No group,
+  so the player attaches when the act is near and releases when it leaves.
+  Do not reuse a how-id — one id, one box.
+
+  role is the placement: force, mass, echo, fragment. One of each.
+
+  Params: see, verse, thesis, thesis_em, lede, label, items
+{%- endcomment -%}
+{%- assign home_see = include.see | default: page.see -%}
+{%- assign home_see_label = include.label | default: home_see.label | default: 'Anyone can see math differently' -%}
+{%- assign home_see_items = include.items | default: home_see.items -%}
+<section class="helios-see" aria-label="{{ home_see_label | escape }}">
+  {%- if home_see_items -%}
+  <div class="helios-see__field" aria-hidden="true">
+    {%- for home_see_item in home_see_items -%}
+    <figure class="helios-see__object helios-see__object--{{ home_see_item.role | default: 'echo' }}">
+      {%- if home_see_item.id -%}
+      {% include media/video.html id=home_see_item.id alt=home_see_item.alt %}
+      {%- elsif home_see_item.still -%}
+      <img src="{{ home_see_item.still | relative_url }}" alt="" width="1920" height="1080" decoding="async">
+      {%- endif -%}
+    </figure>
+    {%- endfor -%}
+  </div>
+  {%- endif -%}
+  <div class="helios-see__copy">
+    <h2 class="helios-see__head">
+      <span class="helios-verse">{{ include.verse | default: home_see.verse | default: 'Anyone can' }}</span>
+      <span class="helios-see__line">{{ include.thesis | default: home_see.thesis | default: 'see math' }}</span>
+      <span class="helios-see__line"><em>{{ include.thesis_em | default: home_see.thesis_em | default: 'differently.' }}</em></span>
+    </h2>
+    {%- assign home_see_lede = include.lede | default: home_see.lede -%}
+    {%- if home_see_lede -%}
+    <div class="helios-see__invite">
+      <span class="helios-see__star" aria-hidden="true">✳</span>
+      <p class="helios-see__lede">{{ home_see_lede }}</p>
+    </div>
+    {%- endif -%}
+  </div>
+</section>

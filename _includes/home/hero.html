@@ -1,0 +1,35 @@
+{%- comment -%}
+  Act one: "In how we". The thesis, the stack carousel on the fill surface, the
+  sun flash and the play fill.
+
+  The card is NOT markup here. media/carousel.html already emits the copy slot
+  (kicker + title + slate) and assets/js/media-carousel.js already writes it;
+  components/helios.css binds the copy slot, not `.media-stack-copy`. Nothing in this
+
+  No rail. The copy slot already names the active clip, and the ticker beneath
+  names all five — a list of the same titles in the corner would say it twice,
+  and the hero has no empty corner to spend on a legend. The reel still
+  advances on `ended`; there is deliberately no control here.
+
+  Copy is the page's (`page.hero`). Params override it:
+    hero, items, group, thesis, thesis_em, kicker, label
+{%- endcomment -%}
+{%- assign home_hero = include.hero | default: page.hero -%}
+{%- assign home_hero_group = include.group | default: home_hero.group | default: 'how' -%}
+{%- assign home_hero_items = include.items | default: home_hero.items -%}
+{%- assign home_hero_label = include.label | default: home_hero.label | default: 'In how we' -%}
+{%- assign home_hero_kicker = include.kicker | default: home_hero.kicker -%}
+<section class="helios-hero" aria-label="{{ home_hero_label | escape }}">
+  <h1 class="helios-thesis">{{ include.thesis | default: home_hero.thesis | default: 'We See Math' }}<br><em>{{ include.thesis_em | default: home_hero.thesis_em | default: 'Differently' }}</em></h1>
+  {% include media/carousel.html
+     kind="stack"
+     surface="fill"
+     group=home_hero_group
+     items=home_hero_items
+     kicker=home_hero_kicker
+     label=home_hero_label
+     rail="false"
+  %}
+  <div class="helios-flash" aria-hidden="true"></div>
+  <div class="helios-play" aria-hidden="true"><i data-helios-play></i></div>
+</section>

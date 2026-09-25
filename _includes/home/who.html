@@ -1,0 +1,22 @@
+{%- comment -%}
+  Act two: "In who we become". A strip carousel — the same writer, a different
+  surface. There is no rail: the strip is scrolled, and the writer keeps the
+  nearest pane active.
+
+  Copy is the page's (`page.who`). Params override it:
+    who, items, group, verse, stress, label
+{%- endcomment -%}
+{%- assign home_who = include.who | default: page.who -%}
+{%- assign home_who_group = include.group | default: home_who.group | default: 'who' -%}
+{%- assign home_who_items = include.items | default: home_who.items -%}
+{%- assign home_who_label = include.label | default: home_who.label | default: 'In who we become' -%}
+<section class="helios-who" aria-label="{{ home_who_label | escape }}">
+  <h2 class="helios-who__head"><span class="helios-verse">{{ include.verse | default: home_who.verse | default: 'In who we' }}</span> <span class="helios-stress">{{ include.stress | default: home_who.stress | default: 'become' }}</span></h2>
+  {% include media/carousel.html
+     kind="strip"
+     group=home_who_group
+     items=home_who_items
+     label=home_who_label
+     rail="false"
+  %}
+</section>

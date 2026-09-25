@@ -1,0 +1,79 @@
+{%- comment -%}
+  The Helios identity — the mark that assembles itself.
+
+  It is not the nav. _includes/nav/folio.html keeps its own brand link
+  (`data-nav-mark`) because that link is the hit area and the keyboard stop.
+  Under the Helios look the link is drawn invisible and this element is painted
+  over it; the two occupy the same corner and the nav's geometry does not move.
+
+  THE BUILD. At rest this is the supplied brand banner — the assembled mark, the
+  same art _data/nav.yml names. While the reader is still inside the first act,
+  the banner is replaced by the pieces it is made of (two outer columns, two
+  inner columns, the centre column, the roof, three sun blooms, five rays) plus
+  the word alone, and `assets/js/home/helios.js` carries them from unbuilt to
+  built on scroll distance. Scroll is the only clock: there is no timer, and
+  with reduced motion — or no JavaScript — the banner simply stands.
+
+  The pieces are the reference prototype's own art
+  (design/iterations/skins/04-wm/, copied to assets/lib/helios-wordmark/ so the
+  build can serve them). `data-helios-*` names here are look-owned state; the
+  geometry in each `data-from` / `data-to` / `data-turn` is the choreography the
+  look reads, not decoration invented inline.
+{%- endcomment -%}
+{%- assign home_wm = '/assets/lib/helios-wordmark' | relative_url -%}
+<div class="helios-wordmark" id="wordmark" role="img" aria-label="{{ site.data.nav.brand.label | default: 'PaperLand' }}">
+  <span class="helios-wordmark__in" aria-hidden="true">In</span>
+  <svg class="helios-wordmark__art" viewBox="0 0 1280 250" width="1280" height="250" overflow="visible" aria-hidden="true" focusable="false">
+    <defs>
+      <filter id="helios-wm-bloom" filterUnits="userSpaceOnUse" x="-80" y="-80" width="380" height="360" color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="22"/>
+      </filter>
+      <radialGradient id="helios-wm-pigment">
+        <stop offset="0" stop-color="#fff6d4" stop-opacity="0.95"/>
+        <stop offset="0.18" stop-color="#ffd27a" stop-opacity="0.7"/>
+        <stop offset="0.48" stop-color="#e08a3a" stop-opacity="0.28"/>
+        <stop offset="1" stop-color="#a84d48" stop-opacity="0"/>
+      </radialGradient>
+      <filter id="helios-wm-spill" filterUnits="userSpaceOnUse" x="-200" y="-200" width="620" height="560" color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="18" result="tight"/>
+        <feGaussianBlur in="SourceGraphic" stdDeviation="48" result="wide"/>
+        <feColorMatrix in="tight" type="matrix" values="1.4 0.22 0 0 0.1  0.35 0.85 0 0 0.05  0.06 0.16 0.3 0 0  0 0 0 0.85 0" result="warm"/>
+        <feColorMatrix in="wide" type="matrix" values="1.15 0.4 0.08 0 0.08  0.4 0.5 0.05 0 0.03  0.08 0.12 0.2 0 0  0 0 0 0.28 0" result="halo"/>
+        <feMerge><feMergeNode in="halo"/><feMergeNode in="warm"/></feMerge>
+      </filter>
+      <filter id="helios-wm-veil" filterUnits="userSpaceOnUse" x="-80" y="-80" width="400" height="380" color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="18" result="b"/>
+        <feColorMatrix in="b" type="matrix" values="0 0 0 0 0.1  0 0 0 0 0.05  0 0 0 0 0.03  0 0 0 0.32 0"/>
+      </filter>
+    </defs>
+
+    <g data-helios-dawn opacity="0" filter="url(#helios-wm-bloom)" fill="url(#helios-wm-pigment)">
+      <ellipse cx="105" cy="80" rx="96" ry="92"/>
+      <ellipse cx="105" cy="118" rx="72" ry="7"/>
+    </g>
+    <g data-helios-light opacity="0" filter="url(#helios-wm-spill)"><use href="#helios-wm-blocks"/></g>
+    <g data-helios-shade opacity="0" filter="url(#helios-wm-veil)"><use href="#helios-wm-blocks"/></g>
+
+    <g id="helios-wm-blocks" data-helios-blocks>
+      <g transform="translate(62 193)"><g data-helios-build="col" data-from="0.10" data-to="0.36"><image href="{{ home_wm }}/col-lo.png" x="-29" y="-73" width="58" height="73"/></g></g>
+      <g transform="translate(148 193)"><g data-helios-build="col" data-from="0.10" data-to="0.36"><image href="{{ home_wm }}/col-ro.png" x="-29" y="-73" width="58" height="73"/></g></g>
+      <g transform="translate(66 193)"><g data-helios-build="col" data-from="0.16" data-to="0.42"><image href="{{ home_wm }}/col-li.png" x="-5" y="-47" width="10" height="47"/></g></g>
+      <g transform="translate(144 193)"><g data-helios-build="col" data-from="0.16" data-to="0.42"><image href="{{ home_wm }}/col-ri.png" x="-5" y="-47" width="10" height="47"/></g></g>
+      <g transform="translate(105 193)"><g data-helios-build="col" data-from="0.20" data-to="0.46"><image href="{{ home_wm }}/col-c.png" x="-17" y="-68" width="34" height="68"/></g></g>
+      <g transform="translate(105 130)"><g data-helios-build="roof" data-from="0.34" data-to="0.52"><image href="{{ home_wm }}/roof.png" x="-33" y="-19" width="65" height="19"/></g></g>
+      <g transform="translate(105 88)">
+        <g data-helios-build="sun" data-from="0.44" data-to="0.60"><image href="{{ home_wm }}/sun-in.png" x="-7" y="1" width="17" height="8"/></g>
+        <g data-helios-build="sun" data-from="0.48" data-to="0.66"><image href="{{ home_wm }}/sun-mid.png" x="-28" y="-12" width="60" height="26"/></g>
+        <g data-helios-build="sun" data-from="0.52" data-to="0.72"><image href="{{ home_wm }}/sun-out.png" x="-48" y="-28" width="96" height="47"/></g>
+        <g data-helios-build="ray" data-from="0.64" data-to="0.82" data-turn="-18"><image href="{{ home_wm }}/ray-t.png" x="-9" y="-70" width="19" height="37"/></g>
+        <g data-helios-build="ray" data-from="0.66" data-to="0.84" data-turn="-22"><image href="{{ home_wm }}/ray-ul.png" x="-76" y="-45" width="31" height="24"/></g>
+        <g data-helios-build="ray" data-from="0.68" data-to="0.86" data-turn="22"><image href="{{ home_wm }}/ray-ur.png" x="45" y="-48" width="27" height="29"/></g>
+        <g data-helios-build="ray" data-from="0.70" data-to="0.88" data-turn="-14"><image href="{{ home_wm }}/ray-l.png" x="-88" y="-1" width="32" height="20"/></g>
+        <g data-helios-build="ray" data-from="0.72" data-to="0.90" data-turn="14"><image href="{{ home_wm }}/ray-r.png" x="54" y="7" width="32" height="21"/></g>
+      </g>
+    </g>
+
+    <image data-helios-word href="{{ home_wm }}/word.png" x="249" y="16" width="1006" height="223"/>
+    <image data-helios-banner href="{{ '/assets/bannerpaperlang.png' | relative_url }}" width="1280" height="250"/>
+  </svg>
+</div>

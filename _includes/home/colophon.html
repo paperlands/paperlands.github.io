@@ -1,0 +1,11 @@
+{%- comment -%}
+  The close. A statement, then one way forward.
+
+  Copy is the page's (`page.colophon`). Params override it:
+    colophon, title, title_em, action, href
+{%- endcomment -%}
+{%- assign home_colophon = include.colophon | default: page.colophon -%}
+<footer class="helios-colophon">
+  <h2>{{ include.title | default: home_colophon.title | default: 'See Math' }} <em>{{ include.title_em | default: home_colophon.title_em | default: 'Differently' }}</em></h2>
+  <a class="helios-seal" href="{{ include.href | default: home_colophon.href | default: 'https://dojo.paperland.sg/welcome' }}">{{ include.action | default: home_colophon.action | default: 'Enter PaperLand' }}</a>
+</footer>

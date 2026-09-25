@@ -5,18 +5,18 @@
 # width/height reserve the box so lazy attach cannot collapse the page.
 
 waves:
-  src: /assets/lib/landing/3DWaves_small.webm
-  poster: /assets/lib/landing/3DWaves.webp
-  alt: Waves in 3D
-  width: 1280
-  height: 720
+  src: /assets/lib/helios/waves-ffbdda.mp4
+  poster: /assets/lib/helios/waves-9258dd.webp
+  alt: Number patterns, shared over a shoulder
+  width: 720
+  height: 1280
 
 spring:
-  src: /assets/lib/landing/spring.webm
-  poster: /assets/lib/landing/spring.webp
-  alt: Spring animation
-  width: 1280
-  height: 720
+  src: /assets/lib/helios/spring-88005d.mp4
+  poster: /assets/lib/helios/spring-75136e.webp
+  alt: The room turns; someone begins to teach
+  width: 720
+  height: 1280
 
 hero:
   src: /assets/lib/landing/hero_video.mp4
@@ -45,10 +45,10 @@ fibonacci:
 
 xsinx:
   src: /assets/lib/landing/xsinx.mp4
+  poster: /assets/lib/landing/xsinx.webp
   alt: xsin(x) animation
   width: 1918
   height: 936
-
 tree:
   src: /assets/lib/landing/tree.mp4
   alt: tree animation
@@ -62,22 +62,25 @@ prime_numbers:
   height: 562
 
 shell:
-  src: /assets/lib/landing/shell.mp4
-  alt: shell animation
-  width: 936
-  height: 698
+  src: /assets/lib/helios/shell-2dfe4d.mp4
+  poster: /assets/lib/helios/shell-3ae724.webp
+  alt: Leaning in until the table is a council
+  width: 720
+  height: 1280
 
 benz:
-  src: /assets/lib/landing/benz.mp4
-  alt: benz animation
-  width: 662
-  height: 474
+  src: /assets/lib/helios/benz-ccbf06.mp4
+  poster: /assets/lib/helios/benz-5aee0a.webp
+  alt: Looking up into a figure they just made
+  width: 720
+  height: 1280
 
 star:
-  src: /assets/lib/landing/star.webm
-  alt: star animation
+  src: /assets/lib/helios/star-126ed5.mp4
+  poster: /assets/lib/helios/star-57cbcd.webp
+  alt: A voice, a tree of code on the wall
   width: 720
-  height: 540
+  height: 1280
 
 workshop_hero:
   src: /assets/lib/landing/workshop_hero_video.mp4
@@ -90,3 +93,79 @@ knowledge_park:
   alt: student care center workshop
   width: 848
   height: 464
+
+# Helios. Minted from design/assets, sized to the surface they sit on.
+# how-ids are distinct from approach.md. who-ids waves/spring/star/shell/benz
+# are Helios-only via the catalog. xsinx stays the approach.md animation;
+# creators is the Helios pane.
+sine_curve_with_code:
+  src: /assets/lib/helios/sine_curve_with_code-73cd5b.mp4
+  poster: /assets/lib/helios/sine_curve_with_code-63bc98.webp
+  alt: Toying with circular motion on a laptop
+  width: 1920
+  height: 1080
+
+polygon_fill:
+  src: /assets/lib/helios/polygon_fill-99b7f6.mp4
+  poster: /assets/lib/helios/polygon_fill-20eac5.webp
+  alt: Playing with randomness to form faces
+  width: 1920
+  height: 1080
+
+fibonacci_spiral:
+  src: /assets/lib/helios/fibonacci_spiral-646e11.mp4
+  poster: /assets/lib/helios/fibonacci_spiral-cc8f08.webp
+  alt: Recreating a Fibonacci spiral in code
+  width: 1920
+  height: 1080
+
+tree_fractal:
+  src: /assets/lib/helios/tree_fractal-aa0fe5.mp4
+  poster: /assets/lib/helios/tree_fractal-a88fe6.webp
+  alt: Exploring the hidden geometry of stars
+  width: 1920
+  height: 1080
+
+prime_sequence:
+  src: /assets/lib/helios/prime_sequence-dd5ba6.mp4
+  poster: /assets/lib/helios/prime_sequence-f1c1a9.webp
+  alt: Modelling spider webs in nature
+  width: 1920
+  height: 1080
+
+creators:
+  src: /assets/lib/helios/creators-6ac435.mp4
+  poster: /assets/lib/helios/creators-18c55f.webp
+  alt: A face on the screen, claimed in public
+  width: 720
+  height: 1280
+
+# The interval. Spines minted for the floating surface, not the hero box.
+# A clip here must not reuse a how-id: one id, one box.
+see_spiral:
+  src: /assets/lib/helios/see-spiral-bfab8e.mp4
+  poster: /assets/lib/landing/fibonacci_spiral.webp
+  alt: A Fibonacci spiral drawing itself
+  width: 960
+  height: 540
+
+see_tree:
+  src: /assets/lib/helios/see-tree-92d569.mp4
+  poster: /assets/lib/landing/tree_fractal.webp
+  alt: A fractal tree growing from a few lines
+  width: 960
+  height: 540
+
+see_wheel:
+  src: /assets/lib/helios/see-wheel-23331e.mp4
+  poster: /assets/lib/helios/see-wheel-f66844.webp
+  alt: A sine wheel drawing itself, and the wave it casts
+  width: 960
+  height: 630
+
+see_helix:
+  src: /assets/lib/helios/see-helix-f4a342.mp4
+  poster: /assets/lib/helios/see-helix-ccddfd.webp
+  alt: An amber helix drawing itself across the dark
+  width: 1280
+  height: 644
