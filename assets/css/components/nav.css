@@ -37,12 +37,12 @@
   }
 
   .site-nav[data-tone="dark"] {
-    --nav-ink: var(--color-cream);
-    --nav-ink-muted: color-mix(in srgb, var(--color-cream) 74%, transparent);
+    --nav-ink: #f6e6c4;
+    --nav-ink-muted: color-mix(in srgb, #f6e6c4 74%, transparent);
     --nav-accent: var(--color-primary);
-    --nav-hover-bg: color-mix(in srgb, var(--color-cream) 12%, transparent);
-    --nav-line: color-mix(in srgb, var(--color-cream) 24%, transparent);
-    --nav-panel: var(--color-night);
+    --nav-hover-bg: color-mix(in srgb, #f6e6c4 12%, transparent);
+    --nav-line: color-mix(in srgb, #f6e6c4 24%, transparent);
+    --nav-panel: #140806;
   }
 
   .site-nav__brand {
@@ -78,7 +78,7 @@
     position: fixed;
     inset: 0;
     z-index: 40;
-    background: color-mix(in srgb, var(--color-night) 50%, transparent);
+    background: color-mix(in srgb, #140806 50%, transparent);
     opacity: 0;
     pointer-events: none;
     transition: opacity 300ms ease-in-out;
