@@ -6,20 +6,18 @@
    column, sidenotes and marginnotes, backlink boxes, and reflowed
    recommendations for narrow screens.
 
-   KNOWN DEBT — scheduled for rebuild, not for copying forward:
-     * `body` here is the *global* page frame (64em, 4vh/6vw). It is applied
-       to every page, including cinematic full-bleed ones, which then have to
-       escape it with `calc(50% - 50vw)` hacks. The frame belongs to the
-       Library theme, not the document.
-     * The two rules marked `[global]` below carry `!important` and are
-       inherited by the whole site. They are the clearest example of the
-       blog's concerns leaking into every other surface.
-   Retained verbatim for now so this migration is verifiable as behaviour-
-   preserving. Both are removed deliberately when the Library theme is built.
+   The measured column lives on `.wrapper`, not on `body`. `body.bg-background`
+   paints edge to edge. Cinematic pages use `_layouts/folio.html` and do not
+   get a wrapper.
+
+   Link hover and focus ink are scoped to documents without a theme. Cinematic
+   and sealed pages do not inherit them.
    ========================================================================== */
 
 @layer base {
-  html {
+  /* Library pages only. Native y is the default; interpolation is opt-in for
+     hash and footnotes on documents that have no theme and no app shell. */
+  html:has(body:not([data-theme]):not([data-shell])) {
     scroll-behavior: smooth;
   }
 
@@ -28,13 +26,24 @@
      the Tailwind bundle; now the escape is named. */
   body:not([data-shell="app"]) {
     font-family: var(--font-body);
-    margin: 0 auto;
+    margin: 0;
     line-height: 1.7;
-    padding: 4vh 6vw;
-    overflow-x: hidden;
     color: #333333;
     font-size: 1rem;
     counter-reset: sidenote-counter;
+  }
+
+  /* Clip x on the measured column, not on cinematic or sealed themes. */
+  body:not([data-theme]):not([data-shell]) {
+    overflow-x: hidden;
+  }
+
+  /* The Library measure. Folio pages have no wrapper. */
+  .wrapper {
+    --frame-pad-y: 4vh;
+    --frame-pad-x: 6vw;
+    margin: 0 auto;
+    padding: var(--frame-pad-y) var(--frame-pad-x);
     max-width: 64em;
   }
 
@@ -101,34 +110,33 @@
     border-radius: 4px;
   }
 
-  /* [global] every childless link on the site */
-  a:not(:has(*)) {
+  /* Library ink. A theme (folio, twilight) or app shell does not inherit these. */
+  body:not([data-theme]):not([data-shell]) a:not(:has(*)) {
     transition: background 300ms;
     padding: 0 0.1em;
     text-decoration: none;
     color: hsl(0deg 0% 10%);
   }
 
-  a:not(:has(*)):hover {
+  body:not([data-theme]):not([data-shell]) a:not(:has(*)):hover {
     color: white !important;
     background: #000000;
   }
 
-  a:not(:has(*))::after {
+  body:not([data-theme]):not([data-shell]) a:not(:has(*))::after {
     position: relative;
     top: -0.5em;
     font-size: 0.7em;
     color: #aaaaaa;
   }
 
-  a:not(:has(*)).internal-link::after,
-  a:not(:has(*)).footnote::after,
-  a:not(:has(*)).reversefootnote::after {
+  body:not([data-theme]):not([data-shell]) a:not(:has(*)).internal-link::after,
+  body:not([data-theme]):not([data-shell]) a:not(:has(*)).footnote::after,
+  body:not([data-theme]):not([data-shell]) a:not(:has(*)).reversefootnote::after {
     content: "";
   }
 
-  /* [global] every focusable element on the site */
-  *:focus {
+  body:not([data-theme]):not([data-shell]) *:focus {
     background: #ffe8bc !important;
     color: black !important;
   }
