@@ -56,10 +56,23 @@
    Nothing here is promoted to core/tokens.css or to @theme; a look that mints
    utilities is how this codebase acquired a 75-token palette.
 
-   One url(): assets/lib/helios-grain.svg. A real file, not a data URI, so it is
+   One url(): assets/lib/helios-grain.png. A real file, not a data URI, so it is
    cacheable across pages and so `design/probe/assets.py` can verify it. (That
-   probe now also skips data URIs correctly; the previous regex split a quoted
-   data URI at the first `)` and reported the fragment as a missing file.)
+   probe skips data URIs correctly; a previous regex split a quoted data URI at
+   the first `)` and reported the fragment as a missing file.)
+
+   The tile is per-pixel white noise, opaque, shown at 220px: the grain of
+   design/iterations/04-helios.html (#grain), which drew it with a canvas. An
+   feTurbulence SVG held this slot first and does not read as grain — it reads
+   as a veil, and the reason is measurable. fractalNoise is 1/f, so neighbours
+   correlate (mean |Δ neighbour| 23.9 over the tile against this file's 84.8).
+   It carries noise in its alpha channel (17-237, mean 127), so the plate is
+   half transparent; and its luminance clusters at 163, above the mid-grey
+   that `overlay` leaves alone. Composited over a mid-grey ground at the
+   opacities below, the SVG moved the backdrop by a mean of 5.8 with a
+   per-pixel spread of only 2.7 — mostly a flat lift — where the noise tile
+   gives 8.9 and 10.8. Grain is the spread carrying the light, not the lift.
+   Do not go back to a filtered SVG here.
    ========================================================================== */
 
 @layer components {
@@ -123,10 +136,10 @@
     inset: -20%;
     z-index: 90;
     pointer-events: none;
-    opacity: 0.2;
+    opacity: 0.22;
     mix-blend-mode: overlay;
     background-size: 220px 220px;
-    background-image: url("/assets/lib/helios-grain.svg");
+    background-image: url("/assets/lib/helios-grain.png");
     animation: helios-grain 1.2s steps(2) infinite;
   }
 
@@ -1157,8 +1170,9 @@
   /* ---- keyframes ------------------------------------------------------ */
   @keyframes helios-grain {
     0% { transform: translate(0, 0); }
-    50% { transform: translate(-2%, 1%); }
-    100% { transform: translate(1%, -2%); }
+    33% { transform: translate(-2%, 1%); }
+    66% { transform: translate(1%, -2%); }
+    100% { transform: translate(0, 0); }
   }
 
   @keyframes helios-breathe {
