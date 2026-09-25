@@ -64,14 +64,13 @@ mobile_nav:
 # "Our Approach" cannot read differently here than it does in the standing nav.
 folio:
   links:
-    - approach
-    - blog
   actions:
-    - label: Enter
-      href: https://dojo.paperland.sg/welcome
-      primary: true
     - label: Join Us
       href: /#contact
+    - label: Enter Now
+      href: https://dojo.paperland.sg/welcome
+      primary: true
+    
 
 # Tone is about the surface the nav SITS ON, not the colour of the nav itself:
 #   light = nav over a light background, so ink is dark
