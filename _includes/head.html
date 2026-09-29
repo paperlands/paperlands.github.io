@@ -5,7 +5,19 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.title }}{% endif %}">
+  {%- comment -%} The homepage is the page served at `/`. Derived from the URL,
+     not declared in front matter — it used to be `page.id == "home"`, a key a
+     page could silently lack, so a new mainpage inherited the suffix
+     "&mdash; PaperLand : where math Lives" and nobody was told. {%- endcomment -%}
+  {%- assign is_home = false -%}
+  {%- if page.url == '/' -%}{%- assign is_home = true -%}{%- endif -%}
+
+  {%- comment -%} One description, four consumers. `excerpt` is the page's
+     declared summary; `description` is accepted as its synonym so a page
+     that wrote the latter is not silently demoted to the site title.
+     Neither is required — the fallback is the title, not an empty tag. {%- endcomment -%}
+  {%- assign meta_description = page.excerpt | default: page.description -%}
+  <meta name="description" content="{% if meta_description %}{{ meta_description | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.title }}{% endif %}">
 
   {%- comment -%} One stylesheet. Everything else is a layer inside it
      (see assets/css/app.css). {%- endcomment -%}
@@ -19,7 +31,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
   {% if layout.google_fonts %}<link href="https://fonts.googleapis.com/css2?{{ layout.google_fonts }}&display=swap" rel="stylesheet">{% endif %}
 
-  <meta property="og:site_name" content="{{ site.title }}">
+  {%- comment -%} The brand is PaperLand; the title is the promise. They are not
+     the same string, so og:site_name takes the brand from nav.yml — the same
+     source the navs read. {%- endcomment -%}
+  <meta property="og:site_name" content="{{ site.data.nav.brand.label }}">
 
   <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -35,15 +50,11 @@
   plausible.init()
 </script>
 
-  {% if page.excerpt %}
-  <meta property="og:description" content="{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}"/>
-  {% else %}
-  <meta property="og:description" content="{{ site.title | strip_html | strip_newlines | truncate: 160 }}"/>
-  {% endif %}
+  <meta property="og:description" content="{% if meta_description %}{{ meta_description | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.title | strip_html | strip_newlines | truncate: 160 }}{% endif %}"/>
 
   {% if page.title %}
   <meta property="og:title" content="{{ page.title }}">
-  <meta property="og:type" content="article">
+  <meta property="og:type" content="{% if is_home %}website{% else %}article{% endif %}">
   {% else %}
   <meta property="og:title" content="{{ site.title }}">
   <meta property="og:type" content="website">
@@ -57,12 +68,14 @@
   <meta property="og:url" content="{{ site.url }}{{ page.url }}" />
 
 
-  {% if page.image %}
-  <meta property="og:image" content="{{ site.url }}{{ page.image }}">
+  {%- comment -%} A note carries its art as `heroimgurl`; pages may still set `image`. {%- endcomment -%}
+  {%- assign og_image = page.image | default: page.heroimgurl -%}
+  {% if og_image %}
+  <meta property="og:image" content="{{ site.url }}{{ og_image }}">
   {% endif %}
 
   <title>
-    {% if page.id == "home" %}
+    {% if is_home %}
       {{ site.title }}
     {% else %}
       {{ page.title }} &mdash; {{ site.title }}

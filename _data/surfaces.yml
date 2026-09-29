@@ -51,19 +51,19 @@ core:
   routes:
     - /
     - /about
-    - /approach
+    - /blog
+    - /contact
     - /lan
     - /lesson-plans
-    - /mlp
-    - /helios-media
     - /helios-dojo
     - /helios-interval
-    - /helios
     # One route per file in _notes/ (collection permalink /:slug).
     # Listed rather than wildcarded: adding a note should require
     # classifying it.
     - /a-computational-spirit-to-learning-mathematics
     - /beginnings
+    - /experiences
+    - /our-approach
     - /why-must-i-learn-this
 
 legacy:
@@ -102,7 +102,7 @@ sealed:
 redirects:
   description: >-
     URL-preservation stubs. NOT legacy, and not one thing either: they exist for
-    three different reasons and a page belongs to one of them. All seventeen
+    three different reasons and a page belongs to one of them. All twenty
     share a single layout (_layouts/redirect.html, deliberately outside
     legacy/ because no legacy route uses it) which emits a meta refresh, a
     canonical link and a JS replace, so crawlers and readers are both served.
@@ -155,13 +155,17 @@ redirects:
         redirect within the site, so they are also the record of what absorbed
         what.
       routes:
-        - /dojo          # -> /approach, absorbed by the approach page
-        - /teachers      # -> /approach, workshop content superseded
-        - /workshop      # -> /mlp, workshop content superseded
+        - /approach      # -> /our-approach, the page's content became a note
+        - /mlp           # -> /experiences, the page's content became a note
+        - /dojo          # -> /our-approach, absorbed by the approach content
+        - /teachers      # -> /our-approach, workshop content superseded
+        - /workshop      # -> /experiences, workshop content superseded
+        - /helios        # -> /, the homepage was formerly served here
 
   # The flat list is what surfaces.py asserts against; `kinds` above is the
   # documentation. Both are checked to agree.
   routes:
+    - /approach
     - /arc
     - /chain-of-squares
     - /dojo
@@ -172,7 +176,9 @@ redirects:
     - /gmff-rubrics
     - /gmff-rules
     - /heartbeat
+    - /helios
     - /kepler
+    - /mlp
     - /monster-face
     - /moving-patterns
     - /random
@@ -193,3 +199,4 @@ removed:
   - /mathland           # orphaned, same
   - /workshop_bw        # never built — front matter commented out in 22cbb44, dead for months
   - /teachers_workshop  # never built, same cause
+  - /helios-media       # never built, and no source file in history: declared in core.routes only, so surfaces.py reported it as a stale declaration

@@ -1,0 +1,25 @@
+{%- comment -%}
+  The wider conversation: the notes graph.
+
+  The graph is server-rendered by the note_graph filter (see
+  _plugins/notes_edition.rb) from _includes/notes_graph.json — real links,
+  real edges, the current note distinguished, and no invented proximity. Two
+  renditions rather than one shrinking layout: a horizontal constellation on
+  wide screens, a vertical thread below 960px.
+
+  Params:
+    note  the note document (required)
+    graph the notes graph JSON (required), captured from notes_graph.json
+{%- endcomment -%}
+{%- assign current_note_url = include.note.url | relative_url -%}
+<section class="connections evening-field" id="notesgraph" aria-labelledby="graph-title">
+  {% include notes/spirits.html %}
+  <div class="connections-heading">
+    <div>
+      <p class="eyebrow" id="graph-title">from the desks at <span class="font-paperlang">PaperLand</span></p>
+    </div>
+  </div>
+  {{ include.graph | note_graph: current_note_url }}
+  {{ include.graph | note_graph: current_note_url, true }}
+  <p class="graph-caption"><span class="graph-key" aria-hidden="true"></span> You are here.</p>
+</section>

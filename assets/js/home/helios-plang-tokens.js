@@ -7,9 +7,12 @@
    what to do with the tokens — today it wraps them in spans.
 
    WHY A WORD LIST IS ACCEPTABLE HERE, AND WHERE IT IS NOT.
-     The verbs are the runtime's own command table (assets/js/turtling/commands.js
-     at the pinned commit) and the block words are the parser's. Copying them is a
-     copy of a language fact, and a list like this drifts when the language grows.
+     The verbs are the dojo's own command table — assets/js/turtling/commands.js
+     IN the dojo repository at the pinned commit, not a path in this one, which
+     has no such file. Naming the wrong repo is the failure this comment exists
+     to prevent, so it names the repo. The block words are the parser's. Copying
+     them is a copy of a language fact, and a list like this drifts when the
+     language grows.
      What keeps it honest: it is one file with no dependencies, the page asserts
      the inks it produces (design/probe/interval.mjs), and the day the dojo
      publishes a tokenizer this module is replaced by an import of it — the shape
@@ -32,8 +35,28 @@ export const VERBS = [
   "limitRecurse", "lt", "pitch", "roll", "rt", "show", "wait", "yaw", "yield",
 ];
 
-/* The parser's block words: the six that open or close a body. */
-export const BLOCKS = { def: 1, loop: 1, when: 1, as: 1, end: 1, fn: 1 };
+/* The words that open a body: the parser's own list (parse.js, BLOCK_KW). Each
+   is followed by `do` on the same line and closed by a line that is only `end`.
+   `def` and `draw` are bodies too, but they do not RUN where they stand — their
+   body runs at the call, which is why they are listed apart from ENTERS below. */
+export const OPENERS = { for: 1, loop: 1, def: 1, draw: 1, when: 1, as: 1 };
+
+/* Which of those run their body where they stand. A score that lights a body's
+   `end` because the walk reached its opener may only do it for these four: with
+   `def`/`draw`, the opener is walked at the definition, not at the entry. */
+export const ENTERS = { for: 1, loop: 1, when: 1, as: 1 };
+
+/* Every word the score inks as a keyword: the openers, the `do` that opens and
+   the `end` that closes (parse.js, DO and END), and the two the executor reads
+   as definitions itself (executor.js, `fn`/`func`). The previous list was WRONG
+   against the pin — it carried `fn` as a body word, missed `draw` and `for`, and
+   left `do` and `end` to be inked as names, which is why the score could not
+   show the language's own joints. Corrected against the pinned bytes. */
+export const BLOCKS = { for: 1, loop: 1, def: 1, draw: 1, when: 1, as: 1, do: 1, end: 1, fn: 1, func: 1 };
+
+/* The one gesture that is a joint in time and not a stroke. A beat is this
+   verb's effect, and the page names it to give the rests a light of their own. */
+export const REST = "wait";
 
 /* One pattern, alternation in priority order: a quoted address, a comment, a
    word, a number, the modulo operator, then any single non-space character. */

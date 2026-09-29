@@ -1,0 +1,66 @@
+{%- comment -%}
+  A hosted film in a plate — the still IS the page, and playback is a thing
+  the reader asks for. Adapted from the /gmff hero stage (the film festival's
+  poster → iframe facade): nothing is fetched from the host before that click,
+  so no cookies, no third-party bytes and no playback until intent.
+
+  The plate frame is _includes/figure's: this emits the same figure / figcaption
+  markup, so the evening edition draws it like any other plate and no second
+  owner of the shape exists. The stage publishes the media slots (surface
+  `film`, slot `frame`); its parts are this file's private `.film-*` business,
+  drawn by core/media.css and driven by the small writer below.
+
+  Params:
+    poster   required; the still (minted WebP under assets/)
+    embed    required; the privacy-light embed URL (youtube-nocookie, …)
+    alt      required; what the still shows
+    title    required; the film's own name — the frame's title, the button's label
+    caption  markdown; the plate's figcaption
+    class    extra classes on the figure
+{%- endcomment -%}
+<figure{% if include.class %} class="{{ include.class }}"{% endif %}>
+  <div class="film-stage" data-media-surface="film" data-media-slot="frame" style="--media-ar: 16 / 9;">
+    <img
+      class="film-poster"
+      src="{% if include.poster contains '://' %}{{ include.poster }}{% else %}{{ include.poster | relative_url }}{% endif %}"
+      alt="{{ include.alt }}"
+      decoding="async"
+    >
+    <iframe
+      class="film-frame"
+      data-film-frame
+      data-src="{{ include.embed }}"
+      title="{{ include.title }}"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen
+    ></iframe>
+    <div class="film-wipe" aria-hidden="true"></div>
+    <button class="film-play" type="button" data-film-play aria-label="Play {{ include.title | escape }}">
+      <span aria-hidden="true">▶</span>
+    </button>
+  </div>
+  {% if include.caption %}
+  <figcaption>{{ include.caption | markdownify | remove: "<p>" | remove: "</p>" }}</figcaption>
+  {% endif %}
+</figure>
+<script>
+  (() => {
+    const stage = document.querySelector('[data-media-surface="film"]');
+    const frame = stage?.querySelector('[data-film-frame]');
+    const play = stage?.querySelector('[data-film-play]');
+    if (!stage || !frame || !play) return;
+
+    const startFilm = () => {
+      if (stage.classList.contains('is-playing') || stage.classList.contains('is-transitioning')) return;
+      stage.classList.add('is-transitioning');
+      window.setTimeout(() => {
+        frame.src = frame.dataset.src;
+        stage.classList.add('is-playing');
+        stage.classList.remove('is-transitioning');
+      }, 150);
+    };
+
+    play.addEventListener('click', startFilm);
+  })();
+</script>

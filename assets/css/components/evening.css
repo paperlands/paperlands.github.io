@@ -1,0 +1,1833 @@
+/* ==========================================================================
+   components/evening.css — the evening edition of the notes
+   --------------------------------------------------------------------------
+   The notes design. Promoted from design study 06 (evening ink), which was
+   itself the evening treatment over study 05 (fieldnotes); both lived in the
+   reimage worktree, isolated from the production type system on purpose.
+   This file is that style migrated in full: same palette, same type, same
+   ornaments, same breakpoints, same print sheet — re-expressed inside the
+   contract of this codebase.
+
+   THE THEME. `_layouts/note.html` writes `data-theme="evening"` on <body> and
+   this file paints the whole note document inside that scope, the way
+   twilight.css paints `[data-theme="twilight"]`. Nothing here leaks to the
+   standing pages, and the Library's unthemed link ink (core/document.css is
+   scoped to `body:not([data-theme])`) stands down for these documents — which
+   is correct: the edition has its own ink.
+
+   TOKENS. The palette is one block, values only, at the top — a second
+   lighting treatment is a token edit plus a few treatment rules, not a
+   find-and-replace. Translucency is expressed as
+   `color-mix(in srgb, var(--evening-*) N%, transparent)` so a rule never
+   re-states a base colour. The type roles come from core/tokens.css and are
+   read, never named: Cormorant Garamond is `--font-serif` (the display
+   italic), EB Garamond is `--font-body`, paperLang is `--font-paperlang`.
+   The study's one grotesque — the micro-label voice of eyebrows, datelines,
+   rail chrome and graph labels — has no counterpart in the four global roles,
+   so it is an edition token (`--evening-label`) rather than a fifth global
+   family. Twilight re-points the global roles for itself; the edition
+   deliberately adds one scoped role instead, and leaves the global contract
+   alone.
+
+   LAYERING. Everything is in `@layer components`, no sub-layer (T9: a nested
+   layer is subordinate to its parent). Precedence is specificity — rules here
+   are `[data-theme="evening"] …` — and, since the edition's markup carries no
+   Tailwind utilities, no utility can outrank them by accident.
+
+   INTEGRATION, where the edition meets core/document.css:
+     - the Tufte apparatus is KEPT: {% margin %}, {% sidenote %} and kramdown
+       footnotes are restyled into one marginalia vocabulary by
+       _plugins/notes_edition.rb, and `.edition-sidenote` is the result;
+     - `content a.internal-link` (base: orange field) and `.invalid-link`
+       (base: light paper) are re-inked inside the theme;
+     - `hr` keeps its ornament and is recoloured;
+     - `time`, `footer`, `blockquote` element defaults are overridden where the
+       edition's composition differs.
+
+   COMPLETED, where the study had no sample: chapters are unnumbered, and
+   marginalia may carry images or quotes (the Creation First note does) — so
+   `.edition-sidenote` constrains media and unwraps nested quotes.
+
+   MOTION belongs to the spirits alone — they move
+   only where `assets/js/notes/edition.js` sets data-air="moving" on an
+   `.evening-field`, and stops for reduced motion, print, and hidden tabs. No
+   render loop, no scroll choreography, no pointer following, no moving
+   surface behind the essay.
+
+   One url(): /assets/lib/helios-grain.png — the Helios noise tile, a real
+   cacheable file (design/probe/assets.py verifies it). The hero art is
+   an <img> in _includes/notes/hero.html, not CSS.
+   ========================================================================== */
+
+@layer components {
+
+  /* ---- the token contract --------------------------------------------- */
+  [data-theme="evening"] {
+    --evening-paper: #140806;
+    --evening-wash: #201218;
+    --evening-ink: #eadcc4;
+    --evening-verse: #ecd3b2;
+    --evening-muted: #bda78e;
+    --evening-sun: #ffe2a1;
+    --evening-ember: #f3aa63;
+    --evening-amber: #e8a020;
+    --evening-flare: #ff9933;
+    --evening-ember-deep: #d45a14;
+    --evening-gold: #d4a84a;
+    --evening-orbit: #edc37c;
+    --evening-wing: #efb66f;
+    --evening-mist: #c8b4da;
+    --evening-violet: #291d57;
+    --evening-ridge: #8b2e0c;
+    --evening-rule: #573621;
+
+    /* The micro-label voice: eyebrows, datelines, rail chrome, graph labels. */
+    --evening-label: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+    /* The micro-type key. The head's paratext — kicker, dateline, sign-in —
+       and the labels all read ONE key: one size, one leading, one tracking.
+       Case is the key's role variant (labels set caps and track wider; dates
+       and names keep their own case at the key's tracking). No micro-type
+       drifts from this. */
+    --evening-key: 0.625rem;
+    --evening-key-lh: 1.6;
+    --evening-key-track: 0.06em;
+
+    /* The reading grid: orient / read / wander.
+       The measure is the essay's; the rails take the leftover so the page
+       is not an island. */
+    --evening-measure: 42rem;
+    --evening-margin: 17.5rem;
+    --evening-gutter: 6rem;
+
+    /* The air between the essay column and the rail's ink. For a note it is
+       added to the gutter; for a window it is the whole left inset, because a
+       window is the one thing that reaches back into the gutter — and a
+       picture that touches the text column reads as part of it. Padding, not
+       geometry: the rail's outer edge stays on the grid, and the narrow and
+       print blocks re-set padding when the marginalia reflow inline. */
+    --evening-margin-air: 2.75rem;
+
+    /* The masthead's box. Two elements sit at it, so it is one source: the
+       wordmark paints there, and the nav's invisible brand link spreads its
+       hit area over it (see [data-nav-mark] below). */
+    /* The same corner as the bar's brand link — read, not restated. See
+       components/nav.css for why the value lives on <body>. */
+    --evening-wm-box-x: var(--nav-logo-x, 1.1rem);
+    --evening-wm-box-y: 1.1rem;
+    --evening-wm-box-w: min(12rem, calc(100vw - 12rem));
+
+    color-scheme: dark;
+  }
+
+  /* ---- the evening ground --------------------------------------------- */
+  /* Light has a source: two low washes — ember low right, violet high left —
+     over the paper. The grain tile sits over all of it at overlay. */
+  [data-theme="evening"] {
+    background:
+      radial-gradient(ellipse 44rem 38rem at 88% 13rem,
+        color-mix(in srgb, var(--evening-ridge) 18.75%, transparent), transparent 78%),
+      radial-gradient(ellipse 38rem 48rem at 8% 45rem,
+        color-mix(in srgb, var(--evening-violet) 16.5%, transparent), transparent 78%),
+      var(--evening-paper);
+    color: var(--evening-ink);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  /* The base heading scale is the standing document's; the edition sets its
+     own and stands it down here (T5's lesson, applied to a core theme). */
+  [data-theme="evening"] :is(h1, h2, h3, h4, h5, h6) {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    margin-block: 1.4em 0.5em;
+    text-wrap: normal;
+    color: inherit;
+  }
+
+  [data-theme="evening"] ::selection {
+    background: var(--evening-ember);
+    color: var(--evening-paper);
+  }
+
+  [data-theme="evening"] :focus-visible {
+    outline: 2px solid var(--evening-ember);
+    outline-offset: 5px;
+  }
+
+  [data-theme="evening"] a {
+    color: inherit;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  [data-theme="evening"] a:hover {
+    color: var(--evening-ember);
+  }
+
+  [data-theme="evening"] button {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  [data-theme="evening"] .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -10rem;
+    padding: 1rem;
+    z-index: 5;
+    background: var(--evening-paper);
+    color: var(--evening-ink);
+  }
+
+  [data-theme="evening"] .skip-link:focus {
+    top: 1rem;
+  }
+
+  /* Wiki links the generator could not resolve are honest about it, in the
+     edition's ink rather than the standing document's light paper. */
+  [data-theme="evening"] .invalid-link {
+    color: var(--evening-muted);
+    cursor: help;
+    background: color-mix(in srgb, var(--evening-wash) 70%, transparent);
+    padding: 0 0.1em;
+  }
+
+  [data-theme="evening"] .invalid-link-brackets {
+    color: color-mix(in srgb, var(--evening-muted) 55%, transparent);
+    cursor: help;
+  }
+
+  /* Internal links (wiki links, the sign-in) carry the base layer's
+     orange field; inside the edition they are plain ink with ember underlines. */
+  [data-theme="evening"] content a.internal-link,
+  [data-theme="evening"] .essay-body a.internal-link {
+    background: none;
+    border-color: transparent;
+    color: inherit;
+    padding: 0;
+  }
+
+  [data-theme="evening"] hr {
+    border: none;
+    color: var(--evening-ember);
+    overflow: visible;
+    text-align: center;
+    height: 2px;
+  }
+
+  [data-theme="evening"] hr::after {
+    content: "☙ —— ›– ✧ –‹ —— ❧ ";
+    position: relative;
+    top: -14px;
+    color: var(--evening-ember);
+  }
+
+  /* Anchor targets land where the study placed them: the scrollport is padded
+     at the root scroller, the same pattern core/document.css uses for its
+     smooth-scroll opt-in. Targets carry their own scroll-margin as well. */
+  html:has(body[data-theme="evening"]) {
+    scroll-padding-top: 2rem;
+  }
+
+  @media (max-width: 640px) {
+    html:has(body[data-theme="evening"]) {
+      scroll-padding-top: 1rem;
+    }
+  }
+
+  /* ---- the grain ------------------------------------------------------ */
+  /* The Helios noise tile: per-pixel white noise at 220px over the whole
+     document. Grain is the spread carrying the light, not a lift. */
+  .evening-grain {
+    position: fixed;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    background: url("/assets/lib/helios-grain.png") repeat;
+    background-size: 220px;
+    opacity: 0.105;
+    mix-blend-mode: overlay;
+  }
+
+  /* ---- the masthead: helios's chrome, stood at rest --------------------- */
+  /* There is no notes masthead. The note document composes the same pair
+     _pages/helios.md composes — the shared nav (the folio nav, dispatched by
+     nav.html) and home's wordmark element — and the edition only stands them
+     the way the Helios look does at rest: the drawn identity covers the nav's
+     brand link (whose hit area and keyboard stop remain), the wordmark's
+     published slots show the assembled banner, and the assembly parts stand
+     down. The look keeps owning the choreography. */
+  [data-theme="evening"] .helios-wordmark {
+    position: fixed;
+    z-index: 91;
+    left: var(--evening-wm-box-x);
+    top: var(--evening-wm-box-y);
+    width: var(--evening-wm-box-w);
+    aspect-ratio: 1280 / 250;
+    pointer-events: none;
+    /* The edition's identity retracts the same way the look's does — same
+       constants, same reason: the assembled state is one raster with the word
+       inside it, so it is cropped rather than hidden. See components/helios.css
+       for the measurement and for why this is clip-path and not width. */
+    clip-path: inset(0 0 0 0);
+    /* `ease`, not a var: the edition has no easing token, and the look's
+       --helios-ease is the look's. Inventing --evening-ease for one
+       declaration is a token layer with one consumer. */
+    transition: clip-path 320ms ease;
+  }
+
+  [data-theme="evening"][data-helios-collapsed="true"] .helios-wordmark {
+    clip-path: inset(0 82.8125% 0 0);   /* keep x 0..220 of 1280 */
+  }
+
+  [data-theme="evening"] .helios-wordmark__art {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  [data-theme="evening"] .helios-wordmark__in,
+  [data-theme="evening"] [data-helios-build],
+  [data-theme="evening"] [data-helios-word] {
+    display: none;
+  }
+
+  /* Only when the drawn identity is actually here to replace it — the same
+     condition components/helios.css states for the look. */
+  [data-theme="evening"]:has(.helios-wordmark) [data-nav-mark] {
+    opacity: 0;
+  }
+
+  /* The drawn mark is wider than the word it replaces: "PaperLand" at the
+     nav's 1.15rem box stops around the third letter, so the rest of the
+     identity was dead ground — the link IS the hit area (the wordmark is
+     pointer-events: none), so it spreads over the box the edition paints, the
+     same box the focus ring above outlines. Absolute, against the fixed nav,
+     which is the positioned ancestor: the pseudo-element holds no layout and
+     paints nothing. */
+  [data-theme="evening"] [data-nav-mark]::after {
+    content: "";
+    position: absolute;
+    left: var(--evening-wm-box-x);
+    top: var(--evening-wm-box-y);
+    width: var(--evening-wm-box-w);
+    aspect-ratio: 1280 / 250;
+  }
+
+  [data-theme="evening"]:has([data-nav-mark]:focus-visible) .helios-wordmark {
+    outline: 1px solid var(--evening-ember);
+    outline-offset: 4px;
+  }
+
+  /* ---- the reading grid ----------------------------------------------- */
+  /* Three jobs, three columns: orient / read / wander. The rails eat the
+     sides; leftover space opens between the columns so the notes breathe. */
+  [data-theme="evening"] .reading-grid {
+    max-width: 120rem;
+    margin: 0 auto;
+    padding: 0 clamp(1.1rem, 1.8vw, 1.85rem);
+    display: grid;
+    grid-template-columns:
+      minmax(13.5rem, 16rem)
+      minmax(0, var(--evening-measure))
+      minmax(var(--evening-margin), 22rem);
+    column-gap: var(--evening-gutter);
+    justify-content: space-between;
+  }
+
+  [data-theme="evening"] .eyebrow {
+    font: 500 var(--evening-key)/var(--evening-key-lh) var(--evening-label);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin: 0 0 1.25rem;
+    color: inherit;
+  }
+
+  [data-theme="evening"] .ember {
+    color: var(--evening-sun);
+  }
+
+  [data-theme="evening"] .eyebrow-divider {
+    padding: 0 0.9rem;
+    color: var(--evening-rule);
+  }
+
+  /* ---- the opening (see _includes/notes/header.html) ------------------- */
+  /* ---- the opening (see _includes/notes/hero.html, notes/header.html) -- */
+  /* Row 1, spanning the essay and the margin: the hero art — light has a
+     source — and the header sits over its masked fade. */
+  .evening-opening {
+    grid-column: 2 / 4;
+    grid-row: 1;
+    position: relative;
+    min-height: 0;
+    isolation: isolate;
+  }
+
+  /* The hero image (see _includes/notes/hero.html): the note's art, stood
+     high right behind the head and dissolving into the paper. The label
+     beneath it is the same element's plate label. */
+  .hero-image img {
+    position: absolute;
+    z-index: -1;
+    width: min(50rem, 90%);
+    top: -4rem;
+    right: -5rem;
+    display: block;
+    height: auto;
+    pointer-events: none;
+    filter: sepia(0.25) saturate(0.8) contrast(1.04);
+    /* Dissolving into the paper: the study's line art did this by being
+       transparent at its edges; a photograph needs the mask to do it. The
+       bottom keeps the study's fade, and the left edge fades toward the
+       title so any art — photo or drawing — stands in this slot alike. */
+    mask-image:
+      linear-gradient(to right, transparent 0%, #000 34%),
+      linear-gradient(to bottom, #000 76%, transparent);
+    -webkit-mask-image:
+      linear-gradient(to right, transparent 0%, #000 34%),
+      linear-gradient(to bottom, #000 76%, transparent);
+    mask-composite: intersect;
+    -webkit-mask-composite: source-in;
+  }
+
+  [data-theme="evening"] .evening-opening .essay-header {
+    padding-top: 9rem;
+    margin: 0;
+    max-width: var(--evening-measure);
+  }
+
+  [data-theme="evening"] .evening-opening .eyebrow {
+    color: var(--evening-muted);
+    margin-bottom: 2.2rem;
+    /* The kicker sits over the hero art; the paper-hued shadow is the deck's
+       own device for text over art (see the deck rule below). */
+    text-shadow: 0 2px 15px var(--evening-paper);
+  }
+
+  [data-theme="evening"] .evening-opening h1 {
+    font: 400 clamp(4rem, 8.3vw, 8rem)/1.13 var(--font-paperlang);
+    letter-spacing: -0.045em;
+    color: var(--evening-sun);
+    margin: 0 0 1.7rem;
+    text-shadow:
+      0.015em 0.01em 0 color-mix(in srgb, var(--evening-flare) 18.75%, transparent),
+      0 0 0.28em color-mix(in srgb, var(--evening-flare) 15%, transparent),
+      0 0 0.7em color-mix(in srgb, var(--evening-ember-deep) 12%, transparent);
+  }
+
+  [data-theme="evening"] .evening-opening .deck {
+    color: var(--evening-verse);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.9rem;
+    line-height: 1.3;
+    max-width: 26rem;
+    margin: 0 0 2.75rem;
+    text-shadow: 0 2px 15px var(--evening-paper);
+  }
+
+  /* The sign-in hangs from a gold rule that fades out to the right. */
+  [data-theme="evening"] .evening-opening .essay-signin {
+    margin-top: 2.8rem;
+    padding-top: 1.3rem;
+    background: linear-gradient(90deg,
+      color-mix(in srgb, var(--evening-gold) 40%, transparent),
+      color-mix(in srgb, var(--evening-gold) 6%, transparent) 70%,
+      transparent) top left / 100% 1px no-repeat;
+  }
+
+
+  /* ---- the essay head: kicker, dateline, title, deck, sign-in ------------ */
+  [data-theme="evening"] .essay-header {
+    margin-bottom: 3.5rem;
+  }
+
+  [data-theme="evening"] .deck {
+    font: italic 1.75rem/1.24 var(--font-serif);
+    color: var(--evening-muted);
+    margin: 0 0 2.75rem;
+  }
+
+  /* The sign-in sits at the right of the header, under the deck. */
+  [data-theme="evening"] .essay-signin {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  /* The author signs in as a prompt at rest — the tilde and the drawn caret
+     carry the terminal, not a foreign face. The sign-in speaks in the head's
+     key, like the kicker and the dateline above it. */
+  [data-theme="evening"] .crt-login {
+    font: var(--evening-key)/var(--evening-key-lh) var(--evening-label);
+    letter-spacing: var(--evening-key-track);
+    color: var(--evening-muted);
+    white-space: nowrap;
+  }
+
+  [data-theme="evening"] .crt-login a {
+    color: var(--evening-sun);
+    text-decoration-color: color-mix(in srgb, var(--evening-ember) 35%, transparent);
+  }
+
+  /* A caret at rest: drawn, not typed — no block glyph, no blink. */
+  [data-theme="evening"] .crt-cursor {
+    display: inline-block;
+    width: 0.42em;
+    height: 0.9em;
+    margin-left: 0.35rem;
+    background: color-mix(in srgb, var(--evening-ember) 55%, transparent);
+    vertical-align: -0.08em;
+  }
+
+  /* The dateline shares the kicker's line — publication date, right. */
+  [data-theme="evening"] .essay-header__top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  [data-theme="evening"] .dateline {
+    display: inline;
+    margin: 0;
+    font: var(--evening-key)/var(--evening-key-lh) var(--evening-label);
+    letter-spacing: var(--evening-key-track);
+    color: var(--evening-muted);
+    white-space: nowrap;
+  }
+
+
+
+  /* ---- the contents rail (see _includes/notes/contents.html) ----------- */
+  [data-theme="evening"] .contents-rail {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    padding-top: 9rem;
+    /* Extra start inset so the mark sits further out than the list. */
+    padding-inline: 1.85rem 1rem;
+  }
+
+  [data-theme="evening"] .contents-sticky {
+    position: sticky;
+    top: 2.5rem;
+  }
+
+  [data-theme="evening"] .rail-title {
+    color: var(--evening-muted);
+    font-size: 0.625rem;
+    margin-bottom: 1.65rem;
+  }
+
+  /* Named .toc, not .contents: `contents` is a Tailwind display utility, and
+     the utilities layer would silently beat this one — the list then renders
+     as full-width rows instead of chips. */
+  [data-theme="evening"] .toc {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-left: 1px solid color-mix(in srgb, var(--evening-gold) 18.75%, transparent);
+  }
+
+  [data-theme="evening"] .toc .toc-h2,
+  [data-theme="evening"] .toc .toc-h3 {
+    margin: 0;
+  }
+
+  [data-theme="evening"] .toc a {
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+    margin-left: -1px;
+    border-left: 2px solid transparent;
+    padding: 0.95rem 0 0.95rem 1.1rem;
+    font-size: 1.1875rem;
+    text-decoration: none;
+    color: var(--evening-muted);
+  }
+
+  [data-theme="evening"] .toc a:hover {
+    border-left-color: var(--evening-ember);
+    color: var(--evening-ember);
+  }
+
+  /* Where the reader is. An enhancement, never the only way to navigate. */
+  [data-theme="evening"] .toc a[aria-current] {
+    border-left-color: var(--evening-ember);
+    color: var(--evening-sun);
+    text-shadow: 0 0 1rem color-mix(in srgb, var(--evening-amber) 20%, transparent);
+  }
+
+  [data-theme="evening"] .toc .toc-h3 a {
+    display: block;
+    padding: 0.22rem 0.15rem 0.22rem 1.1rem;
+    font-size: 0.9rem;
+    line-height: 1.3;
+  }
+
+
+
+  /* Subheads fold under their chapter and stand open only while the reader
+     is in it — or has taken keyboard focus there. The current section is
+     marked by assets/js/notes/edition.js as aria-current. */
+  [data-theme="evening"] .toc-sub {
+    display: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  [data-theme="evening"] .toc li:has(a[aria-current]) > .toc-sub,
+  [data-theme="evening"] .toc li:focus-within > .toc-sub {
+    display: block;
+  }
+
+  /* ---- the essay ------------------------------------------------------ */
+  [data-theme="evening"] .essay {
+    grid-column: 2;
+    grid-row: 2;
+    min-width: 0;
+  }
+
+  [data-theme="evening"] .essay-body {
+    /* <content> is not a known element; without this it is inline. */
+    display: block;
+    font-size: 1.375rem;
+    line-height: 1.58;
+    overflow-wrap: break-word;
+  }
+
+  [data-theme="evening"] .essay-body p {
+    margin: 0 0 1.4em;
+    hanging-punctuation: first last;
+  }
+
+  /* The epigraph: violet air, mist ink, one corner bracket — ornament has a
+     place, and this is it. */
+  [data-theme="evening"] .essay-body > blockquote {
+    position: relative;
+    margin: 0 0 4.5rem;
+    padding: 1.4rem 1.7rem 1.6rem;
+    border-left: 0;
+    font: italic 1.35rem/1.5 var(--font-serif);
+    color: var(--evening-mist);
+    background: radial-gradient(ellipse at top left,
+      color-mix(in srgb, var(--evening-violet) 23.1%, transparent), transparent 75%);
+  }
+
+  [data-theme="evening"] .essay-body > blockquote p {
+    margin: 0;
+  }
+
+  [data-theme="evening"] .essay-body > blockquote::before {
+    position: absolute;
+    content: '';
+    width: 1.3rem;
+    height: 1.3rem;
+    border-color: color-mix(in srgb, var(--evening-mist) 50%, transparent);
+    top: 0;
+    left: 0;
+    border-top: 1px solid;
+    border-left: 1px solid;
+  }
+
+  /* Sections are numbered in the margin gutter; the contents rail numbers
+     the same sequence. h3 counts too — the study only had h2s to render, but
+     its TOC filter already numbered both as one series. */
+  [data-theme="evening"] .essay-body h2 {
+    position: relative;
+    clear: both;
+    font: italic 500 3rem/1.15 var(--font-serif);
+    color: var(--evening-sun);
+    margin: 5.2rem 0 1.6rem;
+    scroll-margin-top: 2rem;
+    text-shadow: 0 0 1.2rem color-mix(in srgb, var(--evening-amber) 8%, transparent);
+  }
+
+  [data-theme="evening"] .essay-body h3 {
+    position: relative;
+    clear: both;
+    font: italic 500 1.95rem/1.2 var(--font-serif);
+    letter-spacing: -0.015em;
+    color: var(--evening-ink);
+    margin: 3.6rem 0 1.25rem;
+    scroll-margin-top: 2rem;
+  }
+
+
+  /* The first breath of the essay: a paperLang drop cap in sun ink. The lede
+     is the first paragraph of the body, wherever the opening furniture leaves
+     it — an epigraph, a plate, a door out may all stand before it. A door out
+     is itself a paragraph, so it is skipped rather than capped, and a note
+     whose opening line is a heading is not dragged down to that heading. */
+  [data-theme="evening"] .essay-body > p:first-of-type:not(:has(a.side-link))::first-letter,
+  [data-theme="evening"] .essay-body > p:first-of-type:has(a.side-link) + p:not(:has(a.side-link))::first-letter {
+    float: left;
+    font-family: var(--font-paperlang);
+    font-size: 4.6rem;
+    color: var(--evening-sun);
+    text-shadow: 0 0 0.45em color-mix(in srgb, var(--evening-amber) 18.75%, transparent);
+    margin: 0.1em 0.09em 0 0;
+  }
+
+  [data-theme="evening"] .essay-body strong {
+    color: var(--evening-sun);
+    font-weight: 500;
+  }
+
+  [data-theme="evening"] .essay-body a {
+    text-decoration-color: var(--evening-ember);
+  }
+
+  /* Reference markers: margin notes and footnotes, both numbered by
+     _plugins/notes_edition.rb. */
+  [data-theme="evening"] .essay-body sup {
+    color: var(--evening-ember);
+    line-height: 0;
+    font: 0.6rem var(--evening-label);
+    vertical-align: super;
+  }
+
+  [data-theme="evening"] .essay-body sup a {
+    padding: 0.25rem;
+    text-decoration: none;
+  }
+
+  /* ---- plates (see _includes/figure, _includes/media/figure.html) ------ */
+  /* One plate: a gold hairline frame, one corner mark turned up at the top
+     left, the image warm-graded into the evening, the caption inside and
+     below. Semantic markup (figure / figcaption) — the components emit it,
+     and the edition styles it by element. */
+  [data-theme="evening"] .essay-body figure {
+    position: relative;
+    margin: 3.75rem 0;
+    padding: 0.7rem;
+    border: 1px solid color-mix(in srgb, var(--evening-gold) 13%, transparent);
+  }
+
+  [data-theme="evening"] .essay-body figure::before {
+    position: absolute;
+    content: '';
+    width: 4rem;
+    height: 4rem;
+    top: -0.4rem;
+    left: -0.4rem;
+    border-top: 1px solid color-mix(in srgb, var(--evening-gold) 45%, transparent);
+    border-left: 1px solid color-mix(in srgb, var(--evening-gold) 45%, transparent);
+    pointer-events: none;
+  }
+
+  [data-theme="evening"] .essay-body figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: sepia(0.25) saturate(0.8) contrast(1.04);
+  }
+
+  [data-theme="evening"] .essay-body figcaption {
+    font-size: 1rem;
+    line-height: 1.4;
+    color: var(--evening-muted);
+    padding: 0.9rem 0.25rem 0.25rem;
+  }
+
+  /* A clip is a plate too: the media surface keeps its own slots and player,
+     and the frame treats it like any other plate in the essay. */
+  [data-theme="evening"] .essay-body figure .media-clip {
+    margin: 0;
+    border: 0;
+  }
+
+  /* ---- marginalia ----------------------------------------------------- */
+  /* Every annotation — Papert margin note, Tufte sidenote, kramdown footnote
+     — becomes this, still AT its source passage (see the plugin). On wide
+     screens a float places it in the right rail; below 961px and in print it
+     reflows inline where it already sits. Nothing is hover-only. */
+  /* The same shape serves both kinds: the author's margin notes and the
+     reader's footnotes (`.edition-footnote`) are one marginalia vocabulary. */
+  [data-theme="evening"] .edition-sidenote,
+  [data-theme="evening"] .edition-footnote {
+    float: right;
+    clear: right;
+    width: var(--evening-margin);
+    margin: 0.25rem calc(-1 * (var(--evening-margin) + var(--evening-gutter))) 2.4rem 0;
+    padding-top: 1.1rem;
+    padding-left: var(--evening-margin-air);
+    border-top: 0;
+    font-size: 1.0625rem;
+    line-height: 1.45;
+    color: var(--evening-muted);
+    background: linear-gradient(90deg,
+      var(--evening-ember),
+      color-mix(in srgb, var(--evening-gold) 18.75%, transparent) 50%,
+      transparent) top left / 100% 1px no-repeat;
+  }
+
+  /* Lighting one end lights the other: a hovered or keyboard-focused
+     reference number lights its margin note, the same ink :target carries
+     after the jump. The marker and its note are adjacent siblings. */
+  [data-theme="evening"] .edition-sidenote:target,
+  [data-theme="evening"] sup:has(a:hover) + .edition-sidenote,
+  [data-theme="evening"] sup:has(a:focus-visible) + .edition-sidenote {
+    color: var(--evening-sun);
+  }
+
+  /* And the return lights the passage it names: after ↩ the marker in the
+     main text carries the sun ink the note had while it was the target, on a
+     warm plate, so the eye lands where the note was referred. The marker is
+     the id the back link names — margin note and footnote alike. */
+  [data-theme="evening"] .essay-body sup:target {
+    color: var(--evening-sun);
+  }
+
+  [data-theme="evening"] .essay-body sup:target a {
+    color: var(--evening-sun);
+    background: color-mix(in srgb, var(--evening-ember) 30%, transparent);
+    border-radius: 0.2rem;
+    box-shadow: 0 0 0.75rem color-mix(in srgb, var(--evening-flare) 45%, transparent);
+  }
+
+  [data-theme="evening"] .note-return,
+  [data-theme="evening"] .reversefootnote {
+    color: var(--evening-ember);
+    text-decoration: none;
+    padding: 0.25rem;
+  }
+
+  /* Marginalia can carry a picture or a quotation — the Creation First note
+     does both — and must stay inside the rail. */
+  [data-theme="evening"] .edition-sidenote img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    margin: 0.5rem 0;
+    filter: sepia(0.25) saturate(0.8) contrast(1.04);
+  }
+
+  /* A margin note that is only a picture is a window in the side: no label,
+     no marker, no return link (the filter withholds them), and the image
+     expands into the gutter as well as the rail — a window, not an
+     annotation. */
+  [data-theme="evening"] .edition-window {
+    width: calc(var(--evening-margin) + var(--evening-gutter));
+    margin-left: calc(-1 * var(--evening-gutter));
+    padding-top: 0;
+    padding-left: var(--evening-margin-air);
+    background: none;
+  }
+
+  [data-theme="evening"] .edition-window img {
+    margin: 0;
+  }
+
+  /* The window breathes: a shallow scale and a lift in opacity, never enough
+     to leave the rail. It runs only under the edition's own air — the essay is
+     an `.evening-field`, so edition.js starts it on-screen and stops it for
+     reduced motion, print, and hidden tabs, the same contract the spirits fly
+     under. */
+  .evening-field[data-air="moving"] .edition-window img {
+    animation: evening-window-breathe 11s ease-in-out infinite;
+  }
+
+  @keyframes evening-window-breathe {
+    0%, 100% { transform: scale(1); opacity: 0.9; }
+    50% { transform: scale(1.012); opacity: 1; }
+  }
+
+  /* ---- the image viewer (see _includes/notes/lightbox.html) ------------- */
+  /* A window in the rail opens into the top layer: the picture unsepia'd and
+     alone on the evening ground. Native <dialog> owns the focus trap, Escape
+     and the modal stack; edition.js only carries the image in and hands focus
+     back to the window when it closes. */
+  [data-theme="evening"] .edition-lightbox {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: clamp(1rem, 4vw, 4rem);
+    border: 0;
+    background: transparent;
+    overflow: hidden;
+  }
+
+  [data-theme="evening"] .edition-lightbox[open] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  [data-theme="evening"] .edition-lightbox::backdrop {
+    background: color-mix(in srgb, var(--evening-paper) 94%, transparent);
+    backdrop-filter: blur(6px);
+  }
+
+  [data-theme="evening"] .edition-lightbox__frame {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    max-width: 100%;
+    max-height: 100%;
+    min-height: 0;
+    margin: 0;
+  }
+
+  [data-theme="evening"] .edition-lightbox__image {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    min-height: 0;
+    object-fit: contain;
+    filter: none;
+    cursor: zoom-out;
+  }
+
+  [data-theme="evening"] .edition-lightbox__caption {
+    max-width: 46rem;
+    margin: 0;
+    font: italic 1rem/1.5 var(--font-serif);
+    color: var(--evening-muted);
+    text-align: center;
+  }
+
+  [data-theme="evening"] .edition-lightbox__caption[hidden] {
+    display: none;
+  }
+
+  [data-theme="evening"] .edition-lightbox__close {
+    position: fixed;
+    top: clamp(0.5rem, 2.5vw, 1.5rem);
+    right: clamp(0.5rem, 2.5vw, 1.5rem);
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 1px solid color-mix(in srgb, var(--evening-gold) 45%, transparent);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--evening-paper) 70%, transparent);
+    color: var(--evening-sun);
+    font: 1rem/1 var(--evening-label);
+    cursor: pointer;
+  }
+
+  [data-theme="evening"] .edition-lightbox__close:hover,
+  [data-theme="evening"] .edition-lightbox__close:focus-visible {
+    border-color: var(--evening-ember);
+    color: var(--evening-ember);
+  }
+
+  /* The window advertises itself as a door. */
+  [data-theme="evening"] .edition-window img {
+    cursor: zoom-in;
+  }
+
+  [data-theme="evening"] .edition-window img:focus-visible {
+    outline: 1px solid var(--evening-ember);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-theme="evening"] .edition-lightbox {
+      transition: opacity 0.2s ease;
+    }
+    @starting-style {
+      [data-theme="evening"] .edition-lightbox[open] { opacity: 0; }
+    }
+  }
+
+  /* The window's caption, under the picture inside the same expanded frame:
+     the plate caption's voice (.essay-body figcaption), in the rail's own
+     size. It is authored as a span because the note sits inside a paragraph
+     (see _plugins/notes_edition.rb). */
+  [data-theme="evening"] .edition-window .edition-window-caption {
+    display: block;
+    margin-top: 0.6rem;
+    font-size: 1rem;
+    line-height: 1.4;
+    color: var(--evening-muted);
+  }
+
+  [data-theme="evening"] .edition-sidenote blockquote {
+    margin: 0.6rem 0 0;
+    padding: 0;
+    font: italic 1rem/1.45 var(--font-serif);
+  }
+
+  [data-theme="evening"] .edition-sidenote blockquote p {
+    margin: 0;
+  }
+
+  /* ---- doors out (see _includes/notes/side_link.html) ----------------- */
+  /* A door out is marginalia. It sits in the margin at the passage that
+     mentions its destination — the same stream the margin notes float in,
+     so both stack by clear: right and cannot collide. The treatment is the
+     sidenote's: an ember rule, and a fold to inline on narrow screens. */
+  [data-theme="evening"] .side-link {
+    float: right;
+    clear: right;
+    display: block;
+    width: var(--evening-margin);
+    margin: 0.25rem calc(-1 * (var(--evening-margin) + var(--evening-gutter))) 2.4rem 0;
+    padding-top: 1.1rem;
+    background: linear-gradient(90deg,
+      var(--evening-ember),
+      color-mix(in srgb, var(--evening-gold) 18.75%, transparent) 50%,
+      transparent) top left / 100% 1px no-repeat;
+    position: relative;
+    /* Scoped (not bare .side-link): the edition's generic link rule is
+       [data-theme] a { color: inherit }, and would otherwise outrank it. */
+    color: var(--evening-ink);
+    text-decoration: none;
+  }
+
+  /* The air is carried by the door's own slots, not by the link box: the link
+     carries `.internal-link`, whose edition rule zeroes a link's padding (and
+     should — it is a link), so padding on the box would be dead weight here.
+     Carried by the slots, the whole plate stays clickable and the ember rule
+     above it keeps the rail's width, exactly as the margin note's rule does. */
+  [data-theme="evening"] .side-link__art,
+  [data-theme="evening"] .side-link__title,
+  [data-theme="evening"] .side-link__invitation {
+    /* Margin, not padding: the invitation carries the underlined line that
+       names its destination, and a border follows the padding box — the
+       underline would begin 1.5rem left of the words it underlines. */
+    margin-left: var(--evening-margin-air);
+  }
+
+  /* The art fills its slot; the slot is the inset block, so a 100%-wide svg
+     cannot reach back past the air. */
+  [data-theme="evening"] .side-link__art {
+    display: block;
+  }
+
+  .side-link__art svg {
+    display: block;
+    width: 100%;
+    margin: 1rem 0;
+    overflow: visible;
+    background: radial-gradient(ellipse,
+      color-mix(in srgb, var(--evening-ridge) 21%, transparent), transparent 65%);
+  }
+
+  .side-link__title {
+    display: block;
+    font: 500 1.55rem/1.12 var(--font-serif);
+    color: var(--evening-ink);
+  }
+
+  .side-link__title em {
+    color: var(--evening-sun);
+  }
+
+  .side-link__invitation {
+    display: inline-block;
+    font: 0.9rem var(--font-body);
+    color: var(--evening-muted);
+    margin-top: 1.1rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--evening-gold) 44%, transparent);
+    padding-bottom: 0.2rem;
+  }
+
+  .side-link:hover .side-link__invitation {
+    color: var(--evening-sun);
+    border-color: var(--evening-ember);
+  }
+
+  /* ---- the essay footer ----------------------------------------------- */
+  [data-theme="evening"] .essay-footer {
+    clear: both;
+    text-align: center;
+    padding: 5rem 0 7rem;
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--evening-muted);
+  }
+
+  [data-theme="evening"] .essay-footer p {
+    margin: 0.8rem 0 1.5rem;
+  }
+
+  [data-theme="evening"] .end-mark {
+    display: block;
+    text-align: center;
+    font: 1.5rem var(--font-body);
+    color: var(--evening-sun);
+    text-shadow: 0 0 1rem color-mix(in srgb, var(--evening-flare) 50%, transparent);
+  }
+
+  [data-theme="evening"] .end-mark::before {
+    content: '☙';
+    margin-right: 1.2rem;
+    color: var(--evening-muted);
+  }
+
+  [data-theme="evening"] .end-mark::after {
+    content: '❧';
+    margin-left: 1.2rem;
+    color: var(--evening-muted);
+  }
+
+  /* The way back is a mark, not a sentence: one glyph in the bottom-left
+     corner of the window — the corner the reading grid leaves empty. It is
+     named for screen readers and for the cursor, never drawn as words. */
+  [data-theme="evening"] .back-top {
+    position: fixed;
+    left: 1.6rem;
+    bottom: 1.6rem;
+    z-index: 6;
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    font: 1.15rem/1 var(--font-body);
+    color: var(--evening-muted);
+    text-decoration: none;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--evening-paper) 60%, transparent);
+    transition: color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  [data-theme="evening"] .back-top:hover,
+  [data-theme="evening"] .back-top:focus-visible {
+    color: var(--evening-ember);
+    box-shadow: 0 0 1.5rem color-mix(in srgb, var(--evening-flare) 25%, transparent);
+  }
+
+  /* ---- the connections (see _includes/notes/connections.html) ---------- */
+  /* Violet and ember air behind the graph — the one place the evening opens
+     out. No wash panel: the section is part of the page, not a card. The
+     wash dissolves at every edge so the essay becomes the constellation
+     without a seam. */
+  [data-theme="evening"] .connections {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    position: relative;
+    isolation: isolate;
+    margin: 2.5rem 0 0;
+    padding: 4.5rem 0 5rem;
+    border-top: 0;
+    background: none;
+    scroll-margin-top: 2rem;
+  }
+
+  [data-theme="evening"] .connections::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: -10rem -8% 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 62% 58% at 50% 42%,
+        color-mix(in srgb, var(--evening-violet) 36%, transparent), transparent 74%),
+      radial-gradient(ellipse 48% 52% at 38% 58%,
+        color-mix(in srgb, var(--evening-ridge) 20%, transparent), transparent 72%);
+    mask-image:
+      linear-gradient(to right, transparent 0%, #000 14%, #000 86%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, #000 16%, #000);
+    mask-composite: intersect;
+    -webkit-mask-image:
+      linear-gradient(to right, transparent 0%, #000 14%, #000 86%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, #000 16%, #000);
+    -webkit-mask-composite: source-in;
+  }
+
+  [data-theme="evening"] .connections-heading {
+    display: flex;
+    align-items: end;
+    gap: 3rem;
+    justify-content: start;
+    text-align: left;
+    width: min(100%, 52.5rem);
+    margin-inline: auto;
+    padding-bottom: 1rem;
+  }
+
+  [data-theme="evening"] .connections .font-paperlang {
+    text-transform: none;
+    font-size: 1.3em;
+  }
+
+  [data-theme="evening"] .connections .eyebrow {
+    color: var(--evening-muted);
+    font-size: 0.5625rem;
+    margin-bottom: 0.9rem;
+  }
+
+  [data-theme="evening"] .connections h2 {
+    color: var(--evening-sun);
+    font: italic 500 3.4rem/1.1 var(--font-serif);
+    letter-spacing: -0.035em;
+    margin: 0;
+    text-shadow: none;
+  }
+
+  [data-theme="evening"] .connections-heading > p {
+    color: var(--evening-muted);
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-style: italic;
+    margin: 0;
+  }
+
+  /* The graph is server-rendered HTML; this is its ink. Wide is a
+     constellation, compact a vertical thread — the layout swaps them, the
+     labels never shrink. */
+  [data-theme="evening"] .edition-graph {
+    display: block;
+    width: min(100%, 52.5rem);
+    margin: 2rem auto;
+    overflow: visible;
+  }
+
+  [data-theme="evening"] .edition-graph text {
+    font-family: var(--font-body);
+    font-size: 19px;
+  }
+
+  [data-theme="evening"] .edition-graph-compact {
+    display: none;
+    max-width: 22rem;
+  }
+
+  [data-theme="evening"] .graph-edges line {
+    stroke: var(--evening-gold);
+    stroke-width: 1;
+    opacity: 0.6;
+  }
+
+  [data-theme="evening"] .edition-graph circle {
+    fill: var(--evening-paper);
+    stroke: var(--evening-orbit);
+    stroke-width: 1;
+  }
+
+  [data-theme="evening"] .edition-graph text {
+    fill: var(--evening-muted);
+  }
+
+  [data-theme="evening"] .edition-graph .graph-current circle {
+    fill: var(--evening-sun);
+    stroke: color-mix(in srgb, var(--evening-flare) 44%, transparent);
+    stroke-width: 7;
+    paint-order: stroke;
+    filter: drop-shadow(0 0 8px var(--evening-flare));
+  }
+
+  [data-theme="evening"] .edition-graph .graph-current text {
+    fill: var(--evening-ink);
+  }
+
+  [data-theme="evening"] .edition-graph a:hover text,
+  [data-theme="evening"] .edition-graph a:focus text {
+    fill: var(--evening-ember);
+    text-decoration: underline;
+  }
+
+  [data-theme="evening"] .edition-graph a:hover circle,
+  [data-theme="evening"] .edition-graph a:focus circle {
+    stroke: var(--evening-ember);
+  }
+
+  [data-theme="evening"] .graph-caption {
+    text-align: center;
+    color: var(--evening-muted);
+    font: var(--evening-key)/var(--evening-key-lh) var(--evening-label);
+    margin: 0;
+  }
+
+  [data-theme="evening"] .graph-key {
+    display: inline-block;
+    width: 0.4rem;
+    height: 0.4rem;
+    background: var(--evening-ember);
+    border-radius: 50%;
+    margin-right: 0.4rem;
+  }
+
+
+
+  /* ---- the spirits ---------------------------------------------------- */
+  /* Two companions on one road; never a swarm or a cursor follower. Their
+     wings are three ASCII frames stepped through like cels. */
+  .evening-spirits {
+    position: absolute;
+    right: 3%;
+    bottom: 10%;
+    width: 10rem;
+    height: 5rem;
+    pointer-events: none;
+  }
+
+  .evening-spirit {
+    position: absolute;
+    width: 6rem;
+    height: 3rem;
+    color: var(--evening-wing);
+    filter: drop-shadow(0 0 4px color-mix(in srgb, var(--evening-ember-deep) 33.3%, transparent));
+    animation: evening-flight 14s ease-in-out infinite alternate paused;
+  }
+
+  .evening-spirit--first {
+    left: 0;
+    top: 0;
+  }
+
+  .evening-spirit--second {
+    left: 4rem;
+    top: 2rem;
+    opacity: 0.65;
+    transform: scale(0.8);
+    animation-delay: -3.4s;
+  }
+
+  .wing {
+    position: absolute;
+    margin: 0;
+    font: 10px/1.1 monospace;
+    letter-spacing: 0;
+    white-space: pre;
+  }
+
+  .wing--half, .wing--closed {
+    opacity: 0;
+  }
+
+  /* Motion runs only in a visible field. */
+  .evening-field[data-air="moving"] .evening-spirit {
+    animation-play-state: running;
+  }
+
+  .evening-field[data-air="moving"] .wing {
+    animation: evening-wing-open 1.8s steps(1) infinite;
+  }
+
+  .evening-field[data-air="moving"] .wing--open {
+    animation-name: evening-wing-open;
+  }
+
+  .evening-field[data-air="moving"] .wing--half {
+    animation-name: evening-wing-half;
+  }
+
+  .evening-field[data-air="moving"] .wing--closed {
+    animation-name: evening-wing-closed;
+  }
+
+  .evening-spirit--second .wing {
+    animation-delay: -0.7s;
+  }
+
+  [data-theme="evening"] .connections .evening-spirits {
+    bottom: auto;
+    top: -2rem;
+    right: 7%;
+  }
+
+  @keyframes evening-flight {
+    from { translate: -10px 5px; rotate: -4deg; }
+    to { translate: 18px -12px; rotate: 5deg; }
+  }
+
+  @keyframes evening-wing-open { 0%, 75% { opacity: 1; } 25% { opacity: 0; } }
+  @keyframes evening-wing-half { 0%, 50% { opacity: 0; } 25%, 75% { opacity: 1; } }
+  @keyframes evening-wing-closed { 0%, 75% { opacity: 0; } 50% { opacity: 1; } }
+
+  /* ---- responsive ----------------------------------------------------- */
+  /* The margins fold in a fixed order: marginalia and doors go inline first,
+     then the opening moves above the contents. The
+     measure and the type never shrink below legibility. */
+  @media (min-width: 1400px) {
+    [data-theme="evening"] .reading-grid {
+      --evening-gutter: 7rem;
+    }
+  }
+
+  @media (max-width: 1150px) {
+    [data-theme="evening"] {
+      --evening-margin: 14rem;
+      --evening-gutter: 3.5rem;
+      --evening-margin-air: 2rem;
+    }
+
+    [data-theme="evening"] .reading-grid {
+      grid-template-columns:
+        minmax(10rem, 12rem)
+        minmax(0, var(--evening-measure))
+        minmax(var(--evening-margin), 16rem);
+      padding-inline: 1.25rem;
+    }
+
+
+    .evening-opening {
+      min-height: 0;
+    }
+
+    [data-theme="evening"] .evening-opening .essay-header {
+      padding-top: 7rem;
+    }
+
+    .hero-image img {
+      right: -2rem;
+      top: -1rem;
+      width: 40rem;
+      opacity: 0.8;
+    }
+
+    [data-theme="evening"] .evening-opening .deck {
+      font-size: 1.75rem;
+      max-width: 23rem;
+    }
+
+    [data-theme="evening"] .contents-rail {
+      padding-top: 7rem;
+    }
+
+    [data-theme="evening"] .edition-sidenote {
+      font-size: 1rem;
+    }
+
+
+    [data-theme="evening"] .connections {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  @media (max-width: 960px) {
+    [data-theme="evening"] .reading-grid {
+      grid-template-columns: minmax(8rem, 10rem) minmax(0, var(--evening-measure));
+      padding-top: 3rem;
+      justify-content: start;
+    }
+
+    /* The wander column closes; its one destination survives in the masthead.
+       Marginalia moves inline (below) — no annotation is lost, and none is
+       hidden behind a toggle. */
+
+    .evening-opening {
+      grid-column: 2;
+      min-height: 0;
+    }
+
+    [data-theme="evening"] .evening-opening .essay-header {
+      padding-top: 8rem;
+    }
+
+    .hero-image img {
+      right: -2rem;
+      top: -2rem;
+      width: 30rem;
+      opacity: 0.65;
+      mask-image: linear-gradient(to bottom, #000 15%, #0007 44%, transparent 90%);
+      -webkit-mask-image: linear-gradient(to bottom, #000 15%, #0007 44%, transparent 90%);
+    }
+
+    [data-theme="evening"] .evening-opening h1 {
+      font-size: clamp(3.8rem, 9vw, 5.7rem);
+    }
+
+    [data-theme="evening"] .evening-opening .deck {
+      text-shadow: 0 0 1rem var(--evening-paper);
+    }
+
+
+    [data-theme="evening"] .contents-rail {
+      padding-top: 8rem;
+    }
+
+    [data-theme="evening"] .edition-sidenote.edition-window {
+      width: auto;
+      margin-left: 0;
+      padding: 0;
+      border-left: 0;
+      background: none;
+    }
+
+    /* `a.side-link` as well as `.side-link`: the box is an `.internal-link`,
+       whose edition rule zeroes a link's padding, and reflowed inline that
+       padding IS the inset — without it the words sit on the border. */
+    [data-theme="evening"] .edition-sidenote,
+    [data-theme="evening"] .side-link,
+    [data-theme="evening"] .essay-body a.side-link {
+      /* The rail's air belongs to the floating layout. Reflowed, the box's
+         own padding is the air, so the token stands down for the subtree. */
+      --evening-margin-air: 0;
+      float: none;
+      clear: none;
+      display: block;
+      width: auto;
+      margin: 1.2rem 0;
+      padding: 1rem 1.3rem;
+      border-top: 0;
+      border-left: 1px solid color-mix(in srgb, var(--evening-mist) 44%, transparent);
+      font-size: 1rem;
+      background: linear-gradient(110deg,
+        color-mix(in srgb, var(--evening-violet) 21%, transparent), transparent);
+    }
+
+    [data-theme="evening"] .connections {
+      grid-column: 1 / -1;
+    }
+
+    [data-theme="evening"] .connections-heading {
+      display: block;
+    }
+
+    [data-theme="evening"] .connections-heading > p {
+      margin-top: 1rem;
+    }
+
+    [data-theme="evening"] .connections h2 {
+      font-size: 2.75rem;
+    }
+
+    [data-theme="evening"] .edition-graph-wide {
+      display: none;
+    }
+
+    [data-theme="evening"] .edition-graph-compact {
+      display: block;
+      margin: 1.5rem auto;
+    }
+
+
+  }
+
+  @media (max-width: 640px) {
+    /* The mark narrows and the hit area narrows with it: both read the same
+       three values, so the pair cannot drift apart. */
+    [data-theme="evening"] {
+      --evening-wm-box-w: min(9rem, calc(100vw - 10rem));
+    }
+
+    [data-theme="evening"] .reading-grid {
+      display: flex;
+      flex-direction: column;
+      padding: 0 1.75rem;
+    }
+
+    .evening-opening {
+      order: -2;
+      min-height: 0;
+      padding-top: 0;
+    }
+
+    [data-theme="evening"] .evening-opening .essay-header {
+      padding-top: 11.5rem;
+    }
+
+    [data-theme="evening"] .evening-opening h1 {
+      font-size: clamp(3.65rem, 15vw, 5.5rem);
+      margin-bottom: 1.5rem;
+    }
+
+    [data-theme="evening"] .evening-opening .eyebrow {
+      margin-bottom: 1.3rem;
+      font-size: 0.5625rem;
+    }
+
+    .hero-image img {
+      width: 26rem;
+      max-width: none;
+      right: -1.4rem;
+      top: -1.5rem;
+      opacity: 0.94;
+      mask-image: linear-gradient(to bottom, #000 25%, #0005 65%, transparent 90%);
+      -webkit-mask-image: linear-gradient(to bottom, #000 25%, #0005 65%, transparent 90%);
+    }
+
+    [data-theme="evening"] .evening-opening .deck {
+      font-size: 1.65rem;
+      margin-bottom: 0;
+    }
+
+    /* Sign-off at the deck's right, no gold rule, no extra band. */
+    [data-theme="evening"] .evening-opening .essay-signin {
+      margin-top: 0.45rem;
+      padding-top: 0;
+      background: none;
+    }
+
+    [data-theme="evening"] .essay-header {
+      margin-bottom: 2rem;
+    }
+
+
+    /* The contents become a wrapped row of section chips above the essay. */
+    [data-theme="evening"] .contents-rail {
+      order: -1;
+      padding: 1rem 0 0;
+      margin-bottom: 2rem;
+      border-top: 1px solid color-mix(in srgb, var(--evening-gold) 18.75%, transparent);
+    }
+
+    [data-theme="evening"] .contents-sticky {
+      position: static;
+    }
+
+    [data-theme="evening"] .rail-title {
+      font-size: 0.5625rem;
+      margin-bottom: 0.5rem;
+    }
+
+    [data-theme="evening"] .toc {
+      display: flex;
+      flex-wrap: wrap;
+      border-left: 0;
+      gap: 0.15rem 1rem;
+    }
+
+    [data-theme="evening"] .toc a {
+      font-size: 1rem;
+      padding: 0.5rem 0;
+      border-left: 0;
+      border-bottom: 1px solid transparent;
+      gap: 0.35rem;
+    }
+
+    [data-theme="evening"] .toc a:hover,
+    [data-theme="evening"] .toc a[aria-current] {
+      border-left-color: transparent;
+      border-bottom-color: var(--evening-ember);
+    }
+
+    [data-theme="evening"] .toc .toc-h3 a {
+      padding-left: 0;
+    }
+
+
+
+    [data-theme="evening"] .essay-body {
+      font-size: 1.3125rem;
+    }
+
+    [data-theme="evening"] .essay-body > blockquote {
+      font-size: 1.2rem;
+      padding: 1.2rem;
+    }
+
+    [data-theme="evening"] .essay-body h2 {
+      font-size: 2.6rem;
+      margin-top: 2.7rem;
+    }
+
+
+    [data-theme="evening"] .connections {
+      margin: 1.5rem -1.75rem 0;
+      padding: 3rem 1.75rem;
+    }
+
+    [data-theme="evening"] .connections::before {
+      inset: -4rem -1.75rem;
+    }
+
+    [data-theme="evening"] .connections h2 {
+      font-size: 2.65rem;
+    }
+
+    [data-theme="evening"] .graph-caption {
+      margin-top: 1.25rem;
+      text-align: left;
+    }
+
+  }
+
+  /* ---- reduced motion ------------------------------------------------- */
+  /* The air is still when the reader asks for stillness. Nothing in the
+     edition is legible only through movement. */
+  @media (prefers-reduced-motion: reduce) {
+    .evening-spirit,
+    .evening-field[data-air="moving"] .wing {
+      animation: none !important;
+    }
+  }
+
+  /* ---- print ---------------------------------------------------------- */
+  /* A4, black on white whatever the screen palette, no site interface, no
+     ornament, annotations retained inline, sensible heading and figure
+     breaks, no widowed section headings. */
+  @page {
+    size: A4;
+    margin: 18mm 20mm 20mm;
+  }
+
+  @media print {
+    [data-theme="evening"] {
+      --evening-paper: white;
+      --evening-ink: black;
+      --evening-verse: black;
+      --evening-muted: #444;
+      --evening-sun: black;
+      --evening-ember: #333;
+      --evening-amber: #333;
+      --evening-flare: #333;
+      --evening-mist: #333;
+      --evening-gold: #bbb;
+      --evening-rule: #bbb;
+      --evening-violet: white;
+      --evening-ridge: white;
+      background: white;
+      color: black;
+      color-scheme: light;
+      font-size: 11pt;
+    }
+
+    .evening-grain,
+    .hero-image,
+    .evening-spirits,
+    [data-theme="evening"] .contents-rail,
+    [data-theme="evening"] .connections,
+    [data-theme="evening"] .skip-link,
+    [data-theme="evening"] .back-top {
+      display: none !important;
+    }
+
+    [data-theme="evening"] .reading-grid {
+      display: block;
+      max-width: none;
+      padding: 0;
+    }
+
+    [data-theme="evening"] .helios-wordmark,
+    [data-theme="evening"] [data-nav-root] {
+      display: none !important;
+    }
+
+    [data-theme="evening"] .evening-opening {
+      min-height: 0;
+    }
+
+    [data-theme="evening"] .evening-opening .essay-header {
+      padding: 0;
+      margin-bottom: 1.5rem;
+      max-width: none;
+    }
+
+    [data-theme="evening"] .evening-opening h1 {
+      font: 500 54pt/1 var(--font-serif);
+      text-shadow: none;
+      margin: 1rem 0;
+    }
+
+    [data-theme="evening"] .evening-opening .deck {
+      font-size: 17pt;
+      color: black;
+      text-shadow: none;
+    }
+
+    /* The sign-in prints without its gold rule. */
+    [data-theme="evening"] .essay-signin {
+      background: none;
+      margin-top: 1rem;
+    }
+
+
+    [data-theme="evening"] .essay-body {
+      font-size: 11pt;
+      line-height: 1.45;
+    }
+
+    [data-theme="evening"] .essay-body p {
+      orphans: 3;
+      widows: 3;
+    }
+
+    [data-theme="evening"] .essay-body > blockquote {
+      font-size: 10pt;
+      background: none;
+      margin-bottom: 1.5rem;
+    }
+
+    [data-theme="evening"] .essay-body h2 {
+      font-size: 23pt;
+      margin-top: 1.6rem;
+      text-shadow: none;
+      break-after: avoid;
+    }
+
+    [data-theme="evening"] .essay-body h3 {
+      font-size: 16pt;
+      break-after: avoid;
+    }
+
+
+    [data-theme="evening"] .essay-body > p:first-of-type:not(:has(a.side-link))::first-letter,
+    [data-theme="evening"] .essay-body > p:first-of-type:has(a.side-link) + p:not(:has(a.side-link))::first-letter {
+      font-family: var(--font-serif);
+      text-shadow: none;
+    }
+
+    [data-theme="evening"] .essay-body figure {
+      padding: 0;
+      border: 0;
+      margin: 1.5rem auto;
+      max-width: 110mm;
+      break-inside: avoid;
+    }
+
+    [data-theme="evening"] .essay-body figure::before {
+      display: none;
+    }
+
+    [data-theme="evening"] .essay-body figcaption {
+      font-size: 9pt;
+    }
+
+    [data-theme="evening"] .edition-sidenote.edition-window {
+      margin: 1rem 0;
+      padding: 0;
+      border-left: 0;
+    }
+
+    [data-theme="evening"] .edition-window .edition-window-caption {
+      font-size: 9pt;
+    }
+
+    [data-theme="evening"] .edition-sidenote,
+    [data-theme="evening"] .side-link,
+    [data-theme="evening"] .essay-body a.side-link {
+      --evening-margin-air: 0;
+      float: none;
+      clear: none;
+      display: block;
+      width: auto;
+      margin: 0.8rem 0;
+      padding: 0.5rem 1rem;
+      background: none;
+      border: 0;
+      border-left: 1px solid #bbb;
+      font-size: 9pt;
+      line-height: 1.4;
+      break-inside: avoid;
+    }
+
+    [data-theme="evening"] .note-return,
+    [data-theme="evening"] .reversefootnote {
+      display: none;
+    }
+
+    [data-theme="evening"] .essay-footer {
+      padding: 1.5rem 0 0;
+      font-size: 10pt;
+    }
+
+    [data-theme="evening"] .end-mark {
+      text-shadow: none;
+    }
+
+    [data-theme="evening"] a {
+      text-decoration: none;
+    }
+  }
+}

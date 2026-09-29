@@ -1,0 +1,24 @@
+{%- comment -%}
+  A door out in the margin — how a link away from the note looks: a plate of
+  art (when the link has one), a title, and the invitation that names where it
+  goes. Nothing here is invented: no default destination, no default copy, no
+  default art. The note supplies the link; this element is only the way one
+  looks.
+
+  Params:
+    href        destination (required)
+    title       the line under the art (may carry markup)
+    invitation  the underlined line that names the destination
+    art         optional SVG (or any markup) for the plate
+{%- endcomment -%}
+<a class="side-link internal-link" href="{{ include.href | relative_url }}">
+  {%- if include.art -%}
+  <span class="side-link__art">{{ include.art }}</span>
+  {%- endif -%}
+  {%- if include.title -%}
+  <span class="side-link__title">{{ include.title }}</span>
+  {%- endif -%}
+  {%- if include.invitation -%}
+  <span class="side-link__invitation">{{ include.invitation }} <span aria-hidden="true">↗</span></span>
+  {%- endif -%}
+</a>

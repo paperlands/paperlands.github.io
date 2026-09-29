@@ -1,0 +1,35 @@
+{%- comment -%}
+  The note plate with a clip: the shared video primitive (media/video.html —
+  markup here, playback in assets/js/media-video.js) inside the same plate the
+  still figure draws. A note autoplays a clip when it is in view, pauses it
+  when it leaves, and shows the catalog poster when motion is refused —
+  exactly like every other clip on the site.
+
+  The clip's own slots (data-media-*) and player contract are untouched: this
+  component owns only the frame around it and the caption below it.
+
+  Params:
+    id        catalog key (required unless explicit src)
+    src poster av1 webm alt width height   explicit override of the catalog
+    caption   markdown; the plate's figcaption
+    class     extra classes on the figure
+    video_class  extra classes on the clip box
+{%- endcomment -%}
+{%- assign media_fig_clip = site.data.media[include.id] -%}
+{%- assign media_fig_alt = include.alt | default: media_fig_clip.alt -%}
+<figure{% if include.class %} class="{{ include.class }}"{% endif %}>
+  {% include media/video.html
+    id=include.id
+    src=include.src
+    poster=include.poster
+    av1=include.av1
+    webm=include.webm
+    alt=media_fig_alt
+    width=include.width
+    height=include.height
+    class=include.video_class
+  %}
+  {% if include.caption %}
+  <figcaption>{{ include.caption | markdownify | remove: "<p>" | remove: "</p>" }}</figcaption>
+  {% endif %}
+</figure>

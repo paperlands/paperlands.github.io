@@ -1,5 +1,6 @@
 ---
-layout: page
+layout: folio
+nav_tone: dark
 title: Install PaperLAN Locally 
 excerpt: We believe that the world would be a better place if the processes we shape illuminates and uplifts the spirit of fellowship and belonging. 
 image: /assets/lib/beauty_first.png

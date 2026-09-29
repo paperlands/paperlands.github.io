@@ -38,6 +38,18 @@
     overflow-x: hidden;
   }
 
+  /* The evening edition is a measured column too — and two of its parts are
+     MEANT to cross the measure: the hero art stands at `right: -5rem` and
+     the connections rule reaches ±48px past its section. The rule above
+     skips themed bodies (cinematic and sealed own their frames), so the
+     edition sat outside the clip and those bleeds became a horizontal
+     scrollbar on every note at 768–1280px. Clip x here too. `clip`, not
+     `hidden`: it trims the bleed at the viewport without opening a scroll
+     container, so floats, the sticky rail and the fixed nav are untouched. */
+  [data-theme="evening"] {
+    overflow-x: clip;
+  }
+
   /* The Library measure. Folio pages have no wrapper. */
   .wrapper {
     --frame-pad-y: 4vh;

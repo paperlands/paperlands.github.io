@@ -89,6 +89,111 @@
     opacity: 1;
   }
 
+  /* ---- film (see _includes/media/film.html) ---------------------------- */
+  /* A hosted film behind its still: the poster IS the page, and the host is */
+  /* not contacted until the reader asks for the film — the /gmff hero stage */
+  /* is the pattern. The plate frame around the stage is the edition's own   */
+  /* figure shape (_includes/figure); this surface owns the stage's parts.   */
+  /* The compound slot selectors are deliberate: a look grades `figure img`,  */
+  /* and this poster must keep its box — and the play control its seat — */
+  /* when it does. */
+  [data-media-surface="film"][data-media-slot="frame"] {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: var(--media-ar, 16 / 9);
+    background: #141210;
+  }
+
+  [data-media-surface="film"][data-media-slot="frame"] .film-poster,
+  [data-media-surface="film"][data-media-slot="frame"] .film-frame {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .film-poster {
+    z-index: 2;
+    object-fit: cover;
+    object-position: center;
+    transition: opacity 0.35s ease, transform 0.5s ease;
+  }
+
+  /* The scrim the play control sits in: the stage stays readable along the   */
+  /* bottom whatever the still is. It lifts when the film is playing.        */
+  [data-media-surface="film"][data-media-slot="frame"]::after {
+    content: '';
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(12, 10, 8, 0.55), rgba(12, 10, 8, 0) 55%);
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .film-frame {
+    z-index: 1;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.45s ease;
+  }
+
+  .film-play {
+    position: absolute;
+    z-index: 4;
+    top: 50%;
+    left: 50%;
+    display: inline-grid;
+    place-items: center;
+    width: 4.25rem;
+    height: 3rem;
+    padding: 0 0 0 0.25rem;
+    border: 0;
+    border-radius: 0.75rem;
+    background: var(--evening-ember, #f3aa63);
+    color: #1b1408;
+    font: 1.15rem/1 inherit;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.4);
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .film-play:hover {
+    background: var(--evening-sun, #ffe2a1);
+    transform: translate(-50%, -50%) scale(1.04);
+  }
+
+  .film-play:focus-visible {
+    outline: 2px solid var(--evening-sun, #ffe2a1);
+    outline-offset: 4px;
+  }
+
+  /* The wipe: one shutter across the stage while the frame takes the box.   */
+  .film-wipe {
+    position: absolute;
+    z-index: 5;
+    inset: 0;
+    background: var(--evening-ember, #f3aa63);
+    pointer-events: none;
+    transform: translateX(-101%);
+  }
+
+  .film-stage.is-transitioning .film-wipe { animation: film-wipe 300ms ease-in-out both; }
+  .film-stage.is-playing .film-poster { opacity: 0; transform: scale(1.04); pointer-events: none; }
+  .film-stage.is-playing .film-frame { z-index: 6; opacity: 1; pointer-events: auto; }
+  .film-stage.is-playing .film-play,
+  .film-stage.is-playing::after { display: none; }
+
+  @keyframes film-wipe {
+    0% { transform: translateX(-101%); }
+    50% { transform: translateX(0); }
+    100% { transform: translateX(101%); }
+  }
+
   /* Stack: overlapping plates. Strip: a horizontal sequence. */
   [data-media-carousel] {
     position: relative;
@@ -253,6 +358,16 @@
 
     .media-stack [data-media-cell] {
       transition-duration: 0.01ms;
+    }
+
+    .film-wipe {
+      animation: none;
+    }
+
+    .film-poster,
+    .film-frame,
+    .film-play {
+      transition: none;
     }
 
     .animate-fade-in {

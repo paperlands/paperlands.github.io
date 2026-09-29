@@ -1,15 +1,30 @@
-<div class="relative {% if include.fullwidth %}w-full{% else %}w-4/5 md:w-[55%]{% endif %} mb-12 {{ include.class }}">
-  <figure class="p-0 border-0 m-0">
-    <img
-      src="{% if include.image_path contains '://' %}{{ include.image_path }}{% else %}{{ include.image_path | absolute_url }}{% endif %}"
-      alt="{% if include.alt %}{{ include.alt }}{% endif %}"
-      class="w-full h-auto"
-    >
-  </figure>
+{%- comment -%}
+  The note plate: a framed image with its caption inside and below.
 
+  The edition's one figure shape (_includes/figure is this component's still
+  twin, _includes/media/figure.html its clip twin). Markup is semantic and
+  stylesheet-independent — figure, img, figcaption — because the evening
+  edition styles plates by element, and a second, class-based owner of this
+  markup is exactly how the two drifted before.
+
+  The old shape was a Tailwind frame with the caption floated into the right
+  margin (`md:absolute md:-mr-[45%]`); the edition keeps the caption with its
+  plate and puts the frame around both. The `fullwidth` and measure-width
+  variants of that design are retired: the study that became this design drew
+  one plate at column width, and a width flag would now be a lie.
+
+  Params:
+    image_path  required; site-relative or absolute
+    alt         required for images that carry meaning; empty for pure ornament
+    caption     markdown; rendered as the plate's figcaption
+    class       extra classes on the figure, for the caller that needs one
+{%- endcomment -%}
+<figure{% if include.class %} class="{{ include.class }}"{% endif %}>
+  <img
+    src="{% if include.image_path contains '://' %}{{ include.image_path }}{% else %}{{ include.image_path | relative_url }}{% endif %}"
+    alt="{% if include.alt %}{{ include.alt }}{% endif %}"
+  >
   {% if include.caption %}
-    <div class="md:absolute md:top-0 md:right-0 md:w-[40%] md:-mr-[45%] mt-2 md:mt-0 font-serif text-gray-700 text-base leading-relaxed">
-      {{ include.caption | markdownify | remove: "<p>" | remove: "</p>" }}
-    </div>
+  <figcaption>{{ include.caption | markdownify | remove: "<p>" | remove: "</p>" }}</figcaption>
   {% endif %}
-</div>
+</figure>

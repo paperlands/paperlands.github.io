@@ -14,9 +14,10 @@
      core/typography.css  @layer base  heading scale (base theme)
      core/app-shell.css   @layer base  full-viewport shells opt out
      components/nav.css   @layer components  navigation (light + dark tones)
-   components/folio.css @layer components  cinematic theme (binds media slots)
-   components/helios.css @layer components  the Helios look (binds the same slots)
+     components/folio.css @layer components  cinematic theme (binds media slots)
+     components/helios.css @layer components  the Helios look (binds the same slots)
      components/twilight.css  @layer components  Twilight, sealed
+     components/evening.css   @layer components  the evening edition of the notes
      components/utils.css @layer utilities   one-off helpers
 
    Nothing here should be unlayered. Unlayered CSS silently outranks every
@@ -60,8 +61,8 @@
    32 unlayered rules. Unlayered CSS outranks every layer, so its
    `body { margin: 0 }` silently defeated the document frame's `margin: 0 auto`
    and de-centred every page. Wrapping at import keeps the vendor file pristine. */
-/* syntax.css was culled: .highlight appeared on zero built pages — none of the
-   three notes contains a code block. _plugins/markdown-highlighter.rb remains,
+/* syntax.css was culled: .highlight appeared on zero built pages — no note
+   notes contains a code block. _plugins/markdown-highlighter.rb remains,
    so code still renders; it is simply unstyled. Restoring highlighting is one
    @import plus the file from git history. */
 @import "./core/app-shell.css";
@@ -74,4 +75,5 @@
 @import "./components/folio.css";
 @import "./components/helios.css";
 @import "./components/twilight.css";
+@import "./components/evening.css";
 @import "./components/utils.css";

@@ -4,7 +4,6 @@ title: Lesson Plans
 excerpt: A curated collection of PaperLand lesson plans for teachers.
 id: lesson-plans
 permalink: /lesson-plans
-nav: false
 programme:
   foundation:
     - lesson: regular_gemstone

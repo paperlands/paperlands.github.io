@@ -1,11 +1,12 @@
 ---
 layout: folio
 title: We See Math Differently
-permalink: /helios
-nav: folio
+permalink: /
 nav_tone: dark
 look: helios
 description: PaperLand — we see math differently.
+excerpt: We designed an intuitive language so a mathematical idea becomes something you can see, play with, and breathe to life.
+image: /assets/lib/helios/see-helix-ccddfd.webp
 
 # Copy lives here. Change words in this block; the body only places acts.
 # Clip files stay in _data/media.yml (name the id, not the src).
@@ -18,16 +19,16 @@ hero:
   items:
     - id: sine_curve_with_code
       title: Tinker
-      slate: the orbits of a circle
-    - id: polygon_fill
-      title: Experiment
-      slate: the play of randomness
-    - id: fibonacci_spiral
-      title: Explore
-      slate: the fibonacci sequence of old
+      slate: with orbits of a circle
     - id: tree_fractal
       title: Observe
       slate: the hidden geometry of stars
+    - id: polygon_fill
+      title: Experiment
+      slate: on the play of randomness
+    - id: fibonacci_spiral
+      title: Explore
+      slate: the fibonacci sequence of old
     - id: prime_sequence
       title: Question
       slate: the tangled webs of nature
@@ -52,25 +53,15 @@ who:
   stress: become
   label: In who we become
   items:
-    - id: waves
-      title: explorers
-      slate: Number patterns, shared over a shoulder
-    - id: spring
-      title: educators
-      slate: The room turns; someone begins to teach
-    - id: star
-      title: orators
-      slate: A voice, a tree of code on the wall
-    - id: shell
-      title: leaders
-      slate: Leaning in until the table is a council
-    - id: benz
-      title: seekers
-      slate: Looking up into a figure they just made
-    - id: creators
-      title: creators
-      slate: A face on the screen, claimed in public
-
+    - title: explorers
+      slate: Question hidden patterns, shared over a shoulder.
+      clips: [waves, spring]
+    - title: creatives
+      slate: Design and create worlds to invite others into.
+      clips: [star, benz]
+    - title: leaders
+      slate: Care and tend to the spirit of wonder in others.
+      clips: [shell]
 ticker:
   - In PaperLand
   - We See Math Differently
@@ -81,13 +72,13 @@ ticker:
   - Observe
   - Question
   - Anyone can
+  - See
+  - Mathematics
+  - Differently
   - In who we become
   - Explorers
-  - Educators
-  - Orators
-  - Leaders
   - Seekers
-  - Creators
+  - Leaders
 
 colophon:
   title: See Math
@@ -109,7 +100,7 @@ colophon:
     home/hero.html       thesis + stack carousel (fill) + flash + play fill
     home/ticker.html     the crawl
     home/see.html        the interval — anyone can, and the math the language leaves in the air
-    home/who.html        strip carousel
+    home/who.html        three identities, paired footage in their own reels — the row loops on narrow screens
     home/colophon.html   the close
     home/boot.html       page-local decoration
 
@@ -122,8 +113,8 @@ colophon:
   to media/carousel.html; if it needs a new *look*, add a binding under a
   [data-look] scope. None of those three is a change to the copy block above.
 
-  Permalink is /helios while the look is proved. Making it the homepage is a
-  one-line permalink swap with _pages/index.md, and that is the point.
+  Permalink is `/`. The look was proved at /helios first and then the swap was
+  taken; the old homepage is parked at _drafts/index.md.
 {%- endcomment -%}
 
 {% include home/air.html %}

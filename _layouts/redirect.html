@@ -2,6 +2,7 @@
   <head>
     <meta charset="utf-8">
     <title>Redirecting...</title>
+    <meta name="theme-color" content="#140806">
     <link rel="canonical" href="{{ page.redirect_link }}">
 
     <script type="text/javascript">
@@ -85,7 +86,13 @@
         
         body {
             min-height: 100vh;
-            background: black;
+            /* The cinematic ground the redirect lands on: / and the notes both
+               stand on #140806 (components/folio.css, --evening-paper), so the
+               hand-off does not flash a colour the site never uses. The ember
+               bloom is the same air the Helios acts breathe. */
+            background:
+              radial-gradient(ellipse 58% 46% at 50% 44%, rgb(212 90 20 / 0.16), transparent 72%),
+              #140806;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -106,17 +113,29 @@
             stroke-dasharray: 314;
             stroke-dashoffset: 314;
         }
+        
+        /* The arc is brand amber (--color-primary / --helios-brand) over a faint
+           cream track, so it reads on the night ground instead of vanishing into
+           it. */
+        .track {
+            stroke: rgb(246 230 196 / 0.12);
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            .stroke { animation: none; stroke-dashoffset: 0; }
+        }
     </style>
   </head>
-  <body class="flex items-center justify-center">
+  <body>
     <!-- redirect shouldnt fail -->
-    <svg width="100" height="100" viewBox="0 0 100 100">
+    <svg width="100" height="100" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+        <circle class="track" cx="50" cy="50" r="40" fill="none" stroke-width="2" />
         <circle
             cx="50"
             cy="50"
             r="40"
             fill="none"
-            stroke="#000"
+            stroke="#ff9933"
             stroke-width="2"
             stroke-linecap="round"
             class="stroke"

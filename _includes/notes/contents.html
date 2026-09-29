@@ -1,0 +1,13 @@
+{%- comment -%}
+  The contents rail: where the reader is.
+
+  Params:
+    toc  the contents list HTML, from the note_contents filter — generated
+         from the headings kramdown actually rendered, never a second outline
+{%- endcomment -%}
+<aside class="contents-rail" aria-label="Reading navigation">
+  <div class="contents-sticky">
+    <p class="eyebrow rail-title">In this note</p>
+    <nav aria-label="Table of contents"><ol class="toc">{{ include.toc }}</ol></nav>
+  </div>
+</aside>

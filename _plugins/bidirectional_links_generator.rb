@@ -76,8 +76,13 @@ class BidirectionalLinksGenerator < Jekyll::Generator
     # Identify note backlinks and add them to each note
     all_notes.each do |current_note|
       # Nodes: Jekyll
+      # A note is never its own backlink. The test below is a substring of the
+      # raw content, so a note that merely names its own slug — an asset under
+      # assets/…/<slug>/, or a link to its own section — used to match itself,
+      # list itself under "Notes mentioning this note", and draw a self-loop in
+      # the graph.
       notes_linking_to_current_note = all_notes.filter do |e|
-        e.content.include?(current_note.url)
+        e != current_note && e.content.include?(current_note.url)
       end
 
       # Nodes: Graph

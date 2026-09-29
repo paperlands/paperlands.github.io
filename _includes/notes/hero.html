@@ -1,0 +1,25 @@
+{%- comment -%}
+  The hero image — the note's own art, in the opening's art slot.
+
+  This is a placeholder element, not a decoration: the study's opening drew a
+  plate here, and that plate was how a HERO IMAGE is supposed to look, not
+  content to keep. The slot takes the note's image and stands it the way the
+  study stood its art: high right, behind the head, dissolving into the paper.
+
+  Params:
+    note   the note document (for its defaults)
+    image  the art. Default: note.heroimgurl — every note carries one
+    alt    description. Default: note.hero_alt; empty means decorative
+  With no image the element renders nothing — the slot is a placeholder, and
+  an empty one is honest.
+{%- endcomment -%}
+{%- assign hero_image = include.image | default: include.note.heroimgurl -%}
+{%- if hero_image %}
+<div class="hero-image">
+  <img
+    src="{% if hero_image contains '://' %}{{ hero_image }}{% else %}{{ hero_image | relative_url }}{% endif %}"
+    alt="{{ include.alt | default: include.note.hero_alt }}"
+    {% unless include.alt or include.note.hero_alt %}aria-hidden="true"{% endunless %}
+  >
+</div>
+{%- endif %}

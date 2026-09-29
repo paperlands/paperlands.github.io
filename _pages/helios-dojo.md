@@ -2,7 +2,6 @@
 layout: folio
 title: Helios Dojo
 permalink: /helios-dojo
-nav: folio
 nav_tone: dark
 description: A standalone canvas for the helix commands. The landing is unchanged.
 ---
@@ -14,7 +13,7 @@ description: A standalone canvas for the helix commands. The landing is unchange
     gap: 1.25rem;
     min-height: 100svh;
     padding: 5.5rem 1.4rem 2rem;
-    background: #140806;
+    background: #050009;
     color: #f6e6c4;
   }
   .helios-dojo__stage {

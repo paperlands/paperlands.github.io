@@ -1,8 +1,9 @@
 ---
 title: Beginnings
-author: bala
+author: vivekbala
 last_date: 21-07-2024
-heroimgurl: assets/lib/kids.jpg
+heroimgurl: /assets/lib/kids.jpg
+deck: On the tools we think with,<br>and the worlds we build together.
 ---
 > "...[the computer] is a medium that can dynamically simulate the details of any other medium, including media that cannot exist physically ... it has degrees of freedom for representation and expression never before encountered and as yet barely investigated." <br>
 ––– Alan Kay, Sunrise Notes Number 2, June 1990, p.29
@@ -18,7 +19,7 @@ Since the 20th Century, computational environments have taken the helm at the fo
 
 These could be an salesman playing around with a spreadsheet column, an architect in a computer aided design environemt or a film director making his final cuts on his favourite video editing software. At their best, these environments translate our inner intentions into malleable external objects for us to interact with, adapt and change fitting it to our larger vision. 
 
-{% include figure image_path="assets/lib/kids.jpg" alt="" caption="Computational thinking is about formulating the thinking about processes with enough clarity, and in a systematic way that it can be firstly understood by people, and only incidentally to the extent that it can tell even a computer what to do" %}
+{% include figure image_path="/assets/lib/kids.jpg" alt="" caption="Computational thinking is about formulating the thinking about processes with enough clarity, and in a systematic way that it can be firstly understood by people, and only incidentally to the extent that it can tell even a computer what to do" %}
 
 The problem today is that computational environments are not living up to their potential as tools for thinking in classrooms. There are often ill treated as modes for **instruction** in class when in fact, they are a far richer tool as modes for **interaction**.  It is still the child and the paper and the teacher, just that the paper has been substituted for the screen. 
 

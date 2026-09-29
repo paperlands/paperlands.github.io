@@ -1,9 +1,15 @@
 {% comment %}
-  _includes/gmff/podium.html
+  _includes/legacy/gmff/podium.html   (was _includes/gmff/… before the freeze)
   ───────────────────────────────────────────────────────────────
-  Orchestrator — reads _data/gmff_results.yml, renders full section.
-  Usage: {% include gmff/podium.html %}
-  Requires: {% include gmff/podium_assets.html %} once in layout.
+  Orchestrator — reads _data/festivals/gmff2026.yml, renders full section.
+  Usage: {% include legacy/gmff/podium.html %}
+  Requires: {% include legacy/gmff/podium_assets.html %} once in layout.
+  All four paths above were stale: this file's own name, the data file, and the
+  two include targets. The data file was renamed to _data/festivals/gmff2026.yml
+  and the page reads site.data.festivals.gmff2026 — the body was updated when
+  that happened and this header was not, which is how a comment starts lying
+  about the thing directly beneath it. The body is untouched; this file is
+  frozen (surfaces.yml, boundary.legacy_dirs).
   ───────────────────────────────────────────────────────────────
 {% endcomment %}
 

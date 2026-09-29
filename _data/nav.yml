@@ -2,16 +2,22 @@
 # nav.yml — the single source of truth for site navigation
 # =============================================================================
 #
-# One file, so a link cannot drift between the desktop nav, the mobile menu and
-# the Helios folio nav. Previously every one of those carried its own literal
-# `href`, and they had already diverged: the desktop nav showed five links, the
-# mobile menu added a "Home" entry the desktop nav did not have, and Helios's
-# folio nav showed a different set again.
+# One file, so a link cannot drift between the desktop bar, the mobile panel and
+# whatever nav a page once had of its own. Previously every one of those carried
+# its own literal `href`, and they had already diverged: the desktop nav showed
+# five links, the mobile menu added a "Home" entry the desktop nav did not have,
+# and the landing's nav showed a different set again — then for a while none at all.
 #
 # Structure: `links` is a KEYED dictionary — the canonical label and target for
-# each destination. `nav` and `folio` are ORDERED lists of those keys. A label
-# or href is therefore edited in exactly one place, and a nav is reordered by
-# moving a key.
+# each destination. `nav` is the ONE ordered list of those keys, and it is what
+# every page renders. `mobile_nav` is the same list plus Home, for the reason
+# below. A label or href is therefore edited in exactly one place, and a nav is
+# reordered by moving a key.
+#
+# There used to be a second ordered list, `folio.links`, and it was empty — so
+# the homepage and every note rendered a navbar with no destinations in it
+# while every other page rendered five. There is one list now, and
+# _includes/nav.html is one template, so the two shapes cannot diverge again.
 
 brand:
   label: PaperLand
@@ -26,27 +32,26 @@ links:
     href: /
   approach:
     label: Our Approach
-    href: /approach
-  download:
-    label: Download
-    href: /lan
+    # The approach page was retired; the content is a note (its own title is
+    # "Create First"). The key keeps the label, not the route.
+    href: /our-approach
   mlp:
-    label: Math Leaders Program
-    short: MLP
-    href: /mlp
-  blog:
-    label: Blog
-    href: /#blog
+    label: Experiences
+    # The MLP page was retired and its surface is the experiences note. The key
+    # stays `mlp` because a key is a key; the LABEL is "Experiences", which is
+    # what that destination is actually called now.
+    href: /experiences
   contact:
-    label: Contact Us
-    href: /#contact
+    label: Join Us
+    href: /contact
 
-# The standing nav. Used by every layout except Helios.
+# The links. In this order, on every page. The only thing that varies is the
+# tone, which describes the SURFACE — see the bottom of this file.
 nav:
   - approach
-  - download
+
   - mlp
-  - blog
+
   - contact
 
 # The mobile menu is the desktop list plus Home, because on a phone the logo is
@@ -55,22 +60,19 @@ nav:
 mobile_nav:
   - home
   - approach
-  - download
   - mlp
-  - blog
   - contact
 
-# The Helios folio nav: brand, a short link list, then actions. Same keys, so
-# "Our Approach" cannot read differently here than it does in the standing nav.
+
+# Trailing actions, rendered after the links — in the bar on wide screens and in
+# the panel on narrow ones. `primary: true` underlines its label.
 folio:
-  links:
   actions:
-    - label: Join Us
-      href: /#contact
     - label: Enter Now
       href: https://dojo.paperland.sg/welcome
       primary: true
     
+
 
 # Tone is about the surface the nav SITS ON, not the colour of the nav itself:
 #   light = nav over a light background, so ink is dark

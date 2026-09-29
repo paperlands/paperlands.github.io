@@ -276,35 +276,36 @@ var ASTNode = class {
 
 // assets/js/turtling/mafs/lexer.js
 var Token = class {
-  constructor(type, value, position = 0) {
+  constructor(type, value, position2 = 0) {
     this.type = type;
     this.value = value;
-    this.position = position;
+    this.position = position2;
   }
 };
+var OPERATORS = [
+  "===",
+  "!==",
+  "&&",
+  "||",
+  ">=",
+  "<=",
+  "==",
+  "!=",
+  "//",
+  "+",
+  "-",
+  "*",
+  "/",
+  "^",
+  ">",
+  "<",
+  "&",
+  "|",
+  "!"
+];
 var Lexer = class {
   constructor() {
-    this.operators = [
-      "===",
-      "!==",
-      "&&",
-      "||",
-      ">=",
-      "<=",
-      "==",
-      "!=",
-      "//",
-      "+",
-      "-",
-      "*",
-      "/",
-      "^",
-      ">",
-      "<",
-      "&",
-      "|",
-      "!"
-    ];
+    this.operators = OPERATORS;
     this.operatorRegex = new RegExp(
       this.operators.map((op2) => this.escapeRegex(op2)).join("|")
     );
@@ -314,7 +315,7 @@ var Lexer = class {
   }
   tokenize(expression) {
     const tokens = [];
-    let position = 0;
+    let position2 = 0;
     const pattern = new RegExp([
       // Numbers first — claims the dot in `1.5` and an optional exponent
       // before operators can split them into identifiers and signs.
@@ -652,450 +653,758 @@ var Parser = class {
   }
 };
 
-// assets/js/turtling/address.js
-var CELL = "#";
-var NEST = "/";
-var topOf = (address) => String(address ?? "").split(NEST)[0];
-var isSeatOf = (address, seat) => {
-  const top = topOf(address);
-  return top === seat || top.startsWith(`${seat}${CELL}`);
-};
-var rebase = (address, from, to) => to === from ? address : to + String(address).slice(String(from).length);
-
-// assets/js/turtling/parse.js
-var ParserState = class {
-  constructor(lines) {
-    this.lines = lines;
-    this.pos = 0;
-    this.len = lines.length;
-    this.last = null;
-  }
-  hasMore() {
-    return this.pos < this.len;
-  }
-  next() {
-    this.last = this.lines[this.pos++];
-    return this.last;
-  }
-};
-var END = "end";
-var DO = "do";
-var COMMENT = "#";
-var MEADOW_FENCE = /^[ \t]*###[ \t]*$/;
-var CELL_OPEN = /^[ \t]*```/;
-var CELL_CLOSE = /^[ \t]*```[ \t]*$/;
-var isMeadowFence = (s2) => MEADOW_FENCE.test(s2 ?? "");
-var isCellOpen = (s2) => CELL_OPEN.test(s2 ?? "");
-var isCellClose = (s2) => CELL_CLOSE.test(s2 ?? "");
-var splitComment = (raw) => {
-  const i2 = raw.indexOf(COMMENT);
-  return i2 === -1 ? [raw, void 0] : [raw.slice(0, i2).trimEnd(), raw.slice(i2 + 1)];
-};
-var CLOSERS = { '"': '"', "'": "'", "[": "]", "(": ")" };
-var OPENS_BRACKET = { "[": 1, "(": 1 };
-var BLOCK_KW = { for: 1, loop: 1, def: 1, draw: 1, when: 1, as: 1 };
-function meadowNode(line) {
-  const node = stamp(new ASTNode("Empty", "").assign_meta("lit", line.meadow).assign_meta("meadow", true).assign_meta("meadowOpen", line.meadowOpen !== false).assign_meta("meadowClose", line.meadowClose !== false), line);
-  if (line.meadowCloseImplicit) node.assign_meta("meadowCloseImplicit", true);
-  return node;
+// assets/js/turtling/laws/relations.js
+var RELATIONAL_NAMES = ["distance", "bearing", "sync"];
+var SPATIAL_NAMES = ["x", "y", "z", "heading", "elevation"];
+var DEG = 180 / Math.PI;
+var compassOf = (dx, dy) => Math.atan2(dx, dy) * DEG;
+var wrapPositive = (degrees) => (degrees % 360 + 360) % 360;
+function forwardOf(rotation) {
+  const { x: x2, y: y2, z: z2, w: w2 } = rotation;
+  return [1 - 2 * (y2 * y2 + z2 * z2), 2 * (x2 * y2 + w2 * z2), 2 * (x2 * z2 - w2 * y2)];
 }
-function cellFenceNode(line) {
-  const node = stamp(new ASTNode("Empty", "").assign_meta("cellFence", true), line);
-  if (line.info) node.assign_meta("info", line.info);
-  if (line.implicit) node.assign_meta("implicit", true);
-  if (line.meadowOpen) node.assign_meta("meadowOpen", true);
-  if (line.meadowClose) node.assign_meta("meadowClose", true);
-  if (line.meadowCloseImplicit) node.assign_meta("meadowCloseImplicit", true);
-  return node;
+var PLANE_MIN = 1e-9;
+var compassOrNull = (dx, dy) => Math.hypot(dx, dy) <= PLANE_MIN ? null : wrapPositive(compassOf(dx, dy));
+function headingOf(rotation) {
+  const [fx, fy] = forwardOf(rotation);
+  return compassOrNull(fx, fy);
 }
-function stamp(node, rec, endLine = null) {
-  node.span = { line: rec.line ?? 0, endLine: endLine ?? rec.endLine ?? rec.line ?? 0 };
-  return node;
+function upOf(rotation) {
+  const { x: x2, y: y2, z: z2, w: w2 } = rotation;
+  return [2 * (x2 * z2 + w2 * y2), 2 * (y2 * z2 - w2 * x2), 1 - 2 * (x2 * x2 + y2 * y2)];
 }
-function errorNode(rec, expected, found, children = []) {
-  return stamp(new ASTNode("Error", rec.text, children, {
-    expected,
-    found,
-    kind: "parse"
-  }), rec);
+function elevationOf(rotation) {
+  const fz = forwardOf(rotation)[2];
+  return Math.asin(Math.max(-1, Math.min(1, fz))) * DEG;
 }
-var attachComment = (node, comment) => comment != null ? node.assign_meta("comment", comment) : node;
-function parseProgram(program) {
-  const lines = tokenize(program);
-  const state = new ParserState(lines);
-  const ast = [];
-  while (state.hasMore()) {
-    const line = state.next();
-    if (line.meadow !== void 0) {
-      ast.push(meadowNode(line));
-      continue;
+function measure(relation, target, observer, read) {
+  const t2 = read(target);
+  switch (relation) {
+    case "distance": {
+      const o2 = read(observer);
+      const [ax, ay, az] = t2.position;
+      const [bx, by, bz] = o2.position;
+      return Math.hypot(ax - bx, ay - by, az - bz);
     }
-    if (line.cellFence) {
-      ast.push(cellFenceNode(line));
-      continue;
+    case "bearing": {
+      const o2 = read(observer);
+      const dx = t2.position[0] - o2.position[0];
+      const dy = t2.position[1] - o2.position[1];
+      const h2 = headingOf(o2.rotation);
+      if (h2 === null) return null;
+      const c2 = compassOrNull(dx, dy);
+      return c2 === null ? null : wrapPositive(c2 - h2);
     }
-    const tokens = tokenizeLine(line.text);
-    const comment = line.comment;
-    if (tokens.length === 1 && tokens[0] === END) {
-      ast.push(attachComment(errorNode(line, "an open block to close", `'${END}'`), comment));
-      continue;
-    }
-    if (tokens.length === 0) {
-      const node2 = stamp(new ASTNode("Empty", ""), line);
-      attachComment(node2, comment);
-      ast.push(node2);
-      continue;
-    }
-    const node = parseStatement(tokens, state, line);
-    attachComment(node, comment);
-    ast.push(node);
+    case "sync":
+      return (t2.time ?? 0) - (read(observer).time ?? 0);
+    case "x":
+      return t2.position[0];
+    case "y":
+      return t2.position[1];
+    case "z":
+      return t2.position[2];
+    case "heading":
+      return headingOf(t2.rotation);
+    case "elevation":
+      return elevationOf(t2.rotation);
+    default:
+      return void 0;
   }
-  return ast;
-}
-var OVERLAY = /* @__PURE__ */ new Set(["span", "comment", "endComment", "lit"]);
-var contentKey = (node) => JSON.stringify(node, (k2, v2) => OVERLAY.has(k2) ? void 0 : v2);
-function adoptOverlay(prev, next) {
-  if (next.span) {
-    if (prev.span) {
-      prev.span.line = next.span.line;
-      prev.span.endLine = next.span.endLine;
-    } else prev.span = { line: next.span.line, endLine: next.span.endLine };
-  }
-  const pm = prev.meta, nm = next.meta;
-  if (pm && nm) {
-    if ("lit" in nm) pm.lit = nm.lit;
-    delete pm.endComment;
-    delete pm.comment;
-    if (nm.endComment !== void 0) pm.endComment = nm.endComment;
-    if (nm.comment !== void 0) pm.comment = nm.comment;
-  }
-  const pc2 = prev.children ?? [], nc2 = next.children ?? [];
-  for (let i2 = 0; i2 < pc2.length; i2++) adoptOverlay(pc2[i2], nc2[i2]);
-}
-function reparseProgram(text, prevText, prevAst) {
-  if (prevText == null || prevAst == null) return parseProgram(text);
-  if (prevText === text) return prevAst;
-  const fresh = parseProgram(text);
-  const pool = /* @__PURE__ */ new Map();
-  for (const node of prevAst) {
-    const key = contentKey(node);
-    const bucket = pool.get(key);
-    if (bucket) bucket.push(node);
-    else pool.set(key, [node]);
-  }
-  return fresh.map((node) => {
-    const bucket = pool.get(contentKey(node));
-    const prev = bucket?.shift();
-    if (!prev) return node;
-    adoptOverlay(prev, node);
-    return prev;
-  });
-}
-function tokenize(program) {
-  const rawLines = program.split(/\r\n|\r|\n/);
-  const n2 = rawLines.length;
-  const lines = [];
-  let i2 = 0;
-  const pushCode = (raw, out, line) => {
-    const [code, comment] = splitComment(raw);
-    const parts = code.replace(/\bend\b(?!$)/g, "end\n").split("\n").map((p2) => p2.trim()).filter(Boolean);
-    const recs = (parts.length ? parts : [""]).map((text) => ({ text, line }));
-    if (comment !== void 0) recs[recs.length - 1].comment = comment;
-    for (const rec of recs) out.push(rec);
-  };
-  while (i2 < n2) {
-    if (isMeadowFence(rawLines[i2])) {
-      const fenceLine = i2 + 1;
-      i2++;
-      const units = [];
-      let chunk = [];
-      let chunkStart = 0;
-      const flushChunk = () => {
-        if (chunk.length) {
-          units.push({
-            meadow: chunk.join("\n"),
-            meadowOpen: false,
-            meadowClose: false,
-            line: chunkStart,
-            endLine: chunkStart + chunk.length - 1
-          });
-          chunk = [];
-        }
-      };
-      while (i2 < n2 && !isMeadowFence(rawLines[i2])) {
-        if (isCellOpen(rawLines[i2])) {
-          flushChunk();
-          const info = rawLines[i2].replace(CELL_OPEN, "").trim();
-          units.push({
-            cellFence: true,
-            meadowOpen: false,
-            meadowClose: false,
-            line: i2 + 1,
-            info: info || void 0
-          });
-          i2++;
-          while (i2 < n2 && !isCellClose(rawLines[i2]) && !isMeadowFence(rawLines[i2])) {
-            pushCode(rawLines[i2], units, i2 + 1);
-            i2++;
-          }
-          const closed = i2 < n2 && isCellClose(rawLines[i2]);
-          if (closed) i2++;
-          units.push({
-            cellFence: true,
-            meadowOpen: false,
-            meadowClose: false,
-            line: Math.min(i2, n2),
-            implicit: !closed || void 0
-          });
-          continue;
-        }
-        if (!chunk.length) chunkStart = i2 + 1;
-        chunk.push(rawLines[i2]);
-        i2++;
-      }
-      flushChunk();
-      if (units.length === 0) units.push({ meadow: "", meadowOpen: false, meadowClose: false, line: fenceLine });
-      const meadowClosed = i2 < n2;
-      i2++;
-      units[0].meadowOpen = true;
-      units[units.length - 1].meadowClose = true;
-      if (!meadowClosed) units[units.length - 1].meadowCloseImplicit = true;
-      lines.push(...units);
-      continue;
-    }
-    const trimmed = rawLines[i2].trim();
-    if (trimmed) pushCode(trimmed, lines, i2 + 1);
-    else lines.push({ text: "", line: i2 + 1, blank: true });
-    i2++;
-  }
-  return lines;
-}
-function tokenizeLine(code) {
-  if (!code) return [];
-  const tokens = [];
-  const len = code.length;
-  let start = 0;
-  let i2 = 0;
-  let inGroup = null;
-  let depth = 0;
-  while (i2 < len) {
-    const ch2 = code[i2];
-    if (!inGroup) {
-      if (ch2 === " " || ch2 === "	") {
-        if (i2 > start) tokens.push(code.slice(start, i2));
-        start = i2 + 1;
-        i2++;
-        continue;
-      }
-      const closer = CLOSERS[ch2];
-      if (closer) {
-        inGroup = closer;
-        if (OPENS_BRACKET[ch2]) depth = 1;
-      }
-      i2++;
-    } else {
-      if (OPENS_BRACKET[inGroup === "]" ? "[" : inGroup === ")" ? "(" : null]) {
-        const opener = inGroup === "]" ? "[" : "(";
-        if (ch2 === opener) {
-          depth++;
-        } else if (ch2 === inGroup) {
-          depth--;
-          if (depth === 0) inGroup = null;
-        }
-      } else if (ch2 === inGroup) {
-        inGroup = null;
-      }
-      i2++;
-    }
-  }
-  if (i2 > start) tokens.push(code.slice(start, i2));
-  return tokens;
-}
-function parseArguments(tokens) {
-  const len = tokens.length;
-  if (len === 0) return [];
-  const args = [];
-  let bufStart = -1;
-  let closer = null;
-  let depth = 0;
-  for (let i2 = 0; i2 < len; i2++) {
-    const token = tokens[i2];
-    const firstCh = token[0];
-    if (bufStart === -1) {
-      const match = CLOSERS[firstCh];
-      if (!match) {
-        args.push(new ASTNode("Argument", token));
-        continue;
-      }
-      closer = match;
-      const lastCh = token[token.length - 1];
-      if (OPENS_BRACKET[firstCh]) {
-        depth = 1;
-        const tLen = token.length;
-        for (let j2 = 1; j2 < tLen; j2++) {
-          const ch2 = token[j2];
-          if (ch2 === firstCh) depth++;
-          else if (ch2 === closer) depth--;
-        }
-        if (depth === 0) {
-          args.push(new ASTNode("Argument", token));
-          closer = null;
-        } else {
-          bufStart = i2;
-        }
-      } else {
-        const closeIdx = token.indexOf(closer, 1);
-        if (closeIdx !== -1) {
-          args.push(new ASTNode("Argument", token));
-          closer = null;
-        } else {
-          bufStart = i2;
-        }
-      }
-    } else {
-      if (OPENS_BRACKET[closer === "]" ? "[" : "("]) {
-        const opener = closer === "]" ? "[" : "(";
-        const tLen = token.length;
-        for (let j2 = 0; j2 < tLen; j2++) {
-          const ch2 = token[j2];
-          if (ch2 === opener) depth++;
-          else if (ch2 === closer) depth--;
-        }
-        if (depth === 0) {
-          let joined = tokens[bufStart];
-          for (let k2 = bufStart + 1; k2 <= i2; k2++) {
-            joined += " " + tokens[k2];
-          }
-          args.push(new ASTNode("Argument", joined));
-          bufStart = -1;
-          closer = null;
-        }
-      } else {
-        if (token[token.length - 1] === closer) {
-          let joined = tokens[bufStart];
-          for (let k2 = bufStart + 1; k2 <= i2; k2++) {
-            joined += " " + tokens[k2];
-          }
-          args.push(new ASTNode("Argument", joined));
-          bufStart = -1;
-          closer = null;
-        }
-      }
-    }
-  }
-  if (bufStart !== -1) {
-    let joined = tokens[bufStart];
-    for (let k2 = bufStart + 1; k2 < len; k2++) {
-      joined += " " + tokens[k2];
-    }
-    args.push(new ASTNode("Argument", joined));
-  }
-  return args;
-}
-function parseBlock(state) {
-  const block = [];
-  while (state.hasMore()) {
-    const line = state.next();
-    if (line.meadow !== void 0) {
-      block.push(meadowNode(line));
-      continue;
-    }
-    if (line.cellFence) {
-      block.push(cellFenceNode(line));
-      continue;
-    }
-    const tokens = tokenizeLine(line.text);
-    const comment = line.comment;
-    if (tokens.length === 1 && tokens[0] === END) {
-      return { block, terminated: true, endComment: comment };
-    }
-    if (tokens.length === 0) {
-      const node2 = stamp(new ASTNode("Empty", ""), line);
-      attachComment(node2, comment);
-      block.push(node2);
-      continue;
-    }
-    const node = parseStatement(tokens, state, line);
-    attachComment(node, comment);
-    block.push(node);
-  }
-  return { block, terminated: false };
-}
-function parseStatement(tokens, state, rec) {
-  const kw = tokens[0];
-  const len = tokens.length;
-  if (!BLOCK_KW[kw]) {
-    return stamp(new ASTNode("Call", kw, parseArguments(tokens.slice(1))), rec);
-  }
-  const last = tokens[len - 1];
-  if (last !== DO) {
-    return errorNode(rec, `'do' to open '${kw}'`, last);
-  }
-  const blockNode = (make) => {
-    const { block, terminated, endComment } = parseBlock(state);
-    const endLine = state.last?.endLine ?? state.last?.line ?? rec.line;
-    if (!terminated) {
-      const err = errorNode(rec, `'end' to close '${kw}'`, "end of program", block);
-      err.span.endLine = endLine;
-      return err;
-    }
-    const node = stamp(make(block), rec, endLine);
-    if (endComment != null) node.assign_meta("endComment", endComment);
-    return node;
-  };
-  if (kw === "for" || kw === "loop") {
-    if (len < 3) return errorNode(rec, `a number of loops after '${kw}'`, DO);
-    return blockNode((block) => new ASTNode("Loop", tokens[1], block));
-  }
-  if (kw === "def" || kw === "draw") {
-    if (len < 3) return errorNode(rec, `a name after '${kw}'`, DO);
-    const name = tokens[1];
-    const argTokens = tokens.slice(2, len - 1);
-    const args = argTokens.map((arg) => new ASTNode("Argument", arg));
-    return blockNode((block) => new ASTNode("Define", name, block, { args }));
-  }
-  if (kw === "when") {
-    if (len < 3) return errorNode(rec, "a condition or event after 'when'", DO);
-    const firstToken = tokens[1];
-    const isEvent = /^['"]/.test(firstToken);
-    if (isEvent) {
-      const meta = { event: true };
-      if (len > 3) meta.binding = tokens[2];
-      return blockNode((block) => new ASTNode("When", firstToken, block, meta));
-    } else {
-      const expr = tokens.slice(1, len - 1).join(" ");
-      return blockNode((block) => new ASTNode("When", expr, block));
-    }
-  }
-  if (kw === "as") {
-    if (len < 3) return errorNode(rec, "an assistant name after 'as'", DO);
-    const meta = {};
-    if (len > 3) meta.frame = tokens[2];
-    return blockNode((block) => new ASTNode("Ambient", tokens[1], block, meta));
-  }
-  return errorNode(rec, "a known block keyword", kw);
 }
 
-// assets/js/weave/queries.js
-function ailmentsFor(errors, seat, key = seat) {
-  if (!errors || seat == null) return [];
+// assets/js/turtling/laws/vec3.js
+var EPS = 1e-12;
+var sub = (a2, b2) => [a2[0] - b2[0], a2[1] - b2[1], a2[2] - b2[2]];
+var add = (a2, b2) => [a2[0] + b2[0], a2[1] + b2[1], a2[2] + b2[2]];
+var scale = (v2, s2) => [v2[0] * s2, v2[1] * s2, v2[2] * s2];
+var dot = (a2, b2) => a2[0] * b2[0] + a2[1] * b2[1] + a2[2] * b2[2];
+var cross = (a2, b2) => [a2[1] * b2[2] - a2[2] * b2[1], a2[2] * b2[0] - a2[0] * b2[2], a2[0] * b2[1] - a2[1] * b2[0]];
+var len = (v2) => Math.hypot(v2[0], v2[1], v2[2]);
+var finite3 = (p2) => Array.isArray(p2) && p2.length === 3 && p2.every(Number.isFinite);
+var unit = (v2, eps = EPS) => {
+  if (!Array.isArray(v2)) return null;
+  const n2 = len(v2);
+  return n2 > eps ? scale(v2, 1 / n2) : null;
+};
+
+// assets/js/turtling/laws/cone.js
+var RAD = Math.PI / 180;
+var openAngle = (halfAngle) => Math.min(halfAngle, 180 - halfAngle);
+var isOpenCone = (halfAngle) => {
+  const open = openAngle(halfAngle);
+  return open > 1e-9 && open < 90 - 1e-9;
+};
+var coneLateral = (h2, open) => Math.abs(h2) * Math.tan(open * RAD);
+function conePointOn(apex, a2, u2, v2, h2, phi, open) {
+  const lat = coneLateral(h2, open);
+  const c2 = Math.cos(phi), s2 = Math.sin(phi);
+  const off = (k2) => (u2[k2] * c2 + v2[k2] * s2) * lat;
+  return [apex[0] + a2[0] * h2 + off(0), apex[1] + a2[1] * h2 + off(1), apex[2] + a2[2] * h2 + off(2)];
+}
+function coneFrame(apex, axis, halfAngle) {
+  if (!Array.isArray(apex) || !Array.isArray(axis) || !(halfAngle > 0)) return null;
+  const open = openAngle(halfAngle);
+  if (!(open < 90 - 1e-9)) return null;
+  const a2 = unit(axis);
+  if (!a2) return null;
+  const u2 = unit(cross(a2, Math.abs(a2[0]) < 0.9 ? [1, 0, 0] : [0, 1, 0]));
+  if (!u2) return null;
+  const v2 = cross(a2, u2);
+  const A2 = [...apex];
+  return {
+    apex: A2,
+    axis: a2,
+    u: u2,
+    v: v2,
+    open,
+    point: (h2, phi) => conePointOn(A2, a2, u2, v2, h2, phi, open),
+    lateral: (h2) => coneLateral(h2, open),
+    along: (h2) => [A2[0] + a2[0] * h2, A2[1] + a2[1] * h2, A2[2] + a2[2] * h2]
+  };
+}
+
+// assets/js/turtling/laws/realize.js
+var REALIZE_TOL = 1e-9;
+var ACCEPT_TOL = 1e-6;
+var DEFAULT_ARM = 100;
+var unit2 = (v2) => unit(v2, REALIZE_TOL);
+function realizeDistance(target, observer, want) {
+  if (!Array.isArray(observer) || !observer.every(Number.isFinite)) {
+    return { ok: false, reason: "observer position is unknown" };
+  }
+  if (!Number.isFinite(want) || want < 0) {
+    return { ok: false, reason: "distance must be a non-negative finite number" };
+  }
+  const d2 = finite3(target) ? len(sub(target, observer)) : NaN;
+  if (Math.abs(d2 - want) <= REALIZE_TOL) return { ok: true, pose: [...target], moved: false };
+  let ux = 1, uy = 0, uz = 0;
+  if (d2 > REALIZE_TOL) {
+    const [dx, dy, dz] = sub(target, observer);
+    ux = dx / d2;
+    uy = dy / d2;
+    uz = dz / d2;
+  }
+  const pose = [observer[0] + ux * want, observer[1] + uy * want, observer[2] + uz * want];
+  return { ok: true, pose, moved: true };
+}
+function realizeTilt(apex, nose, up2, target, want, arm = DEFAULT_ARM) {
+  if (!finite3(apex) || !finite3(nose) || !finite3(up2)) return { ok: false, reason: "observer pose is unknown" };
+  if (!Number.isFinite(want)) return { ok: false, reason: "the tilt must be a finite number" };
+  const axis = unit2(nose);
+  if (!axis) return { ok: false, reason: "the observer has no nose" };
+  const d2 = finite3(target) ? sub(target, apex) : [0, 0, 0];
+  const r2 = len(d2);
+  const apart = r2 > REALIZE_TOL;
+  const side = apart && dot(d2, axis) < 0 ? -1 : 1;
+  let lateral = apart ? sub(d2, scale(axis, dot(d2, axis))) : [0, 0, 0];
+  if (len(lateral) <= REALIZE_TOL) {
+    const u2 = unit2(up2) ?? [0, 0, 1];
+    lateral = sub(u2, scale(axis, dot(u2, axis)));
+  }
+  const across = unit2(lateral);
+  if (!across) return { ok: false, reason: "the cone has no generator" };
+  const w2 = Math.min(Math.max(want, 0), 180);
+  const rad = openAngle(w2) * RAD;
+  const dir = add(scale(axis, side * Math.cos(rad)), scale(across, Math.sin(rad)));
+  const pose = add(apex, scale(dir, apart ? r2 : arm));
+  return { ok: true, pose, moved: !finite3(target) || len(sub(pose, target)) > REALIZE_TOL };
+}
+function validateDistance(target, observer, want) {
+  if (!finite3(target) || !finite3(observer)) return { ok: false, reason: "non-finite geometry" };
+  if (!Number.isFinite(want) || want < 0) return { ok: false, reason: "distance domain" };
+  const d2 = len(sub(target, observer));
+  return Math.abs(d2 - want) <= ACCEPT_TOL ? { ok: true, distance: d2 } : { ok: false, reason: `distance is ${d2}, not ${want}` };
+}
+
+// assets/js/turtling/laws/relationships.js
+var REL_TOL = 1e-9;
+var ACCEPT_TOL2 = 1e-6;
+function wrapDegrees(degrees) {
+  let w2 = degrees % 360;
+  if (w2 <= -180) w2 += 360;
+  if (w2 > 180) w2 -= 360;
+  return w2;
+}
+var dirOf = (compass) => {
+  const r2 = compass * Math.PI / 180;
+  return [Math.sin(r2), Math.cos(r2)];
+};
+function pointAtBearing(vertex, bearing2, distance2) {
+  if (!finite3(vertex) || !Number.isFinite(bearing2) || !(distance2 > 0)) return null;
+  const [ux, uy] = dirOf(bearing2);
+  return [vertex[0] + ux * distance2, vertex[1] + uy * distance2, vertex[2]];
+}
+function realizeBearing({ vertex, moving }, bearing2, distance2 = null, arm = DEFAULT_ARM) {
+  if (!finite3(vertex) || !finite3(moving)) return { ok: false, reason: "non-finite geometry" };
+  if (!Number.isFinite(bearing2)) return { ok: false, reason: "the required bearing must be finite" };
+  const reach = Math.hypot(moving[0] - vertex[0], moving[1] - vertex[1]);
+  const r2 = distance2 ?? (reach > REL_TOL ? reach : arm);
+  if (!(r2 > REL_TOL)) return { ok: false, reason: "the arm has zero length" };
+  const pose = pointAtBearing(vertex, bearing2, r2);
+  pose[2] = moving[2];
+  return { ok: true, pose, moved: true };
+}
+var AXIS_VEC = { x: [1, 0, 0], y: [0, 1, 0], z: [0, 0, 1] };
+var AXES = Object.freeze(Object.keys(AXIS_VEC));
+function planeOfAxis(pose, axis, value) {
+  const e2 = AXIS_VEC[axis];
+  if (!e2 || !pose || !finite3(pose.position) || typeof pose.rotation?.rotateVec !== "function") return null;
+  if (!Number.isFinite(value)) return null;
+  const normal = pose.rotation.rotateVec(e2[0], e2[1], e2[2]);
+  if (!normal || !normal.every(Number.isFinite)) return null;
+  return { point: pose.position.map((c2, i2) => c2 + value * normal[i2]), normal };
+}
+function meetPlaneSphere(plane2, center, radius, tol = ACCEPT_TOL2) {
+  if (!plane2 || !finite3(center) || !Number.isFinite(radius) || radius < 0) return null;
+  const n2 = plane2.normal;
+  const d2 = dot(sub(center, plane2.point), n2);
+  if (radius <= REL_TOL) {
+    return Math.abs(d2) <= tol ? { kind: "point", at: [...center], d: d2, gap: -Math.abs(d2) } : { kind: "empty", gap: -Math.abs(d2), d: d2 };
+  }
+  const foot = [center[0] - d2 * n2[0], center[1] - d2 * n2[1], center[2] - d2 * n2[2]];
+  const gap = radius - Math.abs(d2);
+  if (gap < -tol) return { kind: "empty", gap, d: d2 };
+  if (Math.abs(gap) <= tol) return { kind: "uncertain", gap, d: d2 };
+  const rho = Math.sqrt(gap * (radius + Math.abs(d2)));
+  return { kind: "circle", center: foot, radius: rho, normal: [...n2], d: d2, gap };
+}
+
+// assets/js/turtling/laws/meet.js
+var unit3 = (v2) => unit(v2, REL_TOL);
+function basisOf(normal) {
+  const n2 = unit3(normal);
+  if (!n2) return null;
+  const seed = Math.abs(n2[0]) < 0.9 ? [1, 0, 0] : [0, 1, 0];
+  const u2 = unit3(cross(n2, seed)) ?? [1, 0, 0];
+  return { n: n2, u: u2, v: cross(n2, u2) };
+}
+function ringOf(center, normal, radius, segments = 72) {
+  const b2 = basisOf(normal);
+  if (!b2 || !finite3(center) || !(radius > 0)) return null;
   const out = [];
-  for (const e2 of errors) {
-    if (!isSeatOf(e2.address, seat)) continue;
-    out.push(key === seat ? e2 : { ...e2, address: rebase(e2.address, seat, key) });
+  for (let i2 = 0; i2 <= segments; i2++) {
+    const a2 = i2 / segments * Math.PI * 2;
+    const c2 = Math.cos(a2), s2 = Math.sin(a2);
+    out.push(add(center, add(scale(b2.u, radius * c2), scale(b2.v, radius * s2))));
   }
   return out;
 }
-function standingAilments({ frames = [], seats = [], rehearsals = [] } = {}) {
-  const out = [...frames, ...seats];
-  const seen = /* @__PURE__ */ new Set();
-  for (const w2 of rehearsals) {
-    const at2 = `${w2.message}@${w2.span?.line ?? "?"}`;
-    if (seen.has(at2)) continue;
-    seen.add(at2);
-    out.push(w2);
+var SPACE = Object.freeze({ kind: "space" });
+var EMPTY = Object.freeze({ kind: "empty" });
+var UNCERTAIN = Object.freeze({ kind: "uncertain" });
+var UNRESOLVED = Object.freeze({ kind: "unresolved" });
+var point = (at2) => ({ kind: "point", at: [...at2] });
+var points = (at2) => ({ kind: "points", at: at2.map((p2) => [...p2]) });
+var line = (p2, dir) => ({ kind: "line", point: [...p2], dir: [...unit3(dir) ?? dir] });
+var ray = (p2, dir) => ({ kind: "ray", point: [...p2], dir: [...unit3(dir) ?? dir] });
+var circle = (center, normal, radius) => ({ kind: "circle", center: [...center], normal: [...unit3(normal) ?? normal], radius });
+var plane = (point2, normal) => ({ kind: "plane", point: [...point2], normal: [...unit3(normal) ?? normal] });
+var halfplane = (point2, normal, dir) => ({ kind: "halfplane", point: [...point2], normal: [...unit3(normal) ?? normal], dir: [...unit3(dir) ?? dir] });
+var sphere = (center, radius) => ({ kind: "sphere", center: [...center], radius });
+var cone = (apex, axis, halfAngle) => ({ kind: "cone", apex: [...apex], axis: [...unit3(axis) ?? axis], halfAngle });
+var conic = (shape, origin, u2, v2, normal, Q2) => ({ kind: "conic", shape, origin: [...origin], u: [...u2], v: [...v2], normal: [...normal], Q: [...Q2] });
+var samePoint = (a2, b2) => len(sub(a2, b2)) <= ACCEPT_TOL2;
+function meetPlanePlane(a2, b2) {
+  const c2 = dot(a2.normal, b2.normal);
+  const cr3 = cross(a2.normal, b2.normal);
+  const s2 = dot(cr3, cr3);
+  const d1 = dot(a2.normal, a2.point), d2 = dot(b2.normal, b2.point);
+  if (s2 === 0) {
+    return Math.abs(dot(a2.normal, b2.point) - d1) <= ACCEPT_TOL2 ? a2 : EMPTY;
   }
-  return out;
+  if (s2 <= REL_TOL * REL_TOL) {
+    return UNCERTAIN;
+  }
+  const p2 = add(scale(a2.normal, (d1 - c2 * d2) / s2), scale(b2.normal, (d2 - c2 * d1) / s2));
+  if (!finite3(p2)) return UNRESOLVED;
+  const dir = unit3(cr3);
+  return dir ? line(p2, dir) : UNRESOLVED;
+}
+function onHalf(hp2, p2) {
+  return dot(sub(p2, hp2.point), hp2.dir) >= -ACCEPT_TOL2;
+}
+function supporting(hp2) {
+  return plane(hp2.point, hp2.normal);
+}
+function clipToHalf(set, hp2) {
+  if (!set || set.kind === "empty") return EMPTY;
+  if (set.kind === "uncertain" || set.kind === "unresolved") return set;
+  if (set.kind === "point") return onHalf(hp2, set.at) ? set : EMPTY;
+  if (set.kind === "points") {
+    const keep = set.at.filter((p2) => onHalf(hp2, p2));
+    return keep.length === 0 ? EMPTY : keep.length === 1 ? point(keep[0]) : points(keep);
+  }
+  if (set.kind === "plane") {
+    if (Math.abs(Math.abs(dot(set.normal, hp2.normal)) - 1) <= 1e-9) return hp2;
+    return clipToHalf(meetPlanePlane(set, supporting(hp2)), hp2);
+  }
+  if (set.kind === "halfplane") return clipToHalf(clipToHalf(supporting(set), hp2), set);
+  if (set.kind === "line" || set.kind === "ray") {
+    const g0 = dot(sub(set.point, hp2.point), hp2.dir);
+    const gd2 = dot(set.dir, hp2.dir);
+    if (Math.abs(gd2) <= REL_TOL) return g0 >= -ACCEPT_TOL2 ? set : EMPTY;
+    const t2 = -g0 / gd2;
+    const origin = add(set.point, scale(set.dir, t2));
+    const along = gd2 > 0 ? set.dir : scale(set.dir, -1);
+    if (set.kind === "ray" && dot(along, set.dir) < 0) return EMPTY;
+    return ray(origin, along);
+  }
+  if (set.kind === "circle") return { ...set, keep: [...hp2.dir] };
+  return UNRESOLVED;
+}
+function meetHalfplane(hp2, other) {
+  if (other.kind === "halfplane") return clipToHalf(clipToHalf(meet(supporting(hp2), supporting(other)), hp2), other);
+  return clipToHalf(meet(supporting(hp2), other), hp2);
+}
+function meetPlaneLine(pl2, ln3) {
+  const den = dot(pl2.normal, ln3.dir);
+  const d2 = dot(pl2.normal, pl2.point);
+  const offset = dot(pl2.normal, ln3.point) - d2;
+  if (den === 0) {
+    return Math.abs(offset) <= ACCEPT_TOL2 ? ln3 : EMPTY;
+  }
+  if (Math.abs(den) <= REL_TOL) {
+    return UNCERTAIN;
+  }
+  const t2 = -offset / den;
+  return point(add(ln3.point, scale(ln3.dir, t2)));
+}
+function meetLineSphere(ln3, sp2) {
+  const m2 = sub(ln3.point, sp2.center);
+  const b2 = dot(m2, ln3.dir);
+  const c2 = dot(m2, m2) - sp2.radius * sp2.radius;
+  const disc = b2 * b2 - c2;
+  if (disc < -ACCEPT_TOL2) return EMPTY;
+  if (disc <= ACCEPT_TOL2) return point(add(ln3.point, scale(ln3.dir, -b2)));
+  const s2 = Math.sqrt(disc);
+  return points([add(ln3.point, scale(ln3.dir, -b2 + s2)), add(ln3.point, scale(ln3.dir, -b2 - s2))]);
+}
+function meetSphereSphere(a2, b2) {
+  const d2 = len(sub(b2.center, a2.center));
+  if (d2 <= REL_TOL) return Math.abs(a2.radius - b2.radius) <= ACCEPT_TOL2 ? a2 : EMPTY;
+  const u2 = unit3(sub(b2.center, a2.center));
+  const x2 = (a2.radius * a2.radius - b2.radius * b2.radius + d2 * d2) / (2 * d2);
+  const h2 = a2.radius * a2.radius - x2 * x2;
+  if (h2 < -ACCEPT_TOL2) return EMPTY;
+  const center = add(a2.center, scale(u2, x2));
+  return h2 <= ACCEPT_TOL2 ? point(center) : circle(center, u2, Math.sqrt(Math.max(0, h2)));
+}
+function meetsPoint(pt2, set) {
+  switch (set.kind) {
+    case "plane":
+      return Math.abs(dot(set.normal, sub(pt2.at, set.point))) <= ACCEPT_TOL2;
+    case "line":
+      return len(cross(sub(pt2.at, set.point), set.dir)) <= ACCEPT_TOL2;
+    case "sphere":
+      return Math.abs(len(sub(pt2.at, set.center)) - set.radius) <= ACCEPT_TOL2;
+    case "cone":
+      return meetsCone(pt2, set);
+    default:
+      return false;
+  }
+}
+var ORDER = ["space", "empty", "uncertain", "unresolved", "point", "points", "ray", "line", "circle", "halfplane", "plane", "sphere", "cone", "conic"];
+var rank = (k2) => ORDER.indexOf(k2);
+function meet(a2, b2) {
+  if (!a2) return b2 ?? UNRESOLVED;
+  if (!b2) return a2;
+  if (a2.kind === "space") return b2;
+  if (b2.kind === "space") return a2;
+  if (a2.kind === "empty" || b2.kind === "empty") return EMPTY;
+  if (a2.kind === "uncertain" || b2.kind === "uncertain") return UNCERTAIN;
+  if (a2.kind === "unresolved" || b2.kind === "unresolved") return UNRESOLVED;
+  if (a2.kind === "halfplane") return meetHalfplane(a2, b2);
+  if (b2.kind === "halfplane") return meetHalfplane(b2, a2);
+  const [x2, y2] = rank(a2.kind) <= rank(b2.kind) ? [a2, b2] : [b2, a2];
+  switch (`${x2.kind}\u2229${y2.kind}`) {
+    case "point\u2229point":
+      return samePoint(x2.at, y2.at) ? x2 : EMPTY;
+    case "points\u2229point":
+      return x2.at.some((p2) => samePoint(p2, y2.at)) ? y2 : EMPTY;
+    case "point\u2229line":
+      return meetsPoint(x2, y2) ? x2 : EMPTY;
+    case "point\u2229circle":
+      return Math.abs(dot(y2.normal, sub(x2.at, y2.center))) <= ACCEPT_TOL2 && Math.abs(len(sub(x2.at, y2.center)) - y2.radius) <= ACCEPT_TOL2 ? x2 : EMPTY;
+    case "point\u2229plane":
+      return meetsPoint(x2, y2) ? x2 : EMPTY;
+    case "point\u2229sphere":
+      return meetsPoint(x2, y2) ? x2 : EMPTY;
+    case "point\u2229cone":
+      return meetsPoint(x2, y2) ? x2 : EMPTY;
+    case "points\u2229cone":
+      return points(x2.at.filter((p2) => meetsCone({ at: p2 }, y2)));
+    case "points\u2229points":
+      return points(x2.at.filter((p2) => y2.at.some((q2) => samePoint(p2, q2))));
+    case "line\u2229line":
+      return meetLineLine(x2, y2);
+    case "line\u2229circle":
+      return meetLineCircle(x2, y2);
+    case "line\u2229plane":
+      return meetPlaneLine(y2, x2);
+    case "line\u2229sphere":
+      return meetLineSphere(x2, y2);
+    case "circle\u2229circle":
+      return meetCircleCircle(x2, y2);
+    case "circle\u2229plane":
+      return meetCirclePlane(x2, y2);
+    case "circle\u2229sphere":
+      return meetCircleSphere(x2, y2);
+    case "plane\u2229plane":
+      return meetPlanePlane(x2, y2);
+    case "plane\u2229sphere":
+      return meetPlaneSphere(x2, y2.center, y2.radius);
+    case "sphere\u2229sphere":
+      return meetSphereSphere(x2, y2);
+    case "line\u2229cone":
+      return meetLineCone(x2, y2);
+    case "circle\u2229cone":
+      return UNRESOLVED;
+    case "plane\u2229cone":
+      return meetPlaneCone(x2, y2);
+    case "sphere\u2229cone":
+      return UNRESOLVED;
+    case "cone\u2229cone":
+      return UNRESOLVED;
+    case "point\u2229conic":
+      return meetsConic(x2, y2) ? x2 : EMPTY;
+    case "line\u2229conic":
+      return meetLineConic(x2, y2);
+    case "plane\u2229conic":
+      return meetConicPlane(x2, y2);
+    case "circle\u2229conic":
+      return UNRESOLVED;
+    case "sphere\u2229conic":
+      return UNRESOLVED;
+    case "cone\u2229conic":
+      return UNRESOLVED;
+    case "conic\u2229conic":
+      return UNRESOLVED;
+    default:
+      return UNRESOLVED;
+  }
+}
+function meetLineLine(a2, b2) {
+  const n2 = cross(a2.dir, b2.dir);
+  const parallel = len(n2) <= REL_TOL;
+  const between = sub(b2.point, a2.point);
+  if (parallel) {
+    return len(cross(between, a2.dir)) <= ACCEPT_TOL2 ? a2 : EMPTY;
+  }
+  const t2 = dot(cross(between, b2.dir), n2) / dot(n2, n2);
+  return point(add(a2.point, scale(a2.dir, t2)));
+}
+function meetLineCircle(ln3, ci3) {
+  const n2 = ci3.normal, d2 = ln3.dir;
+  const m2 = sub(ln3.point, ci3.center);
+  const nd2 = dot(n2, d2);
+  if (Math.abs(nd2) > REL_TOL) {
+    const q2 = add(ln3.point, scale(d2, -dot(n2, m2) / nd2));
+    return Math.abs(len(sub(q2, ci3.center)) - ci3.radius) <= ACCEPT_TOL2 ? point(q2) : EMPTY;
+  }
+  if (Math.abs(dot(n2, m2)) > ACCEPT_TOL2) return EMPTY;
+  const foot = add(ln3.point, scale(d2, -dot(m2, d2)));
+  const h2 = len(sub(foot, ci3.center));
+  if (h2 > ci3.radius + ACCEPT_TOL2) return EMPTY;
+  if (h2 >= ci3.radius - ACCEPT_TOL2) return point(foot);
+  const s2 = Math.sqrt(Math.max(0, ci3.radius * ci3.radius - h2 * h2));
+  return points([add(foot, scale(d2, s2)), add(foot, scale(d2, -s2))]);
+}
+function meetCircleCircle(a2, b2) {
+  if (len(cross(a2.normal, b2.normal)) > REL_TOL) return UNRESOLVED;
+  if (Math.abs(dot(a2.normal, sub(b2.center, a2.center))) > ACCEPT_TOL2) return UNRESOLVED;
+  const d2 = len(sub(b2.center, a2.center));
+  if (d2 <= REL_TOL) return Math.abs(a2.radius - b2.radius) <= ACCEPT_TOL2 ? a2 : EMPTY;
+  if (d2 > a2.radius + b2.radius + ACCEPT_TOL2) return EMPTY;
+  if (d2 < Math.abs(a2.radius - b2.radius) - ACCEPT_TOL2) return EMPTY;
+  const x2 = (a2.radius * a2.radius - b2.radius * b2.radius + d2 * d2) / (2 * d2);
+  const h2 = a2.radius * a2.radius - x2 * x2;
+  const foot = add(a2.center, scale(unit3(sub(b2.center, a2.center)), x2));
+  if (h2 <= ACCEPT_TOL2) return point(foot);
+  const perp = unit3(cross(a2.normal, sub(b2.center, a2.center)));
+  const s2 = Math.sqrt(Math.max(0, h2));
+  return perp ? points([add(foot, scale(perp, s2)), add(foot, scale(perp, -s2))]) : UNRESOLVED;
+}
+function meetCirclePlane(ci3, pl2) {
+  if (Math.abs(1 - Math.abs(dot(ci3.normal, pl2.normal))) <= 1e-9) {
+    return Math.abs(dot(ci3.normal, sub(pl2.point, ci3.center))) <= ACCEPT_TOL2 ? ci3 : EMPTY;
+  }
+  const cut = meetPlanePlane(plane(ci3.center, ci3.normal), pl2);
+  return cut.kind === "line" ? meetLineCircle(cut, ci3) : cut.kind === "empty" ? EMPTY : UNRESOLVED;
+}
+function meetCircleSphere(ci3, sp2) {
+  const inPlane = meetPlaneSphere(plane(ci3.center, ci3.normal), sp2.center, sp2.radius);
+  if (inPlane.kind === "empty") return EMPTY;
+  if (inPlane.kind === "uncertain") return UNCERTAIN;
+  if (inPlane.kind === "point") {
+    return Math.abs(len(sub(inPlane.at, ci3.center)) - ci3.radius) <= ACCEPT_TOL2 ? point(inPlane.at) : EMPTY;
+  }
+  return inPlane.kind === "circle" ? meetCircleCircle(ci3, inPlane) : UNRESOLVED;
+}
+var RAD2 = Math.PI / 180;
+var DEG2 = 180 / Math.PI;
+var coneCos = (c2) => Math.cos(openAngle(c2.halfAngle) * RAD2);
+function meetsCone(pt2, c2) {
+  const d2 = sub(pt2.at, c2.apex);
+  const r2 = len(d2);
+  if (r2 <= REL_TOL) return true;
+  const angle = Math.acos(Math.max(-1, Math.min(1, dot(d2, c2.axis) / r2))) * DEG2;
+  return Math.abs(angle - c2.halfAngle) <= ACCEPT_TOL2 || Math.abs(angle - (180 - c2.halfAngle)) <= ACCEPT_TOL2;
+}
+function meetLineCone(ln3, c2) {
+  const m2 = sub(ln3.point, c2.apex);
+  const A2 = dot(ln3.dir, c2.axis), B2 = dot(m2, c2.axis), C2 = dot(m2, ln3.dir), M2 = dot(m2, m2);
+  const cs2 = coneCos(c2) ** 2;
+  const qa2 = A2 * A2 - cs2;
+  const qb = 2 * (B2 * A2 - cs2 * C2);
+  const qc2 = B2 * B2 - cs2 * M2;
+  if (Math.abs(qa2) <= REL_TOL) {
+    if (Math.abs(qb) <= REL_TOL) return Math.abs(qc2) <= ACCEPT_TOL2 ? ln3 : EMPTY;
+    return point(add(ln3.point, scale(ln3.dir, -qc2 / qb)));
+  }
+  const disc = qb * qb - 4 * qa2 * qc2;
+  if (disc < -ACCEPT_TOL2) return EMPTY;
+  if (disc <= ACCEPT_TOL2) return point(add(ln3.point, scale(ln3.dir, -qb / (2 * qa2))));
+  const s2 = Math.sqrt(disc);
+  return points([add(ln3.point, scale(ln3.dir, (-qb + s2) / (2 * qa2))), add(ln3.point, scale(ln3.dir, (-qb - s2) / (2 * qa2)))]);
+}
+function meetPlaneCone(pl2, c2) {
+  if (Math.abs(Math.abs(dot(pl2.normal, c2.axis)) - 1) <= 1e-9) {
+    const h2 = dot(c2.axis, sub(pl2.point, c2.apex));
+    if (Math.abs(h2) <= ACCEPT_TOL2) return point([...c2.apex]);
+    if (c2.halfAngle >= 90 - 1e-9) return UNRESOLVED;
+    return circle(add(c2.apex, scale(c2.axis, h2)), c2.axis, coneLateral(h2, c2.halfAngle));
+  }
+  return coneSection(pl2, c2);
+}
+function coneSection(pl2, c2) {
+  const n2 = unit3(pl2.normal);
+  const b2 = basisOf(n2);
+  if (!b2) return UNRESOLVED;
+  const e1 = b2.u, e2 = b2.v;
+  const w2 = sub(pl2.point, c2.apex);
+  const L0 = dot(w2, c2.axis), L1 = dot(e1, c2.axis), L2 = dot(e2, c2.axis);
+  const w1 = dot(w2, e1), w22 = dot(w2, e2), ww = dot(w2, w2);
+  const cc = coneCos(c2), cc2 = cc * cc;
+  const A2 = L1 * L1 - cc2;
+  const B2 = 2 * L1 * L2;
+  const C2 = L2 * L2 - cc2;
+  const D2 = 2 * L0 * L1 - 2 * cc2 * w1;
+  const E2 = 2 * L0 * L2 - 2 * cc2 * w22;
+  const F2 = L0 * L0 - cc2 * ww;
+  const disc = B2 * B2 - 4 * A2 * C2;
+  const shape = disc < -1e-9 ? "ellipse" : Math.abs(disc) <= 1e-9 ? "parabola" : "hyperbola";
+  return conic(shape, pl2.point, e1, e2, n2, [A2, B2, C2, D2, E2, F2]);
+}
+function localOf(co2, p2) {
+  const d2 = sub(p2, co2.origin);
+  return [dot(d2, co2.u), dot(d2, co2.v)];
+}
+function meetsConic(pt2, co2) {
+  const [u2, v2] = localOf(co2, pt2.at);
+  const [A2, B2, C2, D2, E2, F2] = co2.Q;
+  return Math.abs(A2 * u2 * u2 + B2 * u2 * v2 + C2 * v2 * v2 + D2 * u2 + E2 * v2 + F2) <= ACCEPT_TOL2;
+}
+function meetLineConic(ln3, co2) {
+  const nd2 = dot(co2.normal, ln3.dir);
+  const m2 = sub(ln3.point, co2.origin);
+  if (Math.abs(nd2) > REL_TOL) {
+    const q2 = add(ln3.point, scale(ln3.dir, -dot(co2.normal, m2) / nd2));
+    return meetsConic({ at: q2 }, co2) ? point(q2) : EMPTY;
+  }
+  if (Math.abs(dot(co2.normal, m2)) > ACCEPT_TOL2) return EMPTY;
+  const [u0, v0] = localOf(co2, ln3.point);
+  const du2 = dot(ln3.dir, co2.u), dv = dot(ln3.dir, co2.v);
+  const [A2, B2, C2, D2, E2, F2] = co2.Q;
+  const qa2 = A2 * du2 * du2 + B2 * du2 * dv + C2 * dv * dv;
+  const qb = 2 * A2 * u0 * du2 + B2 * (u0 * dv + v0 * du2) + 2 * C2 * v0 * dv + D2 * du2 + E2 * dv;
+  const qc2 = A2 * u0 * u0 + B2 * u0 * v0 + C2 * v0 * v0 + D2 * u0 + E2 * v0 + F2;
+  const world = (t2) => add(co2.origin, add(scale(co2.u, u0 + t2 * du2), scale(co2.v, v0 + t2 * dv)));
+  if (Math.abs(qa2) <= REL_TOL) {
+    if (Math.abs(qb) <= REL_TOL) return Math.abs(qc2) <= ACCEPT_TOL2 ? ln3 : EMPTY;
+    return point(world(-qc2 / qb));
+  }
+  const disc = qb * qb - 4 * qa2 * qc2;
+  if (disc < -ACCEPT_TOL2) return EMPTY;
+  if (disc <= ACCEPT_TOL2) return point(world(-qb / (2 * qa2)));
+  const s2 = Math.sqrt(disc);
+  return points([world((-qb + s2) / (2 * qa2)), world((-qb - s2) / (2 * qa2))]);
+}
+function meetConicPlane(co2, pl2) {
+  if (Math.abs(Math.abs(dot(co2.normal, pl2.normal)) - 1) <= 1e-9) {
+    return Math.abs(dot(co2.normal, sub(pl2.point, co2.origin))) <= ACCEPT_TOL2 ? co2 : EMPTY;
+  }
+  const cut = meetPlanePlane(plane(co2.origin, co2.normal), pl2);
+  return cut.kind === "line" ? meetLineConic(cut, co2) : cut.kind === "empty" ? EMPTY : UNRESOLVED;
+}
+function conicScale(co2) {
+  const [A2, B2, C2, D2, E2, F2] = co2.Q;
+  const lead = Math.max(Math.abs(A2), Math.abs(C2), Math.abs(B2) / 2);
+  const base = Math.abs(F2) + Math.max(Math.abs(D2), Math.abs(E2)) + 1;
+  return Math.min(1e6, Math.max(2, Math.sqrt(base / Math.max(1e-9, lead))));
+}
+function conicSamples(co2, { range: rangeOverride = null, steps = 96 } = {}) {
+  const range = rangeOverride ?? conicScale(co2);
+  const uMin = -range, uMax = range;
+  const [A2, B2, C2, D2, E2, F2] = co2.Q;
+  const branches = [[], []];
+  for (let i2 = 0; i2 <= steps; i2++) {
+    const u2 = uMin + (uMax - uMin) * (i2 / steps);
+    const qb = B2 * u2 + E2, qc2 = A2 * u2 * u2 + D2 * u2 + F2;
+    const world = (v2) => add(co2.origin, add(scale(co2.u, u2), scale(co2.v, v2)));
+    if (Math.abs(C2) > 1e-12) {
+      const disc = qb * qb - 4 * C2 * qc2;
+      if (disc < -1e-9) continue;
+      const s2 = Math.sqrt(Math.max(0, disc));
+      branches[0].push(world((-qb + s2) / (2 * C2)));
+      if (s2 > 1e-9) branches[1].push(world((-qb - s2) / (2 * C2)));
+    } else if (Math.abs(qb) > 1e-12) {
+      branches[0].push(world(-qc2 / qb));
+    }
+  }
+  return branches.filter((b2) => b2.length > 1);
+}
+function meetAll(sets) {
+  let cur = SPACE;
+  for (const s2 of sets) {
+    if (!s2) continue;
+    cur = meet(cur, s2);
+    if (cur.kind === "empty" || cur.kind === "uncertain" || cur.kind === "unresolved") return cur;
+  }
+  return cur;
+}
+function dofOf(set) {
+  switch (set?.kind) {
+    case "space":
+      return 3;
+    case "plane":
+      return 2;
+    case "halfplane":
+      return 2;
+    case "sphere":
+      return 2;
+    case "cone":
+      return set.halfAngle <= 1e-9 || set.halfAngle >= 180 - 1e-9 ? 1 : 2;
+    case "conic":
+      return 1;
+    case "line":
+      return 1;
+    case "ray":
+      return 1;
+    case "circle":
+      return 1;
+    case "point":
+      return 0;
+    case "points":
+      return 0;
+    case "empty":
+      return 0;
+    default:
+      return null;
+  }
+}
+function nearest(set, target, { keep = null, margin = 0 } = {}) {
+  if (!set || !finite3(target)) return { ok: false, kind: "unresolved" };
+  switch (set.kind) {
+    case "space":
+      return { ok: true, at: [...target] };
+    case "point":
+      return { ok: true, at: [...set.at] };
+    case "points": {
+      const candidates = set.at;
+      let best = null, bestD = Infinity;
+      for (const p2 of candidates) {
+        const d2 = len(sub(p2, target));
+        if (d2 < bestD) {
+          bestD = d2;
+          best = p2;
+        }
+      }
+      if (!best) return { ok: false, kind: "unresolved" };
+      if (keep && candidates.some((p2) => samePoint(p2, keep)) && len(sub(keep, target)) <= bestD + margin) {
+        return { ok: true, at: [...keep], branch: "kept" };
+      }
+      return { ok: true, at: [...best], branch: "nearest" };
+    }
+    case "plane": {
+      const off = dot(set.normal, sub(target, set.point));
+      return { ok: true, at: sub(target, scale(set.normal, off)) };
+    }
+    case "halfplane": {
+      const foot = nearest(supporting(set), target);
+      if (!foot.ok) return foot;
+      const s2 = dot(sub(foot.at, set.point), set.dir);
+      return s2 >= -REL_TOL ? foot : { ok: true, at: sub(foot.at, scale(set.dir, 2 * s2)) };
+    }
+    case "line": {
+      const t2 = dot(sub(target, set.point), set.dir);
+      return { ok: true, at: add(set.point, scale(set.dir, t2)) };
+    }
+    case "ray": {
+      const t2 = Math.max(0, dot(sub(target, set.point), set.dir));
+      return { ok: true, at: add(set.point, scale(set.dir, t2)) };
+    }
+    case "sphere": {
+      const u2 = unit3(sub(target, set.center)) ?? [1, 0, 0];
+      return { ok: true, at: add(set.center, scale(u2, set.radius)) };
+    }
+    case "circle": {
+      const n2 = set.normal;
+      const off = dot(sub(target, set.center), n2);
+      let u2 = sub(target, set.center).map((x2, i2) => x2 - off * n2[i2]);
+      if (len(u2) <= REL_TOL) u2 = basisOf(n2)?.u ?? [1, 0, 0];
+      let at2 = add(set.center, scale(unit3(u2) ?? [1, 0, 0], set.radius));
+      if (set.keep) {
+        const k2 = sub(set.keep, scale(n2, dot(set.keep, n2)));
+        const ku2 = unit3(k2);
+        const s2 = ku2 ? dot(sub(at2, set.center), ku2) : 0;
+        if (s2 < -REL_TOL) at2 = sub(at2, scale(ku2, 2 * s2));
+      }
+      return { ok: true, at: at2 };
+    }
+    case "cone": {
+      const d2 = sub(target, set.apex);
+      const r2 = len(d2);
+      if (r2 <= REL_TOL) return { ok: true, at: [...set.apex] };
+      const open = openAngle(set.halfAngle);
+      const held = Array.isArray(keep) && finite3(keep);
+      const h2 = dot(d2, set.axis);
+      const perpRaw = sub(d2, scale(set.axis, h2));
+      let dir = perpRaw;
+      if (len(dir) <= REL_TOL) {
+        const kd2 = held ? sub(keep, set.apex) : null;
+        const kp = kd2 ? sub(kd2, scale(set.axis, dot(kd2, set.axis))) : null;
+        dir = kp && len(kp) > REL_TOL ? kp : cross(set.axis, Math.abs(set.axis[0]) < 0.9 ? [1, 0, 0] : [0, 1, 0]);
+      }
+      const p2 = unit3(dir) ?? [1, 0, 0];
+      if (held) {
+        if (!(open < 90 - 1e-9)) return { ok: true, at: add(set.apex, perpRaw) };
+        const lateral = coneLateral(h2, open);
+        return { ok: true, at: add(set.apex, add(scale(set.axis, h2), scale(p2, lateral))) };
+      }
+      const axial = h2 / r2;
+      const ax = scale(set.axis, axial < 0 ? -1 : 1);
+      const u2 = add(scale(ax, Math.cos(open * RAD2)), scale(p2, Math.sin(open * RAD2)));
+      return { ok: true, at: add(set.apex, scale(u2, r2)) };
+    }
+    case "conic": {
+      const branches = conicSamples(set, { steps: 128 });
+      let best = null, bestD = Infinity;
+      for (const b2 of branches) for (const p2 of b2) {
+        const d2 = len(sub(p2, target));
+        if (d2 < bestD) {
+          bestD = d2;
+          best = p2;
+        }
+      }
+      return best ? { ok: true, at: [...best], branch: "sampled" } : { ok: false, kind: "unresolved" };
+    }
+    case "empty":
+      return { ok: false, kind: "contradiction" };
+    case "uncertain":
+      return { ok: false, kind: "unresolved" };
+    default:
+      return { ok: false, kind: "unresolved" };
+  }
 }
 
 // assets/js/turtling/mafs/versors.js
@@ -1122,11 +1431,11 @@ var Versor = class _Versor {
   normalize() {
     const lengthSq = this.w * this.w + this.x * this.x + this.y * this.y + this.z * this.z;
     if (Math.abs(lengthSq) > _Versor.EPSILON) {
-      const scale = 1 / Math.sqrt(lengthSq);
-      this.w *= scale;
-      this.x *= scale;
-      this.y *= scale;
-      this.z *= scale;
+      const scale2 = 1 / Math.sqrt(lengthSq);
+      this.w *= scale2;
+      this.x *= scale2;
+      this.y *= scale2;
+      this.z *= scale2;
     }
     if (Math.abs(this.w) < _Versor.EPSILON) this.w = 0;
     if (Math.abs(this.x) < _Versor.EPSILON) this.x = 0;
@@ -1156,12 +1465,12 @@ var Versor = class _Versor {
     if (length < _Versor.EPSILON) {
       return _Versor.raw(1, 0, 0, 0);
     }
-    const scale = sinHalfAngle / length;
+    const scale2 = sinHalfAngle / length;
     return _Versor.raw(
       cosHalfAngle,
-      axis.x * scale,
-      axis.y * scale,
-      axis.z * scale
+      axis.x * scale2,
+      axis.y * scale2,
+      axis.z * scale2
     );
   }
   multiply(q2) {
@@ -1277,10 +1586,10 @@ var SE3 = {
   },
   // Map world point to local — dual of apply.
   // apply: local → world, unapply: world → local.
-  unapply(t2, point) {
-    const dx = point[0] - t2.position[0];
-    const dy = point[1] - t2.position[1];
-    const dz = point[2] - t2.position[2];
+  unapply(t2, point2) {
+    const dx = point2[0] - t2.position[0];
+    const dy = point2[1] - t2.position[1];
+    const dz = point2[2] - t2.position[2];
     return Versor.raw(t2.rotation.w, -t2.rotation.x, -t2.rotation.y, -t2.rotation.z).rotateVec(dx, dy, dz);
   },
   // Inverse rigid transform: the SE3 that undoes t. R⁻¹ = (q*, -q*·p).
@@ -1298,8 +1607,8 @@ var SE3 = {
     };
   },
   // Transform a point by an SE3: rotate then translate.
-  apply(t2, point) {
-    const [rx, ry, rz] = t2.rotation.rotateVec(point[0], point[1], point[2]);
+  apply(t2, point2) {
+    const [rx, ry, rz] = t2.rotation.rotateVec(point2[0], point2[1], point2[2]);
     return [t2.position[0] + rx, t2.position[1] + ry, t2.position[2] + rz];
   },
   isValid(t2) {
@@ -1312,10 +1621,848 @@ var SE3 = {
   }
 };
 
+// assets/js/turtling/laws/authored.js
+var AXIS_IDX = { x: 0, y: 1, z: 2 };
+var axisOk = (axis) => AXES.includes(axis);
+var missing = (law2, what) => ({ status: "cannot-measure", law: law2, reason: `the ${law2.feature} has a missing bound ${what}` });
+var unreadable = (law2) => ({ status: "cannot-measure", law: law2, reason: `cannot measure the ${law2.feature}` });
+var violation = (law2, residual) => ({ status: "violation", law: law2, residual });
+var pair = (endpoints) => [...endpoints];
+var one = (endpoints) => [endpoints[0]];
+var oneAxis = (endpoints, law2) => [endpoints[0], law2.axis];
+var targetObserver = ({ target, observer }) => [target.id, observer.id];
+var targetOnly = ({ target }) => [target.id];
+function tiltAngle(world, pose) {
+  if (!finite3(world) || !pose || !finite3(pose.position)) return { ok: false, reason: "non-finite position" };
+  const d2 = sub(world, pose.position);
+  const r2 = len(d2);
+  if (r2 <= 1e-9) return { ok: false, reason: "the point is at the apex" };
+  const nose = forwardOf(pose.rotation);
+  const angle = Math.acos(Math.max(-1, Math.min(1, dot(d2, nose) / r2))) * DEG;
+  return Number.isFinite(angle) ? { ok: true, angle } : { ok: false, reason: "cannot measure the tilt" };
+}
+function normalizeTilt(deg) {
+  if (!Number.isFinite(deg)) return deg;
+  const turn = (deg % 360 + 360) % 360;
+  return turn > 180 ? 360 - turn : turn;
+}
+function tiltResidual(got, want) {
+  const w2 = normalizeTilt(want);
+  return Math.min(Math.abs(got - w2), Math.abs(got - (180 - w2)));
+}
+function coneOf(pose, halfAngle) {
+  if (!pose || !finite3(pose.position) || !Number.isFinite(halfAngle)) return null;
+  const axis = forwardOf(pose.rotation);
+  return axis ? cone(pose.position, axis, halfAngle) : null;
+}
+function asLaw(row2, spec) {
+  return { feature: row2.name, endpoints: row2.endpoints(spec), frame: spec.observer.id, predicate: spec.value, axis: spec.axis };
+}
+function defaults(row2) {
+  const residualOf = (got, want) => row2.residual ? row2.residual(got, want) : got - want;
+  return {
+    ...row2,
+    measure: row2.measure ?? ((law2, ctx) => {
+      const at2 = ctx.worldOf(law2.endpoints[0]);
+      const got = at2 ? row2.read(law2, at2, ctx) : null;
+      if (got == null) return at2 ? unreadable(law2) : missing(law2, "reference");
+      const residual = residualOf(got, law2.predicate);
+      if (!Number.isFinite(residual)) return unreadable(law2);
+      return Math.abs(residual) > ACCEPT_TOL ? violation(law2, residual) : { status: "valid" };
+    }),
+    propose: row2.propose ?? ((spec) => {
+      if (row2.guard?.finite && !Number.isFinite(spec.value)) {
+        return { ok: false, kind: "relation", reason: `a ${row2.name} needs a finite value` };
+      }
+      const set = row2.set(asLaw(row2, spec), spec);
+      if (!set) return { ok: false, kind: "unresolved", reason: `no ${row2.name} locus` };
+      const near = nearest(set, spec.worldOf(spec.target));
+      return near.ok ? { ok: true, world: near.at } : { ok: false, kind: "unresolved", reason: `no point on the ${row2.name}` };
+    }),
+    validate: row2.validate ?? ((spec) => {
+      const got = row2.read(asLaw(row2, spec), spec.world, spec);
+      if (got == null) return { ok: false, reason: `cannot read the ${row2.name}` };
+      const residual = residualOf(got, spec.value);
+      return Math.abs(residual) <= ACCEPT_TOL ? { ok: true, residual } : { ok: false, reason: `the ${row2.name} is ${got}, not ${spec.value}` };
+    })
+  };
+}
+function bearingOf(at2, pose) {
+  if (!finite3(at2) || !pose || !finite3(pose.position)) return null;
+  const d2 = sub(at2, pose.position);
+  const h2 = headingOf(pose.rotation);
+  if (h2 === null || Math.hypot(d2[0], d2[1]) <= 1e-9) return null;
+  return wrapPositive(compassOf(d2[0], d2[1]) - h2);
+}
+function bearingHalf(pose, value) {
+  if (!pose || !finite3(pose.position) || !Number.isFinite(value)) return null;
+  const h2 = headingOf(pose.rotation);
+  if (h2 === null) return null;
+  const c2 = (h2 + value) * (Math.PI / 180);
+  const dir = [Math.sin(c2), Math.cos(c2), 0];
+  return halfplane(pose.position, [-dir[1], dir[0], 0], dir);
+}
+var distance = {
+  name: "distance",
+  family: "relational",
+  kind: "length",
+  guard: { finite: true, nonNegative: true },
+  bounds: { min: 0, max: Infinity },
+  properties: ["distance"],
+  payload: "expr",
+  address: pair,
+  endpoints: targetObserver,
+  measure(law2, { worldOf }) {
+    const a2 = worldOf(law2.endpoints[0]), b2 = worldOf(law2.endpoints[1]);
+    if (!a2 || !b2) return missing(law2, "participant");
+    const d2 = len(sub(a2, b2));
+    if (!Number.isFinite(d2)) return unreadable(law2);
+    return Math.abs(d2 - law2.predicate) > ACCEPT_TOL ? violation(law2, d2 - law2.predicate) : { status: "valid" };
+  },
+  propose({ target, observer, value, worldOf, pinWorld }) {
+    const o2 = worldOf(observer);
+    const pin = pinWorld?.(target);
+    if (pin) {
+      return validateDistance(pin, o2, value).ok ? { ok: true, world: pin } : { ok: false, reason: "the pinned position conflicts with the distance", kind: "obstructed" };
+    }
+    const r2 = realizeDistance(worldOf(target), o2, value);
+    return r2.ok ? { ok: true, world: r2.pose } : { ok: false, reason: r2.reason };
+  },
+  validate({ observer, value, world, worldOf }) {
+    return validateDistance(world, worldOf(observer), value);
+  },
+  set(law2, { worldOf, writerId }) {
+    const otherId = law2.endpoints.find((id2) => id2 !== writerId);
+    const other = worldOf(otherId);
+    return finite3(other) && Number.isFinite(law2.predicate) ? sphere(other, law2.predicate) : null;
+  },
+  constraint(law2, { worldOf, heldOf, writerId }) {
+    const otherId = law2.endpoints.find((id2) => id2 !== writerId);
+    const other = worldOf(otherId);
+    if (!finite3(other)) return null;
+    const c2 = { feature: "distance", other, radius: law2.predicate, otherHeld: heldOf?.(otherId) === true };
+    if (law2.predicate > 0) c2.set = sphere(other, law2.predicate);
+    return c2;
+  },
+  touches: (law2, id2) => law2.endpoints.includes(id2)
+};
+var position = {
+  name: "position",
+  family: "spatial",
+  kind: "point",
+  guard: { finite3: true },
+  bounds: null,
+  properties: [],
+  payload: "coords",
+  address: one,
+  endpoints: targetOnly,
+  measure(law2, { worldOf, poseOf }) {
+    const w2 = worldOf(law2.endpoints[0]);
+    const frame = poseOf(law2.frame);
+    if (!w2 || !frame) return missing(law2, "reference");
+    const p2 = SE3.apply(frame, law2.predicate);
+    if (!finite3(w2) || !finite3(p2)) return unreadable(law2);
+    const residual = Math.hypot(w2[0] - p2[0], w2[1] - p2[1], w2[2] - p2[2]);
+    return residual > ACCEPT_TOL ? violation(law2, residual) : { status: "valid" };
+  },
+  propose({ target, observer, value, poseOf, conflictAt: conflictAt2, ownerOf }) {
+    if (!Array.isArray(value) || value.length !== 3 || !value.every(Number.isFinite)) {
+      return { ok: false, reason: "a position needs three finite coordinates" };
+    }
+    const world = SE3.apply(poseOf(observer), value);
+    const conflict = conflictAt2?.(target, world);
+    const at2 = conflict ? ownerOf?.(conflict.law) ?? "source" : null;
+    return conflict ? conflict.domain ? { ok: false, reason: `cannot measure the pin against the ${conflict.law.feature} at ${at2}`, kind: "unresolved" } : { ok: false, reason: `the pin conflicts with the ${conflict.law.feature} at ${at2}`, kind: "obstructed", conflict: conflict.law, residual: conflict.residual, world } : { ok: true, world };
+  },
+  validate({ world }) {
+    return finite3(world) ? { ok: true } : { ok: false, reason: "non-finite position" };
+  },
+  set(law2, { poseOf }) {
+    const frame = poseOf(law2.frame);
+    return frame ? point(SE3.apply(frame, law2.predicate)) : null;
+  },
+  constraint() {
+    return { pinned: true };
+  },
+  touches: (law2, id2) => law2.endpoints[0] === id2
+};
+var coordinate = defaults({
+  name: "coordinate",
+  family: null,
+  kind: "scalar",
+  guard: { finite: true },
+  bounds: null,
+  properties: ["x", "y", "z"],
+  payload: "expr",
+  form: (property) => ({ feature: "coordinate", axis: property }),
+  address: oneAxis,
+  endpoints: targetOnly,
+  meet: true,
+  measure(law2, { worldOf, poseOf }) {
+    const w2 = worldOf(law2.endpoints[0]);
+    const frame = poseOf(law2.frame);
+    if (!w2 || !frame) return missing(law2, "reference");
+    if (!axisOk(law2.axis)) return { status: "cannot-measure", law: law2, reason: `the ${law2.feature} has an unknown axis '${law2.axis}'` };
+    const local = SE3.unapply(frame, w2);
+    if (!finite3(local)) return unreadable(law2);
+    const residual = local[AXIS_IDX[law2.axis]] - law2.predicate;
+    if (!Number.isFinite(residual)) return unreadable(law2);
+    return Math.abs(residual) > ACCEPT_TOL ? violation(law2, residual) : { status: "valid" };
+  },
+  read(law2, at2, { poseOf }) {
+    if (!axisOk(law2.axis) || !finite3(at2)) return null;
+    const frame = poseOf(law2.frame);
+    if (!frame) return null;
+    const local = SE3.unapply(frame, at2);
+    return finite3(local) ? local[AXIS_IDX[law2.axis]] : null;
+  },
+  set(law2, { poseOf }) {
+    if (!axisOk(law2.axis)) return null;
+    const pl2 = planeOfAxis(poseOf(law2.frame), law2.axis, law2.predicate);
+    return pl2 ? plane(pl2.point, pl2.normal) : null;
+  },
+  constraint(law2, { poseOf }) {
+    const pl2 = planeOfAxis(poseOf(law2.frame), law2.axis, law2.predicate);
+    return pl2 ? { feature: "coordinate", axis: law2.axis, value: law2.predicate, plane: pl2, set: plane(pl2.point, pl2.normal) } : null;
+  },
+  touches: (law2, id2) => law2.endpoints[0] === id2
+});
+var tilt = defaults({
+  name: "tilt",
+  family: null,
+  kind: "angle",
+  guard: { finite: true },
+  bounds: { min: 0, max: 180 },
+  properties: ["tilt"],
+  payload: "expr",
+  address: one,
+  endpoints: targetOnly,
+  meet: true,
+  residual: tiltResidual,
+  read(law2, at2, { poseOf }) {
+    const reading = tiltAngle(at2, poseOf(law2.frame));
+    return reading.ok ? reading.angle : null;
+  },
+  set(law2, { poseOf }) {
+    return coneOf(poseOf(law2.frame), normalizeTilt(law2.predicate));
+  },
+  // A tilt from a frame. A point on the apex has no direction to read, so the
+  // declaration realizes a generator from the frame's own up and the paper-scale
+  // arm instead of failing to measure. (id:laws-freedom)
+  propose({ target, observer, value, worldOf, poseOf }) {
+    const pose = poseOf(observer);
+    if (!pose || !finite3(pose.position)) return { ok: false, kind: "unresolved", reason: "the declaring frame has no pose" };
+    const nose = forwardOf(pose.rotation);
+    const up2 = upOf(pose.rotation);
+    const moving = worldOf(target);
+    if (!finite3(moving)) return { ok: false, kind: "unresolved", reason: "the point has no position" };
+    const r2 = realizeTilt(pose.position, nose, up2, moving, normalizeTilt(value));
+    return r2.ok ? { ok: true, world: r2.pose } : { ok: false, reason: r2.reason };
+  },
+  constraint(law2, { poseOf }) {
+    const pose = poseOf(law2.frame);
+    if (!pose || !finite3(pose.position)) return null;
+    const axis = forwardOf(pose.rotation);
+    if (!axis) return null;
+    const halfAngle = normalizeTilt(law2.predicate);
+    return { feature: "tilt", apex: [...pose.position], axis: [...axis], halfAngle, set: cone(pose.position, axis, halfAngle) };
+  },
+  touches: (law2, id2) => law2.endpoints[0] === id2
+});
+var bearing = defaults({
+  name: "bearing",
+  family: "relational",
+  kind: "angle",
+  guard: { finite: true },
+  bounds: null,
+  properties: ["bearing"],
+  payload: "expr",
+  address: one,
+  endpoints: targetOnly,
+  meet: true,
+  residual: (got, want) => wrapDegrees(got - want),
+  read(law2, at2, { poseOf }) {
+    return bearingOf(at2, poseOf(law2.frame));
+  },
+  set(law2, { poseOf }) {
+    return bearingHalf(poseOf(law2.frame), law2.predicate);
+  },
+  // A bearing from a frame. A point on the vertex has no direction, so the
+  // declaration realizes a paper-scale arm on the ray. (id:laws-freedom)
+  propose({ target, observer, value, worldOf, poseOf }) {
+    const pose = poseOf(observer);
+    if (!pose || !finite3(pose.position)) return { ok: false, kind: "unresolved", reason: "the declaring frame has no pose" };
+    const heading = headingOf(pose.rotation);
+    if (heading === null) return { ok: false, kind: "unresolved", reason: "the declaring frame has no heading" };
+    const moving = worldOf(target);
+    if (!finite3(moving)) return { ok: false, kind: "unresolved", reason: "the point has no position" };
+    const r2 = realizeBearing({ vertex: pose.position, moving }, heading + value);
+    return r2.ok ? { ok: true, world: r2.pose } : { ok: false, reason: r2.reason };
+  },
+  constraint(law2, { poseOf }) {
+    const pl2 = bearingHalf(poseOf(law2.frame), law2.predicate);
+    return pl2 ? { feature: "bearing", set: pl2 } : null;
+  },
+  touches: (law2, id2) => law2.endpoints[0] === id2
+});
+var AUTHORED = { distance, position, coordinate, tilt, bearing };
+function parseProperty(property) {
+  for (const row2 of Object.values(AUTHORED)) {
+    if (row2.properties?.includes(property)) return row2.form ? row2.form(property) : { feature: row2.name };
+  }
+  return null;
+}
+function parseSupport() {
+  const names = Object.values(AUTHORED).flatMap((row2) => row2.properties ?? []);
+  if (names.length === 0) return "a supported relation";
+  if (names.length === 1) return `a supported relation (${names[0]})`;
+  return `a supported relation (${names.slice(0, -1).join(", ")} or ${names[names.length - 1]})`;
+}
+function payloadOf(feature) {
+  return AUTHORED[feature]?.payload ?? null;
+}
+function addressShape(feature) {
+  return AUTHORED[feature]?.address ?? null;
+}
+function bindWorld(getFrame, { positionOf, poseOf, ...extras } = {}) {
+  const frameOf2 = (frameOrId) => {
+    if (!frameOrId) return null;
+    return typeof frameOrId === "object" && frameOrId.id != null ? frameOrId : getFrame(frameOrId);
+  };
+  return {
+    worldOf: (frameOrId) => {
+      const f2 = frameOf2(frameOrId);
+      return f2 && positionOf ? positionOf(f2) : null;
+    },
+    poseOf: (frameOrId) => {
+      const f2 = frameOf2(frameOrId);
+      return f2 && poseOf ? poseOf(f2) : null;
+    },
+    ...extras
+  };
+}
+function constraintsOn(id2, laws, ctx) {
+  const out = [];
+  for (const law2 of laws) {
+    const row2 = AUTHORED[law2.feature];
+    if (!row2?.constraint || !row2.touches?.(law2, id2)) continue;
+    const c2 = row2.constraint(law2, ctx);
+    if (c2) out.push(c2);
+  }
+  return out;
+}
+
+// assets/js/turtling/address.js
+var CELL = "#";
+var NEST = "/";
+var topOf = (address) => String(address ?? "").split(NEST)[0];
+var isSeatOf = (address, seat) => {
+  const top = topOf(address);
+  return top === seat || top.startsWith(`${seat}${CELL}`);
+};
+var rebase = (address, from, to) => to === from ? address : to + String(address).slice(String(from).length);
+
+// assets/js/turtling/parse.js
+var OPERATOR_SET = new Set(OPERATORS);
+var ParserState = class {
+  constructor(lines) {
+    this.lines = lines;
+    this.pos = 0;
+    this.len = lines.length;
+    this.last = null;
+  }
+  hasMore() {
+    return this.pos < this.len;
+  }
+  next() {
+    this.last = this.lines[this.pos++];
+    return this.last;
+  }
+};
+var END = "end";
+var DO = "do";
+var COMMENT = "#";
+var MEADOW_FENCE = /^[ \t]*###[ \t]*$/;
+var CELL_OPEN = /^[ \t]*```/;
+var CELL_CLOSE = /^[ \t]*```[ \t]*$/;
+var isMeadowFence = (s2) => MEADOW_FENCE.test(s2 ?? "");
+var isCellOpen = (s2) => CELL_OPEN.test(s2 ?? "");
+var isCellClose = (s2) => CELL_CLOSE.test(s2 ?? "");
+var splitComment = (raw) => {
+  const i2 = raw.indexOf(COMMENT);
+  return i2 === -1 ? [raw, void 0] : [raw.slice(0, i2).trimEnd(), raw.slice(i2 + 1)];
+};
+var CLOSERS = { '"': '"', "'": "'", "[": "]", "(": ")" };
+var OPENS_BRACKET = { "[": 1, "(": 1 };
+var BLOCK_KW = { for: 1, loop: 1, def: 1, draw: 1, when: 1, as: 1 };
+function meadowNode(line2) {
+  const node = stamp(new ASTNode("Empty", "").assign_meta("lit", line2.meadow).assign_meta("meadow", true).assign_meta("meadowOpen", line2.meadowOpen !== false).assign_meta("meadowClose", line2.meadowClose !== false), line2);
+  if (line2.meadowCloseImplicit) node.assign_meta("meadowCloseImplicit", true);
+  return node;
+}
+function cellFenceNode(line2) {
+  const node = stamp(new ASTNode("Empty", "").assign_meta("cellFence", true), line2);
+  if (line2.info) node.assign_meta("info", line2.info);
+  if (line2.implicit) node.assign_meta("implicit", true);
+  if (line2.meadowOpen) node.assign_meta("meadowOpen", true);
+  if (line2.meadowClose) node.assign_meta("meadowClose", true);
+  if (line2.meadowCloseImplicit) node.assign_meta("meadowCloseImplicit", true);
+  return node;
+}
+function stamp(node, rec, endLine = null) {
+  node.span = { line: rec.line ?? 0, endLine: endLine ?? rec.endLine ?? rec.line ?? 0 };
+  return node;
+}
+function errorNode(rec, expected, found, children = []) {
+  return stamp(new ASTNode("Error", rec.text, children, {
+    expected,
+    found,
+    kind: "parse"
+  }), rec);
+}
+var attachComment = (node, comment) => comment != null ? node.assign_meta("comment", comment) : node;
+function parseProgram(program) {
+  const lines = tokenize(program);
+  const state = new ParserState(lines);
+  const ast = [];
+  while (state.hasMore()) {
+    const line2 = state.next();
+    if (line2.meadow !== void 0) {
+      ast.push(meadowNode(line2));
+      continue;
+    }
+    if (line2.cellFence) {
+      ast.push(cellFenceNode(line2));
+      continue;
+    }
+    const tokens = tokenizeLine(line2.text);
+    const comment = line2.comment;
+    if (tokens.length === 1 && tokens[0] === END) {
+      ast.push(attachComment(errorNode(line2, "an open block to close", `'${END}'`), comment));
+      continue;
+    }
+    if (tokens.length === 0) {
+      const node2 = stamp(new ASTNode("Empty", ""), line2);
+      attachComment(node2, comment);
+      ast.push(node2);
+      continue;
+    }
+    const node = parseStatement(tokens, state, line2);
+    attachComment(node, comment);
+    ast.push(node);
+  }
+  return ast;
+}
+var OVERLAY = /* @__PURE__ */ new Set(["span", "comment", "endComment", "lit"]);
+var contentKey = (node) => JSON.stringify(node, (k2, v2) => OVERLAY.has(k2) ? void 0 : v2);
+function adoptOverlay(prev, next) {
+  if (next.span) {
+    if (prev.span) {
+      prev.span.line = next.span.line;
+      prev.span.endLine = next.span.endLine;
+    } else prev.span = { line: next.span.line, endLine: next.span.endLine };
+  }
+  const pm = prev.meta, nm = next.meta;
+  if (pm && nm) {
+    if ("lit" in nm) pm.lit = nm.lit;
+    delete pm.endComment;
+    delete pm.comment;
+    if (nm.endComment !== void 0) pm.endComment = nm.endComment;
+    if (nm.comment !== void 0) pm.comment = nm.comment;
+  }
+  const pc2 = prev.children ?? [], nc2 = next.children ?? [];
+  for (let i2 = 0; i2 < pc2.length; i2++) adoptOverlay(pc2[i2], nc2[i2]);
+}
+function reparseProgram(text, prevText, prevAst) {
+  if (prevText == null || prevAst == null) return parseProgram(text);
+  if (prevText === text) return prevAst;
+  const fresh = parseProgram(text);
+  const pool = /* @__PURE__ */ new Map();
+  for (const node of prevAst) {
+    const key = contentKey(node);
+    const bucket = pool.get(key);
+    if (bucket) bucket.push(node);
+    else pool.set(key, [node]);
+  }
+  return fresh.map((node) => {
+    const bucket = pool.get(contentKey(node));
+    const prev = bucket?.shift();
+    if (!prev) return node;
+    adoptOverlay(prev, node);
+    return prev;
+  });
+}
+function tokenize(program) {
+  const rawLines = program.split(/\r\n|\r|\n/);
+  const n2 = rawLines.length;
+  const lines = [];
+  let i2 = 0;
+  const pushCode = (raw, out, line2) => {
+    const [code, comment] = splitComment(raw);
+    const parts = code.replace(/\bend\b(?!$)/g, "end\n").split("\n").map((p2) => p2.trim()).filter(Boolean);
+    const recs = (parts.length ? parts : [""]).map((text) => ({ text, line: line2 }));
+    if (comment !== void 0) recs[recs.length - 1].comment = comment;
+    for (const rec of recs) out.push(rec);
+  };
+  while (i2 < n2) {
+    if (isMeadowFence(rawLines[i2])) {
+      const fenceLine = i2 + 1;
+      i2++;
+      const units = [];
+      let chunk = [];
+      let chunkStart = 0;
+      const flushChunk = () => {
+        if (chunk.length) {
+          units.push({
+            meadow: chunk.join("\n"),
+            meadowOpen: false,
+            meadowClose: false,
+            line: chunkStart,
+            endLine: chunkStart + chunk.length - 1
+          });
+          chunk = [];
+        }
+      };
+      while (i2 < n2 && !isMeadowFence(rawLines[i2])) {
+        if (isCellOpen(rawLines[i2])) {
+          flushChunk();
+          const info = rawLines[i2].replace(CELL_OPEN, "").trim();
+          units.push({
+            cellFence: true,
+            meadowOpen: false,
+            meadowClose: false,
+            line: i2 + 1,
+            info: info || void 0
+          });
+          i2++;
+          while (i2 < n2 && !isCellClose(rawLines[i2]) && !isMeadowFence(rawLines[i2])) {
+            pushCode(rawLines[i2], units, i2 + 1);
+            i2++;
+          }
+          const closed = i2 < n2 && isCellClose(rawLines[i2]);
+          if (closed) i2++;
+          units.push({
+            cellFence: true,
+            meadowOpen: false,
+            meadowClose: false,
+            line: Math.min(i2, n2),
+            implicit: !closed || void 0
+          });
+          continue;
+        }
+        if (!chunk.length) chunkStart = i2 + 1;
+        chunk.push(rawLines[i2]);
+        i2++;
+      }
+      flushChunk();
+      if (units.length === 0) units.push({ meadow: "", meadowOpen: false, meadowClose: false, line: fenceLine });
+      const meadowClosed = i2 < n2;
+      i2++;
+      units[0].meadowOpen = true;
+      units[units.length - 1].meadowClose = true;
+      if (!meadowClosed) units[units.length - 1].meadowCloseImplicit = true;
+      lines.push(...units);
+      continue;
+    }
+    const trimmed = rawLines[i2].trim();
+    if (trimmed) pushCode(trimmed, lines, i2 + 1);
+    else lines.push({ text: "", line: i2 + 1, blank: true });
+    i2++;
+  }
+  return lines;
+}
+function tokenizeLine(code) {
+  if (!code) return [];
+  const tokens = [];
+  const len2 = code.length;
+  let start = 0;
+  let i2 = 0;
+  let inGroup = null;
+  let depth = 0;
+  while (i2 < len2) {
+    const ch2 = code[i2];
+    if (!inGroup) {
+      if (ch2 === " " || ch2 === "	") {
+        if (i2 > start) tokens.push(code.slice(start, i2));
+        start = i2 + 1;
+        i2++;
+        continue;
+      }
+      const closer = CLOSERS[ch2];
+      if (closer) {
+        inGroup = closer;
+        if (OPENS_BRACKET[ch2]) depth = 1;
+      }
+      i2++;
+    } else {
+      if (OPENS_BRACKET[inGroup === "]" ? "[" : inGroup === ")" ? "(" : null]) {
+        const opener = inGroup === "]" ? "[" : "(";
+        if (ch2 === opener) {
+          depth++;
+        } else if (ch2 === inGroup) {
+          depth--;
+          if (depth === 0) inGroup = null;
+        }
+      } else if (ch2 === inGroup) {
+        inGroup = null;
+      }
+      i2++;
+    }
+  }
+  if (i2 > start) tokens.push(code.slice(start, i2));
+  return tokens;
+}
+function parseArguments(tokens) {
+  const len2 = tokens.length;
+  if (len2 === 0) return [];
+  const args = [];
+  let bufStart = -1;
+  let closer = null;
+  let depth = 0;
+  for (let i2 = 0; i2 < len2; i2++) {
+    const token = tokens[i2];
+    const firstCh = token[0];
+    if (bufStart === -1) {
+      const match = CLOSERS[firstCh];
+      if (!match) {
+        let joined = token;
+        let last = token;
+        while (i2 + 1 < len2 && (OPERATOR_SET.has(last) || OPERATOR_SET.has(tokens[i2 + 1]))) {
+          last = tokens[++i2];
+          joined += " " + last;
+        }
+        args.push(new ASTNode("Argument", joined));
+        continue;
+      }
+      closer = match;
+      const lastCh = token[token.length - 1];
+      if (OPENS_BRACKET[firstCh]) {
+        depth = 1;
+        const tLen = token.length;
+        for (let j2 = 1; j2 < tLen; j2++) {
+          const ch2 = token[j2];
+          if (ch2 === firstCh) depth++;
+          else if (ch2 === closer) depth--;
+        }
+        if (depth === 0) {
+          args.push(new ASTNode("Argument", token));
+          closer = null;
+        } else {
+          bufStart = i2;
+        }
+      } else {
+        const closeIdx = token.indexOf(closer, 1);
+        if (closeIdx !== -1) {
+          args.push(new ASTNode("Argument", token));
+          closer = null;
+        } else {
+          bufStart = i2;
+        }
+      }
+    } else {
+      if (OPENS_BRACKET[closer === "]" ? "[" : "("]) {
+        const opener = closer === "]" ? "[" : "(";
+        const tLen = token.length;
+        for (let j2 = 0; j2 < tLen; j2++) {
+          const ch2 = token[j2];
+          if (ch2 === opener) depth++;
+          else if (ch2 === closer) depth--;
+        }
+        if (depth === 0) {
+          let joined = tokens[bufStart];
+          for (let k2 = bufStart + 1; k2 <= i2; k2++) {
+            joined += " " + tokens[k2];
+          }
+          args.push(new ASTNode("Argument", joined));
+          bufStart = -1;
+          closer = null;
+        }
+      } else {
+        if (token[token.length - 1] === closer) {
+          let joined = tokens[bufStart];
+          for (let k2 = bufStart + 1; k2 <= i2; k2++) {
+            joined += " " + tokens[k2];
+          }
+          args.push(new ASTNode("Argument", joined));
+          bufStart = -1;
+          closer = null;
+        }
+      }
+    }
+  }
+  if (bufStart !== -1) {
+    let joined = tokens[bufStart];
+    for (let k2 = bufStart + 1; k2 < len2; k2++) {
+      joined += " " + tokens[k2];
+    }
+    args.push(new ASTNode("Argument", joined));
+  }
+  return args;
+}
+function parseBlock(state, kind = null) {
+  const prevKind = state.blockKind ?? null;
+  state.blockKind = kind;
+  try {
+    return parseBlockLines(state);
+  } finally {
+    state.blockKind = prevKind;
+  }
+}
+function parseBlockLines(state) {
+  const block = [];
+  while (state.hasMore()) {
+    const line2 = state.next();
+    if (line2.meadow !== void 0) {
+      block.push(meadowNode(line2));
+      continue;
+    }
+    if (line2.cellFence) {
+      block.push(cellFenceNode(line2));
+      continue;
+    }
+    const tokens = tokenizeLine(line2.text);
+    const comment = line2.comment;
+    if (tokens.length === 1 && tokens[0] === END) {
+      return { block, terminated: true, endComment: comment };
+    }
+    if (tokens.length === 0) {
+      const node2 = stamp(new ASTNode("Empty", ""), line2);
+      attachComment(node2, comment);
+      block.push(node2);
+      continue;
+    }
+    const node = parseStatement(tokens, state, line2);
+    attachComment(node, comment);
+    block.push(node);
+  }
+  return { block, terminated: false };
+}
+function parseCoords(expr) {
+  const m2 = /^\[\s*([^,\]\s]+)[,\s]+([^,\]\s]+)[,\s]+([^,\]\s]+)\s*\]$/.exec(expr);
+  if (!m2) return null;
+  const n2 = [m2[1], m2[2], m2[3]].map(Number);
+  return n2.every(Number.isFinite) ? n2 : null;
+}
+function parseStatement(tokens, state, rec) {
+  const kw = tokens[0];
+  const len2 = tokens.length;
+  if (kw === "let") {
+    if (len2 < 2) return errorNode(rec, "a name after 'let'", "end of statement");
+    const kind = state.blockKind ?? null;
+    const introduced = () => kind === "loop" || kind === "for" ? errorNode(rec, `a declaration cannot live inside '${kind}'`, kw) : null;
+    let lhs = tokens[1];
+    let rest = tokens.slice(2);
+    let expr = null;
+    const eqAt = lhs.indexOf("=");
+    if (eqAt > 0) {
+      expr = [lhs.slice(eqAt + 1), ...rest].join(" ").trim();
+      lhs = lhs.slice(0, eqAt);
+    } else if (rest[0] === "=") {
+      expr = rest.slice(1).join(" ").trim();
+    } else if (rest.length > 0) {
+      return errorNode(rec, "'=' after a name", rest[0]);
+    }
+    if (expr === null) return introduced() ?? stamp(new ASTNode("Existence", lhs), rec);
+    if (!expr) return errorNode(rec, "a value after =", "end of statement");
+    const dot2 = lhs.indexOf(".");
+    if (dot2 > 0) {
+      const target = lhs.slice(0, dot2);
+      const property = lhs.slice(dot2 + 1);
+      const parsed = parseProperty(property);
+      if (parsed) {
+        return introduced() ?? stamp(new ASTNode("Law", parsed.feature, [], { target, expr, ...parsed }), rec);
+      }
+      return errorNode(rec, parseSupport(), lhs);
+    }
+    if (expr === "origin") return introduced() ?? stamp(new ASTNode("Law", "position", [], { target: lhs, coords: [0, 0, 0] }), rec);
+    const coords = parseCoords(expr);
+    if (coords) return introduced() ?? stamp(new ASTNode("Law", "position", [], { target: lhs, coords }), rec);
+    if (/^\[/.test(expr)) {
+      return errorNode(rec, "a property (A.distance) or a position (origin or [x, y, z])", expr);
+    }
+    if (!/^[A-Za-z_][\w-]*$/.test(lhs)) {
+      return errorNode(rec, "a name after 'let'", lhs);
+    }
+    return stamp(new ASTNode("Scalar", lhs, [], { expr }), rec);
+  }
+  if (!BLOCK_KW[kw]) {
+    return stamp(new ASTNode("Call", kw, parseArguments(tokens.slice(1))), rec);
+  }
+  const last = tokens[len2 - 1];
+  if (last !== DO) {
+    return errorNode(rec, `'do' to open '${kw}'`, last);
+  }
+  const blockNode = (make) => {
+    const { block, terminated, endComment } = parseBlock(state, kw);
+    const endLine = state.last?.endLine ?? state.last?.line ?? rec.line;
+    if (!terminated) {
+      const err = errorNode(rec, `'end' to close '${kw}'`, "end of program", block);
+      err.span.endLine = endLine;
+      return err;
+    }
+    const node = stamp(make(block), rec, endLine);
+    if (endComment != null) node.assign_meta("endComment", endComment);
+    return node;
+  };
+  if (kw === "for" || kw === "loop") {
+    if (len2 < 3) return errorNode(rec, `a number of loops after '${kw}'`, DO);
+    return blockNode((block) => new ASTNode("Loop", tokens[1], block));
+  }
+  if (kw === "def" || kw === "draw") {
+    if (len2 < 3) return errorNode(rec, `a name after '${kw}'`, DO);
+    const name = tokens[1];
+    const argTokens = tokens.slice(2, len2 - 1);
+    const args = argTokens.map((arg) => new ASTNode("Argument", arg));
+    return blockNode((block) => new ASTNode("Define", name, block, { args }));
+  }
+  if (kw === "when") {
+    if (len2 < 3) return errorNode(rec, "a condition or event after 'when'", DO);
+    const firstToken = tokens[1];
+    const isEvent = /^['"]/.test(firstToken);
+    if (isEvent) {
+      const meta = { event: true };
+      if (len2 > 3) meta.binding = tokens[2];
+      return blockNode((block) => new ASTNode("When", firstToken, block, meta));
+    } else {
+      const expr = tokens.slice(1, len2 - 1).join(" ");
+      return blockNode((block) => new ASTNode("When", expr, block));
+    }
+  }
+  if (kw === "as") {
+    if (len2 < 3) return errorNode(rec, "an assistant name after 'as'", DO);
+    const meta = {};
+    if (len2 > 3) meta.frame = tokens[2];
+    return blockNode((block) => new ASTNode("Ambient", tokens[1], block, meta));
+  }
+  return errorNode(rec, "a known block keyword", kw);
+}
+
+// assets/js/weave/queries.js
+function ailmentsFor(errors, seat, key = seat) {
+  if (!errors || seat == null) return [];
+  const out = [];
+  for (const e2 of errors) {
+    if (!isSeatOf(e2.address, seat)) continue;
+    out.push(key === seat ? e2 : { ...e2, address: rebase(e2.address, seat, key) });
+  }
+  return out;
+}
+function standingAilments({ frames = [], seats = [], rehearsals = [] } = {}) {
+  const out = [...frames, ...seats];
+  const seen = /* @__PURE__ */ new Set();
+  for (const w2 of rehearsals) {
+    const at2 = `${w2.message}@${w2.span?.line ?? "?"}`;
+    if (seen.has(at2)) continue;
+    seen.add(at2);
+    out.push(w2);
+  }
+  return out;
+}
+
 // assets/js/turtling/commands.js
-function fw(ctx, distance = 0) {
+function fw(ctx, distance2 = 0) {
   const t2 = ctx.transform;
-  const [wx, wy, wz] = t2.rotation.rotateVec(distance, 0, 0);
+  const [wx, wy, wz] = t2.rotation.rotateVec(distance2, 0, 0);
   const newPos = [t2.position[0] + wx, t2.position[1] + wy, t2.position[2] + wz];
   const transform = { rotation: t2.rotation, position: newPos };
   if (ctx.style.down) {
@@ -1338,9 +2485,9 @@ function jmpto(ctx, x2 = 0, y2 = 0, z2 = null) {
     stroke: "break"
   };
 }
-function jmp(ctx, distance = 0) {
+function jmp(ctx, distance2 = 0) {
   const t2 = ctx.transform;
-  const [wx, wy, wz] = t2.rotation.rotateVec(distance, 0, 0);
+  const [wx, wy, wz] = t2.rotation.rotateVec(distance2, 0, 0);
   const newPos = [t2.position[0] + wx, t2.position[1] + wy, t2.position[2] + wz];
   const transform = { rotation: t2.rotation, position: newPos };
   return { transform, stroke: "break" };
@@ -1398,7 +2545,7 @@ function label(ctx, text = ".", size = 1) {
     }]
   };
 }
-function grid(ctx, divisions = 100, unit = 10) {
+function grid(ctx, divisions = 100, unit4 = 10) {
   const pos = ctx.transform.position;
   const gridRotation = ctx.transform.rotation.multiply(
     Versor.fromAxisAngle(AXIS_X, 90)
@@ -1408,7 +2555,7 @@ function grid(ctx, divisions = 100, unit = 10) {
       type: "grid",
       position: [pos[0], pos[1], pos[2]],
       color: ctx.style.color,
-      size: unit * divisions,
+      size: unit4 * divisions,
       divisions,
       rotation: gridRotation
     }]
@@ -1453,7 +2600,7 @@ function beColour(ctx, color = "silver") {
   let resolved = color;
   if (color === "invisible") resolved = "#00000000";
   if (Number.isFinite(color)) resolved = `hsla(${~~(360 * color)}, 70%,  72%)`;
-  if (color === "random") resolved = `hsla(${~~(360 * Math.random())}, 70%,  72%)`;
+  if (color === "random") resolved = `hsla(${~~(360 * (ctx.random ?? Math.random)())}, 70%,  72%)`;
   if (/^([0-9a-f]{3}){1,2}$/i.test(color)) resolved = "#" + color;
   return {
     style: { color: resolved },
@@ -1468,7 +2615,7 @@ function hide(ctx) {
 }
 function home(ctx) {
   return {
-    transform: { rotation: ctx.transform.rotation, position: [0, 0, 0] },
+    transform: { rotation: SE3.identity().rotation, position: [0, 0, 0] },
     stroke: "break"
   };
 }
@@ -1542,7 +2689,7 @@ function recenterPose() {
 function createStroke() {
   return { path: null, lastPos: [0, 0, 0] };
 }
-function extend(stroke, point, style) {
+function extend(stroke, point2, style) {
   if (!stroke.path) {
     stroke.path = {
       color: style.color,
@@ -1551,7 +2698,7 @@ function extend(stroke, point, style) {
       filled: false
     };
   }
-  stroke.path.points.push(point);
+  stroke.path.points.push(point2);
 }
 function flush(stroke) {
   if (!stroke.path) return null;
@@ -1605,6 +2752,13 @@ function matchPattern(pattern, eventName) {
 }
 
 // assets/js/turtling/executor.js
+function demanded(value, expr, domain, state) {
+  if (domain === "reading") return value;
+  if (value === null && state.deps?.mathEvaluator?.resolveExternal) {
+    throw new Error(`No ${domain}: ${expr} is nothing`);
+  }
+  return value;
+}
 var roundVec = (v2) => Math.abs(v2) < 1e-10 ? 0 : Math.round(v2 * 1e9) / 1e9;
 var envNum = (name) => {
   if (typeof process === "undefined") return 0;
@@ -1612,6 +2766,14 @@ var envNum = (name) => {
 };
 var DEFAULT_BREATH_EVERY = envNum("DOJO_BREATH") || 512;
 var DEFAULT_STROKE_MAX = envNum("DOJO_STROKE_MAX") || 512;
+function chargeReductions(state) {
+  state.reductions++;
+  if (state.maxReductions && state.reductions > state.maxReductions) {
+    const error = new Error(`Maximum reductions of ${state.maxReductions} reached`);
+    error.kind = "budget";
+    throw error;
+  }
+}
 var ARG_DOMAINS = {
   beColour: ["word"],
   label: ["word", "measure"],
@@ -1621,10 +2783,10 @@ var holeDomain = (domains, i2) => domains?.[i2] === "word" ? "word" : "measure";
 function* evalOrBlock(expr, scope, state, domain = "measure") {
   while (true) {
     try {
-      return evaluateExpr(expr, scope, state, domain);
+      return demanded(evaluateExpr(expr, scope, state, domain), expr, domain, state);
     } catch (e2) {
       if (e2.blocked) {
-        yield { type: "blocked" };
+        yield { type: "blocked", target: e2.blockedFrame ?? null };
         continue;
       }
       throw e2;
@@ -1636,21 +2798,34 @@ function createActorState(opts = {}) {
     // Empty eye seeds to recenterPose. (id:eye-view-pipeline)
     transform: opts.lens ? recenterPose() : SE3.identity(),
     // Lens is pen-up: Output is the viewport. (id:eye-lens-primitive)
-    style: { ...DEFAULT_STYLE, color: opts.color || DEFAULT_STYLE.color, ...opts.lens ? { down: false } : {} },
+    style: { ...DEFAULT_STYLE, ...opts.style || {}, ...opts.color ? { color: opts.color } : {}, ...opts.lens ? { down: false } : {} },
     functions: opts.functions ? { ...opts.functions } : {},
+    // The actor's randomness capability. A construction installs a refusing
+    // source so a command cannot reach the process RNG. (id:laws-living-figures-capability-review)
+    random: opts.random || Math.random,
     commandCount: 0,
     recurseCount: 0,
     maxRecurseDepth: opts.maxRecurseDepth || 360,
     maxRecurses: opts.maxRecurses || 888888,
+    // A recursion cap that stopped the walk: construction refuses rather than
+    // passing off a shortened drawing under the requested depth's name.
+    truncated: false,
+    // Strict construction: an inert Error node is refused, so a recipe reached
+    // through dynamic dispatch cannot execute a parse-error body silently.
+    strict: opts.strict === true,
     maxCommands: opts.maxCommands || 88888888,
     // Reductions: preemption meter (not language-visible commandCount). (D027 R3)
     reductions: 0,
+    maxReductions: opts.maxReductions ?? 0,
+    // 0 = unbounded (ordinary walks)
     breathEvery: opts.breathEvery ?? DEFAULT_BREATH_EVERY,
     strokeMax: opts.strokeMax ?? DEFAULT_STROKE_MAX,
     // 0 = off
     // LOCAL clock: this ambient's own waits, 0 at birth. Stable under
     // re-parenting — the compositional coordinate. (id:host-beat)
-    elapsedTime: 0,
+    // A construction inherits the declaring frame's logical clock; ordinary
+    // frames start at 0 and advance on `wait`. (id:host-beat)
+    elapsedTime: opts.elapsedTime || 0,
     // Birth on the shared axis: the parent's `birthtime + time` at spawn.
     // Root: 0. `birthtime + time` is where this ambient stands on the
     // axis, so timelines align without anyone reading a global now. (id:host-beat)
@@ -1659,7 +2834,12 @@ function createActorState(opts = {}) {
     // One `beat` event per wait, not one per node. (id:host-beat)
     beatLines: /* @__PURE__ */ new Set(),
     loopCounter: opts.loopCounter || 0,
-    mailbox: opts.mailbox || null
+    mailbox: opts.mailbox || null,
+    motionProtocol: opts.motionProtocol === true,
+    observePureGoto: opts.observePureGoto === true,
+    // Rebase inbox: a component transaction posts a pose here; this worker adopts
+    // it at its next step. The scheduler never writes `transform` directly.
+    rebase: void 0
   };
 }
 function* execute(ast, deps, opts = {}) {
@@ -1678,6 +2858,7 @@ function* execute(ast, deps, opts = {}) {
   try {
     yield* walkBody(ast, opts.scope || {}, state, stroke);
   } catch (error) {
+    adoptRebase(state);
     const pathEvent2 = flush(stroke);
     if (pathEvent2) yield pathEvent2;
     yield {
@@ -1689,6 +2870,7 @@ function* execute(ast, deps, opts = {}) {
     };
     throw error;
   }
+  adoptRebase(state);
   const pathEvent = flush(stroke);
   if (pathEvent) yield pathEvent;
   if (state.beatLines.size) {
@@ -1705,10 +2887,33 @@ function* execute(ast, deps, opts = {}) {
   };
   return { commandCount: state.commandCount, actorState: state };
 }
+function adoptRebase(state) {
+  if (state.rebase === void 0) return;
+  state.transform = state.rebase;
+  state.rebase = void 0;
+}
+var PURE_POINT_READ = /^[A-Za-z_][A-Za-z0-9_]*\.(?:x|y|z)$/;
+function* readGotoArgs(nodes, scope, state) {
+  while (true) {
+    const baseRevision = state.deps.mathEvaluator.beginObservation();
+    let blocked2;
+    try {
+      const args = nodes.map((node) => evaluateExpr(node.value, scope, state));
+      return { args, baseRevision };
+    } catch (error) {
+      if (!error.blocked) throw error;
+      blocked2 = error;
+    } finally {
+      state.deps.mathEvaluator.endObservation();
+    }
+    yield { type: "blocked", target: blocked2.blockedFrame ?? null };
+  }
+}
 function* walkBody(body, scope, state, stroke) {
   let matched = false;
   for (const node of body) {
-    state.reductions++;
+    adoptRebase(state);
+    chargeReductions(state);
     if (state.breathEvery !== 0 && state.reductions % state.breathEvery === 0) {
       yield { type: "breath" };
     }
@@ -1729,7 +2934,7 @@ function* walkBody(body, scope, state, stroke) {
                 rotation: state.transform.rotation
               };
             }
-            state.reductions++;
+            chargeReductions(state);
             if (state.breathEvery !== 0 && state.reductions % state.breathEvery === 0) {
               yield { type: "breath" };
             }
@@ -1742,6 +2947,8 @@ function* walkBody(body, scope, state, stroke) {
         case "Call": {
           if (node.value === "fn" || node.value === "func") {
             const rawArgs = node.children.map((arg) => arg.value);
+            const signature = rawArgs[0];
+            let expression = rawArgs[1] || 0;
             const fnScope = { ...scope };
             const ec2 = state.deps.mathEvaluator.constants;
             const deferred = state.deps.mathEvaluator.deferred;
@@ -1749,7 +2956,33 @@ function* walkBody(body, scope, state, stroke) {
               if (deferred?.has(key)) continue;
               if (!(key in fnScope)) fnScope[key] = ec2[key]();
             }
-            state.deps.mathParser.defineFunction(rawArgs[0], rawArgs[1] || 0, fnScope);
+            const parser = state.deps.mathParser;
+            if (typeof parser.parseSignature === "function") {
+              const { params } = parser.extractSignature(parser.parseSignature(signature));
+              if (params.length === 0) {
+                const tree = parseMemo(parser, String(expression));
+                if (!readsDeferred(tree, deferred ?? /* @__PURE__ */ new Set())) {
+                  const value = yield* evalOrBlock(String(expression), scope, state);
+                  if (typeof value === "number" && Number.isFinite(value)) {
+                    expression = String(value);
+                  }
+                }
+              }
+            }
+            parser.defineFunction(signature, expression, fnScope);
+            break;
+          }
+          if (state.observePureGoto && state.motionProtocol && node.value === "goto" && !state.functions[scope.goto || "goto"]) {
+            if (node.children.length !== 2 || !node.children.every((arg) => PURE_POINT_READ.test(arg.value))) {
+              yield { type: "motionUnresolved", reason: "unsupported goto arguments" };
+              break;
+            }
+            let settled = false;
+            for (let retry = 0; retry < 2 && !settled; retry++) {
+              const { args: args2, baseRevision } = yield* readGotoArgs(node.children, scope, state);
+              settled = (yield* callCommand("goto", args2, state, stroke, baseRevision)) !== "stale";
+            }
+            if (!settled) yield { type: "motionUnresolved", reason: "stale motion base" };
             break;
           }
           const domains = ARG_DOMAINS[node.value];
@@ -1768,7 +3001,10 @@ function* walkBody(body, scope, state, stroke) {
             if (state.recurseCount >= state.maxRecurses) {
               throw new Error(`Maximum recurse limit of ${state.maxRecurses} reached`);
             }
-            if (currDepth + 1 > state.maxRecurseDepth) break;
+            if (currDepth + 1 > state.maxRecurseDepth) {
+              state.truncated = true;
+              break;
+            }
             const childScope = {};
             userFn.parameters.forEach((param, i2) => {
               childScope[param] = args[i2] || 0;
@@ -1822,35 +3058,95 @@ function* walkBody(body, scope, state, stroke) {
         }
         case "Ambient": {
           const ambientName = String(yield* evalOrBlock(node.value, scope, state, "word"));
+          yield spawnEvent(state, scope, ambientName, node.children, state.functions, { frame: node.meta?.frame || null });
+          break;
+        }
+        case "Existence": {
           yield {
-            type: "spawn",
-            name: ambientName,
-            frame: node.meta?.frame || null,
-            // Fork spec — three groups: spatial, code, environment
+            type: "birth",
+            name: node.value,
             origin: SE3.clone(state.transform),
-            style: { ...state.style },
-            code: { ast: node.children, functions: { ...state.functions } },
-            env: {
-              userspace: new Map(state.deps.mathParser.userspace),
-              loopCounter: state.loopCounter,
-              scope: { ...scope },
-              // The child's birth on the shared axis = `birthtime + time`
-              // of this ambient now. The child's own clock starts at 0. (id:host-beat)
-              birthtime: state.birthtime + state.elapsedTime
+            owner: node.span ?? null
+          };
+          break;
+        }
+        case "Law": {
+          const feature = node.value;
+          const value = payloadOf(feature) === "expr" ? yield* evalOrBlock(node.meta.expr, scope, state) : node.meta.coords;
+          yield { type: "law", feature, target: node.meta.target, value, axis: node.meta.axis ?? null, owner: node.span ?? null };
+          break;
+        }
+        case "Scalar": {
+          const expr = node.meta.expr;
+          const figureCall = figureCallOf(expr, state);
+          if (figureCall) {
+            const arity = state.functions?.[figureCall.recipe]?.parameters?.length ?? 0;
+            const inputs = [];
+            for (const arg of figureCall.args) {
+              inputs.push(yield* evalOrBlock(arg, scope, state, "reading"));
             }
+            while (inputs.length < arity) inputs.push(0);
+            const call = new ASTNode(
+              "Call",
+              figureCall.recipe,
+              inputs.map((input) => new ASTNode("Argument", String(input)))
+            );
+            call.span = node.span ?? null;
+            yield { type: "birth", name: node.value, origin: SE3.clone(state.transform), owner: node.span ?? null };
+            yield spawnEvent(state, scope, node.value, [call], state.functions, { profile: "derived", question: inputs, recipe: figureCall.recipe, argExprs: figureCall.args });
+            break;
+          }
+          const deferred = state.deps?.mathEvaluator?.deferred;
+          let stochastic = false;
+          if (deferred && typeof expr === "string") {
+            try {
+              stochastic = readsDeferred(parseMemo(state.deps.mathParser, expr), deferred);
+            } catch {
+              stochastic = false;
+            }
+          }
+          if (stochastic) {
+            yield {
+              type: "parameter",
+              name: node.value,
+              owner: node.span ?? null,
+              value: evaluateExpr(expr, scope, state, "measure")
+            };
+            break;
+          }
+          yield {
+            type: "scalar",
+            name: node.value,
+            owner: node.span ?? null,
+            read: () => evaluateExpr(expr, scope, state, "measure")
           };
           break;
         }
         case "Empty":
           break;
-        // Error node inert at walk; crash path still kills. (D020, id:cmp-resilient)
+        // A malformed statement is inert at the walk — the healthy siblings still
+        // run (D020) — but inert is not silent: the incompleteness is reported where
+        // it is located. A construction is strict: there it refuses instead.
+        // (id:cmp-resilient, id:laws-figures-phase34-capabilities)
         case "Error":
+          if (state.strict) {
+            const strict = new Error(`construction refused: '${node.value}' did not parse`);
+            strict.kind = "strict";
+            strict.span = node.span;
+            throw strict;
+          }
+          yield {
+            type: "incomplete",
+            expected: node.meta?.expected ?? null,
+            found: node.meta?.found ?? null,
+            span: node.span ?? null
+          };
           break;
       }
     } catch (error) {
       if (error instanceof Error && !error.span && node.span) {
         error.span = node.span;
-        error.kind = "walk";
+        if (!error.kind) error.kind = "walk";
       }
       throw error;
     }
@@ -1867,7 +3163,7 @@ function drainNamespace(ast, deps, opts = {}) {
     return { functions: actorState.functions, userspace: deps.mathParser.userspace, error };
   }
 }
-function* callCommand(name, args, state, stroke) {
+function* callCommand(name, args, state, stroke, baseRevision) {
   const cmd = COMMANDS.get(name);
   if (!cmd) {
     throw new Error(`Function ${name} not defined`);
@@ -1878,10 +3174,35 @@ function* callCommand(name, args, state, stroke) {
   state.commandCount++;
   const ctx = {
     transform: state.transform,
-    style: state.style
+    style: state.style,
+    random: state.random
   };
   stroke.lastPos = [...state.transform.position];
   const result = cmd(ctx, ...args);
+  if (result.transform && state.motionProtocol) {
+    const admission = yield {
+      type: "motion",
+      command: name,
+      from: state.transform,
+      requested: result.transform,
+      baseRevision
+    };
+    if (admission.kind === "stale") {
+      state.commandCount--;
+      return "stale";
+    }
+    if (admission.kind === "refuse") {
+      result.transform = state.transform;
+      if (admission.ink === "continue" && result.stroke === "extend") {
+        result.point = [...state.transform.position];
+      } else if (result.stroke) {
+        result.stroke = "break";
+      }
+    } else {
+      result.transform = admission.pose;
+      if (result.stroke === "extend") result.point = admission.pose.position;
+    }
+  }
   if (result.transform) {
     state.transform = result.transform;
   }
@@ -1941,6 +3262,90 @@ function parseMemo(mathParser, expr) {
   entry.map.set(expr, tree);
   return tree;
 }
+function splitTopLevel(s2) {
+  const out = [];
+  let depth = 0, start = 0;
+  for (let i2 = 0; i2 < s2.length; i2++) {
+    const c2 = s2[i2];
+    if (c2 === "[" || c2 === "(") depth++;
+    else if (c2 === "]" || c2 === ")") depth--;
+    else if (c2 === "," && depth === 0) {
+      out.push(s2.slice(start, i2));
+      start = i2 + 1;
+    }
+  }
+  out.push(s2.slice(start));
+  return out;
+}
+function splitCommandArgs(rest) {
+  if (rest === "") return [];
+  const out = [];
+  let depth = 0, start = 0;
+  for (let i2 = 0; i2 < rest.length; i2++) {
+    const c2 = rest[i2];
+    if (c2 === "[" || c2 === "(") depth++;
+    else if (c2 === "]" || c2 === ")") depth--;
+    else if ((c2 === " " || c2 === "	") && depth === 0) {
+      if (i2 > start) out.push(rest.slice(start, i2));
+      start = i2 + 1;
+    }
+  }
+  if (start < rest.length) out.push(rest.slice(start));
+  return out.filter(Boolean);
+}
+function spawnEvent(state, scope, name, body, functions, extra = {}) {
+  return {
+    type: "spawn",
+    name,
+    // What the caller BOUND crosses with the child: a whitelist here silently
+    // dropped a field once, and the child's question went empty. The named
+    // fields below neutralise only the undefineds.
+    ...extra,
+    frame: extra.frame ?? null,
+    profile: extra.profile ?? null,
+    question: extra.question ?? null,
+    origin: SE3.clone(state.transform),
+    style: { ...state.style },
+    code: { ast: body, functions: { ...functions ?? state.functions } },
+    env: {
+      userspace: new Map(state.deps.mathParser.userspace),
+      loopCounter: state.loopCounter,
+      scope: { ...scope },
+      birthtime: state.birthtime + state.elapsedTime
+    }
+  };
+}
+function figureCallOf(expr, state) {
+  if (typeof expr !== "string") return null;
+  const head = /^\s*([A-Za-z_][A-Za-z0-9_]*)/.exec(expr);
+  if (!head) return null;
+  const name = head[1];
+  const signature = state.functions?.[name];
+  const cmd = signature ? null : COMMANDS.get(name);
+  if (!signature && !cmd) return null;
+  const rest = expr.slice(head[0].length).trim();
+  if (signature) {
+    return { recipe: name, args: splitFigureArgs(rest, signature.parameters?.length ?? 0) };
+  }
+  return { recipe: name, args: splitCommandArgs(rest) };
+}
+function splitFigureArgs(rest, arity) {
+  if (rest === "") return [];
+  if (rest.startsWith("[") && rest.endsWith("]")) {
+    const inner = rest.slice(1, -1).trim();
+    return inner === "" ? [] : splitTopLevel(inner).map((a2) => a2.trim());
+  }
+  const groups = splitTopLevel(rest).map((a2) => a2.trim());
+  if (groups.length === arity) return groups;
+  const spaced = rest.split(/\s+/).filter(Boolean);
+  return spaced.length === arity ? spaced : [rest];
+}
+function readsDeferred(tree, names) {
+  if (!tree) return false;
+  if (tree.type === "operand" && names.has(tree.value)) return true;
+  for (const child of tree.children ?? []) if (readsDeferred(child, names)) return true;
+  return false;
+}
 function evaluateExpr(expr, scope, state, domain = "measure") {
   const { mathParser, mathEvaluator } = state.deps;
   const quoteRegex = /^(['"])(.*?)\1$/;
@@ -1970,7 +3375,7 @@ function evaluateExpr(expr, scope, state, domain = "measure") {
     return evaluateExpr(name + "." + computedDot[3], scope, state, domain);
   }
   if (mathParser.isNumeric(expr)) return parseFloat(expr);
-  if (scope[expr] != null) return scope[expr];
+  if (scope[expr] !== void 0) return scope[expr];
   const tree = parseMemo(mathParser, expr);
   if (tree.children.length > 0 || mathEvaluator.namespace_check(tree.value)) {
     return mathEvaluator.run(tree, scope);
@@ -1988,6 +3393,9 @@ function evaluateExpr(expr, scope, state, domain = "measure") {
 }
 
 // assets/js/turtling/mafs/evaluate.js
+function hasNothing(...values) {
+  return values.some((value) => value === null || value === void 0);
+}
 var Evaluator = class {
   constructor() {
     this.constants = {
@@ -2047,6 +3455,7 @@ var Evaluator = class {
     return radians * (180 / Math.PI);
   }
   applyFunction(func, args, context) {
+    if (hasNothing(...args)) return null;
     if (func in this.functions) {
       const evals = this.functions[func](args[0]);
       if (Number.isSafeInteger(evals)) return evals;
@@ -2082,6 +3491,7 @@ var Evaluator = class {
     throw new Error(`Undefined variable: ${variable}`);
   }
   applyUnaryOperator(operator, operand) {
+    if (hasNothing(operand)) return null;
     switch (operator) {
       case "!":
         return !operand;
@@ -2094,6 +3504,7 @@ var Evaluator = class {
     }
   }
   applyOperator(operator, left2, right2) {
+    if (hasNothing(left2, right2)) return null;
     if (!Number.isSafeInteger(left2) || !Number.isSafeInteger(right2)) {
       const precision = 1e14;
       switch (operator) {
@@ -8826,6 +10237,40 @@ var dd = class extends Jn {
   }
 };
 var md = new Qi();
+var yd = class {
+  constructor(t2, e2, s2 = 0, i2 = 1 / 0) {
+    this.ray = new wa(t2, e2), this.near = s2, this.far = i2, this.camera = null, this.layers = new lr(), this.params = { Mesh: {}, Line: { threshold: 1 }, LOD: {}, Points: { threshold: 1 }, Sprite: {} };
+  }
+  set(t2, e2) {
+    this.ray.set(t2, e2);
+  }
+  setFromCamera(t2, e2) {
+    e2.isPerspectiveCamera ? (this.ray.origin.setFromMatrixPosition(e2.matrixWorld), this.ray.direction.set(t2.x, t2.y, 0.5).unproject(e2).sub(this.ray.origin).normalize(), this.camera = e2) : e2.isOrthographicCamera ? (this.ray.origin.set(t2.x, t2.y, e2.projectionMatrix.elements[14]).unproject(e2), this.ray.direction.set(0, 0, -1).transformDirection(e2.matrixWorld), this.camera = e2) : oi("Raycaster: Unsupported camera type: " + e2.type);
+  }
+  setFromXRController(t2) {
+    return md.identity().extractRotation(t2.matrixWorld), this.ray.origin.setFromMatrixPosition(t2.matrixWorld), this.ray.direction.set(0, 0, -1).applyMatrix4(md), this;
+  }
+  intersectObject(t2, e2 = true, s2 = []) {
+    return fd(t2, this, s2, e2), s2.sort(gd), s2;
+  }
+  intersectObjects(t2, e2 = true, s2 = []) {
+    for (let i2 = 0, r2 = t2.length; i2 < r2; i2++) fd(t2[i2], this, s2, e2);
+    return s2.sort(gd), s2;
+  }
+};
+function gd(t2, e2) {
+  return t2.distance - e2.distance;
+}
+function fd(t2, e2, s2, i2) {
+  let r2 = true;
+  if (t2.layers.test(e2.layers)) {
+    false === t2.raycast(e2, s2) && (r2 = false);
+  }
+  if (true === r2 && true === i2) {
+    const i3 = t2.children;
+    for (let t3 = 0, r3 = i3.length; t3 < r3; t3++) fd(i3[t3], e2, s2, true);
+  }
+}
 var bd = class {
   constructor(t2 = 1, e2 = 0, s2 = 0) {
     this.radius = t2, this.phi = e2, this.theta = s2;
@@ -12791,8 +14236,8 @@ var GeometryUtils = class {
     }
     if (!planeSet) return true;
     for (const vertex of vertices) {
-      const distance = Math.abs(normal.dot(new Ti().subVectors(vertex, planePoint)));
-      if (distance > epsilon) return false;
+      const distance2 = Math.abs(normal.dot(new Ti().subVectors(vertex, planePoint)));
+      if (distance2 > epsilon) return false;
     }
     return true;
   }
@@ -12803,8 +14248,8 @@ var GeometryUtils = class {
     if (vertices.length < 3) return vertices;
     const first = vertices[0];
     const last = vertices[vertices.length - 1];
-    const distance = first.distanceTo(last);
-    if (distance > this.EPSILON) {
+    const distance2 = first.distanceTo(last);
+    if (distance2 > this.EPSILON) {
       return [...vertices, first.clone()];
     }
     return vertices;
@@ -13156,3479 +14601,6 @@ var Shape = class {
     this.clear();
   }
 };
-
-// assets/js/utils/color.js
-var ColorConverter = class {
-  static toRGBArray(color) {
-    if (Array.isArray(color)) {
-      return color;
-    }
-    if (typeof color === "string") {
-      const threeColor = new Pr(color);
-      return [threeColor.r, threeColor.g, threeColor.b];
-    }
-    if (typeof color === "number") {
-      const threeColor = new Pr(color);
-      return [threeColor.r, threeColor.g, threeColor.b];
-    }
-    return [1, 1, 1];
-  }
-  static toHex(color) {
-    if (typeof color === "number") return color;
-    if (typeof color === "string") return new Pr(color).getHex();
-    if (Array.isArray(color)) return new Pr(color[0], color[1], color[2]).getHex();
-    return 16777215;
-  }
-  static adjust(color, mag = 0.5) {
-    if (!Array.isArray(color)) {
-      color = this.toRGBArray(color);
-    }
-    if (mag <= 1) {
-      return [color[0] * mag, color[1] * mag, color[2] * mag];
-    } else {
-      return [
-        Math.min(color[0] * 1.5, 1),
-        Math.min(color[1] * 1.5, 1),
-        Math.min(color[2] * 1.5, 1)
-      ];
-    }
-  }
-};
-
-// assets/js/turtling/render/head.js
-var Head = class {
-  constructor(scene) {
-    const defaultColors = {
-      head: "#e77808",
-      wireframe: "black"
-    };
-    this.defaultPosition = [0, 0, 0];
-    this.defaultRotation = { w: 1, x: 0, y: 0, z: 0 };
-    this.colors = {
-      head: ColorConverter.toRGBArray(defaultColors.head),
-      headkey: defaultColors.head,
-      wireframe: ColorConverter.toHex(defaultColors.wireframe)
-    };
-    this.current = { scale: 1, size: 10 };
-    this.scene = scene;
-    this.turtleGroup = new Tr();
-    this.createTurtleMesh();
-    this.turtleGroup.renderOrder = 1e4;
-    this.reset();
-    scene.add(this.turtleGroup);
-  }
-  createTurtleMesh() {
-    const headGeometry = new HeadGeometry(this.colors);
-    const headMaterial = new Ma({
-      vertexColors: true,
-      wireframe: false,
-      side: p,
-      depthTest: true,
-      depthWrite: true
-    });
-    this.turtleMesh = new Ra(headGeometry, headMaterial);
-    this.turtleMesh.renderOrder = 10001;
-    this.turtleGroup.add(this.turtleMesh);
-    const edgeGeometry = new EdgeGeometry(this.colors);
-    const edgeMaterial = new No({
-      color: this.colors.wireframe,
-      linewidth: 1,
-      depthTest: true,
-      depthWrite: false
-      // Don't write depth for lines
-    });
-    this.wireframeMesh = new Yo(edgeGeometry, edgeMaterial);
-    this.wireframeMesh.renderOrder = 10002;
-    this.turtleGroup.add(this.wireframeMesh);
-  }
-  hide() {
-    this.turtleGroup.visible = false;
-  }
-  show() {
-    this.turtleGroup.visible = true;
-  }
-  position() {
-    return this.turtleGroup.position;
-  }
-  setHeadColor(color) {
-    this.colors.head = ColorConverter.toRGBArray(color);
-    this.colors.headkey = color;
-    this.turtleGroup.remove(this.turtleMesh);
-    this.turtleGroup.remove(this.wireframeMesh);
-    this.turtleMesh.geometry.dispose();
-    this.turtleMesh.material.dispose();
-    this.wireframeMesh.geometry.dispose();
-    this.wireframeMesh.material.dispose();
-    this.createTurtleMesh();
-  }
-  update(position, rotation, color, size = 10) {
-    this.turtleGroup.position.set(...position);
-    if (rotation) this.turtleGroup.quaternion.copy(rotation);
-    if (this.colors.headkey !== color) {
-      this.setHeadColor(color);
-    }
-    if (this.current.size != size) {
-      this.turtleGroup.scale.setScalar(this.current.scale * size / this.current.size);
-      this.current.size = size;
-    }
-  }
-  scale(scaleFactor = 2) {
-    this.current.scaleFactor = scaleFactor;
-    const value = scaleFactor * this.current.size / 10;
-    const magnitude = Math.floor(Math.log10(Math.abs(value)));
-    const scale = Math.pow(10, magnitude);
-    const roundedScaleFactor = Math.round(value / scale) * scale;
-    if (this.current.scale != roundedScaleFactor) {
-      this.current.scale = roundedScaleFactor;
-      this.turtleGroup.scale.setScalar(this.current.scale);
-    }
-  }
-  reset() {
-    this.turtleGroup.position.set(...this.defaultPosition);
-    this.turtleGroup.quaternion.copy(this.defaultRotation);
-  }
-  // Free GPU geometry/materials and detach from the scene. The scene is
-  // dropped on stage teardown, but WebGL buffers need explicit disposal —
-  // GC won't reclaim them. Idempotent: safe to call once per Head lifetime.
-  dispose() {
-    this.turtleGroup.remove(this.turtleMesh);
-    this.turtleGroup.remove(this.wireframeMesh);
-    this.turtleMesh.geometry.dispose();
-    this.turtleMesh.material.dispose();
-    this.wireframeMesh.geometry.dispose();
-    this.wireframeMesh.material.dispose();
-    this.scene.remove(this.turtleGroup);
-  }
-};
-var HeadGeometry = class extends Wn {
-  constructor(colors = {}) {
-    super();
-    const baseColor = colors.head || [1, 0.5, 0.1];
-    const darkColor = ColorConverter.adjust(baseColor, 0.5);
-    const brightColor = ColorConverter.adjust(baseColor, 1.5);
-    const vertices = [];
-    const vertexColors = [];
-    this.addTriangle(
-      vertices,
-      vertexColors,
-      [6, 0, 0.5],
-      // Nose tip
-      [2, -2, -0.2],
-      // Left nose wing
-      [-1, -4, -0.1],
-      // Left wing tip (flattened)
-      baseColor
-    );
-    this.addTriangle(
-      vertices,
-      vertexColors,
-      [6, 0, 0.5],
-      // Nose tip
-      [-1, 4, -0.1],
-      // Right wing tip (flattened)
-      [2, 2, -0.2],
-      // Right nose wing
-      baseColor
-    );
-    this.addTriangle(
-      vertices,
-      vertexColors,
-      [-1, -4, -0.1],
-      // Left wing tip
-      [-2, -2, 0],
-      // Left tail fold point
-      [0, 0, 0],
-      // Center focus point
-      baseColor
-    );
-    this.addTriangle(
-      vertices,
-      vertexColors,
-      [-1, 4, -0.1],
-      // Right wing tip
-      [0, 0, 0],
-      // Center focus point
-      [-2, 2, 0],
-      // Right tail fold point
-      baseColor
-    );
-    this.addTriangle(
-      vertices,
-      vertexColors,
-      [2, -2, -0.2],
-      // Left nose wing
-      [2, 2, -0.2],
-      // Right nose wing
-      [0, 0, -0.3],
-      // Center bottom
-      baseColor
-    );
-    this.addTriangle(
-      vertices,
-      vertexColors,
-      [-1, -4, -0.1],
-      // Left wing tip
-      [-1, 4, -0.1],
-      // Right wing tip
-      [0, 0, -0.3],
-      // Center bottom
-      baseColor
-    );
-    this.addTriangle(
-      vertices,
-      vertexColors,
-      [6, 0, 0.5],
-      // Sharp nose tip (pointing right, slightly raised)
-      [2, -2, -0.2],
-      // Left nose wing (flattened)
-      [2, 2, -0.2],
-      // Right nose wing (flattened)
-      brightColor
-    );
-    this.addTriangle(
-      vertices,
-      vertexColors,
-      [2, -2, -0.2],
-      // Left nose wing
-      [0, 0, -0.3],
-      // Bottom center (slightly lower for minimal thickness)
-      [-1, -4, -0.1],
-      // Left wing tip
-      darkColor
-    );
-    this.addTriangle(
-      vertices,
-      vertexColors,
-      [2, 2, -0.2],
-      // Right nose wing
-      [-1, 4, -0.1],
-      // Right wing tip
-      [0, 0, -0.3],
-      // Bottom center
-      darkColor
-    );
-    this.addTriangle(
-      vertices,
-      vertexColors,
-      [2, 0, -0.8],
-      // Bottom keel point (hangs down)
-      [1, -1, -0.3],
-      // Left keel base
-      [1, 1, -0.3],
-      // Right keel base
-      darkColor
-      // Medium dark for bottom feature
-    );
-    this.addTriangle(
-      vertices,
-      vertexColors,
-      [4, 0, 0.6],
-      // Arrow tip (pointing forward/right)
-      [3, -0.3, 0.4],
-      // Arrow left wing
-      [3, 0.3, 0.4],
-      // Arrow right wing
-      darkColor
-      // Dark shade for directional arrow
-    );
-    this.setAttribute("position", new Mn(new Float32Array(vertices), 3));
-    this.setAttribute("color", new Mn(new Float32Array(vertexColors), 3));
-    this.computeVertexNormals();
-  }
-  addTriangle(vertices, colors, v1, v2, v3, color) {
-    vertices.push(...v1, ...v2, ...v3);
-    for (let i2 = 0; i2 < 3; i2++) colors.push(...color);
-  }
-  addQuad(vertices, colors, v1, v2, v3, v4, color) {
-    this.addTriangle(vertices, colors, v1, v2, v3, color);
-    this.addTriangle(vertices, colors, v1, v3, v4, color);
-  }
-};
-var EdgeGeometry = class extends Wn {
-  constructor(colors = {}) {
-    super();
-    const vertices = [];
-    const outline = [
-      [5, 0, 0.2],
-      [0, -2.5, 0.2],
-      [0, -2.5, 0.2],
-      [0, 2.5, 0.2],
-      [0, 2.5, 0.2],
-      [5, 0, 0.2]
-    ];
-    vertices.push(...outline.flat());
-    this.setAttribute("position", new Mn(new Float32Array(vertices), 3));
-  }
-};
-
-// assets/js/turtling/render/index.js
-var Render = {
-  Loop,
-  //Path,
-  //Glyph,
-  Shape,
-  Head
-};
-var render_default = Render;
-
-// assets/js/adapter.js
-function safePush(el2, eventName, payload = {}, selector = null) {
-  let result;
-  try {
-    result = selector ? el2.pushEventTo(selector, eventName, payload) : el2.pushEvent(eventName, payload);
-  } catch (err) {
-    console.debug?.(`[adapter] drop ${eventName}:`, err?.message || err);
-    return Promise.resolve();
-  }
-  if (result?.catch) {
-    return result.catch((err) => {
-      console.debug?.(`[adapter] drop ${eventName}:`, err?.message || err);
-    }).then(() => {
-    });
-  }
-  return Promise.resolve();
-}
-
-// assets/js/bridged.js
-var BridgedEventTarget = class extends EventTarget {
-};
-var bridged = (eventName) => {
-  const customEventTarget = new BridgedEventTarget();
-  const sub = (callback) => {
-    const EventHandler = (event) => {
-      const data = event.detail;
-      callback(data);
-    };
-    customEventTarget.addEventListener(eventName, EventHandler);
-    return () => {
-      customEventTarget.removeEventListener(eventName, EventHandler);
-    };
-  };
-  const pub = (payload) => {
-    const event = new CustomEvent(eventName, { detail: payload });
-    customEventTarget.dispatchEvent(event);
-  };
-  const dispatch = (el2, payload, selector = null) => {
-    pub(payload);
-    safePush(el2, eventName, payload, selector || null);
-  };
-  return { sub, pub, dispatch };
-};
-var cameraBridge = bridged("cam");
-var sceneBridge = bridged("scene");
-
-// assets/js/utils/threeorbital.js
-var _changeEvent = { type: "change" };
-var _startEvent = { type: "start" };
-var _endEvent = { type: "end" };
-var _ray = new wa();
-var _plane = new lo();
-var _TILT_LIMIT = Math.cos(70 * Si.DEG2RAD);
-var _v = new Ti();
-var _twoPI = 2 * Math.PI;
-var _STATE = {
-  NONE: -1,
-  ROTATE: 0,
-  DOLLY: 1,
-  PAN: 2,
-  TOUCH_ROTATE: 3,
-  TOUCH_PAN: 4,
-  TOUCH_DOLLY_PAN: 5,
-  TOUCH_DOLLY_ROTATE: 6
-};
-var _EPS = 1e-6;
-var OrbitControls = class extends cp {
-  /**
-   * Constructs a new controls instance.
-   *
-   * @param {Object3D} object - The object that is managed by the controls.
-   * @param {?HTMLElement} domElement - The HTML element used for event listeners.
-   */
-  constructor(object, domElement = null) {
-    super(object, domElement);
-    this.state = _STATE.NONE;
-    this.target = new Ti();
-    this.cursor = new Ti();
-    this.minDistance = 0;
-    this.maxDistance = Infinity;
-    this.minZoom = 0;
-    this.maxZoom = Infinity;
-    this.minTargetRadius = 0;
-    this.maxTargetRadius = Infinity;
-    this.minPolarAngle = 0;
-    this.maxPolarAngle = Math.PI;
-    this.minAzimuthAngle = -Infinity;
-    this.maxAzimuthAngle = Infinity;
-    this.enableDamping = false;
-    this.dampingFactor = 0.05;
-    this.enableZoom = true;
-    this.zoomSpeed = 1;
-    this.enableRotate = true;
-    this.rotateSpeed = 1;
-    this.keyRotateSpeed = 1;
-    this.enablePan = true;
-    this.panSpeed = 1;
-    this.screenSpacePanning = true;
-    this.keyPanSpeed = 7;
-    this.zoomToCursor = false;
-    this.autoRotate = false;
-    this.autoRotateSpeed = 2;
-    this.keys = { LEFT: "ArrowLeft", UP: "ArrowUp", RIGHT: "ArrowRight", BOTTOM: "ArrowDown" };
-    this.mouseButtons = { LEFT: e.ROTATE, MIDDLE: e.DOLLY, RIGHT: e.PAN };
-    this.touches = { ONE: s.ROTATE, TWO: s.DOLLY_PAN };
-    this.target0 = this.target.clone();
-    this.position0 = this.object.position.clone();
-    this.zoom0 = this.object.zoom;
-    this._cursorStyle = "auto";
-    this._domElementKeyEvents = null;
-    this._lastPosition = new Ti();
-    this._lastQuaternion = new Ai();
-    this._lastTargetPosition = new Ti();
-    this._quat = new Ai().setFromUnitVectors(object.up, new Ti(0, 1, 0));
-    this._quatInverse = this._quat.clone().invert();
-    this._spherical = new bd();
-    this._sphericalDelta = new bd();
-    this._scale = 1;
-    this._panOffset = new Ti();
-    this._rotateStart = new _i();
-    this._rotateEnd = new _i();
-    this._rotateDelta = new _i();
-    this._panStart = new _i();
-    this._panEnd = new _i();
-    this._panDelta = new _i();
-    this._dollyStart = new _i();
-    this._dollyEnd = new _i();
-    this._dollyDelta = new _i();
-    this._dollyDirection = new Ti();
-    this._mouse = new _i();
-    this._performCursorZoom = false;
-    this._pointers = [];
-    this._pointerPositions = {};
-    this._controlActive = false;
-    this._onPointerMove = onPointerMove.bind(this);
-    this._onPointerDown = onPointerDown.bind(this);
-    this._onPointerUp = onPointerUp.bind(this);
-    this._onContextMenu = onContextMenu.bind(this);
-    this._onMouseWheel = onMouseWheel.bind(this);
-    this._onKeyDown = onKeyDown.bind(this);
-    this._onTouchStart = onTouchStart.bind(this);
-    this._onTouchMove = onTouchMove.bind(this);
-    this._onMouseDown = onMouseDown.bind(this);
-    this._onMouseMove = onMouseMove.bind(this);
-    this._interceptControlDown = interceptControlDown.bind(this);
-    this._interceptControlUp = interceptControlUp.bind(this);
-    if (this.domElement !== null) {
-      this.connect(this.domElement);
-    }
-    this.update();
-  }
-  /**
-   * Defines the visual representation of the cursor.
-   *
-   * @type {('auto'|'grab')}
-   * @default 'auto'
-   */
-  set cursorStyle(type) {
-    this._cursorStyle = type;
-    if (type === "grab") {
-      this.domElement.style.cursor = "grab";
-    } else {
-      this.domElement.style.cursor = "auto";
-    }
-  }
-  get cursorStyle() {
-    return this._cursorStyle;
-  }
-  connect(element) {
-    super.connect(element);
-    this.domElement.addEventListener("pointerdown", this._onPointerDown);
-    this.domElement.addEventListener("pointercancel", this._onPointerUp);
-    this.domElement.addEventListener("contextmenu", this._onContextMenu);
-    this.domElement.addEventListener("wheel", this._onMouseWheel, { passive: false });
-    const document2 = this.domElement.getRootNode();
-    document2.addEventListener("keydown", this._interceptControlDown, { passive: true, capture: true });
-    this.domElement.style.touchAction = "none";
-  }
-  disconnect() {
-    this.domElement.removeEventListener("pointerdown", this._onPointerDown);
-    this.domElement.ownerDocument.removeEventListener("pointermove", this._onPointerMove);
-    this.domElement.ownerDocument.removeEventListener("pointerup", this._onPointerUp);
-    this.domElement.removeEventListener("pointercancel", this._onPointerUp);
-    this.domElement.removeEventListener("wheel", this._onMouseWheel);
-    this.domElement.removeEventListener("contextmenu", this._onContextMenu);
-    this.stopListenToKeyEvents();
-    const document2 = this.domElement.getRootNode();
-    document2.removeEventListener("keydown", this._interceptControlDown, { capture: true });
-    this.domElement.style.touchAction = "";
-  }
-  dispose() {
-    this.disconnect();
-  }
-  /**
-   * Get the current vertical rotation, in radians.
-   *
-   * @return {number} The current vertical rotation, in radians.
-   */
-  getPolarAngle() {
-    return this._spherical.phi;
-  }
-  /**
-   * Get the current horizontal rotation, in radians.
-   *
-   * @return {number} The current horizontal rotation, in radians.
-   */
-  getAzimuthalAngle() {
-    return this._spherical.theta;
-  }
-  /**
-   * Returns the distance from the camera to the target.
-   *
-   * @return {number} The distance from the camera to the target.
-   */
-  getDistance() {
-    return this.object.position.distanceTo(this.target);
-  }
-  /**
-   * Adds key event listeners to the given DOM element.
-   * `window` is a recommended argument for using this method.
-   *
-   * @param {HTMLElement} domElement - The DOM element
-   */
-  listenToKeyEvents(domElement) {
-    domElement.addEventListener("keydown", this._onKeyDown);
-    this._domElementKeyEvents = domElement;
-  }
-  /**
-   * Removes the key event listener previously defined with `listenToKeyEvents()`.
-   */
-  stopListenToKeyEvents() {
-    if (this._domElementKeyEvents !== null) {
-      this._domElementKeyEvents.removeEventListener("keydown", this._onKeyDown);
-      this._domElementKeyEvents = null;
-    }
-  }
-  /**
-   * Save the current state of the controls. This can later be recovered with `reset()`.
-   */
-  saveState() {
-    this.target0.copy(this.target);
-    this.position0.copy(this.object.position);
-    this.zoom0 = this.object.zoom;
-  }
-  /**
-   * Reset the controls to their state from either the last time the `saveState()`
-   * was called, or the initial state.
-   */
-  reset() {
-    this.target.copy(this.target0);
-    this.object.position.copy(this.position0);
-    this.object.zoom = this.zoom0;
-    this.object.updateProjectionMatrix();
-    this.dispatchEvent(_changeEvent);
-    this.update();
-    this.state = _STATE.NONE;
-  }
-  /**
-   * Programmatically pan the camera.
-   *
-   * @param {number} deltaX - The horizontal pan amount in pixels.
-   * @param {number} deltaY - The vertical pan amount in pixels.
-   */
-  pan(deltaX, deltaY) {
-    this._pan(deltaX, deltaY);
-    this.update();
-  }
-  /**
-   * Programmatically dolly in (zoom in for perspective camera).
-   *
-   * @param {number} dollyScale - The dolly scale factor.
-   */
-  dollyIn(dollyScale) {
-    this._dollyIn(dollyScale);
-    this.update();
-  }
-  /**
-   * Programmatically dolly out (zoom out for perspective camera).
-   *
-   * @param {number} dollyScale - The dolly scale factor.
-   */
-  dollyOut(dollyScale) {
-    this._dollyOut(dollyScale);
-    this.update();
-  }
-  /**
-   * Programmatically rotate the camera left (around the vertical axis).
-   *
-   * @param {number} angle - The rotation angle in radians.
-   */
-  rotateLeft(angle) {
-    this._rotateLeft(angle);
-    this.update();
-  }
-  /**
-   * Programmatically rotate the camera up (around the horizontal axis).
-   *
-   * @param {number} angle - The rotation angle in radians.
-   */
-  rotateUp(angle) {
-    this._rotateUp(angle);
-    this.update();
-  }
-  update(deltaTime = null) {
-    const position = this.object.position;
-    _v.copy(position).sub(this.target);
-    _v.applyQuaternion(this._quat);
-    this._spherical.setFromVector3(_v);
-    if (this.autoRotate && this.state === _STATE.NONE) {
-      this._rotateLeft(this._getAutoRotationAngle(deltaTime));
-    }
-    if (this.enableDamping) {
-      this._spherical.theta += this._sphericalDelta.theta * this.dampingFactor;
-      this._spherical.phi += this._sphericalDelta.phi * this.dampingFactor;
-    } else {
-      this._spherical.theta += this._sphericalDelta.theta;
-      this._spherical.phi += this._sphericalDelta.phi;
-    }
-    let min = this.minAzimuthAngle;
-    let max = this.maxAzimuthAngle;
-    if (isFinite(min) && isFinite(max)) {
-      if (min < -Math.PI) min += _twoPI;
-      else if (min > Math.PI) min -= _twoPI;
-      if (max < -Math.PI) max += _twoPI;
-      else if (max > Math.PI) max -= _twoPI;
-      if (min <= max) {
-        this._spherical.theta = Math.max(min, Math.min(max, this._spherical.theta));
-      } else {
-        this._spherical.theta = this._spherical.theta > (min + max) / 2 ? Math.max(min, this._spherical.theta) : Math.min(max, this._spherical.theta);
-      }
-    }
-    this._spherical.phi = Math.max(this.minPolarAngle, Math.min(this.maxPolarAngle, this._spherical.phi));
-    this._spherical.makeSafe();
-    if (this.enableDamping === true) {
-      this.target.addScaledVector(this._panOffset, this.dampingFactor);
-    } else {
-      this.target.add(this._panOffset);
-    }
-    this.target.sub(this.cursor);
-    this.target.clampLength(this.minTargetRadius, this.maxTargetRadius);
-    this.target.add(this.cursor);
-    let zoomChanged = false;
-    if (this.zoomToCursor && this._performCursorZoom || this.object.isOrthographicCamera) {
-      this._spherical.radius = this._clampDistance(this._spherical.radius);
-    } else {
-      const prevRadius = this._spherical.radius;
-      this._spherical.radius = this._clampDistance(this._spherical.radius * this._scale);
-      zoomChanged = prevRadius != this._spherical.radius;
-    }
-    _v.setFromSpherical(this._spherical);
-    _v.applyQuaternion(this._quatInverse);
-    position.copy(this.target).add(_v);
-    this.object.lookAt(this.target);
-    if (this.enableDamping === true) {
-      this._sphericalDelta.theta *= 1 - this.dampingFactor;
-      this._sphericalDelta.phi *= 1 - this.dampingFactor;
-      this._panOffset.multiplyScalar(1 - this.dampingFactor);
-    } else {
-      this._sphericalDelta.set(0, 0, 0);
-      this._panOffset.set(0, 0, 0);
-    }
-    if (this.zoomToCursor && this._performCursorZoom) {
-      let newRadius = null;
-      if (this.object.isPerspectiveCamera) {
-        const prevRadius = _v.length();
-        newRadius = this._clampDistance(prevRadius * this._scale);
-        const radiusDelta = prevRadius - newRadius;
-        this.object.position.addScaledVector(this._dollyDirection, radiusDelta);
-        this.object.updateMatrixWorld();
-        zoomChanged = !!radiusDelta;
-      } else if (this.object.isOrthographicCamera) {
-        const mouseBefore = new Ti(this._mouse.x, this._mouse.y, 0);
-        mouseBefore.unproject(this.object);
-        const prevZoom = this.object.zoom;
-        this.object.zoom = Math.max(this.minZoom, Math.min(this.maxZoom, this.object.zoom / this._scale));
-        this.object.updateProjectionMatrix();
-        zoomChanged = prevZoom !== this.object.zoom;
-        const mouseAfter = new Ti(this._mouse.x, this._mouse.y, 0);
-        mouseAfter.unproject(this.object);
-        this.object.position.sub(mouseAfter).add(mouseBefore);
-        this.object.updateMatrixWorld();
-        newRadius = _v.length();
-      } else {
-        console.warn("WARNING: OrbitControls.js encountered an unknown camera type - zoom to cursor disabled.");
-        this.zoomToCursor = false;
-      }
-      if (newRadius !== null) {
-        if (this.screenSpacePanning) {
-          this.target.set(0, 0, -1).transformDirection(this.object.matrix).multiplyScalar(newRadius).add(this.object.position);
-        } else {
-          _ray.origin.copy(this.object.position);
-          _ray.direction.set(0, 0, -1).transformDirection(this.object.matrix);
-          if (Math.abs(this.object.up.dot(_ray.direction)) < _TILT_LIMIT) {
-            this.object.lookAt(this.target);
-          } else {
-            _plane.setFromNormalAndCoplanarPoint(this.object.up, this.target);
-            _ray.intersectPlane(_plane, this.target);
-          }
-        }
-      }
-    } else if (this.object.isOrthographicCamera) {
-      const prevZoom = this.object.zoom;
-      this.object.zoom = Math.max(this.minZoom, Math.min(this.maxZoom, this.object.zoom / this._scale));
-      if (prevZoom !== this.object.zoom) {
-        this.object.updateProjectionMatrix();
-        zoomChanged = true;
-      }
-    }
-    this._scale = 1;
-    this._performCursorZoom = false;
-    if (zoomChanged || this._lastPosition.distanceToSquared(this.object.position) > _EPS || 8 * (1 - this._lastQuaternion.dot(this.object.quaternion)) > _EPS || this._lastTargetPosition.distanceToSquared(this.target) > _EPS) {
-      this.dispatchEvent(_changeEvent);
-      this._lastPosition.copy(this.object.position);
-      this._lastQuaternion.copy(this.object.quaternion);
-      this._lastTargetPosition.copy(this.target);
-      return true;
-    }
-    return false;
-  }
-  _getAutoRotationAngle(deltaTime) {
-    if (deltaTime !== null) {
-      return _twoPI / 60 * this.autoRotateSpeed * deltaTime;
-    } else {
-      return _twoPI / 60 / 60 * this.autoRotateSpeed;
-    }
-  }
-  _getZoomScale(delta) {
-    const normalizedDelta = Math.abs(delta * 0.01);
-    return Math.pow(0.95, this.zoomSpeed * normalizedDelta);
-  }
-  _rotateLeft(angle) {
-    this._sphericalDelta.theta -= angle;
-  }
-  _rotateUp(angle) {
-    this._sphericalDelta.phi -= angle;
-  }
-  _panLeft(distance, objectMatrix) {
-    _v.setFromMatrixColumn(objectMatrix, 0);
-    _v.multiplyScalar(-distance);
-    this._panOffset.add(_v);
-  }
-  _panUp(distance, objectMatrix) {
-    if (this.screenSpacePanning === true) {
-      _v.setFromMatrixColumn(objectMatrix, 1);
-    } else {
-      _v.setFromMatrixColumn(objectMatrix, 0);
-      _v.crossVectors(this.object.up, _v);
-    }
-    _v.multiplyScalar(distance);
-    this._panOffset.add(_v);
-  }
-  // deltaX and deltaY are in pixels; right and down are positive
-  _pan(deltaX, deltaY) {
-    const element = this.domElement;
-    if (this.object.isPerspectiveCamera) {
-      const position = this.object.position;
-      _v.copy(position).sub(this.target);
-      let targetDistance = _v.length();
-      targetDistance *= Math.tan(this.object.fov / 2 * Math.PI / 180);
-      this._panLeft(2 * deltaX * targetDistance / element.clientHeight, this.object.matrix);
-      this._panUp(2 * deltaY * targetDistance / element.clientHeight, this.object.matrix);
-    } else if (this.object.isOrthographicCamera) {
-      this._panLeft(deltaX * (this.object.right - this.object.left) / this.object.zoom / element.clientWidth, this.object.matrix);
-      this._panUp(deltaY * (this.object.top - this.object.bottom) / this.object.zoom / element.clientHeight, this.object.matrix);
-    } else {
-      console.warn("WARNING: OrbitControls.js encountered an unknown camera type - pan disabled.");
-      this.enablePan = false;
-    }
-  }
-  _dollyOut(dollyScale) {
-    if (this.object.isPerspectiveCamera || this.object.isOrthographicCamera) {
-      this._scale /= dollyScale;
-    } else {
-      console.warn("WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled.");
-      this.enableZoom = false;
-    }
-  }
-  _dollyIn(dollyScale) {
-    if (this.object.isPerspectiveCamera || this.object.isOrthographicCamera) {
-      this._scale *= dollyScale;
-    } else {
-      console.warn("WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled.");
-      this.enableZoom = false;
-    }
-  }
-  _updateZoomParameters(x2, y2) {
-    if (!this.zoomToCursor) {
-      return;
-    }
-    this._performCursorZoom = true;
-    const rect = this.domElement.getBoundingClientRect();
-    const dx = x2 - rect.left;
-    const dy = y2 - rect.top;
-    const w2 = rect.width;
-    const h2 = rect.height;
-    this._mouse.x = dx / w2 * 2 - 1;
-    this._mouse.y = -(dy / h2) * 2 + 1;
-    this._dollyDirection.set(this._mouse.x, this._mouse.y, 1).unproject(this.object).sub(this.object.position).normalize();
-  }
-  _clampDistance(dist) {
-    return Math.max(this.minDistance, Math.min(this.maxDistance, dist));
-  }
-  //
-  // event callbacks - update the object state
-  //
-  _handleMouseDownRotate(event) {
-    this._rotateStart.set(event.clientX, event.clientY);
-  }
-  _handleMouseDownDolly(event) {
-    this._updateZoomParameters(event.clientX, event.clientX);
-    this._dollyStart.set(event.clientX, event.clientY);
-  }
-  _handleMouseDownPan(event) {
-    this._panStart.set(event.clientX, event.clientY);
-  }
-  _handleMouseMoveRotate(event) {
-    this._rotateEnd.set(event.clientX, event.clientY);
-    this._rotateDelta.subVectors(this._rotateEnd, this._rotateStart).multiplyScalar(this.rotateSpeed);
-    const element = this.domElement;
-    this._rotateLeft(_twoPI * this._rotateDelta.x / element.clientHeight);
-    this._rotateUp(_twoPI * this._rotateDelta.y / element.clientHeight);
-    this._rotateStart.copy(this._rotateEnd);
-    this.update();
-  }
-  _handleMouseMoveDolly(event) {
-    this._dollyEnd.set(event.clientX, event.clientY);
-    this._dollyDelta.subVectors(this._dollyEnd, this._dollyStart);
-    if (this._dollyDelta.y > 0) {
-      this._dollyOut(this._getZoomScale(this._dollyDelta.y));
-    } else if (this._dollyDelta.y < 0) {
-      this._dollyIn(this._getZoomScale(this._dollyDelta.y));
-    }
-    this._dollyStart.copy(this._dollyEnd);
-    this.update();
-  }
-  _handleMouseMovePan(event) {
-    this._panEnd.set(event.clientX, event.clientY);
-    this._panDelta.subVectors(this._panEnd, this._panStart).multiplyScalar(this.panSpeed);
-    this._pan(this._panDelta.x, this._panDelta.y);
-    this._panStart.copy(this._panEnd);
-    this.update();
-  }
-  _handleMouseWheel(event) {
-    this._updateZoomParameters(event.clientX, event.clientY);
-    if (event.deltaY < 0) {
-      this._dollyIn(this._getZoomScale(event.deltaY));
-    } else if (event.deltaY > 0) {
-      this._dollyOut(this._getZoomScale(event.deltaY));
-    }
-    this.update();
-  }
-  _handleKeyDown(event) {
-    let needsUpdate = false;
-    switch (event.code) {
-      case this.keys.UP:
-        if (event.ctrlKey || event.metaKey || event.shiftKey) {
-          if (this.enableRotate) {
-            this._rotateUp(_twoPI * this.keyRotateSpeed / this.domElement.clientHeight);
-          }
-        } else {
-          if (this.enablePan) {
-            this._pan(0, this.keyPanSpeed);
-          }
-        }
-        needsUpdate = true;
-        break;
-      case this.keys.BOTTOM:
-        if (event.ctrlKey || event.metaKey || event.shiftKey) {
-          if (this.enableRotate) {
-            this._rotateUp(-_twoPI * this.keyRotateSpeed / this.domElement.clientHeight);
-          }
-        } else {
-          if (this.enablePan) {
-            this._pan(0, -this.keyPanSpeed);
-          }
-        }
-        needsUpdate = true;
-        break;
-      case this.keys.LEFT:
-        if (event.ctrlKey || event.metaKey || event.shiftKey) {
-          if (this.enableRotate) {
-            this._rotateLeft(_twoPI * this.keyRotateSpeed / this.domElement.clientHeight);
-          }
-        } else {
-          if (this.enablePan) {
-            this._pan(this.keyPanSpeed, 0);
-          }
-        }
-        needsUpdate = true;
-        break;
-      case this.keys.RIGHT:
-        if (event.ctrlKey || event.metaKey || event.shiftKey) {
-          if (this.enableRotate) {
-            this._rotateLeft(-_twoPI * this.keyRotateSpeed / this.domElement.clientHeight);
-          }
-        } else {
-          if (this.enablePan) {
-            this._pan(-this.keyPanSpeed, 0);
-          }
-        }
-        needsUpdate = true;
-        break;
-    }
-    if (needsUpdate) {
-      event.preventDefault();
-      this.update();
-    }
-  }
-  _handleTouchStartRotate(event) {
-    if (this._pointers.length === 1) {
-      this._rotateStart.set(event.pageX, event.pageY);
-    } else {
-      const position = this._getSecondPointerPosition(event);
-      const x2 = 0.5 * (event.pageX + position.x);
-      const y2 = 0.5 * (event.pageY + position.y);
-      this._rotateStart.set(x2, y2);
-    }
-  }
-  _handleTouchStartPan(event) {
-    if (this._pointers.length === 1) {
-      this._panStart.set(event.pageX, event.pageY);
-    } else {
-      const position = this._getSecondPointerPosition(event);
-      const x2 = 0.5 * (event.pageX + position.x);
-      const y2 = 0.5 * (event.pageY + position.y);
-      this._panStart.set(x2, y2);
-    }
-  }
-  _handleTouchStartDolly(event) {
-    const position = this._getSecondPointerPosition(event);
-    const dx = event.pageX - position.x;
-    const dy = event.pageY - position.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    this._dollyStart.set(0, distance);
-  }
-  _handleTouchStartDollyPan(event) {
-    if (this.enableZoom) this._handleTouchStartDolly(event);
-    if (this.enablePan) this._handleTouchStartPan(event);
-  }
-  _handleTouchStartDollyRotate(event) {
-    if (this.enableZoom) this._handleTouchStartDolly(event);
-    if (this.enableRotate) this._handleTouchStartRotate(event);
-  }
-  _handleTouchMoveRotate(event) {
-    if (this._pointers.length == 1) {
-      this._rotateEnd.set(event.pageX, event.pageY);
-    } else {
-      const position = this._getSecondPointerPosition(event);
-      const x2 = 0.5 * (event.pageX + position.x);
-      const y2 = 0.5 * (event.pageY + position.y);
-      this._rotateEnd.set(x2, y2);
-    }
-    this._rotateDelta.subVectors(this._rotateEnd, this._rotateStart).multiplyScalar(this.rotateSpeed);
-    const element = this.domElement;
-    this._rotateLeft(_twoPI * this._rotateDelta.x / element.clientHeight);
-    this._rotateUp(_twoPI * this._rotateDelta.y / element.clientHeight);
-    this._rotateStart.copy(this._rotateEnd);
-  }
-  _handleTouchMovePan(event) {
-    if (this._pointers.length === 1) {
-      this._panEnd.set(event.pageX, event.pageY);
-    } else {
-      const position = this._getSecondPointerPosition(event);
-      const x2 = 0.5 * (event.pageX + position.x);
-      const y2 = 0.5 * (event.pageY + position.y);
-      this._panEnd.set(x2, y2);
-    }
-    this._panDelta.subVectors(this._panEnd, this._panStart).multiplyScalar(this.panSpeed);
-    this._pan(this._panDelta.x, this._panDelta.y);
-    this._panStart.copy(this._panEnd);
-  }
-  _handleTouchMoveDolly(event) {
-    const position = this._getSecondPointerPosition(event);
-    const dx = event.pageX - position.x;
-    const dy = event.pageY - position.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    this._dollyEnd.set(0, distance);
-    this._dollyDelta.set(0, Math.pow(this._dollyEnd.y / this._dollyStart.y, this.zoomSpeed));
-    this._dollyOut(this._dollyDelta.y);
-    this._dollyStart.copy(this._dollyEnd);
-    const centerX = (event.pageX + position.x) * 0.5;
-    const centerY = (event.pageY + position.y) * 0.5;
-    this._updateZoomParameters(centerX, centerY);
-  }
-  _handleTouchMoveDollyPan(event) {
-    if (this.enableZoom) this._handleTouchMoveDolly(event);
-    if (this.enablePan) this._handleTouchMovePan(event);
-  }
-  _handleTouchMoveDollyRotate(event) {
-    if (this.enableZoom) this._handleTouchMoveDolly(event);
-    if (this.enableRotate) this._handleTouchMoveRotate(event);
-  }
-  // pointers
-  _addPointer(event) {
-    this._pointers.push(event.pointerId);
-  }
-  _removePointer(event) {
-    delete this._pointerPositions[event.pointerId];
-    for (let i2 = 0; i2 < this._pointers.length; i2++) {
-      if (this._pointers[i2] == event.pointerId) {
-        this._pointers.splice(i2, 1);
-        return;
-      }
-    }
-  }
-  _isTrackingPointer(event) {
-    for (let i2 = 0; i2 < this._pointers.length; i2++) {
-      if (this._pointers[i2] == event.pointerId) return true;
-    }
-    return false;
-  }
-  _trackPointer(event) {
-    let position = this._pointerPositions[event.pointerId];
-    if (position === void 0) {
-      position = new _i();
-      this._pointerPositions[event.pointerId] = position;
-    }
-    position.set(event.pageX, event.pageY);
-  }
-  _getSecondPointerPosition(event) {
-    const pointerId = event.pointerId === this._pointers[0] ? this._pointers[1] : this._pointers[0];
-    return this._pointerPositions[pointerId];
-  }
-  //
-  _customWheelEvent(event) {
-    const mode = event.deltaMode;
-    const newEvent = {
-      clientX: event.clientX,
-      clientY: event.clientY,
-      deltaY: event.deltaY
-    };
-    switch (mode) {
-      case 1:
-        newEvent.deltaY *= 16;
-        break;
-      case 2:
-        newEvent.deltaY *= 100;
-        break;
-    }
-    if (event.ctrlKey && !this._controlActive) {
-      newEvent.deltaY *= 10;
-    }
-    return newEvent;
-  }
-};
-function onPointerDown(event) {
-  if (this.enabled === false) return;
-  if (this._pointers.length === 0) {
-    this.domElement.setPointerCapture(event.pointerId);
-    this.domElement.ownerDocument.addEventListener("pointermove", this._onPointerMove);
-    this.domElement.ownerDocument.addEventListener("pointerup", this._onPointerUp);
-  }
-  if (this._isTrackingPointer(event)) return;
-  this._addPointer(event);
-  if (event.pointerType === "touch") {
-    this._onTouchStart(event);
-  } else {
-    this._onMouseDown(event);
-  }
-  if (this._cursorStyle === "grab") {
-    this.domElement.style.cursor = "grabbing";
-  }
-}
-function onPointerMove(event) {
-  if (this.enabled === false) return;
-  if (event.pointerType === "touch") {
-    this._onTouchMove(event);
-  } else {
-    this._onMouseMove(event);
-  }
-}
-function onPointerUp(event) {
-  this._removePointer(event);
-  switch (this._pointers.length) {
-    case 0:
-      this.domElement.releasePointerCapture(event.pointerId);
-      this.domElement.ownerDocument.removeEventListener("pointermove", this._onPointerMove);
-      this.domElement.ownerDocument.removeEventListener("pointerup", this._onPointerUp);
-      this.dispatchEvent(_endEvent);
-      this.state = _STATE.NONE;
-      if (this._cursorStyle === "grab") {
-        this.domElement.style.cursor = "grab";
-      }
-      break;
-    case 1:
-      const pointerId = this._pointers[0];
-      const position = this._pointerPositions[pointerId];
-      this._onTouchStart({ pointerId, pageX: position.x, pageY: position.y });
-      break;
-  }
-}
-function onMouseDown(event) {
-  let mouseAction;
-  switch (event.button) {
-    case 0:
-      mouseAction = this.mouseButtons.LEFT;
-      break;
-    case 1:
-      mouseAction = this.mouseButtons.MIDDLE;
-      break;
-    case 2:
-      mouseAction = this.mouseButtons.RIGHT;
-      break;
-    default:
-      mouseAction = -1;
-  }
-  switch (mouseAction) {
-    case e.DOLLY:
-      if (this.enableZoom === false) return;
-      this._handleMouseDownDolly(event);
-      this.state = _STATE.DOLLY;
-      break;
-    case e.ROTATE:
-      if (event.ctrlKey || event.metaKey || event.shiftKey) {
-        if (this.enablePan === false) return;
-        this._handleMouseDownPan(event);
-        this.state = _STATE.PAN;
-      } else {
-        if (this.enableRotate === false) return;
-        this._handleMouseDownRotate(event);
-        this.state = _STATE.ROTATE;
-      }
-      break;
-    case e.PAN:
-      if (event.ctrlKey || event.metaKey || event.shiftKey) {
-        if (this.enableRotate === false) return;
-        this._handleMouseDownRotate(event);
-        this.state = _STATE.ROTATE;
-      } else {
-        if (this.enablePan === false) return;
-        this._handleMouseDownPan(event);
-        this.state = _STATE.PAN;
-      }
-      break;
-    default:
-      this.state = _STATE.NONE;
-  }
-  if (this.state !== _STATE.NONE) {
-    this.dispatchEvent(_startEvent);
-  }
-}
-function onMouseMove(event) {
-  switch (this.state) {
-    case _STATE.ROTATE:
-      if (this.enableRotate === false) return;
-      this._handleMouseMoveRotate(event);
-      break;
-    case _STATE.DOLLY:
-      if (this.enableZoom === false) return;
-      this._handleMouseMoveDolly(event);
-      break;
-    case _STATE.PAN:
-      if (this.enablePan === false) return;
-      this._handleMouseMovePan(event);
-      break;
-  }
-}
-function onMouseWheel(event) {
-  if (this.enabled === false || this.enableZoom === false || this.state !== _STATE.NONE) return;
-  event.preventDefault();
-  this.dispatchEvent(_startEvent);
-  this._handleMouseWheel(this._customWheelEvent(event));
-  this.dispatchEvent(_endEvent);
-}
-function onKeyDown(event) {
-  if (this.enabled === false) return;
-  this._handleKeyDown(event);
-}
-function onTouchStart(event) {
-  this._trackPointer(event);
-  switch (this._pointers.length) {
-    case 1:
-      switch (this.touches.ONE) {
-        case s.ROTATE:
-          if (this.enableRotate === false) return;
-          this._handleTouchStartRotate(event);
-          this.state = _STATE.TOUCH_ROTATE;
-          break;
-        case s.PAN:
-          if (this.enablePan === false) return;
-          this._handleTouchStartPan(event);
-          this.state = _STATE.TOUCH_PAN;
-          break;
-        default:
-          this.state = _STATE.NONE;
-      }
-      break;
-    case 2:
-      switch (this.touches.TWO) {
-        case s.DOLLY_PAN:
-          if (this.enableZoom === false && this.enablePan === false) return;
-          this._handleTouchStartDollyPan(event);
-          this.state = _STATE.TOUCH_DOLLY_PAN;
-          break;
-        case s.DOLLY_ROTATE:
-          if (this.enableZoom === false && this.enableRotate === false) return;
-          this._handleTouchStartDollyRotate(event);
-          this.state = _STATE.TOUCH_DOLLY_ROTATE;
-          break;
-        default:
-          this.state = _STATE.NONE;
-      }
-      break;
-    default:
-      this.state = _STATE.NONE;
-  }
-  if (this.state !== _STATE.NONE) {
-    this.dispatchEvent(_startEvent);
-  }
-}
-function onTouchMove(event) {
-  this._trackPointer(event);
-  switch (this.state) {
-    case _STATE.TOUCH_ROTATE:
-      if (this.enableRotate === false) return;
-      this._handleTouchMoveRotate(event);
-      this.update();
-      break;
-    case _STATE.TOUCH_PAN:
-      if (this.enablePan === false) return;
-      this._handleTouchMovePan(event);
-      this.update();
-      break;
-    case _STATE.TOUCH_DOLLY_PAN:
-      if (this.enableZoom === false && this.enablePan === false) return;
-      this._handleTouchMoveDollyPan(event);
-      this.update();
-      break;
-    case _STATE.TOUCH_DOLLY_ROTATE:
-      if (this.enableZoom === false && this.enableRotate === false) return;
-      this._handleTouchMoveDollyRotate(event);
-      this.update();
-      break;
-    default:
-      this.state = _STATE.NONE;
-  }
-}
-function onContextMenu(event) {
-  if (this.enabled === false) return;
-  event.preventDefault();
-}
-function interceptControlDown(event) {
-  if (event.key === "Control") {
-    this._controlActive = true;
-    const document2 = this.domElement.getRootNode();
-    document2.addEventListener("keyup", this._interceptControlUp, { passive: true, capture: true });
-  }
-}
-function interceptControlUp(event) {
-  if (event.key === "Control") {
-    this._controlActive = false;
-    const document2 = this.domElement.getRootNode();
-    document2.removeEventListener("keyup", this._interceptControlUp, { passive: true, capture: true });
-  }
-}
-
-// assets/js/utils/gesture.js
-var SPAN = "span";
-var DRIFT = "drift";
-var TWIST = "twist";
-var TWO_PI = Math.PI * 2;
-function wrapAngle(a2) {
-  while (a2 > Math.PI) a2 -= TWO_PI;
-  while (a2 < -Math.PI) a2 += TWO_PI;
-  return a2;
-}
-function frameOf(a2, b2) {
-  const dx = b2.x - a2.x;
-  const dy = b2.y - a2.y;
-  return {
-    span: Math.sqrt(dx * dx + dy * dy),
-    cx: (a2.x + b2.x) * 0.5,
-    cy: (a2.y + b2.y) * 0.5,
-    angle: Math.atan2(dy, dx)
-  };
-}
-function travelFrom(base, frame) {
-  return {
-    [SPAN]: Math.abs(frame.span - base.span),
-    [DRIFT]: Math.sqrt((frame.cx - base.cx) ** 2 + (frame.cy - base.cy) ** 2),
-    [TWIST]: Math.abs(wrapAngle(frame.angle - base.angle)) * frame.span * 0.5
-  };
-}
-function createArbiter() {
-  let base = null;
-  let channel = null;
-  return {
-    get channel() {
-      return channel;
-    },
-    begin(frame) {
-      base = frame;
-      channel = null;
-    },
-    decide(frame, slop) {
-      if (channel !== null) return channel;
-      if (base === null || frame === null) return null;
-      const travel = travelFrom(base, frame);
-      let winner = null;
-      for (const c2 of [SPAN, DRIFT, TWIST]) {
-        if (travel[c2] < slop) continue;
-        if (winner === null || travel[c2] > travel[winner]) winner = c2;
-      }
-      channel = winner;
-      return winner;
-    }
-  };
-}
-
-// assets/js/turtling/orbit.js
-var _fwd = new Ti();
-var TWO_PI2 = Math.PI * 2;
-var DojoOrbitControls = class extends OrbitControls {
-  constructor(object, domElement = null) {
-    super(object, domElement);
-    this.dollyStandoff = 30;
-    this.minDistance = 0;
-    this.gestureSlop = 10;
-    this._arbiter = createArbiter();
-    this._twistStart = 0;
-    this._span0 = 1;
-    this._mid0x = 0;
-    this._mid0y = 0;
-  }
-  // Dolly-through. With `minDistance = 0` stock already computes the advance we
-  // want (`prevRadius − prevRadius·scale`, unclamped) and then parks the target
-  // at that unfloored radius ahead of the camera. All that remains is to floor
-  // the pivot — which is the whole of the law.
-  update(deltaTime = null) {
-    const changed = super.update(deltaTime);
-    const gap = this.object.position.distanceTo(this.target);
-    if (gap >= this.dollyStandoff || !this.object.isPerspectiveCamera) return changed;
-    this.object.getWorldDirection(_fwd);
-    this.target.copy(this.object.position).addScaledVector(_fwd, this.dollyStandoff);
-    this._lastTargetPosition.copy(this.target);
-    return changed;
-  }
-  // Upstream passes clientX as the y argument, mis-aiming the middle-drag dolly
-  // ray. Still unfixed in three.js r185.
-  _handleMouseDownDolly(event) {
-    this._updateZoomParameters(event.clientX, event.clientY);
-    this._dollyStart.set(event.clientX, event.clientY);
-  }
-  // Two-finger frame in STABLE pointer order — (event, other) flips twist by π.
-  _gestureFrame() {
-    const a2 = this._pointerPositions[this._pointers[0]];
-    const b2 = this._pointerPositions[this._pointers[1]];
-    if (a2 === void 0 || b2 === void 0) return null;
-    return frameOf(a2, b2);
-  }
-  // Route one arbitrated gesture. `onDrift` differs by mode: orbit vs pan.
-  // Public pan/rotate/dolly each call update(); suspend damping for the batch
-  // so rotateLeft+rotateUp don't intermediate-damp (theta twice, phi once).
-  _routeGesture(onDrift) {
-    const frame = this._gestureFrame();
-    const channel = this._arbiter.decide(frame, this.gestureSlop);
-    if (channel === SPAN || channel === DRIFT) {
-      const damped = this.enableDamping;
-      this.enableDamping = false;
-      try {
-        if (channel === SPAN && this.enableZoom && frame && this._span0) {
-          this._updateZoomParameters(frame.cx, frame.cy);
-          this.dollyOut(Math.pow(frame.span / this._span0, this.zoomSpeed));
-          this._span0 = frame.span;
-        } else if (channel === DRIFT) {
-          onDrift(frame);
-        }
-      } finally {
-        this.enableDamping = damped;
-      }
-    } else if (channel === TWIST) {
-      this._emitTwist(frame);
-    }
-    if (frame === null) return;
-    if (channel !== SPAN) this._span0 = frame.span;
-    if (channel !== DRIFT) {
-      this._mid0x = frame.cx;
-      this._mid0y = frame.cy;
-    }
-    if (channel !== TWIST) this._twistStart = frame.angle;
-  }
-  // The rig has no roll DOF, so twist leaves as an intent and the consumer
-  // lands it (stage.js folds it into the hand's own reframe M).
-  _emitTwist(frame) {
-    if (frame === null) return;
-    const delta = wrapAngle(frame.angle - this._twistStart);
-    this._twistStart = frame.angle;
-    if (delta !== 0) this.dispatchEvent({ type: "twist", angle: delta });
-  }
-  _armTwoFinger() {
-    const frame = this._gestureFrame();
-    this._arbiter.begin(frame);
-    if (frame === null) return;
-    this._span0 = frame.span;
-    this._mid0x = frame.cx;
-    this._mid0y = frame.cy;
-    this._twistStart = frame.angle;
-  }
-  _handleTouchStartDollyRotate(_event) {
-    this._armTwoFinger();
-  }
-  _handleTouchStartDollyPan(_event) {
-    this._armTwoFinger();
-  }
-  _handleTouchMoveDollyRotate(_event) {
-    this._routeGesture((frame) => {
-      if (!this.enableRotate || !frame) return;
-      const h2 = this.domElement.clientHeight;
-      const dx = (frame.cx - this._mid0x) * this.rotateSpeed;
-      const dy = (frame.cy - this._mid0y) * this.rotateSpeed;
-      this.rotateLeft(TWO_PI2 * dx / h2);
-      this.rotateUp(TWO_PI2 * dy / h2);
-      this._mid0x = frame.cx;
-      this._mid0y = frame.cy;
-    });
-  }
-  _handleTouchMoveDollyPan(_event) {
-    this._routeGesture((frame) => {
-      if (!this.enablePan || !frame) return;
-      this.pan(
-        (frame.cx - this._mid0x) * this.panSpeed,
-        (frame.cy - this._mid0y) * this.panSpeed
-      );
-      this._mid0x = frame.cx;
-      this._mid0y = frame.cy;
-    });
-  }
-};
-
-// assets/js/utils/three-addons/lines/LineMaterial.js
-Gn2.line = {
-  worldUnits: { value: 1 },
-  linewidth: { value: 1 },
-  resolution: { value: new _i() },
-  dashOffset: { value: 0 },
-  dashScale: { value: 1 },
-  dashSize: { value: 1 },
-  gapSize: { value: 1 }
-  // todo FIX - maybe change to totalSize
-};
-Hn2["line"] = {
-  uniforms: Yl.merge([
-    Gn2.common,
-    Gn2.fog,
-    Gn2.line
-  ]),
-  vertexShader: (
-    /* glsl */
-    `
-		#include <common>
-		#include <color_pars_vertex>
-		#include <fog_pars_vertex>
-		#include <logdepthbuf_pars_vertex>
-		#include <clipping_planes_pars_vertex>
-
-		uniform float linewidth;
-		uniform vec2 resolution;
-
-		attribute vec3 instanceStart;
-		attribute vec3 instanceEnd;
-
-		attribute vec3 instanceColorStart;
-		attribute vec3 instanceColorEnd;
-
-		#ifdef WORLD_UNITS
-
-			varying vec4 worldPos;
-			varying vec3 worldStart;
-			varying vec3 worldEnd;
-
-			#ifdef USE_DASH
-
-				varying vec2 vUv;
-
-			#endif
-
-		#else
-
-			varying vec2 vUv;
-
-		#endif
-
-		#ifdef USE_DASH
-
-			uniform float dashScale;
-			attribute float instanceDistanceStart;
-			attribute float instanceDistanceEnd;
-			varying float vLineDistance;
-
-		#endif
-
-		float trimSegmentAlpha( const in vec4 start, const in vec4 end ) {
-
-			// compute the interpolation factor needed to trim the segment so it terminates
-			// between the camera plane and the near plane
-
-			// conservative estimate of the near plane
-			float a = projectionMatrix[ 2 ][ 2 ]; // 3nd entry in 3th column
-			float b = projectionMatrix[ 3 ][ 2 ]; // 3nd entry in 4th column
-
-			// we need different nearEstimate formula for reversed and default depth buffer
-			// a is positive with a reversed depth buffer so it can be used for controlling the code flow
-			float nearEstimate = ( a > 0.0 ) ? ( - b / ( a + 1.0 ) ) : ( - 0.5 * b / a );
-
-			return ( nearEstimate - start.z ) / ( end.z - start.z );
-
-		}
-
-		void main() {
-
-			#ifdef USE_COLOR
-
-				vColor.xyz = ( position.y < 0.5 ) ? instanceColorStart : instanceColorEnd;
-
-			#endif
-
-			float aspect = resolution.x / resolution.y;
-
-			// camera space
-			vec4 start = modelViewMatrix * vec4( instanceStart, 1.0 );
-			vec4 end = modelViewMatrix * vec4( instanceEnd, 1.0 );
-
-			#ifdef USE_DASH
-
-				float lineDistanceStart = dashScale * instanceDistanceStart;
-				float lineDistanceEnd = dashScale * instanceDistanceEnd;
-
-			#endif
-
-			#ifdef WORLD_UNITS
-
-				worldStart = start.xyz;
-				worldEnd = end.xyz;
-
-			#else
-
-				vUv = uv;
-
-			#endif
-
-			// special case for perspective projection, and segments that terminate either in, or behind, the camera plane
-			// clearly the gpu firmware has a way of addressing this issue when projecting into ndc space
-			// but we need to perform ndc-space calculations in the shader, so we must address this issue directly
-			// perhaps there is a more elegant solution -- WestLangley
-
-			bool perspective = ( projectionMatrix[ 2 ][ 3 ] == - 1.0 ); // 4th entry in the 3rd column
-
-			if ( perspective ) {
-
-				if ( start.z < 0.0 && end.z >= 0.0 ) {
-
-					float alpha = trimSegmentAlpha( start, end );
-					end.xyz = mix( start.xyz, end.xyz, alpha );
-
-					#ifdef USE_DASH
-
-						lineDistanceEnd = mix( lineDistanceStart, lineDistanceEnd, alpha );
-
-					#endif
-
-				} else if ( end.z < 0.0 && start.z >= 0.0 ) {
-
-					float alpha = trimSegmentAlpha( end, start );
-					start.xyz = mix( end.xyz, start.xyz, alpha );
-
-					#ifdef USE_DASH
-
-						lineDistanceStart = mix( lineDistanceEnd, lineDistanceStart, alpha );
-
-					#endif
-
-				}
-
-			}
-
-			#ifdef USE_DASH
-
-				vLineDistance = ( position.y < 0.5 ) ? lineDistanceStart : lineDistanceEnd;
-				vUv = uv;
-
-			#endif
-
-			// clip space
-			vec4 clipStart = projectionMatrix * start;
-			vec4 clipEnd = projectionMatrix * end;
-
-			// ndc space
-			vec3 ndcStart = clipStart.xyz / clipStart.w;
-			vec3 ndcEnd = clipEnd.xyz / clipEnd.w;
-
-			// direction
-			vec2 dir = ndcEnd.xy - ndcStart.xy;
-
-			// account for clip-space aspect ratio
-			dir.x *= aspect;
-			dir = normalize( dir );
-
-			#ifdef WORLD_UNITS
-
-				vec3 worldDir = normalize( end.xyz - start.xyz );
-				vec3 tmpFwd = normalize( mix( start.xyz, end.xyz, 0.5 ) );
-				vec3 worldUp = normalize( cross( worldDir, tmpFwd ) );
-				vec3 worldFwd = cross( worldDir, worldUp );
-				worldPos = position.y < 0.5 ? start: end;
-
-				// height offset
-				float hw = linewidth * 0.5;
-				worldPos.xyz += position.x < 0.0 ? hw * worldUp : - hw * worldUp;
-
-				// don't extend the line if we're rendering dashes because we
-				// won't be rendering the endcaps
-				#ifndef USE_DASH
-
-					// cap extension
-					worldPos.xyz += position.y < 0.5 ? - hw * worldDir : hw * worldDir;
-
-					// add width to the box
-					worldPos.xyz += worldFwd * hw;
-
-					// endcaps
-					if ( position.y > 1.0 || position.y < 0.0 ) {
-
-						worldPos.xyz -= worldFwd * 2.0 * hw;
-
-					}
-
-				#endif
-
-				// project the worldpos
-				vec4 clip = projectionMatrix * worldPos;
-
-				// shift the depth of the projected points so the line
-				// segments overlap neatly
-				vec3 clipPose = ( position.y < 0.5 ) ? ndcStart : ndcEnd;
-				clip.z = clipPose.z * clip.w;
-
-			#else
-
-				vec2 offset = vec2( dir.y, - dir.x );
-				// undo aspect ratio adjustment
-				dir.x /= aspect;
-				offset.x /= aspect;
-
-				// sign flip
-				if ( position.x < 0.0 ) offset *= - 1.0;
-
-				// endcaps
-				if ( position.y < 0.0 ) {
-
-					offset += - dir;
-
-				} else if ( position.y > 1.0 ) {
-
-					offset += dir;
-
-				}
-
-				// adjust for linewidth
-				offset *= linewidth;
-
-				// adjust for clip-space to screen-space conversion // maybe resolution should be based on viewport ...
-				offset /= resolution.y;
-
-				// select end
-				vec4 clip = ( position.y < 0.5 ) ? clipStart : clipEnd;
-
-				// back to clip space
-				offset *= clip.w;
-
-				clip.xy += offset;
-
-			#endif
-
-			gl_Position = clip;
-
-			vec4 mvPosition = ( position.y < 0.5 ) ? start : end; // this is an approximation
-
-			#include <logdepthbuf_vertex>
-			#include <clipping_planes_vertex>
-			#include <fog_vertex>
-
-		}
-		`
-  ),
-  fragmentShader: (
-    /* glsl */
-    `
-		uniform vec3 diffuse;
-		uniform float opacity;
-		uniform float linewidth;
-
-		#ifdef USE_DASH
-
-			uniform float dashOffset;
-			uniform float dashSize;
-			uniform float gapSize;
-
-		#endif
-
-		varying float vLineDistance;
-
-		#ifdef WORLD_UNITS
-
-			varying vec4 worldPos;
-			varying vec3 worldStart;
-			varying vec3 worldEnd;
-
-			#ifdef USE_DASH
-
-				varying vec2 vUv;
-
-			#endif
-
-		#else
-
-			varying vec2 vUv;
-
-		#endif
-
-		#include <common>
-		#include <color_pars_fragment>
-		#include <fog_pars_fragment>
-		#include <logdepthbuf_pars_fragment>
-		#include <clipping_planes_pars_fragment>
-
-		vec2 closestLineToLine(vec3 p1, vec3 p2, vec3 p3, vec3 p4) {
-
-			float mua;
-			float mub;
-
-			vec3 p13 = p1 - p3;
-			vec3 p43 = p4 - p3;
-
-			vec3 p21 = p2 - p1;
-
-			float d1343 = dot( p13, p43 );
-			float d4321 = dot( p43, p21 );
-			float d1321 = dot( p13, p21 );
-			float d4343 = dot( p43, p43 );
-			float d2121 = dot( p21, p21 );
-
-			float denom = d2121 * d4343 - d4321 * d4321;
-
-			float numer = d1343 * d4321 - d1321 * d4343;
-
-			mua = numer / denom;
-			mua = clamp( mua, 0.0, 1.0 );
-			mub = ( d1343 + d4321 * ( mua ) ) / d4343;
-			mub = clamp( mub, 0.0, 1.0 );
-
-			return vec2( mua, mub );
-
-		}
-
-		void main() {
-
-			float alpha = opacity;
-			vec4 diffuseColor = vec4( diffuse, alpha );
-
-			#include <clipping_planes_fragment>
-
-			#ifdef USE_DASH
-
-				if ( vUv.y < - 1.0 || vUv.y > 1.0 ) discard; // discard endcaps
-
-				if ( mod( vLineDistance + dashOffset, dashSize + gapSize ) > dashSize ) discard; // todo - FIX
-
-			#endif
-
-			#ifdef WORLD_UNITS
-
-				// Find the closest points on the view ray and the line segment
-				vec3 rayEnd = normalize( worldPos.xyz ) * 1e5;
-				vec3 lineDir = worldEnd - worldStart;
-				vec2 params = closestLineToLine( worldStart, worldEnd, vec3( 0.0, 0.0, 0.0 ), rayEnd );
-
-				vec3 p1 = worldStart + lineDir * params.x;
-				vec3 p2 = rayEnd * params.y;
-				vec3 delta = p1 - p2;
-				float len = length( delta );
-				float norm = len / linewidth;
-
-				#ifndef USE_DASH
-
-					#ifdef USE_ALPHA_TO_COVERAGE
-
-						float dnorm = fwidth( norm );
-						alpha = 1.0 - smoothstep( 0.5 - dnorm, 0.5 + dnorm, norm );
-
-					#else
-
-						if ( norm > 0.5 ) {
-
-							discard;
-
-						}
-
-					#endif
-
-				#endif
-
-			#else
-
-				#ifdef USE_ALPHA_TO_COVERAGE
-
-					// artifacts appear on some hardware if a derivative is taken within a conditional
-					float a = vUv.x;
-					float b = ( vUv.y > 0.0 ) ? vUv.y - 1.0 : vUv.y + 1.0;
-					float len2 = a * a + b * b;
-					float dlen = fwidth( len2 );
-
-					if ( abs( vUv.y ) > 1.0 ) {
-
-						alpha = 1.0 - smoothstep( 1.0 - dlen, 1.0 + dlen, len2 );
-
-					}
-
-				#else
-
-					if ( abs( vUv.y ) > 1.0 ) {
-
-						float a = vUv.x;
-						float b = ( vUv.y > 0.0 ) ? vUv.y - 1.0 : vUv.y + 1.0;
-						float len2 = a * a + b * b;
-
-						if ( len2 > 1.0 ) discard;
-
-					}
-
-				#endif
-
-			#endif
-
-			#include <logdepthbuf_fragment>
-			#include <color_fragment>
-
-			gl_FragColor = vec4( diffuseColor.rgb, alpha );
-
-			#include <tonemapping_fragment>
-			#include <colorspace_fragment>
-			#include <fog_fragment>
-			#include <premultiplied_alpha_fragment>
-
-		}
-		`
-  )
-};
-var LineMaterial = class extends Zl {
-  /**
-   * Constructs a new line segments geometry.
-   *
-   * @param {Object} [parameters] - An object with one or more properties
-   * defining the material's appearance. Any property of the material
-   * (including any property from inherited materials) can be passed
-   * in here. Color values can be passed any type of value accepted
-   * by {@link Color#set}.
-   */
-  constructor(parameters) {
-    super({
-      type: "LineMaterial",
-      uniforms: Yl.clone(Hn2["line"].uniforms),
-      vertexShader: Hn2["line"].vertexShader,
-      fragmentShader: Hn2["line"].fragmentShader,
-      clipping: true
-      // required for clipping support
-    });
-    this.isLineMaterial = true;
-    this.setValues(parameters);
-  }
-  /**
-   * The material's color.
-   *
-   * @type {Color}
-   * @default (1,1,1)
-   */
-  get color() {
-    return this.uniforms.diffuse.value;
-  }
-  set color(value) {
-    this.uniforms.diffuse.value = value;
-  }
-  /**
-   * Whether the material's sizes (width, dash gaps) are in world units.
-   *
-   * @type {boolean}
-   * @default false
-   */
-  get worldUnits() {
-    return "WORLD_UNITS" in this.defines;
-  }
-  set worldUnits(value) {
-    if (value === true !== this.worldUnits) {
-      this.needsUpdate = true;
-    }
-    if (value === true) {
-      this.defines.WORLD_UNITS = "";
-    } else {
-      delete this.defines.WORLD_UNITS;
-    }
-  }
-  /**
-   * Controls line thickness in CSS pixel units when `worldUnits` is `false` (default),
-   * or in world units when `worldUnits` is `true`.
-   *
-   * @type {number}
-   * @default 1
-   */
-  get linewidth() {
-    return this.uniforms.linewidth.value;
-  }
-  set linewidth(value) {
-    if (!this.uniforms.linewidth) return;
-    this.uniforms.linewidth.value = value;
-  }
-  /**
-   * Whether the line is dashed, or solid.
-   *
-   * @type {boolean}
-   * @default false
-   */
-  get dashed() {
-    return "USE_DASH" in this.defines;
-  }
-  set dashed(value) {
-    if (value === true !== this.dashed) {
-      this.needsUpdate = true;
-    }
-    if (value === true) {
-      this.defines.USE_DASH = "";
-    } else {
-      delete this.defines.USE_DASH;
-    }
-  }
-  /**
-   * The scale of the dashes and gaps.
-   *
-   * @type {number}
-   * @default 1
-   */
-  get dashScale() {
-    return this.uniforms.dashScale.value;
-  }
-  set dashScale(value) {
-    this.uniforms.dashScale.value = value;
-  }
-  /**
-   * The size of the dash.
-   *
-   * @type {number}
-   * @default 1
-   */
-  get dashSize() {
-    return this.uniforms.dashSize.value;
-  }
-  set dashSize(value) {
-    this.uniforms.dashSize.value = value;
-  }
-  /**
-   * Where in the dash cycle the dash starts.
-   *
-   * @type {number}
-   * @default 0
-   */
-  get dashOffset() {
-    return this.uniforms.dashOffset.value;
-  }
-  set dashOffset(value) {
-    this.uniforms.dashOffset.value = value;
-  }
-  /**
-   * The size of the gap.
-   *
-   * @type {number}
-   * @default 0
-   */
-  get gapSize() {
-    return this.uniforms.gapSize.value;
-  }
-  set gapSize(value) {
-    this.uniforms.gapSize.value = value;
-  }
-  /**
-   * The opacity.
-   *
-   * @type {number}
-   * @default 1
-   */
-  get opacity() {
-    return this.uniforms.opacity.value;
-  }
-  set opacity(value) {
-    if (!this.uniforms) return;
-    this.uniforms.opacity.value = value;
-  }
-  /**
-   * The size of the viewport, in screen pixels. This must be kept updated to make
-   * screen-space rendering accurate. The `LineSegments2.onBeforeRender` callback
-   * performs the update for visible objects.
-   *
-   * @type {Vector2}
-   */
-  get resolution() {
-    return this.uniforms.resolution.value;
-  }
-  set resolution(value) {
-    this.uniforms.resolution.value.copy(value);
-  }
-  /**
-   * Whether to use alphaToCoverage or not. When enabled, this can improve the
-   * anti-aliasing of line edges when using MSAA.
-   *
-   * @type {boolean}
-   */
-  get alphaToCoverage() {
-    return "USE_ALPHA_TO_COVERAGE" in this.defines;
-  }
-  set alphaToCoverage(value) {
-    if (!this.defines) return;
-    if (value === true !== this.alphaToCoverage) {
-      this.needsUpdate = true;
-    }
-    if (value === true) {
-      this.defines.USE_ALPHA_TO_COVERAGE = "";
-    } else {
-      delete this.defines.USE_ALPHA_TO_COVERAGE;
-    }
-  }
-};
-
-// assets/js/turtling/render/line/material-cache.js
-function createMaterialCache(opts = {}) {
-  const cache = /* @__PURE__ */ new Map();
-  let disposed = false;
-  const make = opts.createMaterial || defaultLineMaterial;
-  return {
-    get size() {
-      return cache.size;
-    },
-    get(color, thickness) {
-      if (disposed) throw new Error("materialCache: used after dispose");
-      const key = `${color || 15169544}:${thickness || 2}`;
-      let mat = cache.get(key);
-      if (!mat) {
-        mat = make(color, thickness, { vertexColors: false });
-        mat._cached = true;
-        cache.set(key, mat);
-      }
-      return mat;
-    },
-    // Thickness-only key; vertex colours carry ink. (id:child-ink)
-    getInk(thickness) {
-      if (disposed) throw new Error("materialCache: used after dispose");
-      const key = `ink:${thickness || 2}`;
-      let mat = cache.get(key);
-      if (!mat) {
-        mat = make(16777215, thickness, { vertexColors: true });
-        mat._cached = true;
-        cache.set(key, mat);
-      }
-      return mat;
-    },
-    // Line width is screen-space — keep resolution current after resize.
-    updateResolution(width, height) {
-      for (const mat of cache.values()) mat.resolution?.set(width, height);
-    },
-    // Blank slate (turtle.reset / compositor.dispose). Stage still owns us.
-    clear() {
-      for (const mat of cache.values()) mat.dispose?.();
-      cache.clear();
-    },
-    // End of WebGL life (stage.dispose). Idempotent.
-    dispose() {
-      if (disposed) return;
-      disposed = true;
-      this.clear();
-    }
-  };
-}
-function defaultLineMaterial(color, thickness, opts = {}) {
-  const mat = new LineMaterial({
-    color: opts.vertexColors ? 16777215 : color || 15169544,
-    linewidth: thickness || 2,
-    vertexColors: !!opts.vertexColors,
-    dashed: false
-  });
-  mat.resolution.set(window.innerWidth, window.innerHeight);
-  return mat;
-}
-
-// assets/js/turtling/stage.js
-function createStage(canvas, bridge, instruments = {}) {
-  const ctx = canvas.getContext("webgl2") ?? canvas.getContext("webgl");
-  const materials = createMaterialCache();
-  const scene = new Vr();
-  const pathGroup = new Tr();
-  const gridGroup = new Tr();
-  const glyphGroup = new Tr();
-  glyphGroup.elements = [];
-  scene.add(pathGroup);
-  scene.add(gridGroup);
-  scene.add(glyphGroup);
-  const shapist = new render_default.Shape(pathGroup, {
-    layerMethod: "renderOrder",
-    polygonOffset: { factor: -0.1, units: -1 }
-  });
-  const aspect = window.innerWidth / window.innerHeight;
-  const camera = new eu(60, aspect, 0.1, 1e7);
-  camera.lookAt(0, 0, 0);
-  camera.position.set(0, 0, 500);
-  camera.updateProjectionMatrix();
-  const controls = new DojoOrbitControls(camera, canvas);
-  controls.target.set(0, 0, 0);
-  controls.mouseButtons = {
-    RIGHT: e.ROTATE,
-    MIDDLE: e.DOLLY,
-    LEFT: e.PAN
-  };
-  controls.touches = { ONE: s.PAN, TWO: s.DOLLY_ROTATE };
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.2;
-  controls.update();
-  controls.zoomToCursor = true;
-  let viewOffset = SE3.identity();
-  const onTwist = ({ angle }) => {
-    viewOffset = SE3.rotateLocal(viewOffset, AXIS_Z, angle * 180 / Math.PI);
-    stage.requestRender?.();
-  };
-  controls.addEventListener("twist", onTwist);
-  const renderer = new Pa2({
-    canvas,
-    antialias: true,
-    alpha: true
-  });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.sortObjects = false;
-  let recorder = null;
-  let recorderResolved = false;
-  function getRecorder() {
-    if (recorderResolved) return recorder;
-    if (typeof instruments.recorder !== "function") {
-      recorderResolved = true;
-      return null;
-    }
-    recorder = instruments.recorder(canvas) ?? null;
-    recorderResolved = true;
-    return recorder;
-  }
-  const head = new render_default.Head(scene);
-  const onResize = () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    materials.updateResolution(window.innerWidth, window.innerHeight);
-    stage.requestRender?.();
-  };
-  window.addEventListener("resize", onResize);
-  const cameraUnsub = cameraBridge.sub(async (payload) => {
-    switch (payload[0]) {
-      case "recenter":
-        camera.position.set(0, 0, 500);
-        controls.target.set(0, 0, 0);
-        viewOffset = SE3.identity();
-        controls.update();
-        break;
-      case "pan":
-        camera.desire = camera.desire !== "pan" ? "pan" : "track";
-        break;
-      case "track":
-        camera.desire = camera.desire !== "track" ? "track" : "pan";
-        break;
-      case "endtrack":
-        camera.desire = null;
-        break;
-      case "record": {
-        try {
-          const rec = getRecorder();
-          if (rec) await rec.startRecording();
-        } catch (err) {
-          console.error("record failed:", err);
-        }
-        break;
-      }
-      case "endrecord": {
-        try {
-          const video = recorder ? await recorder.stopRecording() : null;
-          if (video) bridge.pub(["saveRecord", { snapshot: video.blob, type: "video" }]);
-        } catch (err) {
-          console.error("endrecord failed:", err);
-        }
-        break;
-      }
-    }
-    stage.requestRender?.();
-  });
-  let hatchInFlight = false;
-  let disposed = false;
-  let hatchP = null;
-  let resolveHatch = null;
-  function picture() {
-    if (!hatchP) {
-      hatchP = new Promise((r2) => {
-        resolveHatch = r2;
-      });
-    }
-    return hatchP;
-  }
-  function settle(path) {
-    const r2 = resolveHatch;
-    hatchP = null;
-    resolveHatch = null;
-    hatchInFlight = false;
-    if (r2) r2(path);
-  }
-  const stage = {
-    canvas,
-    ctx,
-    scene,
-    camera,
-    renderer,
-    controls,
-    head,
-    get recorder() {
-      return recorder;
-    },
-    shapist,
-    // LineMaterial cache (spec A3) — WebGL-lifetime owner; dispose() frees it.
-    materials,
-    // Root groups — used only by stage.head idle rendering.
-    // Per-ambient groups are created dynamically by turtle.js.
-    pathGroup,
-    gridGroup,
-    glyphGroup,
-    renderstate: {
-      // `save` alone: whether the next hatch is also kept to disk. WHEN to
-      // hatch is not the stage's business (hatch.js owns it).
-      snapshot: { save: false },
-      // The fault channel is a LIST of wounds, never a sentence — a receiver
-      // interprets them (isolating the cells that hurt) without running anything.
-      meta: { state: null, message: null, commands: [], diagnostics: [] }
-    },
-    renderLoop: null,
-    // The hand's own reframe, read by the compositor each frame.
-    viewOffset: () => viewOffset,
-    // Render one frame
-    render() {
-      const scaleFactor = camera.position.distanceTo(head.position()) / 250;
-      head.scale(scaleFactor);
-      controls.update();
-      renderer.render(scene, camera);
-    },
-    get hatching() {
-      return hatchInFlight;
-    },
-    // The picture this hatch will produce. A keep borrows this; hatch()
-    // starts the work after the frame has been drawn.
-    picture() {
-      return picture();
-    },
-    // WebGL2 readback is ASYNC: PIXEL_PACK_BUFFER + fence, never a sync
-    // readPixels (stalled the main thread). Returns the picture promise.
-    // In-flight joins the same promise; lastHatchAt stamps only a start.
-    hatch(bridge2) {
-      const p2 = picture();
-      if (hatchInFlight || disposed) {
-        if (disposed) settle(null);
-        return p2;
-      }
-      hatchInFlight = true;
-      const width = canvas.width;
-      const height = canvas.height;
-      const finish = (pixels) => {
-        queueMicrotask(async () => {
-          try {
-            const rec = getRecorder();
-            const result = rec ? await rec.takeSnapshot({ pixels, width, height }) : null;
-            if (result) {
-              const snap = stage.renderstate.snapshot;
-              if (snap.save) {
-                stage.renderstate.snapshot = { save: false };
-                bridge2.pub(["saveRecord", {
-                  snapshot: result.full,
-                  type: "image",
-                  title: snap.title ?? null
-                }]);
-              }
-              const path = result.trimmed ?? result.full ?? null;
-              stage.renderstate.meta.path = path;
-              bridge2.pub(["hatchTurtle", { ...stage.renderstate.meta }]);
-              settle(path);
-              return;
-            }
-          } catch {
-          }
-          settle(null);
-        });
-      };
-      if (typeof ctx.fenceSync !== "function") {
-        const pixels = new Uint8Array(width * height * 4);
-        ctx.readPixels(0, 0, width, height, ctx.RGBA, ctx.UNSIGNED_BYTE, pixels);
-        finish(pixels);
-        return p2;
-      }
-      const buf = ctx.createBuffer();
-      ctx.bindBuffer(ctx.PIXEL_PACK_BUFFER, buf);
-      ctx.bufferData(ctx.PIXEL_PACK_BUFFER, width * height * 4, ctx.STREAM_READ);
-      ctx.readPixels(0, 0, width, height, ctx.RGBA, ctx.UNSIGNED_BYTE, 0);
-      ctx.bindBuffer(ctx.PIXEL_PACK_BUFFER, null);
-      const sync = ctx.fenceSync(ctx.SYNC_GPU_COMMANDS_COMPLETE, 0);
-      ctx.flush();
-      const poll = () => {
-        if (disposed || ctx.isContextLost()) {
-          if (!ctx.isContextLost()) {
-            ctx.deleteSync(sync);
-            ctx.deleteBuffer(buf);
-          }
-          settle(null);
-          return;
-        }
-        const status = ctx.clientWaitSync(sync, 0, 0);
-        if (status === ctx.TIMEOUT_EXPIRED) {
-          setTimeout(poll, 8);
-          return;
-        }
-        ctx.deleteSync(sync);
-        if (status === ctx.WAIT_FAILED) {
-          ctx.deleteBuffer(buf);
-          settle(null);
-          return;
-        }
-        const pixels = new Uint8Array(width * height * 4);
-        ctx.bindBuffer(ctx.PIXEL_PACK_BUFFER, buf);
-        ctx.getBufferSubData(ctx.PIXEL_PACK_BUFFER, 0, pixels);
-        ctx.bindBuffer(ctx.PIXEL_PACK_BUFFER, null);
-        ctx.deleteBuffer(buf);
-        finish(pixels);
-      };
-      setTimeout(poll, 0);
-      return p2;
-    },
-    // Cleanup
-    dispose() {
-      disposed = true;
-      settle(null);
-      try {
-        if (recorderResolved) recorder?.destroy?.();
-      } catch (err) {
-        console.error("recorder destroy failed:", err);
-      }
-      window.removeEventListener("resize", onResize);
-      controls.removeEventListener("twist", onTwist);
-      cameraUnsub();
-      controls.dispose();
-      if (stage.renderLoop) stage.renderLoop.stop();
-      materials.dispose();
-      head.dispose();
-      renderer.dispose();
-      shapist.dispose();
-    }
-  };
-  return stage;
-}
-
-// assets/js/kernel/observable.js
-function createAtom(initial) {
-  let value = initial;
-  const watchers = /* @__PURE__ */ new Map();
-  return {
-    deref() {
-      return value;
-    },
-    swap(fn2) {
-      const old = value;
-      value = fn2(old);
-      for (const watcher of watchers.values()) watcher(old, value);
-      return value;
-    },
-    watch(key, fn2) {
-      watchers.set(key, fn2);
-    },
-    unwatch(key) {
-      watchers.delete(key);
-    }
-  };
-}
-
-// assets/js/turtling/ring-buffer.js
-function createRingBuffer(capacity, opts = {}) {
-  const lossless = opts.lossless === true;
-  const buf = new Array(capacity);
-  let head = 0;
-  let tail = 0;
-  let count = 0;
-  let isClosed = false;
-  return {
-    // false = full lossless: caller parks owing this value, retries after drain.
-    put(value) {
-      if (isClosed) return true;
-      if (count === capacity && lossless) return false;
-      buf[head] = value;
-      head = (head + 1) % capacity;
-      if (count < capacity) {
-        count++;
-      } else {
-        tail = (tail + 1) % capacity;
-      }
-      return true;
-    },
-    // full iff put would refuse; closed is never full. (D027 R3.6)
-    get full() {
-      return lossless && !isClosed && count === capacity;
-    },
-    drain() {
-      if (count === 0) return [];
-      const items = new Array(count);
-      for (let i2 = 0; i2 < count; i2++) {
-        items[i2] = buf[(tail + i2) % capacity];
-        buf[(tail + i2) % capacity] = null;
-      }
-      tail = head;
-      count = 0;
-      return items;
-    },
-    get length() {
-      return count;
-    },
-    close() {
-      isClosed = true;
-    },
-    get closed() {
-      return isClosed;
-    }
-  };
-}
-
-// assets/js/turtling/ledger.js
-var MAX_RUN_SEGMENTS = 1e6;
-var MAX_STAGE_SEGMENTS = 3e6;
-var MAX_RESIDENCY_STALL_MS = 2e3;
-function createStock() {
-  let resident = 0;
-  return {
-    get resident() {
-      return resident;
-    },
-    get full() {
-      return resident > MAX_STAGE_SEGMENTS;
-    },
-    charge(n2) {
-      if (n2 > 0) resident += n2;
-    },
-    release(n2) {
-      if (n2 > 0) resident = Math.max(0, resident - n2);
-    }
-  };
-}
-function createInk() {
-  return { resident: 0 };
-}
-function resetInk(frame, stock) {
-  stock.release(frame.ink.resident);
-  frame.ink.resident = 0;
-}
-function woundInk(ctx, message, span = null) {
-  ctx.done = true;
-  ctx.generator = null;
-  ctx.error = { message, span: span ?? null, kind: "ink" };
-  ctx.channel.put({ type: "error", ...ctx.error, ambientId: ctx.id });
-}
-function chargeInk(ctx, value, stock) {
-  const ink = ctx.ink;
-  if (value.type === "clear") {
-    stock.release(ink.resident);
-    ink.resident = 0;
-    return true;
-  }
-  if (value.type !== "path" || !value.points || value.points.length < 2) return true;
-  const segs = value.points.length - 1;
-  ink.resident += segs;
-  stock.charge(segs);
-  if (ink.resident <= MAX_RUN_SEGMENTS) return true;
-  woundInk(
-    ctx,
-    `this world has drawn more than ${MAX_RUN_SEGMENTS} lines`,
-    value.span ?? null
-  );
-  return false;
-}
-function enforceResidency(registry, clock, stock) {
-  const total = stock.resident;
-  if (!stock.full) return total;
-  const now = clock();
-  for (const f2 of registry.values()) {
-    const stall = f2.park?.cause === "residency" ? f2.park : null;
-    if (!stall) continue;
-    if (stall.since === null) {
-      stall.since = now;
-      continue;
-    }
-    if (!f2.done && now - stall.since > MAX_RESIDENCY_STALL_MS) {
-      woundInk(f2, `the world is holding ${total} lines and has no room \u2014 this one has been waiting`);
-    }
-  }
-  return total;
-}
-
-// assets/js/turtling/frame.js
-var _nextId = 0;
-function createFrame(name, generator, opts = {}) {
-  return {
-    id: ++_nextId,
-    name,
-    parent: opts.parent || null,
-    children: /* @__PURE__ */ new Map(),
-    origin: opts.origin || null,
-    // parent's SE3 at birth (immutable)
-    transform: createAtom(opts.transform || SE3.identity()),
-    // local pose
-    // Invalidated via Atom.watch on ancestor transforms.
-    _worldCache: null,
-    _worldDirty: true,
-    generator,
-    // JS generator = the green-thread body
-    resumeAt: 0,
-    // logical clock when a wait ends, ms (D011); `now` only reveals
-    logicalBirth: opts.logicalBirth ?? null,
-    // parent clock at spawn; null at root
-    done: false,
-    ink: createInk(),
-    // bag; ledger owns the law (id:output-ledger-r3-stock-flow)
-    // PARK — suspend mid-instant, like parking a thread mid-quantum.
-    // Siblings must not advance past (instant law). cause: time|credit|residency.
-    // null | { cause, owed, since }. Breath = park with nothing owed.
-    // (id:output-ledger-r2-instant)
-    park: null,
-    // Lossless channel ≈ blocking queue (CSP/Go); full → credit park.
-    channel: createRingBuffer(opts.channelCapacity || 4096, { lossless: opts.lossless !== false }),
-    sync: {},
-    // conflating head/view slot — last-write-wins, no credit (D027 R2.5)
-    mailbox: []
-    // actor inbox (Hewitt/Erlang); see listensFor
-  };
-}
-
-// assets/js/turtling/scheduler.js
-var LENS_NAMES = /* @__PURE__ */ new Set(["eye"]);
-function isLensName(name) {
-  return LENS_NAMES.has(name);
-}
-function lensOutput(frame, event) {
-  if (frame.isLens && event.type === "head") {
-    const world = frameWorldTransform(frame);
-    return { type: "view", position: world.position, rotation: world.rotation, fov: event.fov };
-  }
-  return event;
-}
-function visitPostOrder(ctx, fn2) {
-  for (const child of ctx.children.values()) {
-    visitPostOrder(child, fn2);
-  }
-  fn2(ctx);
-}
-function terminateAmbient(ctx) {
-  for (const child of ctx.children.values()) {
-    if (!child.done) terminateAmbient(child);
-  }
-  unwireWorldCache(ctx);
-  ctx.done = true;
-  ctx.channel.close();
-}
-function allDone(ctx) {
-  if (!ctx.done) return false;
-  for (const child of ctx.children.values()) {
-    if (!allDone(child)) return false;
-  }
-  return true;
-}
-function sumCounts(ctx) {
-  let total = ctx.commandCount || 0;
-  for (const child of ctx.children.values()) {
-    total += sumCounts(child);
-  }
-  return total;
-}
-var ROOT_NAME = "origin";
-function frameAddress(root, frame) {
-  const names = [];
-  let f2 = frame;
-  while (f2 && f2.parent && f2.parent !== root) {
-    names.unshift(f2.name);
-    f2 = f2.parent;
-  }
-  if (f2) {
-    let topKey = f2.name;
-    for (const [k2, v2] of root.children) {
-      if (v2 === f2) {
-        topKey = k2;
-        break;
-      }
-    }
-    names.unshift(topKey);
-  }
-  return names.join("/");
-}
-function worldTransform(ctx) {
-  if (ctx._worldWatched && !ctx._worldDirty && ctx._worldCache) return ctx._worldCache;
-  const chain = [];
-  let current = ctx;
-  while (current.parent) {
-    chain.push(current.origin || current.parent.transform.deref());
-    current = current.parent;
-  }
-  if (chain.length === 0) {
-    ctx._worldCache = SE3.identity();
-  } else {
-    chain.reverse();
-    ctx._worldCache = chain.reduce((a2, b2) => SE3.compose(a2, b2));
-  }
-  ctx._worldDirty = false;
-  return ctx._worldCache;
-}
-function relativeTransform(ctx, target) {
-  return SE3.compose(SE3.invert(worldTransform(target)), worldTransform(ctx));
-}
-function transformEvent(event, t2, sourceId) {
-  switch (event.type) {
-    case "path":
-      return { ...event, sourceId, points: event.points.map((p2) => SE3.apply(t2, p2)) };
-    case "label":
-      return { ...event, sourceId, position: SE3.apply(t2, event.position) };
-    case "grid":
-      return { ...event, sourceId, position: SE3.apply(t2, event.position), rotation: t2.rotation.multiply(event.rotation) };
-    default:
-      return event;
-  }
-}
-var _samePt = (a2, b2) => a2 && b2 && Math.abs(a2[0] - b2[0]) < 1e-6 && Math.abs(a2[1] - b2[1]) < 1e-6 && Math.abs(a2[2] - b2[2]) < 1e-6;
-function tagRun(ctx, value) {
-  if (value.type !== "path" || !value.points || !value.points.length) return;
-  const style = `${value.thickness}`;
-  const continues = style === ctx._strokeStyle && _samePt(value.points[0], ctx._strokeEnd);
-  if (!continues) ctx._strokeRun = (ctx._strokeRun || 0) + 1;
-  value.runId = ctx._strokeRun;
-  ctx._strokeEnd = value.points[value.points.length - 1];
-  ctx._strokeStyle = style;
-}
-function projectHead(headEvent, frameTarget, frameTransform) {
-  if (!frameTarget) return headEvent;
-  return {
-    ...headEvent,
-    position: SE3.apply(frameTransform, headEvent.position),
-    rotation: frameTransform.rotation.multiply(headEvent.rotation)
-  };
-}
-function putSync(ctx, event) {
-  ctx.sync[event.type] = event;
-}
-function takeSync(frame) {
-  const slot = frame.sync;
-  let taken = null;
-  for (const type in slot) {
-    if (!slot[type]) continue;
-    (taken ??= []).push(slot[type]);
-    slot[type] = null;
-  }
-  return taken ?? EMPTY_SYNC;
-}
-var EMPTY_SYNC = Object.freeze([]);
-function deliverDeposit(ctx, value, frameTarget, frameTransform, stock) {
-  if (value.type === "head") {
-    ctx.transform.swap(() => ({ rotation: value.rotation, position: [...value.position] }));
-    putSync(ctx, lensOutput(ctx, projectHead(value, frameTarget, frameTransform)));
-    return null;
-  }
-  if (stock?.full && value.type === "path") return "residency";
-  const sink = frameTarget ? frameTarget.channel : ctx.channel;
-  if (sink.full) return "credit";
-  tagRun(ctx, value);
-  if (frameTarget) {
-    sink.put(transformEvent(value, frameTransform, ctx.id));
-  } else {
-    sink.put(lensOutput(ctx, value));
-  }
-  return null;
-}
-function offerDeposit(ctx, value, frameTarget, frameTransform, stock) {
-  if (!chargeInk(ctx, value, stock)) return "ceiling";
-  return deliverDeposit(ctx, value, frameTarget, frameTransform, stock);
-}
-function parkBreath(ctx) {
-  if (ctx.park?.cause !== "time") ctx.park = { cause: "time", owed: null, since: null };
-}
-function parkOwing(ctx, cause, deposit2) {
-  ctx.park = { cause, owed: deposit2, since: null };
-}
-function clearSpentPark(ctx) {
-  if (ctx.park && ctx.park.owed === null) ctx.park = null;
-}
-function metaRootFrame(frame) {
-  let node = frame;
-  while (node.parent) node = node.parent;
-  return node;
-}
-function topLevelFrame(frame) {
-  const root = metaRootFrame(frame);
-  if (frame === root) return root;
-  let node = frame;
-  while (node.parent !== root) node = node.parent;
-  return node;
-}
-function resolveReserved(frame, name) {
-  if (name === "world") return topLevelFrame(frame);
-  if (name === "origin") return metaRootFrame(frame);
-  return null;
-}
-function findInTree(node, name, self2) {
-  for (const child of node.children.values()) {
-    const hit = findInTree(child, name, self2);
-    if (hit) return hit;
-  }
-  return node !== self2 && node.name === name ? node : null;
-}
-function findFrame(frame, name, reach = "near") {
-  const reserved = resolveReserved(frame, name);
-  if (reserved) return reserved;
-  if (reach === "world") {
-    for (const child of frame.children.values()) {
-      if (child.name === name) return child;
-    }
-  }
-  const parent = frame.parent || frame;
-  for (const child of parent.children.values()) {
-    if (child.name === name) return child;
-  }
-  let ancestor = frame.parent;
-  while (ancestor) {
-    if (ancestor.name === name) return ancestor;
-    ancestor = ancestor.parent;
-  }
-  return reach === "world" ? findInTree(metaRootFrame(frame), name, frame) : null;
-}
-function bumpTree(frame) {
-  const root = metaRootFrame(frame);
-  root._treeGen = (root._treeGen || 0) + 1;
-}
-function findReferenceFrame(ctx, name) {
-  const gen = metaRootFrame(ctx)._treeGen || 0;
-  const memo = ctx._ref;
-  if (memo !== void 0 && memo.gen === gen && memo.name === name) return memo.frame;
-  const frame = findFrame(ctx, name, "world");
-  ctx._ref = { gen, name, frame };
-  return frame;
-}
-function resolveBinding(frame, name, args) {
-  if (typeof name === "string" && name.includes(".")) {
-    const dot = name.indexOf(".");
-    const targetName = name.slice(0, dot);
-    const property = name.slice(dot + 1);
-    const target = findFrame(frame, targetName);
-    if (!target) {
-      if (frame.inlineAdvancing) {
-        const err = new Error(`Blocked on assistant: ${targetName}`);
-        err.blocked = true;
-        throw err;
-      }
-      throw new Error(`Undefined assistant: ${targetName}`);
-    }
-    return resolveProperty(target, property, args, frame);
-  } else {
-    const arity = args ? args.length : 0;
-    let ancestor = frame.parent;
-    while (ancestor) {
-      const result = lookupFn(ancestor, name, arity, args);
-      if (result !== void 0) return result;
-      ancestor = ancestor.parent;
-    }
-    return void 0;
-  }
-}
-var roundVec2 = (v2) => Math.abs(v2) < 1e-10 ? 0 : Math.round(v2 * 1e9) / 1e9;
-function headingFromQuaternion(q2) {
-  return Math.atan2(
-    2 * (q2.w * q2.y - q2.x * q2.z),
-    1 - 2 * (q2.y * q2.y + q2.z * q2.z)
-  ) * (180 / Math.PI);
-}
-function frameWorldTransform(frame) {
-  const world = worldTransform(frame);
-  const local = frame.transform.deref();
-  return SE3.compose(world, local);
-}
-function poseInObserverBirth(target, observer) {
-  const world = frameWorldTransform(target);
-  if (!observer) return world;
-  const birth = worldTransform(observer);
-  return SE3.compose(SE3.invert(birth), world);
-}
-var SPATIAL = {
-  x: (t2) => roundVec2(t2.position[0]),
-  y: (t2) => roundVec2(t2.position[1]),
-  z: (t2) => roundVec2(t2.position[2]),
-  heading: (t2) => roundVec2(headingFromQuaternion(t2.rotation))
-};
-var TEMPORAL = {
-  time: (frame) => roundVec2(frame.elapsedTime || 0),
-  birthtime: (frame) => roundVec2(frame.birthtime || 0),
-  done: (frame) => frame.done ? 1 : 0,
-  commands: (frame) => frame.commandCount
-};
-var RELATIONAL = {
-  distance: (target, observer) => {
-    const tp2 = frameWorldTransform(target).position;
-    const op2 = frameWorldTransform(observer).position;
-    const dx = tp2[0] - op2[0], dy = tp2[1] - op2[1], dz = tp2[2] - op2[2];
-    return roundVec2(Math.sqrt(dx * dx + dy * dy + dz * dz));
-  },
-  bearing: (target, observer) => {
-    const tp2 = frameWorldTransform(target).position;
-    const ow = frameWorldTransform(observer);
-    const op2 = ow.position;
-    const dx = tp2[0] - op2[0], dy = tp2[1] - op2[1];
-    const toTarget = Math.atan2(dx, dy) * (180 / Math.PI);
-    const myHeading = headingFromQuaternion(ow.rotation);
-    return roundVec2(toTarget - myHeading);
-  },
-  sync: (target, observer) => {
-    const tp2 = (target.birthtime || 0) + (target.elapsedTime || 0);
-    const op2 = (observer.birthtime || 0) + (observer.elapsedTime || 0);
-    return roundVec2(tp2 - op2);
-  }
-};
-function resolveProperty(target, property, args, observer) {
-  if (!args && SPATIAL[property]) {
-    return SPATIAL[property](poseInObserverBirth(target, observer));
-  }
-  if (!args && TEMPORAL[property]) {
-    return TEMPORAL[property](target);
-  }
-  if (!args && observer && RELATIONAL[property]) {
-    return RELATIONAL[property](target, observer);
-  }
-  const arity = args ? args.length : 0;
-  const result = lookupFn(target, property, arity, args);
-  if (result !== void 0) return result;
-  throw new Error(`Undefined property: ${property} on assistant ${target.name}`);
-}
-function lookupFn(frame, name, arity, args) {
-  if (!frame.deps?.mathParser?.userspace) return void 0;
-  const key = name + ":" + arity;
-  if (!frame.deps.mathParser.userspace.has(key)) return void 0;
-  const [body, params] = frame.deps.mathParser.userspace.get(key);
-  const ctx = {};
-  if (params) params.forEach((p2, i2) => {
-    ctx[p2] = args[i2];
-  });
-  return frame.deps.mathEvaluator.run(body, ctx);
-}
-function hears(frame, name) {
-  if (frame.listensFor === null || frame.listensFor === void 0) return true;
-  for (const pattern of frame.listensFor) {
-    if (matchPattern(pattern, name) !== null) return true;
-  }
-  return false;
-}
-function pushMailbox(frame, msg) {
-  if (!hears(frame, msg.name)) return;
-  frame.mailbox.push(msg);
-  if (frame.mailbox.length <= frame.maxMailbox) return;
-  frame.mailbox.pop();
-  if (!frame.error) {
-    woundInk(frame, `this one is hearing more than it can hold \u2014 ${frame.maxMailbox} letters are already waiting`);
-  }
-}
-var addrOf = (frame) => frame.address ?? frame.id;
-function woundMissingReference(ctx) {
-  if (ctx.error) return;
-  ctx.error = {
-    message: `there is no '${ctx.targetFrame}' to draw in \u2014 this one drew in its own frame`,
-    span: null,
-    kind: "walk"
-  };
-  ctx.channel.put({ type: "error", ...ctx.error, ambientId: ctx.id });
-}
-var errorRecord = (error) => ({
-  message: error.message,
-  span: error.span ?? null,
-  kind: error.kind ?? "walk"
-});
-function deliverShout(shout2, target) {
-  const addr = addrOf(target);
-  const fromAddr = shout2.from ? addrOf(shout2.from) : null;
-  if (target === shout2.from || addr === fromAddr) return;
-  if (!shout2._delivered) shout2._delivered = /* @__PURE__ */ new Set();
-  if (shout2._delivered.has(addr)) return;
-  shout2._delivered.add(addr);
-  pushMailbox(target, { name: shout2.name, payload: shout2.payload });
-}
-function deliverDeferredToFrame(shouts, frame) {
-  for (const shout2 of shouts) {
-    deliverShout(shout2, frame);
-  }
-}
-function flushDeferredShouts(shouts, registry) {
-  for (const shout2 of shouts) {
-    for (const [id2, target] of registry) {
-      deliverShout(shout2, target);
-    }
-  }
-  shouts.length = 0;
-}
-function interceptShout(frame, value, registry, deferredShouts, onShout) {
-  pushMailbox(frame, { name: value.name, payload: value.payload });
-  if (deferredShouts) {
-    deferredShouts.push({ from: frame, name: value.name, payload: value.payload });
-  } else {
-    for (const [id2, t2] of registry) {
-      if (t2 === frame) continue;
-      pushMailbox(t2, { name: value.name, payload: value.payload });
-    }
-  }
-  if (onShout) onShout(frame.name, value.name, value.payload);
-}
-function bindResolve(deps, frame) {
-  deps.mathEvaluator.resolveExternal = (v2, a2) => {
-    const result = resolveBinding(frame, v2, a2);
-    if (typeof v2 === "string" && v2.includes(".")) deps.mathEvaluator._observedSibling = true;
-    return result;
-  };
-}
-function createChildGenerator(value, createDeps, execOpts) {
-  const childDeps = createDeps();
-  if (value.env?.userspace) {
-    for (const [k2, v2] of value.env.userspace) {
-      childDeps.mathParser.userspace.set(k2, v2);
-    }
-  }
-  const mailbox = [];
-  const opts = {
-    color: value.style?.color || execOpts.color,
-    maxRecurseDepth: execOpts.maxRecurseDepth,
-    maxRecurses: execOpts.maxRecurses,
-    maxCommands: execOpts.maxCommands,
-    breathEvery: execOpts.breathEvery,
-    strokeMax: execOpts.strokeMax,
-    functions: value.code.functions,
-    loopCounter: value.env?.loopCounter,
-    birthtime: value.env?.birthtime,
-    scope: value.env?.scope,
-    lens: isLensName(value.name),
-    mailbox
-  };
-  const batch = createActorState(opts);
-  return {
-    generator: execute(value.code.ast, childDeps, { ...opts, actorState: batch }),
-    deps: childDeps,
-    mailbox,
-    batch
-  };
-}
-function commandsOf(frame) {
-  return (frame.commandCount || 0) + (frame.batch?.commandCount || 0);
-}
-var LISTEN_MEMO = /* @__PURE__ */ new WeakMap();
-var NO_PATTERNS = Object.freeze([]);
-function heardIn(nodes) {
-  if (!Array.isArray(nodes)) return NO_PATTERNS;
-  const hit = LISTEN_MEMO.get(nodes);
-  if (hit) return hit;
-  const heard = [];
-  const walk = (ns2) => {
-    if (!Array.isArray(ns2)) return;
-    for (const node of ns2) {
-      if (!node) continue;
-      if (node.type === "When" && node.meta?.event && typeof node.value === "string") {
-        heard.push(node.value.slice(1, -1));
-      }
-      walk(node.children);
-    }
-  };
-  walk(nodes);
-  LISTEN_MEMO.set(nodes, heard);
-  return heard;
-}
-function listenPatterns(ast, functions) {
-  if (!Array.isArray(ast)) return null;
-  const own = heardIn(ast);
-  if (!functions) return own;
-  let all = null;
-  for (const fn2 of Object.values(functions)) {
-    const more = heardIn(fn2?.body);
-    if (more.length === 0) continue;
-    if (!all) all = [...own];
-    all.push(...more);
-  }
-  return all ?? own;
-}
-function setListensFor(child, code) {
-  child.listensFor = listenPatterns(code?.ast, code?.functions);
-}
-var RUNS = 0;
-function resetRunState(frame, stock) {
-  frame.park = null;
-  frame.error = null;
-  frame.sync = {};
-  frame.run = ++RUNS;
-  frame._strokeEnd = null;
-  frame._strokeStyle = null;
-  resetInk(frame, stock);
-}
-function attachMeta(frame, targetFrame, stock) {
-  frame.targetFrame = targetFrame || null;
-  frame.isLens = isLensName(frame.name);
-  frame.commandCount = 0;
-  frame.elapsedTime = 0;
-  frame.birthtime = 0;
-  frame.actorState = null;
-  frame.maxMailbox = 8192;
-  frame.seed = null;
-  frame.batch = null;
-  frame.listensFor = null;
-  resetRunState(frame, stock);
-  return frame;
-}
-function seedOf(spec) {
-  return {
-    ast: [...spec.code?.ast ?? []],
-    functions: spec.code?.functions ?? null,
-    userspace: spec.env?.userspace ?? null,
-    color: spec.style?.color ?? null
-  };
-}
-function sameSeed(seed, spec) {
-  if (!seed) return false;
-  const next = spec.code?.ast ?? [];
-  if (seed.ast.length !== next.length) return false;
-  for (let i2 = 0; i2 < next.length; i2++) {
-    if (seed.ast[i2] !== next[i2]) return false;
-  }
-  return seed.functions === (spec.code?.functions ?? null) && seed.userspace === (spec.env?.userspace ?? null) && seed.color === (spec.style?.color ?? null);
-}
-function wireWorldCacheInvalidation(child) {
-  child.transform.watch("worldCache", () => {
-    child._worldDirty = true;
-  });
-  if (child.parent) {
-    child.parent.transform.watch(`child:${child.id}`, () => {
-      child._worldDirty = true;
-    });
-  }
-  child._worldWatched = true;
-}
-function unwireWorldCache(child) {
-  child.transform.unwatch("worldCache");
-  if (child.parent) {
-    child.parent.transform.unwatch(`child:${child.id}`);
-  }
-}
-function wireRun(child, deps, mailbox, batch, code) {
-  child.deps = deps;
-  child.mailbox = mailbox;
-  child.batch = batch;
-  bindResolve(deps, child);
-  setListensFor(child, code);
-}
-function wireChild(child, deps, mailbox, registry, code, batch = null) {
-  child.address = frameAddress(metaRootFrame(child), child);
-  wireRun(child, deps, mailbox, batch, code);
-  wireWorldCacheInvalidation(child);
-  registry.set(child.id, child);
-}
-function rewireChild(child, value, pump) {
-  const re2 = createChildGenerator(value, pump.createDeps, pump.execOpts);
-  child.generator = re2.generator;
-  child.done = false;
-  wireRun(child, re2.deps, re2.mailbox, re2.batch, value.code);
-  resetRunState(child, pump.stock);
-  child.resumeAt = 0;
-  child.logicalBirth = child.parent ? child.parent.resumeAt || null : null;
-  child.channel.drain();
-  child.channel.put({ type: "clear" });
-}
-function advanceChild(initialChild, now, pump, deferredShouts) {
-  const stack = [initialChild];
-  while (stack.length > 0) {
-    const child = stack[stack.length - 1];
-    const spawned = drainUntilPause(child, now, pump, deferredShouts);
-    if (spawned) {
-      stack.push(spawned);
-    } else {
-      child.inlineAdvancing = false;
-      stack.pop();
-      if (child.park) {
-        for (const f2 of stack) f2.inlineAdvancing = false;
-        return true;
-      }
-    }
-  }
-  return false;
-}
-function breath(ctx, _value, _route, pump) {
-  if (pump.outOfTime()) {
-    parkBreath(ctx);
-    return { verdict: "parked" };
-  }
-  return { verdict: "continue" };
-}
-function blocked() {
-  return { verdict: "paused" };
-}
-function wait2(ctx, value, route) {
-  const { now, frameTarget, frameTransform } = route;
-  ctx.resumeAt = (ctx.resumeAt > 0 ? ctx.resumeAt : ctx.logicalBirth ?? now) + value.duration;
-  ctx.elapsedTime += value.duration / 1e3;
-  if (value.position) {
-    ctx.transform.swap(() => ({
-      rotation: value.rotation,
-      position: [...value.position]
-    }));
-    putSync(ctx, lensOutput(ctx, projectHead({
-      type: "head",
-      position: value.position,
-      rotation: value.rotation,
-      color: value.color,
-      headSize: value.headSize
-    }, frameTarget, frameTransform)));
-  }
-  return { verdict: "paused", produced: true };
-}
-function yieldEffect(ctx, value) {
-  if (value.position) {
-    ctx.transform.swap(() => ({
-      rotation: value.rotation,
-      position: [...value.position]
-    }));
-  }
-  return { verdict: "paused", produced: true };
-}
-function limitMailbox(ctx, value) {
-  ctx.maxMailbox = value.limit;
-  return { verdict: "continue" };
-}
-function shout(ctx, value, route, pump) {
-  interceptShout(ctx, value, pump.registry, route.deferredShouts, pump.onShout);
-  return { verdict: "continue", produced: true };
-}
-function spawn(ctx, value, route, pump) {
-  ctx.transform.swap(() => value.origin);
-  const existing = ctx.children.get(value.name);
-  const deferredShouts = route.deferredShouts;
-  if (existing) {
-    existing.origin = value.origin;
-    existing._worldDirty = true;
-    if (existing.done && pump.createDeps) {
-      rewireChild(existing, value, pump);
-      if (deferredShouts) deliverDeferredToFrame(deferredShouts, existing);
-      return { verdict: "spawned", spawned: existing, produced: true };
-    }
-    return { verdict: "continue" };
-  }
-  if (pump.createDeps) {
-    const {
-      generator: childGen,
-      deps: childDeps,
-      mailbox: childMailbox,
-      batch: childBatch
-    } = createChildGenerator(value, pump.createDeps, pump.execOpts);
-    const child = attachMeta(
-      createFrame(value.name, childGen, {
-        parent: ctx,
-        origin: value.origin,
-        ...pump.channelOpts,
-        // Born on the parent's logical clock, not now — see frame.js. (Fix A)
-        // 0 (parent hasn't waited) → null → live now.
-        logicalBirth: ctx.resumeAt || null
-      }),
-      value.frame,
-      pump.stock
-    );
-    child.birthtime = (value.env?.birthtime || 0) / 1e3;
-    ctx.children.set(value.name, child);
-    bumpTree(ctx);
-    wireChild(child, childDeps, childMailbox, pump.registry, value.code, childBatch);
-    if (deferredShouts) deliverDeferredToFrame(deferredShouts, child);
-    return { verdict: "spawned", spawned: child, produced: true };
-  }
-  return { verdict: "continue", produced: true };
-}
-function deposit(ctx, value, route, pump) {
-  const { frameTarget, frameTransform } = route;
-  const refusal = offerDeposit(ctx, value, frameTarget, frameTransform, pump.stock);
-  if (refusal === "ceiling") return { verdict: "ended", produced: true };
-  if (refusal) {
-    parkOwing(ctx, refusal, value);
-    return { verdict: "parked", produced: true };
-  }
-  return { verdict: "continue", produced: true };
-}
-var EFFECTS = {
-  breath,
-  blocked,
-  wait: wait2,
-  yield: yieldEffect,
-  shout,
-  spawn,
-  limitMailbox
-};
-function stepFrame(ctx, value, done, route, pump) {
-  if (done) {
-    const result = value || {};
-    if (result.actorState) {
-      ctx.actorState = result.actorState;
-      ctx.commandCount += result.actorState.commandCount;
-    } else {
-      ctx.commandCount += typeof result === "number" ? result : result.commandCount || 0;
-    }
-    ctx.batch = null;
-    ctx.done = true;
-    ctx.generator = null;
-    if (ctx.targetFrame && !route.frameTarget) woundMissingReference(ctx);
-    return { verdict: "ended" };
-  }
-  const handler = EFFECTS[value.type] ?? deposit;
-  return handler(ctx, value, route, pump);
-}
-function stepOnce(ctx, route, pump) {
-  const { frameTarget, frameTransform } = route;
-  if (ctx.park?.owed) {
-    const refusal = deliverDeposit(ctx, ctx.park.owed, frameTarget, frameTransform, pump.stock);
-    if (refusal) {
-      if (ctx.park.cause !== refusal) {
-        ctx.park.cause = refusal;
-        ctx.park.since = null;
-      }
-      return { verdict: "parked" };
-    }
-    ctx.park = null;
-    return { verdict: "continue", produced: true };
-  }
-  let value, done;
-  try {
-    ({ value, done } = ctx.generator.next());
-  } catch (error) {
-    ctx.done = true;
-    ctx.generator = null;
-    ctx.error = errorRecord(error);
-    ctx.channel.put({ type: "error", ...ctx.error, ambientId: ctx.id });
-    return { verdict: "ended", produced: true };
-  }
-  return stepFrame(ctx, value, done, route, pump);
-}
-function drainUntilPause(child, now, pump, deferredShouts) {
-  let frameTarget = null;
-  let frameTransform = null;
-  if (child.targetFrame) {
-    frameTarget = findReferenceFrame(child, child.targetFrame);
-    if (frameTarget) frameTransform = relativeTransform(child, frameTarget);
-  }
-  child.inlineAdvancing = true;
-  clearSpentPark(child);
-  const route = { frameTarget, frameTransform, now, deferredShouts };
-  while (true) {
-    const step = stepOnce(child, route, pump);
-    if (step.verdict === "continue") continue;
-    if (step.verdict === "spawned") return step.spawned;
-    return null;
-  }
-}
-function createScheduler(generator, opts = {}) {
-  const channelOpts = {
-    channelCapacity: opts.channelCapacity || 4096,
-    lossless: opts.lossless !== false
-  };
-  const createDeps = opts.createDeps || null;
-  const execOpts = opts.execOpts || {};
-  const onShout = opts.onShout || null;
-  let deadline = null;
-  const clock = opts.clock || (() => performance.now());
-  const stock = createStock();
-  const root = attachMeta(
-    createFrame(ROOT_NAME, generator, channelOpts),
-    null,
-    stock
-  );
-  root.address = ROOT_NAME;
-  if (opts.rootHears !== void 0) root.listensFor = opts.rootHears;
-  if (opts.rootMailbox) root.mailbox = opts.rootMailbox;
-  if (opts.rootDeps) {
-    root.deps = opts.rootDeps;
-    bindResolve(opts.rootDeps, root);
-  }
-  const registry = /* @__PURE__ */ new Map([[root.id, root]]);
-  const pump = {
-    createDeps,
-    execOpts,
-    channelOpts,
-    registry,
-    onShout,
-    stock,
-    // Inline drain asks too — unpaced hang is real.
-    outOfTime: () => deadline !== null && clock() > deadline
-  };
-  return {
-    root,
-    channel: root.channel,
-    // backward compat — root frame's channel
-    registry,
-    stock,
-    get resumeAt() {
-      return root.resumeAt;
-    },
-    set resumeAt(v2) {
-      root.resumeAt = v2;
-    },
-    done: false,
-    commandCount: 0,
-    lastTickTime: 0,
-    // Arm a timeslice (OS quantum). Prefer withSlice — open deadline is a test seam.
-    // (id:output-ledger-r2-pacer)
-    sliceFor(ms2) {
-      deadline = ms2 == null ? null : clock() + ms2;
-    },
-    // Run the pump inside a timeslice, then close it.
-    // Slice spans many ticks (driver loop, not one tick). Must close: an expired
-    // deadline reads as "no time", so every breath parks — silent freeze if forgotten.
-    // Outside a slice the pump is unpaced (batch/headless complete in one call).
-    withSlice(ms2, drive) {
-      deadline = ms2 == null ? null : clock() + ms2;
-      try {
-        return drive();
-      } finally {
-        deadline = null;
-      }
-    },
-    // Mid-build: last tick let go with work left.
-    get building() {
-      return this._building === true;
-    },
-    // Same seed → skip; name may update in place. (id:cmp-become-seed)
-    // Caller sees hold by identity: returned frame === the one already seated.
-    hotSwapChild(key, forkSpec, { fresh = false } = {}) {
-      const existing = root.children.get(key);
-      if (existing && !fresh && sameSeed(existing.seed, forkSpec)) {
-        const heldName = forkSpec.name || key;
-        if (existing.name !== heldName) {
-          existing.name = heldName;
-          bumpTree(root);
-        }
-        return existing;
-      }
-      if (existing) {
-        terminateAmbient(existing);
-        visitPostOrder(existing, (c2) => {
-          resetInk(c2, stock);
-          registry.delete(c2.id);
-        });
-        root.children.delete(key);
-        bumpTree(root);
-      }
-      const displayName = forkSpec.name || key;
-      const { generator: generator2, deps, mailbox, batch } = createChildGenerator(forkSpec, createDeps, execOpts);
-      const child = attachMeta(
-        createFrame(displayName, generator2, {
-          parent: root,
-          origin: forkSpec.origin || SE3.identity(),
-          ...channelOpts
-          // null birth → first wait anchors to live now (D011).
-        }),
-        null,
-        stock
-      );
-      root.children.set(key, child);
-      bumpTree(root);
-      wireChild(child, deps, mailbox, registry, forkSpec.code, batch);
-      child.seed = seedOf(forkSpec);
-      advanceChild(child, this.lastTickTime, pump, []);
-      this.done = false;
-      return child;
-    },
-    // Remove a child of root by key and clean up its subtree.
-    removeChild(key) {
-      const child = root.children.get(key);
-      if (!child) return;
-      terminateAmbient(child);
-      visitPostOrder(child, (c2) => {
-        resetInk(c2, stock);
-        registry.delete(c2.id);
-      });
-      root.children.delete(key);
-      bumpTree(root);
-      this.done = allDone(root);
-    },
-    get errors() {
-      const errs = [];
-      for (const [id2, ctx] of registry) {
-        if (ctx.error) errs.push({ ambientId: id2, name: ctx.name, address: addrOf(ctx), ...ctx.error });
-      }
-      return errs;
-    },
-    // Earliest resumeAt only; post-order within an instant. (D011 #3)
-    tick(now) {
-      this.lastTickTime = now;
-      if (this.done) return false;
-      let produced = false;
-      let frontier = Infinity;
-      visitPostOrder(root, (ctx) => {
-        if (!ctx.done && ctx.resumeAt <= now && ctx.resumeAt < frontier) {
-          frontier = ctx.resumeAt;
-        }
-      });
-      if (frontier === Infinity) {
-        this.done = allDone(root);
-        if (this.done) this.commandCount = sumCounts(root);
-        return false;
-      }
-      let parked = false;
-      visitPostOrder(root, (ctx) => {
-        if (parked || ctx.done || ctx.resumeAt > frontier) return;
-        const deferredShouts = [];
-        let frameTarget = null;
-        let frameTransform = null;
-        if (ctx.targetFrame) {
-          frameTarget = findReferenceFrame(ctx, ctx.targetFrame);
-          if (frameTarget) {
-            frameTransform = relativeTransform(ctx, frameTarget);
-          }
-        }
-        clearSpentPark(ctx);
-        const route = { frameTarget, frameTransform, now, deferredShouts };
-        while (!ctx.done) {
-          const step = stepOnce(ctx, route, pump);
-          if (step.produced) produced = true;
-          if (step.verdict === "continue") continue;
-          if (step.verdict === "spawned") {
-            parked = advanceChild(step.spawned, now, pump, deferredShouts);
-            if (parked) break;
-            continue;
-          }
-          if (step.verdict === "parked") parked = true;
-          break;
-        }
-        if (deferredShouts.length > 0) {
-          flushDeferredShouts(deferredShouts, registry);
-          produced = true;
-        }
-      });
-      enforceResidency(registry, clock, stock);
-      this._building = parked;
-      this.done = allDone(root);
-      if (this.done) {
-        this.commandCount = sumCounts(root);
-      }
-      return produced;
-    }
-  };
-}
-function* metaRoot() {
-  return 0;
-}
 
 // assets/js/utils/threetext.js
 function Ln2() {
@@ -19810,6 +17782,5697 @@ An2.forEach((h2) => {
 var vn2 = new Qr();
 var pn2 = new Pr();
 
+// assets/js/utils/color.js
+var ColorConverter = class {
+  static toRGBArray(color) {
+    if (Array.isArray(color)) {
+      return color;
+    }
+    if (typeof color === "string") {
+      const threeColor = new Pr(color);
+      return [threeColor.r, threeColor.g, threeColor.b];
+    }
+    if (typeof color === "number") {
+      const threeColor = new Pr(color);
+      return [threeColor.r, threeColor.g, threeColor.b];
+    }
+    return [1, 1, 1];
+  }
+  static toHex(color) {
+    if (typeof color === "number") return color;
+    if (typeof color === "string") return new Pr(color).getHex();
+    if (Array.isArray(color)) return new Pr(color[0], color[1], color[2]).getHex();
+    return 16777215;
+  }
+  static adjust(color, mag = 0.5) {
+    if (!Array.isArray(color)) {
+      color = this.toRGBArray(color);
+    }
+    if (mag <= 1) {
+      return [color[0] * mag, color[1] * mag, color[2] * mag];
+    } else {
+      return [
+        Math.min(color[0] * 1.5, 1),
+        Math.min(color[1] * 1.5, 1),
+        Math.min(color[2] * 1.5, 1)
+      ];
+    }
+  }
+};
+
+// assets/js/turtling/render/head.js
+var HEAD_SCALE_STEP = 1.05;
+var HEAD_SCALE_LOG = Math.log(HEAD_SCALE_STEP);
+var HEAD_DRAW_SCALE = 0.9;
+var Head = class {
+  constructor(scene) {
+    const defaultColors = {
+      head: "#e77808",
+      wireframe: "black"
+    };
+    this.defaultPosition = [0, 0, 0];
+    this.defaultRotation = { w: 1, x: 0, y: 0, z: 0 };
+    this.colors = {
+      head: ColorConverter.toRGBArray(defaultColors.head),
+      headkey: defaultColors.head,
+      wireframe: ColorConverter.toHex(defaultColors.wireframe)
+    };
+    this.current = { scale: 1, size: 10 };
+    this.scene = scene;
+    this.turtleGroup = new Tr();
+    this.createTurtleMesh();
+    this.turtleGroup.renderOrder = 1e4;
+    this.reset();
+    scene.add(this.turtleGroup);
+  }
+  createTurtleMesh() {
+    const headGeometry = new HeadGeometry(this.colors);
+    const headMaterial = new Ma({
+      vertexColors: true,
+      wireframe: false,
+      side: p,
+      depthTest: true,
+      depthWrite: true
+    });
+    this.turtleMesh = new Ra(headGeometry, headMaterial);
+    this.turtleMesh.renderOrder = 10001;
+    this.turtleMesh.scale.setScalar(HEAD_DRAW_SCALE);
+    this.turtleGroup.add(this.turtleMesh);
+    const edgeGeometry = new EdgeGeometry(this.colors);
+    const edgeMaterial = new No({
+      color: this.colors.wireframe,
+      linewidth: 1,
+      depthTest: true,
+      depthWrite: false
+      // Don't write depth for lines
+    });
+    this.wireframeMesh = new Yo(edgeGeometry, edgeMaterial);
+    this.wireframeMesh.renderOrder = 10002;
+    this.wireframeMesh.scale.setScalar(HEAD_DRAW_SCALE);
+    this.turtleGroup.add(this.wireframeMesh);
+  }
+  hide() {
+    this.turtleGroup.visible = false;
+  }
+  show() {
+    this.turtleGroup.visible = true;
+  }
+  position() {
+    return this.turtleGroup.position;
+  }
+  setHeadColor(color) {
+    this.colors.head = ColorConverter.toRGBArray(color);
+    this.colors.headkey = color;
+    this.turtleGroup.remove(this.turtleMesh);
+    this.turtleGroup.remove(this.wireframeMesh);
+    this.turtleMesh.geometry.dispose();
+    this.turtleMesh.material.dispose();
+    this.wireframeMesh.geometry.dispose();
+    this.wireframeMesh.material.dispose();
+    this.createTurtleMesh();
+  }
+  update(position2, rotation, color, size = 10) {
+    this.turtleGroup.position.set(...position2);
+    if (rotation) this.turtleGroup.quaternion.copy(rotation);
+    if (this.colors.headkey !== color) {
+      this.setHeadColor(color);
+    }
+    if (this.current.size != size) {
+      this.current.size = size;
+    }
+  }
+  // Snap the invariant world scale to a ratio ladder: uniform in ratio, so a
+  // zoom never pops the head by more than HEAD_SCALE_STEP. (id:laws-decl-interface)
+  scale(scaleFactor = 2) {
+    const value = scaleFactor * this.current.size / 10;
+    if (!(value > 0)) return;
+    const snapped = Math.pow(HEAD_SCALE_STEP, Math.round(Math.log(value) / HEAD_SCALE_LOG));
+    if (this.current.scale !== snapped) {
+      this.current.scale = snapped;
+      this.turtleGroup.scale.setScalar(snapped);
+    }
+  }
+  reset() {
+    this.turtleGroup.position.set(...this.defaultPosition);
+    this.turtleGroup.quaternion.copy(this.defaultRotation);
+  }
+  // Free GPU geometry/materials and detach from the scene. The scene is
+  // dropped on stage teardown, but WebGL buffers need explicit disposal —
+  // GC won't reclaim them. Idempotent: safe to call once per Head lifetime.
+  dispose() {
+    this.turtleGroup.remove(this.turtleMesh);
+    this.turtleGroup.remove(this.wireframeMesh);
+    this.turtleMesh.geometry.dispose();
+    this.turtleMesh.material.dispose();
+    this.wireframeMesh.geometry.dispose();
+    this.wireframeMesh.material.dispose();
+    this.scene.remove(this.turtleGroup);
+  }
+};
+var HeadGeometry = class extends Wn {
+  constructor(colors = {}) {
+    super();
+    const baseColor = colors.head || [1, 0.5, 0.1];
+    const darkColor = ColorConverter.adjust(baseColor, 0.5);
+    const brightColor = ColorConverter.adjust(baseColor, 1.5);
+    const vertices = [];
+    const vertexColors = [];
+    this.addTriangle(
+      vertices,
+      vertexColors,
+      [6, 0, 0.5],
+      // Nose tip
+      [2, -2, -0.2],
+      // Left nose wing
+      [-1, -4, -0.1],
+      // Left wing tip (flattened)
+      baseColor
+    );
+    this.addTriangle(
+      vertices,
+      vertexColors,
+      [6, 0, 0.5],
+      // Nose tip
+      [-1, 4, -0.1],
+      // Right wing tip (flattened)
+      [2, 2, -0.2],
+      // Right nose wing
+      baseColor
+    );
+    this.addTriangle(
+      vertices,
+      vertexColors,
+      [-1, -4, -0.1],
+      // Left wing tip
+      [-2, -2, 0],
+      // Left tail fold point
+      [0, 0, 0],
+      // Center focus point
+      baseColor
+    );
+    this.addTriangle(
+      vertices,
+      vertexColors,
+      [-1, 4, -0.1],
+      // Right wing tip
+      [0, 0, 0],
+      // Center focus point
+      [-2, 2, 0],
+      // Right tail fold point
+      baseColor
+    );
+    this.addTriangle(
+      vertices,
+      vertexColors,
+      [2, -2, -0.2],
+      // Left nose wing
+      [2, 2, -0.2],
+      // Right nose wing
+      [0, 0, -0.3],
+      // Center bottom
+      baseColor
+    );
+    this.addTriangle(
+      vertices,
+      vertexColors,
+      [-1, -4, -0.1],
+      // Left wing tip
+      [-1, 4, -0.1],
+      // Right wing tip
+      [0, 0, -0.3],
+      // Center bottom
+      baseColor
+    );
+    this.addTriangle(
+      vertices,
+      vertexColors,
+      [6, 0, 0.5],
+      // Sharp nose tip (pointing right, slightly raised)
+      [2, -2, -0.2],
+      // Left nose wing (flattened)
+      [2, 2, -0.2],
+      // Right nose wing (flattened)
+      brightColor
+    );
+    this.addTriangle(
+      vertices,
+      vertexColors,
+      [2, -2, -0.2],
+      // Left nose wing
+      [0, 0, -0.3],
+      // Bottom center (slightly lower for minimal thickness)
+      [-1, -4, -0.1],
+      // Left wing tip
+      darkColor
+    );
+    this.addTriangle(
+      vertices,
+      vertexColors,
+      [2, 2, -0.2],
+      // Right nose wing
+      [-1, 4, -0.1],
+      // Right wing tip
+      [0, 0, -0.3],
+      // Bottom center
+      darkColor
+    );
+    this.addTriangle(
+      vertices,
+      vertexColors,
+      [2, 0, -0.8],
+      // Bottom keel point (hangs down)
+      [1, -1, -0.3],
+      // Left keel base
+      [1, 1, -0.3],
+      // Right keel base
+      darkColor
+      // Medium dark for bottom feature
+    );
+    this.addTriangle(
+      vertices,
+      vertexColors,
+      [4, 0, 0.6],
+      // Arrow tip (pointing forward/right)
+      [3, -0.3, 0.4],
+      // Arrow left wing
+      [3, 0.3, 0.4],
+      // Arrow right wing
+      darkColor
+      // Dark shade for directional arrow
+    );
+    this.setAttribute("position", new Mn(new Float32Array(vertices), 3));
+    this.setAttribute("color", new Mn(new Float32Array(vertexColors), 3));
+    this.computeVertexNormals();
+  }
+  addTriangle(vertices, colors, v1, v2, v3, color) {
+    vertices.push(...v1, ...v2, ...v3);
+    for (let i2 = 0; i2 < 3; i2++) colors.push(...color);
+  }
+  addQuad(vertices, colors, v1, v2, v3, v4, color) {
+    this.addTriangle(vertices, colors, v1, v2, v3, color);
+    this.addTriangle(vertices, colors, v1, v3, v4, color);
+  }
+};
+var EdgeGeometry = class extends Wn {
+  constructor(colors = {}) {
+    super();
+    const vertices = [];
+    const outline = [
+      [5, 0, 0.2],
+      [0, -2.5, 0.2],
+      [0, -2.5, 0.2],
+      [0, 2.5, 0.2],
+      [0, 2.5, 0.2],
+      [5, 0, 0.2]
+    ];
+    vertices.push(...outline.flat());
+    this.setAttribute("position", new Mn(new Float32Array(vertices), 3));
+  }
+};
+
+// assets/js/turtling/render/index.js
+var Render = {
+  Text: ft2,
+  Loop,
+  //Path,
+  //Glyph,
+  Shape,
+  Head
+};
+var render_default = Render;
+
+// assets/js/adapter.js
+function safePush(el2, eventName, payload = {}, selector = null) {
+  let result;
+  try {
+    result = selector ? el2.pushEventTo(selector, eventName, payload) : el2.pushEvent(eventName, payload);
+  } catch (err) {
+    console.debug?.(`[adapter] drop ${eventName}:`, err?.message || err);
+    return Promise.resolve();
+  }
+  if (result?.catch) {
+    return result.catch((err) => {
+      console.debug?.(`[adapter] drop ${eventName}:`, err?.message || err);
+    }).then(() => {
+    });
+  }
+  return Promise.resolve();
+}
+
+// assets/js/bridged.js
+var BridgedEventTarget = class extends EventTarget {
+};
+var bridged = (eventName) => {
+  const customEventTarget = new BridgedEventTarget();
+  const sub2 = (callback) => {
+    const EventHandler = (event) => {
+      const data = event.detail;
+      callback(data);
+    };
+    customEventTarget.addEventListener(eventName, EventHandler);
+    return () => {
+      customEventTarget.removeEventListener(eventName, EventHandler);
+    };
+  };
+  const pub = (payload) => {
+    const event = new CustomEvent(eventName, { detail: payload });
+    customEventTarget.dispatchEvent(event);
+  };
+  const dispatch = (el2, payload, selector = null) => {
+    pub(payload);
+    safePush(el2, eventName, payload, selector || null);
+  };
+  return { sub: sub2, pub, dispatch };
+};
+var cameraBridge = bridged("cam");
+var sceneBridge = bridged("scene");
+
+// assets/js/utils/threeorbital.js
+var _changeEvent = { type: "change" };
+var _startEvent = { type: "start" };
+var _endEvent = { type: "end" };
+var _ray = new wa();
+var _plane = new lo();
+var _TILT_LIMIT = Math.cos(70 * Si.DEG2RAD);
+var _v = new Ti();
+var _twoPI = 2 * Math.PI;
+var _STATE = {
+  NONE: -1,
+  ROTATE: 0,
+  DOLLY: 1,
+  PAN: 2,
+  TOUCH_ROTATE: 3,
+  TOUCH_PAN: 4,
+  TOUCH_DOLLY_PAN: 5,
+  TOUCH_DOLLY_ROTATE: 6
+};
+var _EPS = 1e-6;
+var OrbitControls = class extends cp {
+  /**
+   * Constructs a new controls instance.
+   *
+   * @param {Object3D} object - The object that is managed by the controls.
+   * @param {?HTMLElement} domElement - The HTML element used for event listeners.
+   */
+  constructor(object, domElement = null) {
+    super(object, domElement);
+    this.state = _STATE.NONE;
+    this.target = new Ti();
+    this.cursor = new Ti();
+    this.minDistance = 0;
+    this.maxDistance = Infinity;
+    this.minZoom = 0;
+    this.maxZoom = Infinity;
+    this.minTargetRadius = 0;
+    this.maxTargetRadius = Infinity;
+    this.minPolarAngle = 0;
+    this.maxPolarAngle = Math.PI;
+    this.minAzimuthAngle = -Infinity;
+    this.maxAzimuthAngle = Infinity;
+    this.enableDamping = false;
+    this.dampingFactor = 0.05;
+    this.enableZoom = true;
+    this.zoomSpeed = 1;
+    this.enableRotate = true;
+    this.rotateSpeed = 1;
+    this.keyRotateSpeed = 1;
+    this.enablePan = true;
+    this.panSpeed = 1;
+    this.screenSpacePanning = true;
+    this.keyPanSpeed = 7;
+    this.zoomToCursor = false;
+    this.autoRotate = false;
+    this.autoRotateSpeed = 2;
+    this.keys = { LEFT: "ArrowLeft", UP: "ArrowUp", RIGHT: "ArrowRight", BOTTOM: "ArrowDown" };
+    this.mouseButtons = { LEFT: e.ROTATE, MIDDLE: e.DOLLY, RIGHT: e.PAN };
+    this.touches = { ONE: s.ROTATE, TWO: s.DOLLY_PAN };
+    this.target0 = this.target.clone();
+    this.position0 = this.object.position.clone();
+    this.zoom0 = this.object.zoom;
+    this._cursorStyle = "auto";
+    this._domElementKeyEvents = null;
+    this._lastPosition = new Ti();
+    this._lastQuaternion = new Ai();
+    this._lastTargetPosition = new Ti();
+    this._quat = new Ai().setFromUnitVectors(object.up, new Ti(0, 1, 0));
+    this._quatInverse = this._quat.clone().invert();
+    this._spherical = new bd();
+    this._sphericalDelta = new bd();
+    this._scale = 1;
+    this._panOffset = new Ti();
+    this._rotateStart = new _i();
+    this._rotateEnd = new _i();
+    this._rotateDelta = new _i();
+    this._panStart = new _i();
+    this._panEnd = new _i();
+    this._panDelta = new _i();
+    this._dollyStart = new _i();
+    this._dollyEnd = new _i();
+    this._dollyDelta = new _i();
+    this._dollyDirection = new Ti();
+    this._mouse = new _i();
+    this._performCursorZoom = false;
+    this._pointers = [];
+    this._pointerPositions = {};
+    this._controlActive = false;
+    this._onPointerMove = onPointerMove.bind(this);
+    this._onPointerDown = onPointerDown.bind(this);
+    this._onPointerUp = onPointerUp.bind(this);
+    this._onContextMenu = onContextMenu.bind(this);
+    this._onMouseWheel = onMouseWheel.bind(this);
+    this._onKeyDown = onKeyDown.bind(this);
+    this._onTouchStart = onTouchStart.bind(this);
+    this._onTouchMove = onTouchMove.bind(this);
+    this._onMouseDown = onMouseDown.bind(this);
+    this._onMouseMove = onMouseMove.bind(this);
+    this._interceptControlDown = interceptControlDown.bind(this);
+    this._interceptControlUp = interceptControlUp.bind(this);
+    if (this.domElement !== null) {
+      this.connect(this.domElement);
+    }
+    this.update();
+  }
+  /**
+   * Defines the visual representation of the cursor.
+   *
+   * @type {('auto'|'grab')}
+   * @default 'auto'
+   */
+  set cursorStyle(type) {
+    this._cursorStyle = type;
+    if (type === "grab") {
+      this.domElement.style.cursor = "grab";
+    } else {
+      this.domElement.style.cursor = "auto";
+    }
+  }
+  get cursorStyle() {
+    return this._cursorStyle;
+  }
+  connect(element) {
+    super.connect(element);
+    this.domElement.addEventListener("pointerdown", this._onPointerDown);
+    this.domElement.addEventListener("pointercancel", this._onPointerUp);
+    this.domElement.addEventListener("contextmenu", this._onContextMenu);
+    this.domElement.addEventListener("wheel", this._onMouseWheel, { passive: false });
+    const document2 = this.domElement.getRootNode();
+    document2.addEventListener("keydown", this._interceptControlDown, { passive: true, capture: true });
+    this.domElement.style.touchAction = "none";
+  }
+  disconnect() {
+    this.domElement.removeEventListener("pointerdown", this._onPointerDown);
+    this.domElement.ownerDocument.removeEventListener("pointermove", this._onPointerMove);
+    this.domElement.ownerDocument.removeEventListener("pointerup", this._onPointerUp);
+    this.domElement.removeEventListener("pointercancel", this._onPointerUp);
+    this.domElement.removeEventListener("wheel", this._onMouseWheel);
+    this.domElement.removeEventListener("contextmenu", this._onContextMenu);
+    this.stopListenToKeyEvents();
+    const document2 = this.domElement.getRootNode();
+    document2.removeEventListener("keydown", this._interceptControlDown, { capture: true });
+    this.domElement.style.touchAction = "";
+  }
+  dispose() {
+    this.disconnect();
+  }
+  /**
+   * Get the current vertical rotation, in radians.
+   *
+   * @return {number} The current vertical rotation, in radians.
+   */
+  getPolarAngle() {
+    return this._spherical.phi;
+  }
+  /**
+   * Get the current horizontal rotation, in radians.
+   *
+   * @return {number} The current horizontal rotation, in radians.
+   */
+  getAzimuthalAngle() {
+    return this._spherical.theta;
+  }
+  /**
+   * Returns the distance from the camera to the target.
+   *
+   * @return {number} The distance from the camera to the target.
+   */
+  getDistance() {
+    return this.object.position.distanceTo(this.target);
+  }
+  /**
+   * Adds key event listeners to the given DOM element.
+   * `window` is a recommended argument for using this method.
+   *
+   * @param {HTMLElement} domElement - The DOM element
+   */
+  listenToKeyEvents(domElement) {
+    domElement.addEventListener("keydown", this._onKeyDown);
+    this._domElementKeyEvents = domElement;
+  }
+  /**
+   * Removes the key event listener previously defined with `listenToKeyEvents()`.
+   */
+  stopListenToKeyEvents() {
+    if (this._domElementKeyEvents !== null) {
+      this._domElementKeyEvents.removeEventListener("keydown", this._onKeyDown);
+      this._domElementKeyEvents = null;
+    }
+  }
+  /**
+   * Save the current state of the controls. This can later be recovered with `reset()`.
+   */
+  saveState() {
+    this.target0.copy(this.target);
+    this.position0.copy(this.object.position);
+    this.zoom0 = this.object.zoom;
+  }
+  /**
+   * Reset the controls to their state from either the last time the `saveState()`
+   * was called, or the initial state.
+   */
+  reset() {
+    this.target.copy(this.target0);
+    this.object.position.copy(this.position0);
+    this.object.zoom = this.zoom0;
+    this.object.updateProjectionMatrix();
+    this.dispatchEvent(_changeEvent);
+    this.update();
+    this.state = _STATE.NONE;
+  }
+  /**
+   * Programmatically pan the camera.
+   *
+   * @param {number} deltaX - The horizontal pan amount in pixels.
+   * @param {number} deltaY - The vertical pan amount in pixels.
+   */
+  pan(deltaX, deltaY) {
+    this._pan(deltaX, deltaY);
+    this.update();
+  }
+  /**
+   * Programmatically dolly in (zoom in for perspective camera).
+   *
+   * @param {number} dollyScale - The dolly scale factor.
+   */
+  dollyIn(dollyScale) {
+    this._dollyIn(dollyScale);
+    this.update();
+  }
+  /**
+   * Programmatically dolly out (zoom out for perspective camera).
+   *
+   * @param {number} dollyScale - The dolly scale factor.
+   */
+  dollyOut(dollyScale) {
+    this._dollyOut(dollyScale);
+    this.update();
+  }
+  /**
+   * Programmatically rotate the camera left (around the vertical axis).
+   *
+   * @param {number} angle - The rotation angle in radians.
+   */
+  rotateLeft(angle) {
+    this._rotateLeft(angle);
+    this.update();
+  }
+  /**
+   * Programmatically rotate the camera up (around the horizontal axis).
+   *
+   * @param {number} angle - The rotation angle in radians.
+   */
+  rotateUp(angle) {
+    this._rotateUp(angle);
+    this.update();
+  }
+  update(deltaTime = null) {
+    const position2 = this.object.position;
+    _v.copy(position2).sub(this.target);
+    _v.applyQuaternion(this._quat);
+    this._spherical.setFromVector3(_v);
+    if (this.autoRotate && this.state === _STATE.NONE) {
+      this._rotateLeft(this._getAutoRotationAngle(deltaTime));
+    }
+    if (this.enableDamping) {
+      this._spherical.theta += this._sphericalDelta.theta * this.dampingFactor;
+      this._spherical.phi += this._sphericalDelta.phi * this.dampingFactor;
+    } else {
+      this._spherical.theta += this._sphericalDelta.theta;
+      this._spherical.phi += this._sphericalDelta.phi;
+    }
+    let min = this.minAzimuthAngle;
+    let max = this.maxAzimuthAngle;
+    if (isFinite(min) && isFinite(max)) {
+      if (min < -Math.PI) min += _twoPI;
+      else if (min > Math.PI) min -= _twoPI;
+      if (max < -Math.PI) max += _twoPI;
+      else if (max > Math.PI) max -= _twoPI;
+      if (min <= max) {
+        this._spherical.theta = Math.max(min, Math.min(max, this._spherical.theta));
+      } else {
+        this._spherical.theta = this._spherical.theta > (min + max) / 2 ? Math.max(min, this._spherical.theta) : Math.min(max, this._spherical.theta);
+      }
+    }
+    this._spherical.phi = Math.max(this.minPolarAngle, Math.min(this.maxPolarAngle, this._spherical.phi));
+    this._spherical.makeSafe();
+    if (this.enableDamping === true) {
+      this.target.addScaledVector(this._panOffset, this.dampingFactor);
+    } else {
+      this.target.add(this._panOffset);
+    }
+    this.target.sub(this.cursor);
+    this.target.clampLength(this.minTargetRadius, this.maxTargetRadius);
+    this.target.add(this.cursor);
+    let zoomChanged = false;
+    if (this.zoomToCursor && this._performCursorZoom || this.object.isOrthographicCamera) {
+      this._spherical.radius = this._clampDistance(this._spherical.radius);
+    } else {
+      const prevRadius = this._spherical.radius;
+      this._spherical.radius = this._clampDistance(this._spherical.radius * this._scale);
+      zoomChanged = prevRadius != this._spherical.radius;
+    }
+    _v.setFromSpherical(this._spherical);
+    _v.applyQuaternion(this._quatInverse);
+    position2.copy(this.target).add(_v);
+    this.object.lookAt(this.target);
+    if (this.enableDamping === true) {
+      this._sphericalDelta.theta *= 1 - this.dampingFactor;
+      this._sphericalDelta.phi *= 1 - this.dampingFactor;
+      this._panOffset.multiplyScalar(1 - this.dampingFactor);
+    } else {
+      this._sphericalDelta.set(0, 0, 0);
+      this._panOffset.set(0, 0, 0);
+    }
+    if (this.zoomToCursor && this._performCursorZoom) {
+      let newRadius = null;
+      if (this.object.isPerspectiveCamera) {
+        const prevRadius = _v.length();
+        newRadius = this._clampDistance(prevRadius * this._scale);
+        const radiusDelta = prevRadius - newRadius;
+        this.object.position.addScaledVector(this._dollyDirection, radiusDelta);
+        this.object.updateMatrixWorld();
+        zoomChanged = !!radiusDelta;
+      } else if (this.object.isOrthographicCamera) {
+        const mouseBefore = new Ti(this._mouse.x, this._mouse.y, 0);
+        mouseBefore.unproject(this.object);
+        const prevZoom = this.object.zoom;
+        this.object.zoom = Math.max(this.minZoom, Math.min(this.maxZoom, this.object.zoom / this._scale));
+        this.object.updateProjectionMatrix();
+        zoomChanged = prevZoom !== this.object.zoom;
+        const mouseAfter = new Ti(this._mouse.x, this._mouse.y, 0);
+        mouseAfter.unproject(this.object);
+        this.object.position.sub(mouseAfter).add(mouseBefore);
+        this.object.updateMatrixWorld();
+        newRadius = _v.length();
+      } else {
+        console.warn("WARNING: OrbitControls.js encountered an unknown camera type - zoom to cursor disabled.");
+        this.zoomToCursor = false;
+      }
+      if (newRadius !== null) {
+        if (this.screenSpacePanning) {
+          this.target.set(0, 0, -1).transformDirection(this.object.matrix).multiplyScalar(newRadius).add(this.object.position);
+        } else {
+          _ray.origin.copy(this.object.position);
+          _ray.direction.set(0, 0, -1).transformDirection(this.object.matrix);
+          if (Math.abs(this.object.up.dot(_ray.direction)) < _TILT_LIMIT) {
+            this.object.lookAt(this.target);
+          } else {
+            _plane.setFromNormalAndCoplanarPoint(this.object.up, this.target);
+            _ray.intersectPlane(_plane, this.target);
+          }
+        }
+      }
+    } else if (this.object.isOrthographicCamera) {
+      const prevZoom = this.object.zoom;
+      this.object.zoom = Math.max(this.minZoom, Math.min(this.maxZoom, this.object.zoom / this._scale));
+      if (prevZoom !== this.object.zoom) {
+        this.object.updateProjectionMatrix();
+        zoomChanged = true;
+      }
+    }
+    this._scale = 1;
+    this._performCursorZoom = false;
+    if (zoomChanged || this._lastPosition.distanceToSquared(this.object.position) > _EPS || 8 * (1 - this._lastQuaternion.dot(this.object.quaternion)) > _EPS || this._lastTargetPosition.distanceToSquared(this.target) > _EPS) {
+      this.dispatchEvent(_changeEvent);
+      this._lastPosition.copy(this.object.position);
+      this._lastQuaternion.copy(this.object.quaternion);
+      this._lastTargetPosition.copy(this.target);
+      return true;
+    }
+    return false;
+  }
+  _getAutoRotationAngle(deltaTime) {
+    if (deltaTime !== null) {
+      return _twoPI / 60 * this.autoRotateSpeed * deltaTime;
+    } else {
+      return _twoPI / 60 / 60 * this.autoRotateSpeed;
+    }
+  }
+  _getZoomScale(delta) {
+    const normalizedDelta = Math.abs(delta * 0.01);
+    return Math.pow(0.95, this.zoomSpeed * normalizedDelta);
+  }
+  _rotateLeft(angle) {
+    this._sphericalDelta.theta -= angle;
+  }
+  _rotateUp(angle) {
+    this._sphericalDelta.phi -= angle;
+  }
+  _panLeft(distance2, objectMatrix) {
+    _v.setFromMatrixColumn(objectMatrix, 0);
+    _v.multiplyScalar(-distance2);
+    this._panOffset.add(_v);
+  }
+  _panUp(distance2, objectMatrix) {
+    if (this.screenSpacePanning === true) {
+      _v.setFromMatrixColumn(objectMatrix, 1);
+    } else {
+      _v.setFromMatrixColumn(objectMatrix, 0);
+      _v.crossVectors(this.object.up, _v);
+    }
+    _v.multiplyScalar(distance2);
+    this._panOffset.add(_v);
+  }
+  // deltaX and deltaY are in pixels; right and down are positive
+  _pan(deltaX, deltaY) {
+    const element = this.domElement;
+    if (this.object.isPerspectiveCamera) {
+      const position2 = this.object.position;
+      _v.copy(position2).sub(this.target);
+      let targetDistance = _v.length();
+      targetDistance *= Math.tan(this.object.fov / 2 * Math.PI / 180);
+      this._panLeft(2 * deltaX * targetDistance / element.clientHeight, this.object.matrix);
+      this._panUp(2 * deltaY * targetDistance / element.clientHeight, this.object.matrix);
+    } else if (this.object.isOrthographicCamera) {
+      this._panLeft(deltaX * (this.object.right - this.object.left) / this.object.zoom / element.clientWidth, this.object.matrix);
+      this._panUp(deltaY * (this.object.top - this.object.bottom) / this.object.zoom / element.clientHeight, this.object.matrix);
+    } else {
+      console.warn("WARNING: OrbitControls.js encountered an unknown camera type - pan disabled.");
+      this.enablePan = false;
+    }
+  }
+  _dollyOut(dollyScale) {
+    if (this.object.isPerspectiveCamera || this.object.isOrthographicCamera) {
+      this._scale /= dollyScale;
+    } else {
+      console.warn("WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled.");
+      this.enableZoom = false;
+    }
+  }
+  _dollyIn(dollyScale) {
+    if (this.object.isPerspectiveCamera || this.object.isOrthographicCamera) {
+      this._scale *= dollyScale;
+    } else {
+      console.warn("WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled.");
+      this.enableZoom = false;
+    }
+  }
+  _updateZoomParameters(x2, y2) {
+    if (!this.zoomToCursor) {
+      return;
+    }
+    this._performCursorZoom = true;
+    const rect = this.domElement.getBoundingClientRect();
+    const dx = x2 - rect.left;
+    const dy = y2 - rect.top;
+    const w2 = rect.width;
+    const h2 = rect.height;
+    this._mouse.x = dx / w2 * 2 - 1;
+    this._mouse.y = -(dy / h2) * 2 + 1;
+    this._dollyDirection.set(this._mouse.x, this._mouse.y, 1).unproject(this.object).sub(this.object.position).normalize();
+  }
+  _clampDistance(dist) {
+    return Math.max(this.minDistance, Math.min(this.maxDistance, dist));
+  }
+  //
+  // event callbacks - update the object state
+  //
+  _handleMouseDownRotate(event) {
+    this._rotateStart.set(event.clientX, event.clientY);
+  }
+  _handleMouseDownDolly(event) {
+    this._updateZoomParameters(event.clientX, event.clientX);
+    this._dollyStart.set(event.clientX, event.clientY);
+  }
+  _handleMouseDownPan(event) {
+    this._panStart.set(event.clientX, event.clientY);
+  }
+  _handleMouseMoveRotate(event) {
+    this._rotateEnd.set(event.clientX, event.clientY);
+    this._rotateDelta.subVectors(this._rotateEnd, this._rotateStart).multiplyScalar(this.rotateSpeed);
+    const element = this.domElement;
+    this._rotateLeft(_twoPI * this._rotateDelta.x / element.clientHeight);
+    this._rotateUp(_twoPI * this._rotateDelta.y / element.clientHeight);
+    this._rotateStart.copy(this._rotateEnd);
+    this.update();
+  }
+  _handleMouseMoveDolly(event) {
+    this._dollyEnd.set(event.clientX, event.clientY);
+    this._dollyDelta.subVectors(this._dollyEnd, this._dollyStart);
+    if (this._dollyDelta.y > 0) {
+      this._dollyOut(this._getZoomScale(this._dollyDelta.y));
+    } else if (this._dollyDelta.y < 0) {
+      this._dollyIn(this._getZoomScale(this._dollyDelta.y));
+    }
+    this._dollyStart.copy(this._dollyEnd);
+    this.update();
+  }
+  _handleMouseMovePan(event) {
+    this._panEnd.set(event.clientX, event.clientY);
+    this._panDelta.subVectors(this._panEnd, this._panStart).multiplyScalar(this.panSpeed);
+    this._pan(this._panDelta.x, this._panDelta.y);
+    this._panStart.copy(this._panEnd);
+    this.update();
+  }
+  _handleMouseWheel(event) {
+    this._updateZoomParameters(event.clientX, event.clientY);
+    if (event.deltaY < 0) {
+      this._dollyIn(this._getZoomScale(event.deltaY));
+    } else if (event.deltaY > 0) {
+      this._dollyOut(this._getZoomScale(event.deltaY));
+    }
+    this.update();
+  }
+  _handleKeyDown(event) {
+    let needsUpdate = false;
+    switch (event.code) {
+      case this.keys.UP:
+        if (event.ctrlKey || event.metaKey || event.shiftKey) {
+          if (this.enableRotate) {
+            this._rotateUp(_twoPI * this.keyRotateSpeed / this.domElement.clientHeight);
+          }
+        } else {
+          if (this.enablePan) {
+            this._pan(0, this.keyPanSpeed);
+          }
+        }
+        needsUpdate = true;
+        break;
+      case this.keys.BOTTOM:
+        if (event.ctrlKey || event.metaKey || event.shiftKey) {
+          if (this.enableRotate) {
+            this._rotateUp(-_twoPI * this.keyRotateSpeed / this.domElement.clientHeight);
+          }
+        } else {
+          if (this.enablePan) {
+            this._pan(0, -this.keyPanSpeed);
+          }
+        }
+        needsUpdate = true;
+        break;
+      case this.keys.LEFT:
+        if (event.ctrlKey || event.metaKey || event.shiftKey) {
+          if (this.enableRotate) {
+            this._rotateLeft(_twoPI * this.keyRotateSpeed / this.domElement.clientHeight);
+          }
+        } else {
+          if (this.enablePan) {
+            this._pan(this.keyPanSpeed, 0);
+          }
+        }
+        needsUpdate = true;
+        break;
+      case this.keys.RIGHT:
+        if (event.ctrlKey || event.metaKey || event.shiftKey) {
+          if (this.enableRotate) {
+            this._rotateLeft(-_twoPI * this.keyRotateSpeed / this.domElement.clientHeight);
+          }
+        } else {
+          if (this.enablePan) {
+            this._pan(-this.keyPanSpeed, 0);
+          }
+        }
+        needsUpdate = true;
+        break;
+    }
+    if (needsUpdate) {
+      event.preventDefault();
+      this.update();
+    }
+  }
+  _handleTouchStartRotate(event) {
+    if (this._pointers.length === 1) {
+      this._rotateStart.set(event.pageX, event.pageY);
+    } else {
+      const position2 = this._getSecondPointerPosition(event);
+      const x2 = 0.5 * (event.pageX + position2.x);
+      const y2 = 0.5 * (event.pageY + position2.y);
+      this._rotateStart.set(x2, y2);
+    }
+  }
+  _handleTouchStartPan(event) {
+    if (this._pointers.length === 1) {
+      this._panStart.set(event.pageX, event.pageY);
+    } else {
+      const position2 = this._getSecondPointerPosition(event);
+      const x2 = 0.5 * (event.pageX + position2.x);
+      const y2 = 0.5 * (event.pageY + position2.y);
+      this._panStart.set(x2, y2);
+    }
+  }
+  _handleTouchStartDolly(event) {
+    const position2 = this._getSecondPointerPosition(event);
+    const dx = event.pageX - position2.x;
+    const dy = event.pageY - position2.y;
+    const distance2 = Math.sqrt(dx * dx + dy * dy);
+    this._dollyStart.set(0, distance2);
+  }
+  _handleTouchStartDollyPan(event) {
+    if (this.enableZoom) this._handleTouchStartDolly(event);
+    if (this.enablePan) this._handleTouchStartPan(event);
+  }
+  _handleTouchStartDollyRotate(event) {
+    if (this.enableZoom) this._handleTouchStartDolly(event);
+    if (this.enableRotate) this._handleTouchStartRotate(event);
+  }
+  _handleTouchMoveRotate(event) {
+    if (this._pointers.length == 1) {
+      this._rotateEnd.set(event.pageX, event.pageY);
+    } else {
+      const position2 = this._getSecondPointerPosition(event);
+      const x2 = 0.5 * (event.pageX + position2.x);
+      const y2 = 0.5 * (event.pageY + position2.y);
+      this._rotateEnd.set(x2, y2);
+    }
+    this._rotateDelta.subVectors(this._rotateEnd, this._rotateStart).multiplyScalar(this.rotateSpeed);
+    const element = this.domElement;
+    this._rotateLeft(_twoPI * this._rotateDelta.x / element.clientHeight);
+    this._rotateUp(_twoPI * this._rotateDelta.y / element.clientHeight);
+    this._rotateStart.copy(this._rotateEnd);
+  }
+  _handleTouchMovePan(event) {
+    if (this._pointers.length === 1) {
+      this._panEnd.set(event.pageX, event.pageY);
+    } else {
+      const position2 = this._getSecondPointerPosition(event);
+      const x2 = 0.5 * (event.pageX + position2.x);
+      const y2 = 0.5 * (event.pageY + position2.y);
+      this._panEnd.set(x2, y2);
+    }
+    this._panDelta.subVectors(this._panEnd, this._panStart).multiplyScalar(this.panSpeed);
+    this._pan(this._panDelta.x, this._panDelta.y);
+    this._panStart.copy(this._panEnd);
+  }
+  _handleTouchMoveDolly(event) {
+    const position2 = this._getSecondPointerPosition(event);
+    const dx = event.pageX - position2.x;
+    const dy = event.pageY - position2.y;
+    const distance2 = Math.sqrt(dx * dx + dy * dy);
+    this._dollyEnd.set(0, distance2);
+    this._dollyDelta.set(0, Math.pow(this._dollyEnd.y / this._dollyStart.y, this.zoomSpeed));
+    this._dollyOut(this._dollyDelta.y);
+    this._dollyStart.copy(this._dollyEnd);
+    const centerX = (event.pageX + position2.x) * 0.5;
+    const centerY = (event.pageY + position2.y) * 0.5;
+    this._updateZoomParameters(centerX, centerY);
+  }
+  _handleTouchMoveDollyPan(event) {
+    if (this.enableZoom) this._handleTouchMoveDolly(event);
+    if (this.enablePan) this._handleTouchMovePan(event);
+  }
+  _handleTouchMoveDollyRotate(event) {
+    if (this.enableZoom) this._handleTouchMoveDolly(event);
+    if (this.enableRotate) this._handleTouchMoveRotate(event);
+  }
+  // pointers
+  _addPointer(event) {
+    this._pointers.push(event.pointerId);
+  }
+  _removePointer(event) {
+    delete this._pointerPositions[event.pointerId];
+    for (let i2 = 0; i2 < this._pointers.length; i2++) {
+      if (this._pointers[i2] == event.pointerId) {
+        this._pointers.splice(i2, 1);
+        return;
+      }
+    }
+  }
+  _isTrackingPointer(event) {
+    for (let i2 = 0; i2 < this._pointers.length; i2++) {
+      if (this._pointers[i2] == event.pointerId) return true;
+    }
+    return false;
+  }
+  _trackPointer(event) {
+    let position2 = this._pointerPositions[event.pointerId];
+    if (position2 === void 0) {
+      position2 = new _i();
+      this._pointerPositions[event.pointerId] = position2;
+    }
+    position2.set(event.pageX, event.pageY);
+  }
+  _getSecondPointerPosition(event) {
+    const pointerId = event.pointerId === this._pointers[0] ? this._pointers[1] : this._pointers[0];
+    return this._pointerPositions[pointerId];
+  }
+  //
+  _customWheelEvent(event) {
+    const mode = event.deltaMode;
+    const newEvent = {
+      clientX: event.clientX,
+      clientY: event.clientY,
+      deltaY: event.deltaY
+    };
+    switch (mode) {
+      case 1:
+        newEvent.deltaY *= 16;
+        break;
+      case 2:
+        newEvent.deltaY *= 100;
+        break;
+    }
+    if (event.ctrlKey && !this._controlActive) {
+      newEvent.deltaY *= 10;
+    }
+    return newEvent;
+  }
+};
+function onPointerDown(event) {
+  if (this.enabled === false) return;
+  if (this._pointers.length === 0) {
+    this.domElement.setPointerCapture(event.pointerId);
+    this.domElement.ownerDocument.addEventListener("pointermove", this._onPointerMove);
+    this.domElement.ownerDocument.addEventListener("pointerup", this._onPointerUp);
+  }
+  if (this._isTrackingPointer(event)) return;
+  this._addPointer(event);
+  if (event.pointerType === "touch") {
+    this._onTouchStart(event);
+  } else {
+    this._onMouseDown(event);
+  }
+  if (this._cursorStyle === "grab") {
+    this.domElement.style.cursor = "grabbing";
+  }
+}
+function onPointerMove(event) {
+  if (this.enabled === false) return;
+  if (event.pointerType === "touch") {
+    this._onTouchMove(event);
+  } else {
+    this._onMouseMove(event);
+  }
+}
+function onPointerUp(event) {
+  this._removePointer(event);
+  switch (this._pointers.length) {
+    case 0:
+      this.domElement.releasePointerCapture(event.pointerId);
+      this.domElement.ownerDocument.removeEventListener("pointermove", this._onPointerMove);
+      this.domElement.ownerDocument.removeEventListener("pointerup", this._onPointerUp);
+      this.dispatchEvent(_endEvent);
+      this.state = _STATE.NONE;
+      if (this._cursorStyle === "grab") {
+        this.domElement.style.cursor = "grab";
+      }
+      break;
+    case 1:
+      const pointerId = this._pointers[0];
+      const position2 = this._pointerPositions[pointerId];
+      this._onTouchStart({ pointerId, pageX: position2.x, pageY: position2.y });
+      break;
+  }
+}
+function onMouseDown(event) {
+  let mouseAction;
+  switch (event.button) {
+    case 0:
+      mouseAction = this.mouseButtons.LEFT;
+      break;
+    case 1:
+      mouseAction = this.mouseButtons.MIDDLE;
+      break;
+    case 2:
+      mouseAction = this.mouseButtons.RIGHT;
+      break;
+    default:
+      mouseAction = -1;
+  }
+  switch (mouseAction) {
+    case e.DOLLY:
+      if (this.enableZoom === false) return;
+      this._handleMouseDownDolly(event);
+      this.state = _STATE.DOLLY;
+      break;
+    case e.ROTATE:
+      if (event.ctrlKey || event.metaKey || event.shiftKey) {
+        if (this.enablePan === false) return;
+        this._handleMouseDownPan(event);
+        this.state = _STATE.PAN;
+      } else {
+        if (this.enableRotate === false) return;
+        this._handleMouseDownRotate(event);
+        this.state = _STATE.ROTATE;
+      }
+      break;
+    case e.PAN:
+      if (event.ctrlKey || event.metaKey || event.shiftKey) {
+        if (this.enableRotate === false) return;
+        this._handleMouseDownRotate(event);
+        this.state = _STATE.ROTATE;
+      } else {
+        if (this.enablePan === false) return;
+        this._handleMouseDownPan(event);
+        this.state = _STATE.PAN;
+      }
+      break;
+    default:
+      this.state = _STATE.NONE;
+  }
+  if (this.state !== _STATE.NONE) {
+    this.dispatchEvent(_startEvent);
+  }
+}
+function onMouseMove(event) {
+  switch (this.state) {
+    case _STATE.ROTATE:
+      if (this.enableRotate === false) return;
+      this._handleMouseMoveRotate(event);
+      break;
+    case _STATE.DOLLY:
+      if (this.enableZoom === false) return;
+      this._handleMouseMoveDolly(event);
+      break;
+    case _STATE.PAN:
+      if (this.enablePan === false) return;
+      this._handleMouseMovePan(event);
+      break;
+  }
+}
+function onMouseWheel(event) {
+  if (this.enabled === false || this.enableZoom === false || this.state !== _STATE.NONE) return;
+  event.preventDefault();
+  this.dispatchEvent(_startEvent);
+  this._handleMouseWheel(this._customWheelEvent(event));
+  this.dispatchEvent(_endEvent);
+}
+function onKeyDown(event) {
+  if (this.enabled === false) return;
+  this._handleKeyDown(event);
+}
+function onTouchStart(event) {
+  this._trackPointer(event);
+  switch (this._pointers.length) {
+    case 1:
+      switch (this.touches.ONE) {
+        case s.ROTATE:
+          if (this.enableRotate === false) return;
+          this._handleTouchStartRotate(event);
+          this.state = _STATE.TOUCH_ROTATE;
+          break;
+        case s.PAN:
+          if (this.enablePan === false) return;
+          this._handleTouchStartPan(event);
+          this.state = _STATE.TOUCH_PAN;
+          break;
+        default:
+          this.state = _STATE.NONE;
+      }
+      break;
+    case 2:
+      switch (this.touches.TWO) {
+        case s.DOLLY_PAN:
+          if (this.enableZoom === false && this.enablePan === false) return;
+          this._handleTouchStartDollyPan(event);
+          this.state = _STATE.TOUCH_DOLLY_PAN;
+          break;
+        case s.DOLLY_ROTATE:
+          if (this.enableZoom === false && this.enableRotate === false) return;
+          this._handleTouchStartDollyRotate(event);
+          this.state = _STATE.TOUCH_DOLLY_ROTATE;
+          break;
+        default:
+          this.state = _STATE.NONE;
+      }
+      break;
+    default:
+      this.state = _STATE.NONE;
+  }
+  if (this.state !== _STATE.NONE) {
+    this.dispatchEvent(_startEvent);
+  }
+}
+function onTouchMove(event) {
+  this._trackPointer(event);
+  switch (this.state) {
+    case _STATE.TOUCH_ROTATE:
+      if (this.enableRotate === false) return;
+      this._handleTouchMoveRotate(event);
+      this.update();
+      break;
+    case _STATE.TOUCH_PAN:
+      if (this.enablePan === false) return;
+      this._handleTouchMovePan(event);
+      this.update();
+      break;
+    case _STATE.TOUCH_DOLLY_PAN:
+      if (this.enableZoom === false && this.enablePan === false) return;
+      this._handleTouchMoveDollyPan(event);
+      this.update();
+      break;
+    case _STATE.TOUCH_DOLLY_ROTATE:
+      if (this.enableZoom === false && this.enableRotate === false) return;
+      this._handleTouchMoveDollyRotate(event);
+      this.update();
+      break;
+    default:
+      this.state = _STATE.NONE;
+  }
+}
+function onContextMenu(event) {
+  if (this.enabled === false) return;
+  event.preventDefault();
+}
+function interceptControlDown(event) {
+  if (event.key === "Control") {
+    this._controlActive = true;
+    const document2 = this.domElement.getRootNode();
+    document2.addEventListener("keyup", this._interceptControlUp, { passive: true, capture: true });
+  }
+}
+function interceptControlUp(event) {
+  if (event.key === "Control") {
+    this._controlActive = false;
+    const document2 = this.domElement.getRootNode();
+    document2.removeEventListener("keyup", this._interceptControlUp, { passive: true, capture: true });
+  }
+}
+
+// assets/js/utils/gesture.js
+var SPAN = "span";
+var DRIFT = "drift";
+var TWIST = "twist";
+var TWO_PI = Math.PI * 2;
+function wrapAngle(a2) {
+  while (a2 > Math.PI) a2 -= TWO_PI;
+  while (a2 < -Math.PI) a2 += TWO_PI;
+  return a2;
+}
+function frameOf(a2, b2) {
+  const dx = b2.x - a2.x;
+  const dy = b2.y - a2.y;
+  return {
+    span: Math.sqrt(dx * dx + dy * dy),
+    cx: (a2.x + b2.x) * 0.5,
+    cy: (a2.y + b2.y) * 0.5,
+    angle: Math.atan2(dy, dx)
+  };
+}
+function travelFrom(base, frame) {
+  return {
+    [SPAN]: Math.abs(frame.span - base.span),
+    [DRIFT]: Math.sqrt((frame.cx - base.cx) ** 2 + (frame.cy - base.cy) ** 2),
+    [TWIST]: Math.abs(wrapAngle(frame.angle - base.angle)) * frame.span * 0.5
+  };
+}
+function createArbiter() {
+  let base = null;
+  let channel = null;
+  return {
+    get channel() {
+      return channel;
+    },
+    begin(frame) {
+      base = frame;
+      channel = null;
+    },
+    decide(frame, slop) {
+      if (channel !== null) return channel;
+      if (base === null || frame === null) return null;
+      const travel = travelFrom(base, frame);
+      let winner = null;
+      for (const c2 of [SPAN, DRIFT, TWIST]) {
+        if (travel[c2] < slop) continue;
+        if (winner === null || travel[c2] > travel[winner]) winner = c2;
+      }
+      channel = winner;
+      return winner;
+    }
+  };
+}
+
+// assets/js/turtling/orbit.js
+var _fwd = new Ti();
+var TWO_PI2 = Math.PI * 2;
+var DojoOrbitControls = class extends OrbitControls {
+  constructor(object, domElement = null) {
+    super(object, domElement);
+    this.dollyStandoff = 30;
+    this.minDistance = 0;
+    this.gestureSlop = 10;
+    this._arbiter = createArbiter();
+    this._twistStart = 0;
+    this._span0 = 1;
+    this._mid0x = 0;
+    this._mid0y = 0;
+  }
+  // Dolly-through. With `minDistance = 0` stock already computes the advance we
+  // want (`prevRadius − prevRadius·scale`, unclamped) and then parks the target
+  // at that unfloored radius ahead of the camera. All that remains is to floor
+  // the pivot — which is the whole of the law.
+  update(deltaTime = null) {
+    const changed = super.update(deltaTime);
+    const gap = this.object.position.distanceTo(this.target);
+    if (gap >= this.dollyStandoff || !this.object.isPerspectiveCamera) return changed;
+    this.object.getWorldDirection(_fwd);
+    this.target.copy(this.object.position).addScaledVector(_fwd, this.dollyStandoff);
+    this._lastTargetPosition.copy(this.target);
+    return changed;
+  }
+  // Upstream passes clientX as the y argument, mis-aiming the middle-drag dolly
+  // ray. Still unfixed in three.js r185.
+  _handleMouseDownDolly(event) {
+    this._updateZoomParameters(event.clientX, event.clientY);
+    this._dollyStart.set(event.clientX, event.clientY);
+  }
+  // Two-finger frame in STABLE pointer order — (event, other) flips twist by π.
+  _gestureFrame() {
+    const a2 = this._pointerPositions[this._pointers[0]];
+    const b2 = this._pointerPositions[this._pointers[1]];
+    if (a2 === void 0 || b2 === void 0) return null;
+    return frameOf(a2, b2);
+  }
+  // Route one arbitrated gesture. `onDrift` differs by mode: orbit vs pan.
+  // Public pan/rotate/dolly each call update(); suspend damping for the batch
+  // so rotateLeft+rotateUp don't intermediate-damp (theta twice, phi once).
+  _routeGesture(onDrift) {
+    const frame = this._gestureFrame();
+    const channel = this._arbiter.decide(frame, this.gestureSlop);
+    if (channel === SPAN || channel === DRIFT) {
+      const damped = this.enableDamping;
+      this.enableDamping = false;
+      try {
+        if (channel === SPAN && this.enableZoom && frame && this._span0) {
+          this._updateZoomParameters(frame.cx, frame.cy);
+          this.dollyOut(Math.pow(frame.span / this._span0, this.zoomSpeed));
+          this._span0 = frame.span;
+        } else if (channel === DRIFT) {
+          onDrift(frame);
+        }
+      } finally {
+        this.enableDamping = damped;
+      }
+    } else if (channel === TWIST) {
+      this._emitTwist(frame);
+    }
+    if (frame === null) return;
+    if (channel !== SPAN) this._span0 = frame.span;
+    if (channel !== DRIFT) {
+      this._mid0x = frame.cx;
+      this._mid0y = frame.cy;
+    }
+    if (channel !== TWIST) this._twistStart = frame.angle;
+  }
+  // The rig has no roll DOF, so twist leaves as an intent and the consumer
+  // lands it (stage.js folds it into the hand's own reframe M).
+  _emitTwist(frame) {
+    if (frame === null) return;
+    const delta = wrapAngle(frame.angle - this._twistStart);
+    this._twistStart = frame.angle;
+    if (delta !== 0) this.dispatchEvent({ type: "twist", angle: delta });
+  }
+  _armTwoFinger() {
+    const frame = this._gestureFrame();
+    this._arbiter.begin(frame);
+    if (frame === null) return;
+    this._span0 = frame.span;
+    this._mid0x = frame.cx;
+    this._mid0y = frame.cy;
+    this._twistStart = frame.angle;
+  }
+  _handleTouchStartDollyRotate(_event) {
+    this._armTwoFinger();
+  }
+  _handleTouchStartDollyPan(_event) {
+    this._armTwoFinger();
+  }
+  _handleTouchMoveDollyRotate(_event) {
+    this._routeGesture((frame) => {
+      if (!this.enableRotate || !frame) return;
+      const h2 = this.domElement.clientHeight;
+      const dx = (frame.cx - this._mid0x) * this.rotateSpeed;
+      const dy = (frame.cy - this._mid0y) * this.rotateSpeed;
+      this.rotateLeft(TWO_PI2 * dx / h2);
+      this.rotateUp(TWO_PI2 * dy / h2);
+      this._mid0x = frame.cx;
+      this._mid0y = frame.cy;
+    });
+  }
+  _handleTouchMoveDollyPan(_event) {
+    this._routeGesture((frame) => {
+      if (!this.enablePan || !frame) return;
+      this.pan(
+        (frame.cx - this._mid0x) * this.panSpeed,
+        (frame.cy - this._mid0y) * this.panSpeed
+      );
+      this._mid0x = frame.cx;
+      this._mid0y = frame.cy;
+    });
+  }
+};
+
+// assets/js/utils/three-addons/lines/LineMaterial.js
+Gn2.line = {
+  worldUnits: { value: 1 },
+  linewidth: { value: 1 },
+  resolution: { value: new _i() },
+  dashOffset: { value: 0 },
+  dashScale: { value: 1 },
+  dashSize: { value: 1 },
+  gapSize: { value: 1 }
+  // todo FIX - maybe change to totalSize
+};
+Hn2["line"] = {
+  uniforms: Yl.merge([
+    Gn2.common,
+    Gn2.fog,
+    Gn2.line
+  ]),
+  vertexShader: (
+    /* glsl */
+    `
+		#include <common>
+		#include <color_pars_vertex>
+		#include <fog_pars_vertex>
+		#include <logdepthbuf_pars_vertex>
+		#include <clipping_planes_pars_vertex>
+
+		uniform float linewidth;
+		uniform vec2 resolution;
+
+		attribute vec3 instanceStart;
+		attribute vec3 instanceEnd;
+
+		attribute vec3 instanceColorStart;
+		attribute vec3 instanceColorEnd;
+
+		#ifdef WORLD_UNITS
+
+			varying vec4 worldPos;
+			varying vec3 worldStart;
+			varying vec3 worldEnd;
+
+			#ifdef USE_DASH
+
+				varying vec2 vUv;
+
+			#endif
+
+		#else
+
+			varying vec2 vUv;
+
+		#endif
+
+		#ifdef USE_DASH
+
+			uniform float dashScale;
+			attribute float instanceDistanceStart;
+			attribute float instanceDistanceEnd;
+			varying float vLineDistance;
+
+		#endif
+
+		float trimSegmentAlpha( const in vec4 start, const in vec4 end ) {
+
+			// compute the interpolation factor needed to trim the segment so it terminates
+			// between the camera plane and the near plane
+
+			// conservative estimate of the near plane
+			float a = projectionMatrix[ 2 ][ 2 ]; // 3nd entry in 3th column
+			float b = projectionMatrix[ 3 ][ 2 ]; // 3nd entry in 4th column
+
+			// we need different nearEstimate formula for reversed and default depth buffer
+			// a is positive with a reversed depth buffer so it can be used for controlling the code flow
+			float nearEstimate = ( a > 0.0 ) ? ( - b / ( a + 1.0 ) ) : ( - 0.5 * b / a );
+
+			return ( nearEstimate - start.z ) / ( end.z - start.z );
+
+		}
+
+		void main() {
+
+			#ifdef USE_COLOR
+
+				vColor.xyz = ( position.y < 0.5 ) ? instanceColorStart : instanceColorEnd;
+
+			#endif
+
+			float aspect = resolution.x / resolution.y;
+
+			// camera space
+			vec4 start = modelViewMatrix * vec4( instanceStart, 1.0 );
+			vec4 end = modelViewMatrix * vec4( instanceEnd, 1.0 );
+
+			#ifdef USE_DASH
+
+				float lineDistanceStart = dashScale * instanceDistanceStart;
+				float lineDistanceEnd = dashScale * instanceDistanceEnd;
+
+			#endif
+
+			#ifdef WORLD_UNITS
+
+				worldStart = start.xyz;
+				worldEnd = end.xyz;
+
+			#else
+
+				vUv = uv;
+
+			#endif
+
+			// special case for perspective projection, and segments that terminate either in, or behind, the camera plane
+			// clearly the gpu firmware has a way of addressing this issue when projecting into ndc space
+			// but we need to perform ndc-space calculations in the shader, so we must address this issue directly
+			// perhaps there is a more elegant solution -- WestLangley
+
+			bool perspective = ( projectionMatrix[ 2 ][ 3 ] == - 1.0 ); // 4th entry in the 3rd column
+
+			if ( perspective ) {
+
+				if ( start.z < 0.0 && end.z >= 0.0 ) {
+
+					float alpha = trimSegmentAlpha( start, end );
+					end.xyz = mix( start.xyz, end.xyz, alpha );
+
+					#ifdef USE_DASH
+
+						lineDistanceEnd = mix( lineDistanceStart, lineDistanceEnd, alpha );
+
+					#endif
+
+				} else if ( end.z < 0.0 && start.z >= 0.0 ) {
+
+					float alpha = trimSegmentAlpha( end, start );
+					start.xyz = mix( end.xyz, start.xyz, alpha );
+
+					#ifdef USE_DASH
+
+						lineDistanceStart = mix( lineDistanceEnd, lineDistanceStart, alpha );
+
+					#endif
+
+				}
+
+			}
+
+			#ifdef USE_DASH
+
+				vLineDistance = ( position.y < 0.5 ) ? lineDistanceStart : lineDistanceEnd;
+				vUv = uv;
+
+			#endif
+
+			// clip space
+			vec4 clipStart = projectionMatrix * start;
+			vec4 clipEnd = projectionMatrix * end;
+
+			// ndc space
+			vec3 ndcStart = clipStart.xyz / clipStart.w;
+			vec3 ndcEnd = clipEnd.xyz / clipEnd.w;
+
+			// direction
+			vec2 dir = ndcEnd.xy - ndcStart.xy;
+
+			// account for clip-space aspect ratio
+			dir.x *= aspect;
+			dir = normalize( dir );
+
+			#ifdef WORLD_UNITS
+
+				vec3 worldDir = normalize( end.xyz - start.xyz );
+				vec3 tmpFwd = normalize( mix( start.xyz, end.xyz, 0.5 ) );
+				vec3 worldUp = normalize( cross( worldDir, tmpFwd ) );
+				vec3 worldFwd = cross( worldDir, worldUp );
+				worldPos = position.y < 0.5 ? start: end;
+
+				// height offset
+				float hw = linewidth * 0.5;
+				worldPos.xyz += position.x < 0.0 ? hw * worldUp : - hw * worldUp;
+
+				// don't extend the line if we're rendering dashes because we
+				// won't be rendering the endcaps
+				#ifndef USE_DASH
+
+					// cap extension
+					worldPos.xyz += position.y < 0.5 ? - hw * worldDir : hw * worldDir;
+
+					// add width to the box
+					worldPos.xyz += worldFwd * hw;
+
+					// endcaps
+					if ( position.y > 1.0 || position.y < 0.0 ) {
+
+						worldPos.xyz -= worldFwd * 2.0 * hw;
+
+					}
+
+				#endif
+
+				// project the worldpos
+				vec4 clip = projectionMatrix * worldPos;
+
+				// shift the depth of the projected points so the line
+				// segments overlap neatly
+				vec3 clipPose = ( position.y < 0.5 ) ? ndcStart : ndcEnd;
+				clip.z = clipPose.z * clip.w;
+
+			#else
+
+				vec2 offset = vec2( dir.y, - dir.x );
+				// undo aspect ratio adjustment
+				dir.x /= aspect;
+				offset.x /= aspect;
+
+				// sign flip
+				if ( position.x < 0.0 ) offset *= - 1.0;
+
+				// endcaps
+				if ( position.y < 0.0 ) {
+
+					offset += - dir;
+
+				} else if ( position.y > 1.0 ) {
+
+					offset += dir;
+
+				}
+
+				// adjust for linewidth
+				offset *= linewidth;
+
+				// adjust for clip-space to screen-space conversion // maybe resolution should be based on viewport ...
+				offset /= resolution.y;
+
+				// select end
+				vec4 clip = ( position.y < 0.5 ) ? clipStart : clipEnd;
+
+				// back to clip space
+				offset *= clip.w;
+
+				clip.xy += offset;
+
+			#endif
+
+			gl_Position = clip;
+
+			vec4 mvPosition = ( position.y < 0.5 ) ? start : end; // this is an approximation
+
+			#include <logdepthbuf_vertex>
+			#include <clipping_planes_vertex>
+			#include <fog_vertex>
+
+		}
+		`
+  ),
+  fragmentShader: (
+    /* glsl */
+    `
+		uniform vec3 diffuse;
+		uniform float opacity;
+		uniform float linewidth;
+
+		#ifdef USE_DASH
+
+			uniform float dashOffset;
+			uniform float dashSize;
+			uniform float gapSize;
+
+		#endif
+
+		varying float vLineDistance;
+
+		#ifdef WORLD_UNITS
+
+			varying vec4 worldPos;
+			varying vec3 worldStart;
+			varying vec3 worldEnd;
+
+			#ifdef USE_DASH
+
+				varying vec2 vUv;
+
+			#endif
+
+		#else
+
+			varying vec2 vUv;
+
+		#endif
+
+		#include <common>
+		#include <color_pars_fragment>
+		#include <fog_pars_fragment>
+		#include <logdepthbuf_pars_fragment>
+		#include <clipping_planes_pars_fragment>
+
+		vec2 closestLineToLine(vec3 p1, vec3 p2, vec3 p3, vec3 p4) {
+
+			float mua;
+			float mub;
+
+			vec3 p13 = p1 - p3;
+			vec3 p43 = p4 - p3;
+
+			vec3 p21 = p2 - p1;
+
+			float d1343 = dot( p13, p43 );
+			float d4321 = dot( p43, p21 );
+			float d1321 = dot( p13, p21 );
+			float d4343 = dot( p43, p43 );
+			float d2121 = dot( p21, p21 );
+
+			float denom = d2121 * d4343 - d4321 * d4321;
+
+			float numer = d1343 * d4321 - d1321 * d4343;
+
+			mua = numer / denom;
+			mua = clamp( mua, 0.0, 1.0 );
+			mub = ( d1343 + d4321 * ( mua ) ) / d4343;
+			mub = clamp( mub, 0.0, 1.0 );
+
+			return vec2( mua, mub );
+
+		}
+
+		void main() {
+
+			float alpha = opacity;
+			vec4 diffuseColor = vec4( diffuse, alpha );
+
+			#include <clipping_planes_fragment>
+
+			#ifdef USE_DASH
+
+				if ( vUv.y < - 1.0 || vUv.y > 1.0 ) discard; // discard endcaps
+
+				if ( mod( vLineDistance + dashOffset, dashSize + gapSize ) > dashSize ) discard; // todo - FIX
+
+			#endif
+
+			#ifdef WORLD_UNITS
+
+				// Find the closest points on the view ray and the line segment
+				vec3 rayEnd = normalize( worldPos.xyz ) * 1e5;
+				vec3 lineDir = worldEnd - worldStart;
+				vec2 params = closestLineToLine( worldStart, worldEnd, vec3( 0.0, 0.0, 0.0 ), rayEnd );
+
+				vec3 p1 = worldStart + lineDir * params.x;
+				vec3 p2 = rayEnd * params.y;
+				vec3 delta = p1 - p2;
+				float len = length( delta );
+				float norm = len / linewidth;
+
+				#ifndef USE_DASH
+
+					#ifdef USE_ALPHA_TO_COVERAGE
+
+						float dnorm = fwidth( norm );
+						alpha = 1.0 - smoothstep( 0.5 - dnorm, 0.5 + dnorm, norm );
+
+					#else
+
+						if ( norm > 0.5 ) {
+
+							discard;
+
+						}
+
+					#endif
+
+				#endif
+
+			#else
+
+				#ifdef USE_ALPHA_TO_COVERAGE
+
+					// artifacts appear on some hardware if a derivative is taken within a conditional
+					float a = vUv.x;
+					float b = ( vUv.y > 0.0 ) ? vUv.y - 1.0 : vUv.y + 1.0;
+					float len2 = a * a + b * b;
+					float dlen = fwidth( len2 );
+
+					if ( abs( vUv.y ) > 1.0 ) {
+
+						alpha = 1.0 - smoothstep( 1.0 - dlen, 1.0 + dlen, len2 );
+
+					}
+
+				#else
+
+					if ( abs( vUv.y ) > 1.0 ) {
+
+						float a = vUv.x;
+						float b = ( vUv.y > 0.0 ) ? vUv.y - 1.0 : vUv.y + 1.0;
+						float len2 = a * a + b * b;
+
+						if ( len2 > 1.0 ) discard;
+
+					}
+
+				#endif
+
+			#endif
+
+			#include <logdepthbuf_fragment>
+			#include <color_fragment>
+
+			gl_FragColor = vec4( diffuseColor.rgb, alpha );
+
+			#include <tonemapping_fragment>
+			#include <colorspace_fragment>
+			#include <fog_fragment>
+			#include <premultiplied_alpha_fragment>
+
+		}
+		`
+  )
+};
+var LineMaterial = class extends Zl {
+  /**
+   * Constructs a new line segments geometry.
+   *
+   * @param {Object} [parameters] - An object with one or more properties
+   * defining the material's appearance. Any property of the material
+   * (including any property from inherited materials) can be passed
+   * in here. Color values can be passed any type of value accepted
+   * by {@link Color#set}.
+   */
+  constructor(parameters) {
+    super({
+      type: "LineMaterial",
+      uniforms: Yl.clone(Hn2["line"].uniforms),
+      vertexShader: Hn2["line"].vertexShader,
+      fragmentShader: Hn2["line"].fragmentShader,
+      clipping: true
+      // required for clipping support
+    });
+    this.isLineMaterial = true;
+    this.setValues(parameters);
+  }
+  /**
+   * The material's color.
+   *
+   * @type {Color}
+   * @default (1,1,1)
+   */
+  get color() {
+    return this.uniforms.diffuse.value;
+  }
+  set color(value) {
+    this.uniforms.diffuse.value = value;
+  }
+  /**
+   * Whether the material's sizes (width, dash gaps) are in world units.
+   *
+   * @type {boolean}
+   * @default false
+   */
+  get worldUnits() {
+    return "WORLD_UNITS" in this.defines;
+  }
+  set worldUnits(value) {
+    if (value === true !== this.worldUnits) {
+      this.needsUpdate = true;
+    }
+    if (value === true) {
+      this.defines.WORLD_UNITS = "";
+    } else {
+      delete this.defines.WORLD_UNITS;
+    }
+  }
+  /**
+   * Controls line thickness in CSS pixel units when `worldUnits` is `false` (default),
+   * or in world units when `worldUnits` is `true`.
+   *
+   * @type {number}
+   * @default 1
+   */
+  get linewidth() {
+    return this.uniforms.linewidth.value;
+  }
+  set linewidth(value) {
+    if (!this.uniforms.linewidth) return;
+    this.uniforms.linewidth.value = value;
+  }
+  /**
+   * Whether the line is dashed, or solid.
+   *
+   * @type {boolean}
+   * @default false
+   */
+  get dashed() {
+    return "USE_DASH" in this.defines;
+  }
+  set dashed(value) {
+    if (value === true !== this.dashed) {
+      this.needsUpdate = true;
+    }
+    if (value === true) {
+      this.defines.USE_DASH = "";
+    } else {
+      delete this.defines.USE_DASH;
+    }
+  }
+  /**
+   * The scale of the dashes and gaps.
+   *
+   * @type {number}
+   * @default 1
+   */
+  get dashScale() {
+    return this.uniforms.dashScale.value;
+  }
+  set dashScale(value) {
+    this.uniforms.dashScale.value = value;
+  }
+  /**
+   * The size of the dash.
+   *
+   * @type {number}
+   * @default 1
+   */
+  get dashSize() {
+    return this.uniforms.dashSize.value;
+  }
+  set dashSize(value) {
+    this.uniforms.dashSize.value = value;
+  }
+  /**
+   * Where in the dash cycle the dash starts.
+   *
+   * @type {number}
+   * @default 0
+   */
+  get dashOffset() {
+    return this.uniforms.dashOffset.value;
+  }
+  set dashOffset(value) {
+    this.uniforms.dashOffset.value = value;
+  }
+  /**
+   * The size of the gap.
+   *
+   * @type {number}
+   * @default 0
+   */
+  get gapSize() {
+    return this.uniforms.gapSize.value;
+  }
+  set gapSize(value) {
+    this.uniforms.gapSize.value = value;
+  }
+  /**
+   * The opacity.
+   *
+   * @type {number}
+   * @default 1
+   */
+  get opacity() {
+    return this.uniforms.opacity.value;
+  }
+  set opacity(value) {
+    if (!this.uniforms) return;
+    this.uniforms.opacity.value = value;
+  }
+  /**
+   * The size of the viewport, in screen pixels. This must be kept updated to make
+   * screen-space rendering accurate. The `LineSegments2.onBeforeRender` callback
+   * performs the update for visible objects.
+   *
+   * @type {Vector2}
+   */
+  get resolution() {
+    return this.uniforms.resolution.value;
+  }
+  set resolution(value) {
+    this.uniforms.resolution.value.copy(value);
+  }
+  /**
+   * Whether to use alphaToCoverage or not. When enabled, this can improve the
+   * anti-aliasing of line edges when using MSAA.
+   *
+   * @type {boolean}
+   */
+  get alphaToCoverage() {
+    return "USE_ALPHA_TO_COVERAGE" in this.defines;
+  }
+  set alphaToCoverage(value) {
+    if (!this.defines) return;
+    if (value === true !== this.alphaToCoverage) {
+      this.needsUpdate = true;
+    }
+    if (value === true) {
+      this.defines.USE_ALPHA_TO_COVERAGE = "";
+    } else {
+      delete this.defines.USE_ALPHA_TO_COVERAGE;
+    }
+  }
+};
+
+// assets/js/turtling/render/line/material-cache.js
+function createMaterialCache(opts = {}) {
+  const cache = /* @__PURE__ */ new Map();
+  let disposed = false;
+  const make = opts.createMaterial || defaultLineMaterial;
+  return {
+    get size() {
+      return cache.size;
+    },
+    get(color, thickness) {
+      if (disposed) throw new Error("materialCache: used after dispose");
+      const key = `${color || 15169544}:${thickness || 2}`;
+      let mat = cache.get(key);
+      if (!mat) {
+        mat = make(color, thickness, { vertexColors: false });
+        mat._cached = true;
+        cache.set(key, mat);
+      }
+      return mat;
+    },
+    // Thickness-only key; vertex colours carry ink. (id:child-ink)
+    getInk(thickness) {
+      if (disposed) throw new Error("materialCache: used after dispose");
+      const key = `ink:${thickness || 2}`;
+      let mat = cache.get(key);
+      if (!mat) {
+        mat = make(16777215, thickness, { vertexColors: true });
+        mat._cached = true;
+        cache.set(key, mat);
+      }
+      return mat;
+    },
+    // Line width is screen-space — keep resolution current after resize.
+    updateResolution(width, height) {
+      for (const mat of cache.values()) mat.resolution?.set(width, height);
+    },
+    // Blank slate (turtle.reset / compositor.dispose). Stage still owns us.
+    clear() {
+      for (const mat of cache.values()) mat.dispose?.();
+      cache.clear();
+    },
+    // End of WebGL life (stage.dispose). Idempotent.
+    dispose() {
+      if (disposed) return;
+      disposed = true;
+      this.clear();
+    }
+  };
+}
+function defaultLineMaterial(color, thickness, opts = {}) {
+  const mat = new LineMaterial({
+    color: opts.vertexColors ? 16777215 : color || 15169544,
+    linewidth: thickness || 2,
+    vertexColors: !!opts.vertexColors,
+    dashed: false
+  });
+  mat.resolution.set(window.innerWidth, window.innerHeight);
+  return mat;
+}
+
+// assets/js/turtling/laws/batch.js
+var isDeclaration = (node) => node?.type === "Existence";
+function deriveBatch(body = []) {
+  const declared = /* @__PURE__ */ new Set();
+  for (const node of body) {
+    if (isDeclaration(node)) declared.add(node.value);
+  }
+  return { declared, body: [...body] };
+}
+function exposed(frame) {
+  if (frame?.parent?.reached) return frame.parent.reached.has(frame.name) === true;
+  return frame?.parent?.declared?.has(frame.name) === true;
+}
+function freePoint(frame) {
+  return exposed(frame) && frame.isPlace === true && frame.done === true && frame.generator == null && frame.actorState == null && frame.error == null && frame.unresolved == null;
+}
+function pointCandidates(frames = [], touchable = freePoint) {
+  return [...frames].filter(touchable).sort((a2, b2) => (b2.id ?? 0) - (a2.id ?? 0));
+}
+
+// assets/js/turtling/laws/feel.js
+var HIT_RADIUS = 18;
+var DRAG_SLOP = 2;
+var CONE_RATE = 0.5;
+var CONE_EASE = 0.35;
+var DETENT_BAND = 0.18;
+var DETENT_HOLD = 0.06;
+var VERDICT_DECAY_MS = 360;
+
+// assets/js/turtling/laws/outcome.js
+var OUTCOME = {
+  accepted: "accepted",
+  rejected: "rejected",
+  busy: "busy",
+  unresolved: "unresolved",
+  obsolete: "obsolete",
+  // the identity is no longer in this play
+  cancelled: "cancelled",
+  // the gesture ended without a verdict
+  fault: "fault",
+  // A pose that cannot anchor the drag plane — missing or malformed geometry,
+  // never a planar domain. Distinct from busy (another hand has it) and from
+  // rejected (a truth verdict).
+  unsupported: "unsupported"
+};
+var OUTCOME_OF = {
+  accept: OUTCOME.accepted,
+  refuse: OUTCOME.rejected,
+  busy: OUTCOME.busy,
+  unresolved: OUTCOME.unresolved,
+  stale: OUTCOME.obsolete,
+  fault: OUTCOME.fault
+};
+function outcomeOf(verdict) {
+  return OUTCOME_OF[verdict?.kind] ?? "unknown";
+}
+function readout({ point: point2, accepted, requested, outcome }) {
+  return {
+    point: point2,
+    accepted: accepted ? [...accepted] : null,
+    requested: requested ? [...requested] : null,
+    outcome
+  };
+}
+function verdictFade(age, span = VERDICT_DECAY_MS) {
+  if (!(age >= 0) || age >= span) return 0;
+  return 1 - age / span;
+}
+
+// assets/js/turtling/laws/handle.js
+function facingPlane(point2, facing) {
+  return { origin: [...point2], normal: [...facing] };
+}
+var GRAZE = 1e-3;
+function touchPlane(ray2, plane2) {
+  const [ox, oy, oz] = ray2.origin;
+  const [dx, dy, dz] = ray2.direction;
+  const [px, py, pz] = plane2.origin;
+  const [nx, ny, nz] = plane2.normal;
+  const rayLength = Math.hypot(dx, dy, dz);
+  const normalLength = Math.hypot(nx, ny, nz);
+  if (rayLength === 0 || normalLength === 0) return null;
+  const along = dx * nx + dy * ny + dz * nz;
+  if (Math.abs(along) / (rayLength * normalLength) < GRAZE) return null;
+  const t2 = ((px - ox) * nx + (py - oy) * ny + (pz - oz) * nz) / along;
+  if (t2 <= 0) return null;
+  return [ox + dx * t2, oy + dy * t2, oz + dz * t2];
+}
+function birthLocal(worldPoint, worldTransform2) {
+  const there = { rotation: SE3.identity().rotation, position: [...worldPoint] };
+  return [...SE3.compose(SE3.invert(worldTransform2), there).position];
+}
+function requestedPose(accepted, localPoint) {
+  return { rotation: accepted.rotation, position: [...localPoint] };
+}
+function knownPose(accepted) {
+  const position2 = accepted?.position;
+  if (!Array.isArray(position2) || position2.length !== 3) return false;
+  return position2.every(Number.isFinite);
+}
+function eligibility({ frame, registered, accepted }) {
+  if (!frame || !registered) return { ok: false, reason: OUTCOME.obsolete };
+  if (!exposed(frame)) return { ok: false, reason: OUTCOME.unresolved };
+  if (!knownPose(accepted)) return { ok: false, reason: OUTCOME.unsupported };
+  return { ok: true, reason: null };
+}
+var CLIENT_SPACE = "client";
+function viewMapping(reframe, stage) {
+  const toWorld = reframe ? SE3.invert(reframe) : null;
+  return {
+    project: (world) => stage.project(reframe ? SE3.apply(reframe, world) : world),
+    rayAt: (x2, y2) => {
+      const ray2 = stage.unproject(x2, y2);
+      if (!ray2 || !toWorld) return ray2;
+      const d2 = toWorld.rotation.rotateVec(ray2.direction[0], ray2.direction[1], ray2.direction[2]);
+      return { origin: SE3.apply(toWorld, ray2.origin), direction: d2 };
+    },
+    facing: () => {
+      const f2 = stage.facing();
+      if (!toWorld) return f2;
+      return toWorld.rotation.rotateVec(f2[0], f2[1], f2[2]);
+    },
+    eye: () => {
+      const p2 = stage.camera.position;
+      const c2 = [p2.x, p2.y, p2.z];
+      return toWorld ? SE3.apply(toWorld, c2) : c2;
+    }
+  };
+}
+function hitTest(pointer, projected, radius = HIT_RADIUS) {
+  return Math.hypot(pointer.x - projected.x, pointer.y - projected.y) <= radius;
+}
+
+// assets/js/turtling/laws/fit.js
+var RAD3 = Math.PI / 180;
+var DEFAULT_DIR = [0.6, 0.5, 0.8];
+function unionBounds(spheres) {
+  const list = (spheres ?? []).filter((s2) => s2 && finite3(s2.center) && Number.isFinite(s2.radius));
+  if (list.length === 0) return null;
+  let center = [...list[0].center];
+  let radius = Math.max(0, list[0].radius);
+  for (let i2 = 1; i2 < list.length; i2++) {
+    const s2 = list[i2];
+    const d2 = len([s2.center[0] - center[0], s2.center[1] - center[1], s2.center[2] - center[2]]);
+    const r2 = Math.max(0, s2.radius);
+    if (d2 + r2 <= radius) continue;
+    if (d2 + radius <= r2) {
+      center = [...s2.center];
+      radius = r2;
+      continue;
+    }
+    const grown = (radius + d2 + r2) / 2;
+    const t2 = d2 > 1e-12 ? (grown - radius) / d2 : 0;
+    center = center.map((c2, k2) => c2 + (s2.center[k2] - c2) * t2);
+    radius = grown;
+  }
+  return { center, radius };
+}
+function viewDirection(normal = null) {
+  const n2 = unit(normal);
+  if (!n2) return [...DEFAULT_DIR];
+  const t2 = basisOf(n2)?.u ?? [1, 0, 0];
+  const tilt2 = 48 * RAD3;
+  return unit([
+    n2[0] * Math.cos(tilt2) + t2[0] * Math.sin(tilt2),
+    n2[1] * Math.cos(tilt2) + t2[1] * Math.sin(tilt2),
+    n2[2] * Math.cos(tilt2) + t2[2] * Math.sin(tilt2)
+  ]) ?? [...DEFAULT_DIR];
+}
+function fitPose(bounds, { dir = DEFAULT_DIR, fovDeg = 60, aspect = 1, floor = 0, margin = 1.12 } = {}) {
+  if (!bounds || !finite3(bounds.center)) return null;
+  const n2 = unit(dir) ?? [...DEFAULT_DIR];
+  const halfV = (Number.isFinite(fovDeg) ? fovDeg : 60) * RAD3 / 2;
+  const halfH = Math.atan(Math.tan(halfV) * (aspect > 0 ? aspect : 1));
+  const half = Math.max(1e-4, Math.min(halfV, halfH));
+  const radius = Math.max(0, Number.isFinite(bounds.radius) ? bounds.radius : 0);
+  const need = radius / Math.sin(half) * margin;
+  const distance2 = Math.max(Number.isFinite(floor) ? floor : 0, need);
+  return {
+    target: [...bounds.center],
+    position: [
+      bounds.center[0] + n2[0] * distance2,
+      bounds.center[1] + n2[1] * distance2,
+      bounds.center[2] + n2[2] * distance2
+    ],
+    distance: distance2
+  };
+}
+
+// assets/js/turtling/stage.js
+function createStage(canvas, bridge, instruments = {}) {
+  const ctx = canvas.getContext("webgl2") ?? canvas.getContext("webgl");
+  const materials = createMaterialCache();
+  const scene = new Vr();
+  const aspect = window.innerWidth / window.innerHeight;
+  const camera = new eu(60, aspect, 0.1, 1e7);
+  camera.lookAt(0, 0, 0);
+  camera.position.set(0, 0, 500);
+  camera.updateProjectionMatrix();
+  const controls = new DojoOrbitControls(camera, canvas);
+  controls.target.set(0, 0, 0);
+  controls.mouseButtons = {
+    RIGHT: e.ROTATE,
+    MIDDLE: e.DOLLY,
+    LEFT: e.PAN
+  };
+  controls.touches = { ONE: s.PAN, TWO: s.DOLLY_ROTATE };
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.2;
+  controls.update();
+  controls.zoomToCursor = true;
+  let viewOffset = SE3.identity();
+  const onTwist = ({ angle }) => {
+    viewOffset = SE3.rotateLocal(viewOffset, AXIS_Z, angle * 180 / Math.PI);
+    stage.requestRender?.();
+  };
+  controls.addEventListener("twist", onTwist);
+  const renderer = new Pa2({
+    canvas,
+    antialias: true,
+    alpha: true
+  });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.sortObjects = false;
+  let recorder = null;
+  let recorderResolved = false;
+  function getRecorder() {
+    if (recorderResolved) return recorder;
+    if (typeof instruments.recorder !== "function") {
+      recorderResolved = true;
+      return null;
+    }
+    recorder = instruments.recorder(canvas) ?? null;
+    recorderResolved = true;
+    return recorder;
+  }
+  const head = new render_default.Head(scene);
+  const onResize = () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    materials.updateResolution(window.innerWidth, window.innerHeight);
+    stage.requestRender?.();
+  };
+  window.addEventListener("resize", onResize);
+  const cameraUnsub = cameraBridge.sub(async (payload) => {
+    switch (payload[0]) {
+      case "recenter":
+        camera.position.set(0, 0, 500);
+        controls.target.set(0, 0, 0);
+        viewOffset = SE3.identity();
+        controls.update();
+        break;
+      case "fit": {
+        const framed = stage.fitTargets?.();
+        if (framed?.bounds) stage.fitTo(framed.bounds, { dir: framed.dir });
+        break;
+      }
+      case "pan":
+        camera.desire = camera.desire !== "pan" ? "pan" : "track";
+        break;
+      case "track":
+        camera.desire = camera.desire !== "track" ? "track" : "pan";
+        break;
+      case "endtrack":
+        camera.desire = null;
+        break;
+      case "record": {
+        try {
+          const rec = getRecorder();
+          if (rec) await rec.startRecording();
+        } catch (err) {
+          console.error("record failed:", err);
+        }
+        break;
+      }
+      case "endrecord": {
+        try {
+          const video = recorder ? await recorder.stopRecording() : null;
+          if (video) bridge.pub(["saveRecord", { snapshot: video.blob, type: "video" }]);
+        } catch (err) {
+          console.error("endrecord failed:", err);
+        }
+        break;
+      }
+    }
+    stage.requestRender?.();
+  });
+  let hatchInFlight = false;
+  let disposed = false;
+  let hatchP = null;
+  let resolveHatch = null;
+  function picture() {
+    if (!hatchP) {
+      hatchP = new Promise((r2) => {
+        resolveHatch = r2;
+      });
+    }
+    return hatchP;
+  }
+  function settle2(path) {
+    const r2 = resolveHatch;
+    hatchP = null;
+    resolveHatch = null;
+    hatchInFlight = false;
+    if (r2) r2(path);
+  }
+  const _project = new Ti();
+  const _ndc = new _i();
+  const _raycaster = new yd();
+  const _facing = new Ti();
+  const stage = {
+    canvas,
+    // The space this stage projects into, named once. The overlay is built to
+    // occupy the same space, so nothing has to assume they agree.
+    space: CLIENT_SPACE,
+    ctx,
+    scene,
+    camera,
+    renderer,
+    controls,
+    project(world) {
+      const rect = canvas.getBoundingClientRect();
+      if (!rect.width || !rect.height) return null;
+      _project.set(world[0], world[1], world[2]).project(camera);
+      if (_project.z > 1) return null;
+      const x2 = rect.left + (_project.x * 0.5 + 0.5) * rect.width;
+      const y2 = rect.top + (-_project.y * 0.5 + 0.5) * rect.height;
+      if (x2 < rect.left || x2 > rect.right || y2 < rect.top || y2 > rect.bottom) return null;
+      return { x: x2, y: y2 };
+    },
+    // Frame a figure from its world extents. A view change only — no
+    // geometry, no law, no revision; the mark keeps its true size.
+    // (id:laws-freedom)
+    fitTargets: null,
+    fitTo(bounds, { dir = null, margin = 1.12 } = {}) {
+      const pose = fitPose(bounds, {
+        dir: dir ?? void 0,
+        fovDeg: camera.fov,
+        aspect: camera.aspect,
+        floor: controls.dollyStandoff,
+        margin
+      });
+      if (!pose) return null;
+      camera.position.set(pose.position[0], pose.position[1], pose.position[2]);
+      controls.target.set(pose.target[0], pose.target[1], pose.target[2]);
+      camera.updateProjectionMatrix?.();
+      controls.update();
+      stage.requestRender?.();
+      return pose;
+    },
+    // The camera's world viewing direction. The drag plane faces it — the
+    // camera's plane through a point, never the point's line of sight.
+    facing() {
+      camera.getWorldDirection(_facing);
+      return [_facing.x, _facing.y, _facing.z];
+    },
+    unproject(clientX, clientY) {
+      const rect = canvas.getBoundingClientRect();
+      if (!rect.width || !rect.height) return null;
+      const nx = (clientX - rect.left) / rect.width * 2 - 1;
+      const ny = -((clientY - rect.top) / rect.height) * 2 + 1;
+      if (nx < -1 || nx > 1 || ny < -1 || ny > 1) return null;
+      _raycaster.setFromCamera(_ndc.set(nx, ny), camera);
+      const { origin, direction } = _raycaster.ray;
+      return { origin: [origin.x, origin.y, origin.z], direction: [direction.x, direction.y, direction.z] };
+    },
+    head,
+    get recorder() {
+      return recorder;
+    },
+    // LineMaterial cache (spec A3) — WebGL-lifetime owner; dispose() frees it.
+    materials,
+    renderstate: {
+      // `save` alone: whether the next hatch is also kept to disk. WHEN to
+      // hatch is not the stage's business (hatch.js owns it).
+      snapshot: { save: false },
+      // The fault channel is a LIST of wounds, never a sentence — a receiver
+      // interprets them (isolating the cells that hurt) without running anything.
+      meta: { state: null, message: null, commands: [], diagnostics: [] }
+    },
+    renderLoop: null,
+    // The hand's own reframe, read by the compositor each frame.
+    viewOffset: () => viewOffset,
+    // Render one frame
+    render() {
+      const scaleFactor = camera.position.distanceTo(head.position()) / 250;
+      head.scale(scaleFactor);
+      controls.update();
+      renderer.render(scene, camera);
+    },
+    get hatching() {
+      return hatchInFlight;
+    },
+    // The picture this hatch will produce. A keep borrows this; hatch()
+    // starts the work after the frame has been drawn.
+    picture() {
+      return picture();
+    },
+    // WebGL2 readback is ASYNC: PIXEL_PACK_BUFFER + fence, never a sync
+    // readPixels (stalled the main thread). Returns the picture promise.
+    // In-flight joins the same promise; lastHatchAt stamps only a start.
+    hatch(bridge2) {
+      const p2 = picture();
+      if (hatchInFlight || disposed) {
+        if (disposed) settle2(null);
+        return p2;
+      }
+      hatchInFlight = true;
+      const width = canvas.width;
+      const height = canvas.height;
+      const finish = (pixels) => {
+        queueMicrotask(async () => {
+          try {
+            const rec = getRecorder();
+            const result = rec ? await rec.takeSnapshot({ pixels, width, height }) : null;
+            if (result) {
+              const snap = stage.renderstate.snapshot;
+              if (snap.save) {
+                stage.renderstate.snapshot = { save: false };
+                bridge2.pub(["saveRecord", {
+                  snapshot: result.full,
+                  type: "image",
+                  title: snap.title ?? null
+                }]);
+              }
+              const path = result.trimmed ?? result.full ?? null;
+              stage.renderstate.meta.path = path;
+              bridge2.pub(["hatchTurtle", { ...stage.renderstate.meta }]);
+              settle2(path);
+              return;
+            }
+          } catch {
+          }
+          settle2(null);
+        });
+      };
+      if (typeof ctx.fenceSync !== "function") {
+        const pixels = new Uint8Array(width * height * 4);
+        ctx.readPixels(0, 0, width, height, ctx.RGBA, ctx.UNSIGNED_BYTE, pixels);
+        finish(pixels);
+        return p2;
+      }
+      const buf = ctx.createBuffer();
+      ctx.bindBuffer(ctx.PIXEL_PACK_BUFFER, buf);
+      ctx.bufferData(ctx.PIXEL_PACK_BUFFER, width * height * 4, ctx.STREAM_READ);
+      ctx.readPixels(0, 0, width, height, ctx.RGBA, ctx.UNSIGNED_BYTE, 0);
+      ctx.bindBuffer(ctx.PIXEL_PACK_BUFFER, null);
+      const sync = ctx.fenceSync(ctx.SYNC_GPU_COMMANDS_COMPLETE, 0);
+      ctx.flush();
+      const poll = () => {
+        if (disposed || ctx.isContextLost()) {
+          if (!ctx.isContextLost()) {
+            ctx.deleteSync(sync);
+            ctx.deleteBuffer(buf);
+          }
+          settle2(null);
+          return;
+        }
+        const status = ctx.clientWaitSync(sync, 0, 0);
+        if (status === ctx.TIMEOUT_EXPIRED) {
+          setTimeout(poll, 8);
+          return;
+        }
+        ctx.deleteSync(sync);
+        if (status === ctx.WAIT_FAILED) {
+          ctx.deleteBuffer(buf);
+          settle2(null);
+          return;
+        }
+        const pixels = new Uint8Array(width * height * 4);
+        ctx.bindBuffer(ctx.PIXEL_PACK_BUFFER, buf);
+        ctx.getBufferSubData(ctx.PIXEL_PACK_BUFFER, 0, pixels);
+        ctx.bindBuffer(ctx.PIXEL_PACK_BUFFER, null);
+        ctx.deleteBuffer(buf);
+        finish(pixels);
+      };
+      setTimeout(poll, 0);
+      return p2;
+    },
+    // Cleanup
+    dispose() {
+      disposed = true;
+      settle2(null);
+      try {
+        if (recorderResolved) recorder?.destroy?.();
+      } catch (err) {
+        console.error("recorder destroy failed:", err);
+      }
+      window.removeEventListener("resize", onResize);
+      controls.removeEventListener("twist", onTwist);
+      cameraUnsub();
+      controls.dispose();
+      if (stage.renderLoop) stage.renderLoop.stop();
+      materials.dispose();
+      head.dispose();
+      renderer.dispose();
+    }
+  };
+  return stage;
+}
+
+// assets/js/kernel/observable.js
+function createAtom(initial) {
+  let value = initial;
+  const watchers = /* @__PURE__ */ new Map();
+  return {
+    deref() {
+      return value;
+    },
+    swap(fn2) {
+      const old = value;
+      value = fn2(old);
+      for (const watcher of watchers.values()) watcher(old, value);
+      return value;
+    },
+    // Install now; let the caller notify only after related atoms are installed.
+    swapDeferred(fn2) {
+      const old = value;
+      const next = fn2(old);
+      value = next;
+      return () => {
+        for (const watcher of watchers.values()) watcher(old, next);
+      };
+    },
+    watch(key, fn2) {
+      watchers.set(key, fn2);
+    },
+    unwatch(key) {
+      watchers.delete(key);
+    }
+  };
+}
+
+// assets/js/turtling/ring-buffer.js
+function createRingBuffer(capacity, opts = {}) {
+  const lossless = opts.lossless === true;
+  const buf = new Array(capacity);
+  let head = 0;
+  let tail = 0;
+  let count = 0;
+  let isClosed = false;
+  return {
+    // false = full lossless: caller parks owing this value, retries after drain.
+    put(value) {
+      if (isClosed) return true;
+      if (count === capacity && lossless) return false;
+      buf[head] = value;
+      head = (head + 1) % capacity;
+      if (count < capacity) {
+        count++;
+      } else {
+        tail = (tail + 1) % capacity;
+      }
+      return true;
+    },
+    // full iff put would refuse; closed is never full. (D027 R3.6)
+    get full() {
+      return lossless && !isClosed && count === capacity;
+    },
+    drain() {
+      if (count === 0) return [];
+      const items = new Array(count);
+      for (let i2 = 0; i2 < count; i2++) {
+        items[i2] = buf[(tail + i2) % capacity];
+        buf[(tail + i2) % capacity] = null;
+      }
+      tail = head;
+      count = 0;
+      return items;
+    },
+    get length() {
+      return count;
+    },
+    close() {
+      isClosed = true;
+    },
+    get closed() {
+      return isClosed;
+    }
+  };
+}
+
+// assets/js/turtling/ledger.js
+var MAX_RUN_SEGMENTS = 1e6;
+var MAX_STAGE_SEGMENTS = 3e6;
+var MAX_RESIDENCY_STALL_MS = 2e3;
+function createStock() {
+  let resident = 0;
+  return {
+    get resident() {
+      return resident;
+    },
+    get full() {
+      return resident > MAX_STAGE_SEGMENTS;
+    },
+    charge(n2) {
+      if (n2 > 0) resident += n2;
+    },
+    release(n2) {
+      if (n2 > 0) resident = Math.max(0, resident - n2);
+    }
+  };
+}
+function createInk() {
+  return { resident: 0 };
+}
+function resetInk(frame, stock) {
+  stock.release(frame.ink.resident);
+  frame.ink.resident = 0;
+}
+function woundInk(ctx, message, span = null) {
+  ctx.done = true;
+  ctx.generator = null;
+  ctx.error = { message, span: span ?? null, kind: "ink" };
+  ctx.channel.put({ type: "error", ...ctx.error, ambientId: ctx.id });
+}
+function chargeInk(ctx, value, stock) {
+  const ink = ctx.ink;
+  if (value.type === "clear") {
+    stock.release(ink.resident);
+    ink.resident = 0;
+    return true;
+  }
+  if (value.type !== "path" || !value.points || value.points.length < 2) return true;
+  const segs = value.points.length - 1;
+  ink.resident += segs;
+  stock.charge(segs);
+  if (ink.resident <= MAX_RUN_SEGMENTS) return true;
+  woundInk(
+    ctx,
+    `this world has drawn more than ${MAX_RUN_SEGMENTS} lines`,
+    value.span ?? null
+  );
+  return false;
+}
+function enforceResidency(registry, clock, stock) {
+  const total = stock.resident;
+  if (!stock.full) return total;
+  const now = clock();
+  for (const f2 of registry.values()) {
+    const stall = f2.suspension?.kind === "residency" ? f2.suspension : null;
+    if (!stall) continue;
+    if (stall.since === null) {
+      stall.since = now;
+      continue;
+    }
+    if (!f2.done && now - stall.since > MAX_RESIDENCY_STALL_MS) {
+      woundInk(f2, `the world is holding ${total} lines and has no room \u2014 this one has been waiting`);
+    }
+  }
+  return total;
+}
+
+// assets/js/turtling/frame.js
+var _nextId = 0;
+function createFrame(name, generator, opts = {}) {
+  return {
+    id: ++_nextId,
+    name,
+    parent: opts.parent || null,
+    children: /* @__PURE__ */ new Map(),
+    origin: opts.origin || null,
+    // parent's SE3 at birth (immutable)
+    transform: createAtom(opts.transform || SE3.identity()),
+    // local pose
+    // Invalidated via Atom.watch on ancestor transforms.
+    _worldCache: null,
+    _worldDirty: true,
+    generator,
+    // JS generator = the green-thread body
+    resumeAt: 0,
+    // logical clock when a wait ends, ms (D011); `now` only reveals
+    logicalBirth: opts.logicalBirth ?? null,
+    // parent clock at spawn; null at root
+    done: false,
+    ink: createInk(),
+    // bag; ledger owns the law (id:output-ledger-r3-stock-flow)
+    // SUSPENSION — one record for every way a frame stops. The KIND table in
+    // scheduler.js says whether it owns the instant and how it resumes.
+    // null | { kind, ...detail }. (id:output-ledger-r2-instant)
+    suspension: null,
+    // An admission opens an instant that stays owned until a wait/yield/done.
+    midInstant: false,
+    // Lossless channel ≈ blocking queue (CSP/Go); full → credit park.
+    channel: createRingBuffer(opts.channelCapacity || 4096, { lossless: opts.lossless !== false }),
+    sync: {},
+    // conflating head/view slot — last-write-wins, no credit (D027 R2.5)
+    mailbox: []
+    // actor inbox (Hewitt/Erlang); see listensFor
+  };
+}
+
+// assets/js/turtling/laws/expression.js
+var KIND = { length: "length", angle: "angle", duration: "duration", scalar: "scalar", point: "point" };
+var familyOf = (name) => RELATIONAL_NAMES.includes(name) ? "relational" : SPATIAL_NAMES.includes(name) ? "spatial" : null;
+var row = (name, kind, guard, bounds) => ({ family: familyOf(name), kind, guard, bounds });
+var RELATION = {
+  distance: AUTHORED.distance,
+  bearing: AUTHORED.bearing,
+  sync: row("sync", KIND.duration, { finite: true }, null),
+  x: row("x", KIND.scalar, { finite: true }, null),
+  y: row("y", KIND.scalar, { finite: true }, null),
+  z: row("z", KIND.scalar, { finite: true }, null),
+  heading: row("heading", KIND.angle, { finite: true }, null),
+  // Elevation is bounded by its meaning, not by policy: ±90 IS the paper's normal.
+  elevation: row("elevation", KIND.angle, { finite: true }, { min: -90, max: 90 }),
+  position: AUTHORED.position,
+  coordinate: AUTHORED.coordinate,
+  tilt: AUTHORED.tilt
+};
+function relationOf(feature) {
+  return RELATION[feature] ?? null;
+}
+function kindOf(feature) {
+  return relationOf(feature)?.kind ?? KIND.scalar;
+}
+function guardsOf(feature) {
+  const row2 = relationOf(feature);
+  return row2 ? { ...row2.guard } : null;
+}
+function boundsOf(feature) {
+  const row2 = relationOf(feature);
+  return row2?.bounds ? { ...row2.bounds } : null;
+}
+function predicateOk(feature, value) {
+  const guard = relationOf(feature)?.guard;
+  if (!guard) return true;
+  if (guard.finite3) return Array.isArray(value) && value.length === 3 && value.every(Number.isFinite);
+  if (guard.finite && !Number.isFinite(value)) return false;
+  if (guard.nonNegative && value < 0) return false;
+  return true;
+}
+
+// assets/js/turtling/laws/replacement.js
+var FEATURES = {
+  // coincidence is not an authored runtime law; its address is still an unordered pair.
+  coincidence: (endpoints) => [...endpoints]
+};
+function addressOf(law2) {
+  if (law2?.address) return law2.address;
+  const { feature, endpoints = [], scope = null, frame = null } = law2;
+  const shape = addressShape(feature) ?? FEATURES[feature];
+  if (!shape) throw new Error(`Unknown law feature: ${feature}`);
+  const ids = shape(endpoints, law2).map(String).sort();
+  return [feature, ...ids, String(scope), frame == null ? "-" : String(frame)].join("|");
+}
+function bindLaw({ feature, endpoints, scope, frame, predicate, owner = null, axis = null, guards = null, bounds = null, sourceIds = [] }) {
+  const law2 = {
+    feature,
+    relation: feature,
+    endpoints: [...endpoints],
+    scope,
+    frame,
+    predicate,
+    owner,
+    ...axis == null ? {} : { axis },
+    kind: kindOf(feature),
+    guards: guards ?? guardsOf(feature),
+    bounds: bounds ?? boundsOf(feature),
+    sourceIds: [.../* @__PURE__ */ new Set([...endpoints, ...sourceIds])]
+  };
+  law2.address = addressOf(law2);
+  return law2;
+}
+function createLawStore() {
+  const byAddress = /* @__PURE__ */ new Map();
+  const addressOwnedBy = (owner) => {
+    for (const [key, law2] of byAddress) if (law2.owner === owner) return key;
+    return null;
+  };
+  return {
+    // A reached statement: installs or replaces the law at its address.
+    apply(law2) {
+      const key = addressOf(law2);
+      byAddress.set(key, { ...law2 });
+      return key;
+    },
+    // A source edit of one statement site.
+    //   revised     — the owner is current at this address
+    //   future      — superseded or not yet reached: future execution only
+    //   fresh-play  — the bindings/address changed
+    edit(owner, law2) {
+      const owned = addressOwnedBy(owner);
+      if (owned === null) return "future";
+      if (owned !== addressOf(law2)) return "fresh-play";
+      byAddress.set(owned, { ...law2, owner });
+      return "revised";
+    },
+    // Delete a statement site. Only the addresses it currently owns go; a
+    // superseded owner owns nothing, so its delete is a no-op. Lowered
+    // helpers share the owner, so one delete retracts them together.
+    retract(owner) {
+      let hit = false;
+      for (const [key, law2] of byAddress) {
+        if (law2.owner === owner) {
+          byAddress.delete(key);
+          hit = true;
+        }
+      }
+      return hit ? "retracted" : "noop";
+    },
+    // A source edit of a scope (a rewire) retracts the laws that scope declared.
+    // The declaring frame is the law's `frame`; a law merely targeting the scope
+    // survives, because the target identity did not leave the play.
+    // (id:laws-build-p2c)
+    retractFrame(frameId) {
+      let hit = false;
+      for (const [key, law2] of byAddress) {
+        if (law2.frame === frameId) {
+          byAddress.delete(key);
+          hit = true;
+        }
+      }
+      return hit ? "retracted" : "noop";
+    },
+    // An identity leaving the play retracts every law that names it, wherever
+    // that law was declared: a law survives only while both participants exist.
+    // (id:laws-activation.org "Remove a scope/identity")
+    retractIdentity(frameId) {
+      let hit = false;
+      for (const [key, law2] of byAddress) {
+        if (law2.frame === frameId || law2.endpoints?.includes(frameId)) {
+          byAddress.delete(key);
+          hit = true;
+        }
+      }
+      return hit ? "retracted" : "noop";
+    },
+    ownerOf(address) {
+      return byAddress.get(address)?.owner ?? null;
+    },
+    lawAt(address) {
+      return byAddress.get(address) ?? null;
+    },
+    // A cheap emptiness probe: motion admission asks on every step.
+    count() {
+      return byAddress.size;
+    },
+    active() {
+      return [...byAddress.entries()].map(([address, law2]) => ({ address, ...law2 }));
+    },
+    clear() {
+      byAddress.clear();
+    }
+  };
+}
+
+// assets/js/turtling/laws/component.js
+function componentOf(laws, seedIds) {
+  const byFrame = /* @__PURE__ */ new Map();
+  for (const law2 of laws) {
+    for (const id2 of law2.endpoints ?? []) {
+      if (!byFrame.has(id2)) byFrame.set(id2, []);
+      byFrame.get(id2).push(law2);
+    }
+  }
+  const frames = /* @__PURE__ */ new Set();
+  const found = /* @__PURE__ */ new Set();
+  const queue = [...seedIds ?? []];
+  while (queue.length > 0) {
+    const id2 = queue.pop();
+    if (frames.has(id2)) continue;
+    frames.add(id2);
+    for (const law2 of byFrame.get(id2) ?? []) {
+      found.add(law2);
+      for (const other of law2.endpoints) if (!frames.has(other)) queue.push(other);
+    }
+  }
+  return { frames, laws: [...found] };
+}
+function realizeDistanceTree(laws, anchorId, world, radiusOf) {
+  if (!laws.length) return null;
+  const adj = /* @__PURE__ */ new Map();
+  for (const law2 of laws) {
+    if (law2.feature !== "distance") return null;
+    const [a2, b2] = law2.endpoints ?? [];
+    if (a2 === void 0 || b2 === void 0) return null;
+    if (!adj.has(a2)) adj.set(a2, []);
+    if (!adj.has(b2)) adj.set(b2, []);
+    adj.get(a2).push({ other: b2, law: law2 });
+    adj.get(b2).push({ other: a2, law: law2 });
+  }
+  if (!adj.has(anchorId)) return null;
+  const anchor = world(anchorId);
+  if (!finite3(anchor)) return null;
+  const visited = /* @__PURE__ */ new Set([anchorId]);
+  const parentOf = /* @__PURE__ */ new Map([[anchorId, null]]);
+  const origins = /* @__PURE__ */ new Map([[anchorId, [...anchor]]]);
+  const positions = /* @__PURE__ */ new Map([[anchorId, [...anchor]]]);
+  const queue = [anchorId];
+  while (queue.length > 0) {
+    const parent = queue.shift();
+    for (const { other, law: law2 } of adj.get(parent)) {
+      if (other === parentOf.get(parent)) continue;
+      if (visited.has(other)) return null;
+      visited.add(other);
+      parentOf.set(other, parent);
+      const from = positions.get(parent);
+      const parentOrigin = origins.get(parent);
+      const childOrigin = world(other);
+      const dir = (finite3(childOrigin) ? unit(sub(childOrigin, parentOrigin)) : null) ?? [1, 0, 0];
+      const r2 = radiusOf(law2);
+      if (!Number.isFinite(r2) || r2 < 0) return null;
+      positions.set(other, [from[0] + dir[0] * r2, from[1] + dir[1] * r2, from[2] + dir[2] * r2]);
+      origins.set(other, childOrigin);
+      queue.push(other);
+    }
+  }
+  return positions;
+}
+
+// assets/js/turtling/laws/readout.js
+var same = (a2, b2) => {
+  if (Array.isArray(a2) && Array.isArray(b2)) {
+    return a2.length === b2.length && a2.every((v2, i2) => same(v2, b2[i2]));
+  }
+  return Object.is(a2, b2);
+};
+var isKeyed = (spec) => typeof spec === "function" ? false : spec != null && typeof spec === "object" && typeof spec.capture === "function" && typeof spec.build === "function";
+function createReadouts() {
+  const nodes = /* @__PURE__ */ new Map();
+  const bySource = /* @__PURE__ */ new Map();
+  const watchers = /* @__PURE__ */ new Set();
+  const releaseWatchers = /* @__PURE__ */ new Set();
+  let seq = 0;
+  let recomputes = 0;
+  let drains = 0;
+  let builds = 0;
+  const announce = (change) => {
+    const failures = [];
+    for (const fn2 of [...watchers]) {
+      try {
+        fn2(change);
+      } catch (error) {
+        failures.push(error);
+      }
+    }
+    return failures;
+  };
+  const raise = (failures) => {
+    if (failures.length === 1) throw failures[0];
+    if (failures.length > 1) throw new AggregateError(failures, "readout subscribers failed");
+  };
+  return {
+    // One derived value per (source, site). A loop re-reaching the same
+    // statement updates the node; it does not multiply subscriptions.
+    // `spec` is either a pure function (scalar kind) or { capture, build }.
+    register(source, key, spec) {
+      let keys = bySource.get(source);
+      if (!keys) {
+        keys = /* @__PURE__ */ new Map();
+        bySource.set(source, keys);
+      }
+      const owned = keys.get(key);
+      if (owned !== void 0) {
+        const node = nodes.get(owned);
+        if (node) resetNode(node, spec);
+        return owned;
+      }
+      const id2 = ++seq;
+      nodes.set(id2, makeNode(id2, source, key, spec));
+      keys.set(key, id2);
+      return id2;
+    },
+    // The source is gone (rewire, removal, fresh play): every node it owned goes.
+    release(source) {
+      const keys = bySource.get(source);
+      if (!keys) return false;
+      for (const id2 of keys.values()) nodes.delete(id2);
+      bySource.delete(source);
+      for (const fn2 of [...releaseWatchers]) {
+        try {
+          fn2(source);
+        } catch {
+        }
+      }
+      return true;
+    },
+    // Bulk release carries the same per-source lifetime meaning as release:
+    // capture the sources before clearing, then notify once each.
+    releaseAll() {
+      const sources = [...bySource.keys()];
+      nodes.clear();
+      bySource.clear();
+      for (const source of sources) {
+        for (const fn2 of [...releaseWatchers]) {
+          try {
+            fn2(source);
+          } catch {
+          }
+        }
+      }
+    },
+    // Capture every scalar value and every keyed *question* from the accepted
+    // snapshot. A scalar recomputes its value here; a keyed node only records
+    // the question and marks work pending — construction is not a commit.
+    recompute(snapshot) {
+      recomputes++;
+      const changed = [];
+      for (const node of nodes.values()) {
+        if (node.build) {
+          captureQuestion(node, snapshot, changed);
+          continue;
+        }
+        recomputeScalar(node, snapshot, changed);
+      }
+      const failures = [];
+      for (const change of changed) failures.push(...announce(change));
+      raise(failures);
+      return changed;
+    },
+    // Build every pending answer outside the publication boundary, then settle
+    // it only while its owner and its question remain current. An obsolete
+    // answer is discarded; a refused question is settled as a refusal, never
+    // wearing the previous value as current. (id:laws-figure-composition)
+    drain() {
+      drains++;
+      const changed = [];
+      for (const node of [...nodes.values()]) {
+        if (!node.build || !node.pending) continue;
+        const question = node.requested;
+        let value, refused = false;
+        try {
+          builds++;
+          value = node.build(question);
+          if (value === void 0) refused = true;
+        } catch (error) {
+          refused = true;
+          value = void 0;
+          node.failure = error;
+        }
+        if (nodes.get(node.id) !== node || !node.pending || !same(node.requested, question)) continue;
+        settle(node, question, value, refused, changed);
+      }
+      const failures = [];
+      for (const change of changed) failures.push(...announce(change));
+      raise(failures);
+      return changed;
+    },
+    // A read between commits computes on demand, so `let s = A.x` is usable
+    // the moment it is declared. A keyed node answers only with a settled,
+    // current value; a pending or refused question is NOTHING.
+    value(id2) {
+      const node = nodes.get(id2);
+      if (!node) return void 0;
+      if (node.build) {
+        if (node.pending || node.refused || !node.hasValue) return void 0;
+        return node.value;
+      }
+      if (!node.hasValue) {
+        const value = node.compute();
+        if (value === void 0) return void 0;
+        node.value = value;
+        node.hasValue = true;
+      }
+      return node.value;
+    },
+    stats() {
+      return { size: nodes.size, recomputes, drains, builds };
+    },
+    list() {
+      return [...nodes.values()].map((n2) => ({
+        id: n2.id,
+        keyed: !!n2.build,
+        hasValue: !!n2.hasValue,
+        pending: !!n2.pending,
+        hasRequested: !!n2.hasRequested,
+        question: n2.requested ?? null,
+        failure: n2.failure ? String(n2.failure.message ?? n2.failure) : null
+      }));
+    },
+    watch(fn2) {
+      watchers.add(fn2);
+      return () => watchers.delete(fn2);
+    },
+    // Subscribe to a source's release (rewire, removal, fresh play).
+    onRelease(fn2) {
+      releaseWatchers.add(fn2);
+      return () => releaseWatchers.delete(fn2);
+    },
+    get size() {
+      return nodes.size;
+    }
+  };
+}
+function makeNode(id2, source, key, spec) {
+  const base = { id: id2, source, key, value: void 0, hasValue: false };
+  return resetNode(base, spec);
+}
+function resetNode(node, spec) {
+  if (isKeyed(spec)) {
+    node.compute = void 0;
+    node.capture = spec.capture;
+    node.build = spec.build;
+    node.hasRequested = false;
+    node.requested = void 0;
+    if (spec.seed !== void 0) {
+      node.hasRequested = true;
+      node.requested = spec.seed;
+    }
+    node.pending = false;
+    node.refused = false;
+    node.answered = false;
+    node.hasAnnounced = false;
+    node.announcedValue = void 0;
+    node.announcedRefused = void 0;
+    node.failure = void 0;
+  } else {
+    node.compute = spec;
+    node.capture = void 0;
+    node.build = void 0;
+    node.pending = false;
+  }
+  node.value = void 0;
+  node.hasValue = false;
+  return node;
+}
+function recomputeScalar(node, snapshot, changed) {
+  let value, answered = true;
+  try {
+    value = node.compute(snapshot);
+  } catch {
+    answered = false;
+  }
+  if (!answered || value === void 0) {
+    if (node.hasValue) {
+      node.value = void 0;
+      node.hasValue = false;
+      changed.push({ id: node.id, source: node.source, value: void 0 });
+    }
+    return;
+  }
+  const fresh = !node.hasValue || !same(node.value, value);
+  node.value = value;
+  node.hasValue = true;
+  if (fresh) changed.push({ id: node.id, source: node.source, value });
+}
+function captureQuestion(node, snapshot, changed) {
+  let question, captured = true;
+  try {
+    question = node.capture(snapshot);
+  } catch {
+    captured = false;
+  }
+  if (captured && node.hasRequested && same(node.requested, question)) return;
+  node.hasRequested = true;
+  node.requested = captured ? question : void 0;
+  node.pending = true;
+  node.answered = false;
+  changed.push({
+    id: node.id,
+    source: node.source,
+    question: node.requested,
+    pending: true,
+    refused: node.refused,
+    value: node.value,
+    previous: node.value
+  });
+}
+function settle(node, question, value, refused, changed) {
+  const previous = node.value;
+  const wasRefused = node.refused;
+  node.pending = false;
+  node.settledQuestion = question;
+  node.answered = !refused;
+  node.refused = refused;
+  if (!refused) {
+    node.value = value;
+    node.hasValue = true;
+  }
+  const fresh = !node.hasAnnounced || node.announcedRefused !== refused || !refused && !same(node.announcedValue, value);
+  node.hasAnnounced = true;
+  node.announcedRefused = refused;
+  node.announcedValue = refused ? void 0 : value;
+  if (!fresh) return;
+  changed.push({
+    id: node.id,
+    source: node.source,
+    question,
+    pending: false,
+    refused,
+    value: refused ? void 0 : value,
+    previous,
+    wasRefused,
+    failure: refused ? node.failure : void 0
+  });
+}
+
+// assets/js/turtling/mafs/keyed_stream.js
+function keyedSeed(...parts) {
+  let h2 = 2166136261 >>> 0;
+  for (const part of parts) {
+    const text = String(part ?? "");
+    for (let i2 = 0; i2 < text.length; i2++) {
+      h2 ^= text.charCodeAt(i2);
+      h2 = Math.imul(h2, 16777619);
+    }
+    h2 ^= 31;
+    h2 = Math.imul(h2, 16777619);
+  }
+  return h2 >>> 0;
+}
+function keyedStream(seed) {
+  let state = seed >>> 0;
+  return function next() {
+    state = state + 1831565813 >>> 0;
+    let t2 = state;
+    t2 = Math.imul(t2 ^ t2 >>> 15, t2 | 1);
+    t2 ^= t2 + Math.imul(t2 ^ t2 >>> 7, t2 | 61);
+    return ((t2 ^ t2 >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+// assets/js/turtling/scheduler.js
+var LENS_NAMES = /* @__PURE__ */ new Set(["eye"]);
+function isLensName(name) {
+  return LENS_NAMES.has(name);
+}
+function lensOutput(frame, event) {
+  if (frame.isLens && event.type === "head") {
+    const world = frameWorldTransform(frame);
+    return { type: "view", position: world.position, rotation: world.rotation, fov: event.fov };
+  }
+  return event;
+}
+function visitPostOrder(ctx, fn2) {
+  for (const child of ctx.children.values()) {
+    visitPostOrder(child, fn2);
+  }
+  fn2(ctx);
+}
+function visitPostOrderMotionFirst(ctx, fn2) {
+  const children = [...ctx.children.values()].sort((a2, b2) => Number(!!b2.midInstant) - Number(!!a2.midInstant));
+  for (const child of children) visitPostOrderMotionFirst(child, fn2);
+  fn2(ctx);
+}
+function terminateAmbient(ctx) {
+  for (const child of ctx.children.values()) {
+    if (!child.done) terminateAmbient(child);
+  }
+  unwireWorldCache(ctx);
+  ctx.observation = null;
+  ctx.done = true;
+  ctx.channel.close();
+}
+function allDone(ctx) {
+  if (!ctx.done) return false;
+  for (const child of ctx.children.values()) {
+    if (!allDone(child)) return false;
+  }
+  return true;
+}
+function sumCounts(ctx) {
+  let total = ctx.commandCount || 0;
+  for (const child of ctx.children.values()) {
+    total += sumCounts(child);
+  }
+  return total;
+}
+var ROOT_NAME = "origin";
+function frameAddress(root, frame) {
+  const names = [];
+  let f2 = frame;
+  while (f2 && f2.parent && f2.parent !== root) {
+    names.unshift(f2.name);
+    f2 = f2.parent;
+  }
+  if (f2) {
+    let topKey = f2.name;
+    for (const [k2, v2] of root.children) {
+      if (v2 === f2) {
+        topKey = k2;
+        break;
+      }
+    }
+    names.unshift(topKey);
+  }
+  return names.join("/");
+}
+function worldTransform(ctx) {
+  if (ctx._worldWatched && !ctx._worldDirty && ctx._worldCache) return ctx._worldCache;
+  const chain = [];
+  let current = ctx;
+  while (current.parent) {
+    chain.push(current.origin || current.parent.transform.deref());
+    current = current.parent;
+  }
+  if (chain.length === 0) {
+    ctx._worldCache = SE3.identity();
+  } else {
+    chain.reverse();
+    ctx._worldCache = chain.reduce((a2, b2) => SE3.compose(a2, b2));
+  }
+  ctx._worldDirty = false;
+  return ctx._worldCache;
+}
+function relativeTransform(ctx, target) {
+  return SE3.compose(SE3.invert(worldTransform(target)), worldTransform(ctx));
+}
+function transformEvent(event, t2, sourceId) {
+  switch (event.type) {
+    case "path":
+      return { ...event, sourceId, points: event.points.map((p2) => SE3.apply(t2, p2)) };
+    case "label":
+      return { ...event, sourceId, position: SE3.apply(t2, event.position) };
+    case "grid":
+      return { ...event, sourceId, position: SE3.apply(t2, event.position), rotation: t2.rotation.multiply(event.rotation) };
+    default:
+      return event;
+  }
+}
+var _samePt = (a2, b2) => a2 && b2 && Math.abs(a2[0] - b2[0]) < 1e-6 && Math.abs(a2[1] - b2[1]) < 1e-6 && Math.abs(a2[2] - b2[2]) < 1e-6;
+function tagRun(ctx, value) {
+  if (value.type !== "path" || !value.points || !value.points.length) return;
+  const style = `${value.thickness}`;
+  const continues = style === ctx._strokeStyle && _samePt(value.points[0], ctx._strokeEnd);
+  if (!continues) ctx._strokeRun = (ctx._strokeRun || 0) + 1;
+  value.runId = ctx._strokeRun;
+  ctx._strokeEnd = value.points[value.points.length - 1];
+  ctx._strokeStyle = style;
+}
+function projectHead(headEvent, frameTarget, frameTransform) {
+  if (!frameTarget) return headEvent;
+  return {
+    ...headEvent,
+    position: SE3.apply(frameTransform, headEvent.position),
+    rotation: frameTransform.rotation.multiply(headEvent.rotation)
+  };
+}
+function putSync(ctx, event) {
+  ctx.sync[event.type] = event;
+}
+function takeSync(frame) {
+  const slot = frame.sync;
+  let taken = null;
+  for (const type in slot) {
+    if (!slot[type]) continue;
+    (taken ??= []).push(slot[type]);
+    slot[type] = null;
+  }
+  return taken ?? EMPTY_SYNC;
+}
+var EMPTY_SYNC = Object.freeze([]);
+function deliverDeposit(ctx, value, frameTarget, frameTransform, stock) {
+  if (value.type === "head") {
+    ctx.transform.swap(() => ({ rotation: value.rotation, position: [...value.position] }));
+    putSync(ctx, lensOutput(ctx, projectHead(value, frameTarget, frameTransform)));
+    return null;
+  }
+  if (stock?.full && value.type === "path") return "residency";
+  const sink = frameTarget ? frameTarget.channel : ctx.channel;
+  if (sink.full) return "credit";
+  if (ctx.pendingClear) {
+    ctx.channel.put({ type: "clear" });
+    ctx.pendingClear = false;
+  }
+  tagRun(ctx, value);
+  if (frameTarget) {
+    sink.put(transformEvent(value, frameTransform, ctx.id));
+  } else {
+    sink.put(lensOutput(ctx, value));
+  }
+  return null;
+}
+function offerDeposit(ctx, value, frameTarget, frameTransform, stock) {
+  if (!chargeInk(ctx, value, stock)) return "ceiling";
+  return deliverDeposit(ctx, value, frameTarget, frameTransform, stock);
+}
+var SUSPENSIONS = {
+  breath: { owns: false, unwinds: true },
+  credit: { owns: true, unwinds: true },
+  residency: { owns: true, unwinds: true },
+  dataflow: { owns: true, unwinds: false },
+  admission: { owns: true, unwinds: true }
+};
+function suspend(frame, kind, parts) {
+  if (!SUSPENSIONS[kind]) throw new Error(`Unknown suspension: ${kind}`);
+  frame.suspension = { kind, owed: null, ...parts };
+}
+function clearSuspension(frame) {
+  frame.suspension = null;
+}
+function openInstant(frame) {
+  frame.midInstant = true;
+}
+function closeInstant(frame) {
+  frame.midInstant = false;
+}
+var dataflowTarget = (frame) => frame.suspension?.kind === "dataflow" ? frame.suspension.on : null;
+function parkBreath(ctx) {
+  if (ctx.suspension?.owed) return;
+  if (ctx.suspension?.kind === "breath") return;
+  suspend(ctx, "breath");
+}
+function parkOwing(ctx, cause, deposit2) {
+  suspend(ctx, cause, { owed: deposit2, since: null });
+}
+function clearSpentPark(ctx) {
+  if (ctx.suspension?.kind === "breath") clearSuspension(ctx);
+}
+function metaRootFrame(frame) {
+  let node = frame;
+  while (node.parent) node = node.parent;
+  return node;
+}
+function topLevelFrame(frame) {
+  const root = metaRootFrame(frame);
+  if (frame === root) return root;
+  let node = frame;
+  while (node.parent !== root) node = node.parent;
+  return node;
+}
+function resolveReserved(frame, name) {
+  if (name === "world") return topLevelFrame(frame);
+  if (name === "origin") return metaRootFrame(frame);
+  return null;
+}
+function findInTree(node, name, self2) {
+  for (const child of node.children.values()) {
+    const hit = findInTree(child, name, self2);
+    if (hit) return hit;
+  }
+  return node !== self2 && node.name === name ? node : null;
+}
+function findFrame(frame, name, reach = "near") {
+  const reserved = resolveReserved(frame, name);
+  if (reserved) return reserved;
+  for (const child of frame.children.values()) {
+    if (child.name === name) return child;
+  }
+  const parent = frame.parent || frame;
+  for (const child of parent.children.values()) {
+    if (child.name === name) return child;
+  }
+  let ancestor = frame.parent;
+  while (ancestor) {
+    if (ancestor.name === name) return ancestor;
+    ancestor = ancestor.parent;
+  }
+  return reach === "world" ? findInTree(metaRootFrame(frame), name, frame) : null;
+}
+function bumpTree(frame) {
+  const root = metaRootFrame(frame);
+  root._treeGen = (root._treeGen || 0) + 1;
+  root._configurationRevision = (root._configurationRevision || 0) + 1;
+}
+function dirtyWorldSubtree(frame) {
+  visitPostOrder(frame, (c2) => {
+    c2._worldDirty = true;
+  });
+  bumpTree(frame);
+}
+function expressPose(frame, ref, pose) {
+  if (ref === "world") return pose;
+  if (ref === "parent") {
+    const base = frame.parent ? worldTransform(frame.parent) : SE3.identity();
+    return SE3.compose(base, pose);
+  }
+  if (ref === "own" || ref == null) return SE3.compose(worldTransform(frame), pose);
+  const anchor = findReferenceFrame(frame, ref);
+  if (!anchor) return null;
+  return SE3.compose(frameWorldTransform(anchor), pose);
+}
+function findReferenceFrame(ctx, name) {
+  const gen = metaRootFrame(ctx)._treeGen || 0;
+  const memo = ctx._ref;
+  if (memo !== void 0 && memo.gen === gen && memo.name === name) return memo.frame;
+  const frame = findFrame(ctx, name, "world");
+  ctx._ref = { gen, name, frame };
+  return frame;
+}
+function ownsInstant(frame) {
+  return frame.midInstant === true || SUSPENSIONS[frame.suspension?.kind]?.owns === true;
+}
+function subtreeUnsettled(frame) {
+  if (ownsInstant(frame)) return true;
+  if (frame.children.size === 0) return false;
+  for (const child of frame.children.values()) {
+    if (subtreeUnsettled(child)) return true;
+  }
+  return false;
+}
+function isAncestorOf(ancestor, frame) {
+  let node = frame;
+  while (node) {
+    if (node === ancestor) return true;
+    node = node.parent;
+  }
+  return false;
+}
+function waitsOn(root, reader) {
+  let node = dataflowTarget(root);
+  const seen = /* @__PURE__ */ new Set();
+  while (node) {
+    if (node === reader) return true;
+    if (seen.has(node)) break;
+    seen.add(node);
+    node = dataflowTarget(node);
+  }
+  for (const child of root.children.values()) {
+    if (waitsOn(child, reader)) return true;
+  }
+  return false;
+}
+function resolveBinding(frame, name, args) {
+  if (typeof name === "string" && name.includes(".")) {
+    const dot2 = name.indexOf(".");
+    const targetName = name.slice(0, dot2);
+    const property = name.slice(dot2 + 1);
+    if (frame.declared?.has(targetName) && !frame.children.has(targetName)) {
+      throw new Error(`Use before introduction: ${targetName}`);
+    }
+    const target = findFrame(frame, targetName);
+    if (!target) {
+      if (frame.inlineAdvancing || frame.parent && !frame.parent.done) {
+        const err = new Error(`Blocked on assistant: ${targetName}`);
+        err.blocked = true;
+        throw err;
+      }
+      throw new Error(`Undefined assistant: ${targetName}`);
+    }
+    if (subtreeUnsettled(target) && !isAncestorOf(target, frame)) {
+      if (waitsOn(target, frame)) {
+        markCycle(frame, target);
+      } else {
+        const err = new Error(`Blocked on assistant: ${targetName} (mid-instant)`);
+        err.blocked = true;
+        err.blockedFrame = target;
+        throw err;
+      }
+    }
+    if (frame.suspension?.kind === "dataflow") clearSuspension(frame);
+    const isWorld = targetName === "world";
+    const isOrigin = targetName === "origin";
+    const contains = target !== frame && isAncestorOf(target, frame);
+    const ground = isWorld ? false : isOrigin ? true : !contains;
+    return resolveProperty(target, property, args, frame, ground);
+  } else {
+    for (let node = frame; node; node = node.parent) {
+      if (node.params?.has(name)) return node.params.get(name);
+      if (node.scalars?.has(name)) {
+        return metaRootFrame(frame)._readouts?.value(node.scalars.get(name));
+      }
+    }
+    const arity = args ? args.length : 0;
+    let ancestor = frame.parent;
+    while (ancestor) {
+      const result = lookupFn(ancestor, name, arity, args);
+      if (result !== void 0) return result;
+      ancestor = ancestor.parent;
+    }
+    return void 0;
+  }
+}
+var roundVec2 = (v2) => Math.abs(v2) < 1e-10 ? 0 : Math.round(v2 * 1e9) / 1e9;
+var roundOrNothing = (v2) => v2 === null ? null : roundVec2(v2);
+var headingFromQuaternion = headingOf;
+function frameWorldTransform(frame) {
+  const world = worldTransform(frame);
+  const local = frame.transform.deref();
+  return SE3.compose(world, local);
+}
+function readLocal(frame) {
+  const cyc = frame._cycleLocal;
+  if (cyc !== void 0 && frame._cycleEpoch === metaRootFrame(frame)._obsEpoch) return cyc;
+  return frame.transform.deref();
+}
+function readWorldTransform(frame, observer) {
+  const capture = observer?.observation;
+  if (capture) {
+    const entry = capture.poses.get(frame);
+    if (!entry) {
+      const error = new Error(`New ambient during observation: ${frame.name}`);
+      error.blocked = true;
+      error.blockedFrame = frame;
+      throw error;
+    }
+    return entry.world;
+  }
+  return SE3.compose(worldTransform(frame), readLocal(frame));
+}
+function reachesReader(start, reader) {
+  let node = dataflowTarget(start);
+  const seen = /* @__PURE__ */ new Set();
+  while (node) {
+    if (node === reader) return true;
+    if (seen.has(node)) break;
+    seen.add(node);
+    node = dataflowTarget(node);
+  }
+  return false;
+}
+function markCycle(reader, target) {
+  const epoch = metaRootFrame(reader)._obsEpoch;
+  const mark = (frame) => {
+    if (frame._cycleEpoch !== epoch) {
+      frame._cycleLocal = frame.transform.deref();
+      frame._cycleEpoch = epoch;
+    }
+  };
+  mark(reader);
+  const visit = (frame) => {
+    if (reachesReader(frame, reader)) mark(frame);
+    for (const child of frame.children.values()) visit(child);
+  };
+  visit(target);
+}
+function poseInObserverBirth(target, observer) {
+  const world = readWorldTransform(target, observer);
+  if (!observer) return world;
+  const birth2 = observer.observation?.poses.get(observer)?.birth || worldTransform(observer);
+  return SE3.compose(SE3.invert(birth2), world);
+}
+var SPATIAL = {
+  x: (t2) => roundVec2(t2.position[0]),
+  y: (t2) => roundVec2(t2.position[1]),
+  z: (t2) => roundVec2(t2.position[2]),
+  heading: (t2) => roundOrNothing(headingFromQuaternion(t2.rotation)),
+  elevation: (t2) => roundVec2(elevationOf(t2.rotation))
+};
+var TEMPORAL = {
+  time: (frame) => roundVec2(frame.elapsedTime || 0),
+  birthtime: (frame) => roundVec2(frame.birthtime || 0),
+  done: (frame) => frame.done ? 1 : 0,
+  commands: (frame) => frame.commandCount
+};
+var RELATIONAL = {
+  distance: (target, observer) => roundVec2(measure("distance", target, observer, (f2) => worldReading(f2, observer, null))),
+  bearing: (target, observer) => roundOrNothing(measure("bearing", target, observer, (f2) => worldReading(f2, observer, null))),
+  sync: (target, observer) => roundVec2(measure("sync", target, observer, (f2) => worldReading(f2, observer, null)))
+};
+function readable(property, value, target) {
+  if (value === null) return null;
+  if (predicateOk(property, value)) return value;
+  throw new Error(`No ${property}: ${target.name} answers outside its domain`);
+}
+function resolveProperty(target, property, args, observer, ground = false) {
+  if (!args && (property === "heading" || property === "elevation") && freePoint(target)) {
+    throw new Error(`No ${property}: ${target.name} is a free point`);
+  }
+  if (!args && SPATIAL[property]) {
+    return readable(property, SPATIAL[property](ground ? poseInObserverBirth(target, observer) : readWorldTransform(target, observer)), target);
+  }
+  if (!args && TEMPORAL[property]) {
+    return TEMPORAL[property](target);
+  }
+  if (!args && observer && RELATIONAL[property]) {
+    return readable(property, RELATIONAL[property](target, observer), target);
+  }
+  const arity = args ? args.length : 0;
+  const result = lookupFn(target, property, arity, args);
+  if (result !== void 0) return result;
+  throw new Error(`Undefined property: ${property} on assistant ${target.name}`);
+}
+function lookupFn(frame, name, arity, args) {
+  if (!frame.deps?.mathParser?.userspace) return void 0;
+  const key = name + ":" + arity;
+  if (!frame.deps.mathParser.userspace.has(key)) return void 0;
+  const [body, params] = frame.deps.mathParser.userspace.get(key);
+  const ctx = {};
+  if (params) params.forEach((p2, i2) => {
+    ctx[p2] = args[i2];
+  });
+  return frame.deps.mathEvaluator.run(body, ctx);
+}
+function hears(frame, name) {
+  if (frame.listensFor === null || frame.listensFor === void 0) return true;
+  for (const pattern of frame.listensFor) {
+    if (matchPattern(pattern, name) !== null) return true;
+  }
+  return false;
+}
+function pushMailbox(frame, msg) {
+  if (!hears(frame, msg.name)) return;
+  frame.mailbox.push(msg);
+  if (frame.mailbox.length <= frame.maxMailbox) return;
+  frame.mailbox.pop();
+  if (!frame.error) {
+    woundInk(frame, `this one is hearing more than it can hold \u2014 ${frame.maxMailbox} letters are already waiting`);
+  }
+}
+var addrOf = (frame) => frame.address ?? frame.id;
+function woundMissingReference(ctx) {
+  if (ctx.error) return;
+  ctx.error = {
+    message: `there is no '${ctx.targetFrame}' to draw in \u2014 this one drew in its own frame`,
+    span: null,
+    kind: "walk"
+  };
+  ctx.channel.put({ type: "error", ...ctx.error, ambientId: ctx.id });
+}
+var errorRecord = (error) => ({
+  message: error.message,
+  span: error.span ?? null,
+  kind: error.kind ?? "walk"
+});
+function deliverShout(shout2, target) {
+  const addr = addrOf(target);
+  const fromAddr = shout2.from ? addrOf(shout2.from) : null;
+  if (target === shout2.from || addr === fromAddr) return;
+  if (shout2.from && !sameRegion(shout2.from, target)) return;
+  if (!shout2._delivered) shout2._delivered = /* @__PURE__ */ new Set();
+  if (shout2._delivered.has(addr)) return;
+  shout2._delivered.add(addr);
+  pushMailbox(target, { name: shout2.name, payload: shout2.payload });
+}
+function deliverDeferredToFrame(shouts, frame) {
+  for (const shout2 of shouts) {
+    deliverShout(shout2, frame);
+  }
+}
+function flushDeferredShouts(shouts, registry) {
+  for (const shout2 of shouts) {
+    for (const [id2, target] of registry) {
+      deliverShout(shout2, target);
+    }
+  }
+  shouts.length = 0;
+}
+function closedRoot(frame) {
+  let root = null;
+  for (let node = frame; node; node = node.parent) if (node.closed) root = node;
+  return root;
+}
+var sameRegion = (a2, b2) => closedRoot(a2) === closedRoot(b2);
+function interceptShout(frame, value, registry, deferredShouts, onShout) {
+  pushMailbox(frame, { name: value.name, payload: value.payload });
+  if (deferredShouts) {
+    deferredShouts.push({ from: frame, name: value.name, payload: value.payload });
+  } else {
+    const letter = { from: frame, name: value.name, payload: value.payload };
+    for (const [id2, t2] of registry) deliverShout(letter, t2);
+  }
+  if (onShout && !closedRoot(frame)) onShout(frame.name, value.name, value.payload);
+}
+var DERIVED_BUDGET = 2e5;
+function captureEnvironment(frame) {
+  const captured = /* @__PURE__ */ new Map();
+  for (let node = frame; node; node = node.parent) {
+    if (node.params) {
+      for (const [name, value] of node.params) if (!captured.has(name)) captured.set(name, value);
+    }
+    if (node.scalars) {
+      for (const [name, id2] of node.scalars) {
+        if (captured.has(name)) continue;
+        try {
+          captured.set(name, metaRootFrame(node)._readouts?.value(id2));
+        } catch {
+          captured.set(name, void 0);
+        }
+      }
+    }
+  }
+  return captured;
+}
+function declaredInputs(value) {
+  const bound = /* @__PURE__ */ new Map();
+  for (const [name, held] of Object.entries(value.env?.scope ?? {})) {
+    if (name.startsWith("__")) continue;
+    bound.set(name, held);
+  }
+  return bound;
+}
+function captureFor(frame, value) {
+  return new Map([...captureEnvironment(frame), ...declaredInputs(value)]);
+}
+function resolveScopeValue(frame, name) {
+  if (frame.params?.has(name)) return frame.params.get(name);
+  const local = frame.scalars?.get(name);
+  if (local !== void 0) return metaRootFrame(frame)._readouts?.value(local);
+  return frame.capture?.get(name);
+}
+function regionRoot(frame) {
+  let root = frame;
+  for (let node = frame.parent; node && node.closed; node = node.parent) root = node;
+  return root;
+}
+function evaluateArgs(frame, exprs, declared) {
+  if (!exprs?.length) return [];
+  const { mathParser, mathEvaluator } = frame.deps ?? {};
+  if (!mathParser || !mathEvaluator) return exprs.map(() => void 0);
+  const outer = mathEvaluator.resolveExternal;
+  if (declared?.size) {
+    mathEvaluator.resolveExternal = (name, args) => declared.has(name) ? declared.get(name) : outer?.(name, args);
+  }
+  try {
+    const parses = frame._argParses ?? (frame._argParses = /* @__PURE__ */ new Map());
+    return exprs.map((expr) => {
+      try {
+        let tree = parses.get(expr);
+        if (tree === void 0) {
+          tree = mathParser.parse(expr);
+          parses.set(expr, tree);
+        }
+        return mathEvaluator.run(tree, {});
+      } catch {
+        return void 0;
+      }
+    });
+  } finally {
+    mathEvaluator.resolveExternal = outer;
+  }
+}
+function ownsRead(frame, targetName) {
+  const root = regionRoot(frame);
+  const target = findFrame(frame, targetName);
+  if (!target) return false;
+  for (let node = target; node; node = node.parent) if (node === root) return true;
+  return false;
+}
+function closeDerivedDeps(deps, frame) {
+  frame.capture = deps.capture ?? captureEnvironment(frame.parent ?? frame);
+  deps.mathEvaluator.resolveExternal = (name) => {
+    if (typeof name === "string" && name.includes(".")) {
+      if (ownsRead(frame, name.slice(0, name.indexOf(".")))) return resolveBinding(frame, name);
+      throw new Error(`closed region has no world read: ${name}`);
+    }
+    return resolveScopeValue(frame, name);
+  };
+  if (deps.mathEvaluator.constants) {
+    deps.mathEvaluator.constants.random = deps.figureRandom ?? keyedStream(keyedSeed(frame.address ?? frame.name));
+  }
+  deps.mathEvaluator.beginObservation = () => metaRootFrame(frame)._configurationRevision ?? 0;
+  deps.mathEvaluator.endObservation = () => {
+  };
+}
+function bindResolve(deps, frame) {
+  deps.mathEvaluator.beginObservation = () => {
+    const root = metaRootFrame(frame);
+    const poses = /* @__PURE__ */ new Map();
+    visitPostOrder(root, (member) => {
+      const birth2 = worldTransform(member);
+      poses.set(member, { birth: birth2, world: SE3.compose(birth2, member.transform.deref()) });
+    });
+    frame.observation = { poses, revision: root._configurationRevision };
+    return frame.observation.revision;
+  };
+  deps.mathEvaluator.endObservation = () => {
+    frame.observation = null;
+  };
+  deps.mathEvaluator.resolveExternal = (v2, a2) => {
+    const result = resolveBinding(frame, v2, a2);
+    if (typeof v2 === "string" && v2.includes(".")) deps.mathEvaluator._observedSibling = true;
+    return result;
+  };
+}
+function createChildGenerator(value, createDeps, execOpts) {
+  const childDeps = createDeps();
+  if (value.env?.userspace) {
+    for (const [k2, v2] of value.env.userspace) {
+      childDeps.mathParser.userspace.set(k2, v2);
+    }
+  }
+  const closed = value.closed === true;
+  let figureRandom = null;
+  if (closed) {
+    figureRandom = keyedStream(keyedSeed(value.figureSeed ?? value.name));
+    childDeps.figureRandom = figureRandom;
+    childDeps.capture = value.capture;
+  }
+  const mailbox = [];
+  const opts = {
+    // The whole declaration context crosses this door, not just its colour: the
+    // spawn payload already carries it, and colour alone left thickness and the
+    // hidden head behind. (id:laws-figures-phase34-review)
+    color: value.style?.color || execOpts.color,
+    style: value.style,
+    maxRecurseDepth: execOpts.maxRecurseDepth,
+    maxRecurses: execOpts.maxRecurses,
+    maxCommands: execOpts.maxCommands,
+    breathEvery: execOpts.breathEvery,
+    strokeMax: execOpts.strokeMax,
+    motionProtocol: execOpts.motionProtocol,
+    observePureGoto: execOpts.observePureGoto,
+    functions: value.code.functions,
+    loopCounter: value.env?.loopCounter,
+    birthtime: value.env?.birthtime,
+    scope: value.env?.scope,
+    lens: isLensName(value.name),
+    // A derived figure is a CLOSED cell: strict walk, hard budget, no
+    // truncation. Ordinary ambients keep their effectful semantics.
+    // (id:laws-figure-protocol)
+    strict: closed,
+    ...closed ? {
+      maxReductions: DERIVED_BUDGET,
+      maxRecurseDepth: DERIVED_BUDGET,
+      maxRecurses: DERIVED_BUDGET,
+      breathEvery: 256,
+      random: figureRandom
+    } : {},
+    mailbox
+  };
+  const batch = createActorState(opts);
+  const relationshipBatch = deriveBatch(value.code.ast);
+  const body = Array.isArray(value.question) && value.question.some((v2) => v2 == null) ? [] : relationshipBatch.body;
+  return {
+    generator: execute(body, childDeps, { ...opts, actorState: batch }),
+    deps: childDeps,
+    mailbox,
+    batch,
+    relationshipBatch
+  };
+}
+function commandsOf(frame) {
+  return (frame.commandCount || 0) + (frame.batch?.commandCount || 0);
+}
+var LISTEN_MEMO = /* @__PURE__ */ new WeakMap();
+var NO_PATTERNS = Object.freeze([]);
+function heardIn(nodes) {
+  if (!Array.isArray(nodes)) return NO_PATTERNS;
+  const hit = LISTEN_MEMO.get(nodes);
+  if (hit) return hit;
+  const heard = [];
+  const walk = (ns2) => {
+    if (!Array.isArray(ns2)) return;
+    for (const node of ns2) {
+      if (!node) continue;
+      if (node.type === "When" && node.meta?.event && typeof node.value === "string") {
+        heard.push(node.value.slice(1, -1));
+      }
+      walk(node.children);
+    }
+  };
+  walk(nodes);
+  LISTEN_MEMO.set(nodes, heard);
+  return heard;
+}
+function listenPatterns(ast, functions) {
+  if (!Array.isArray(ast)) return null;
+  const own = heardIn(ast);
+  if (!functions) return own;
+  let all = null;
+  for (const fn2 of Object.values(functions)) {
+    const more = heardIn(fn2?.body);
+    if (more.length === 0) continue;
+    if (!all) all = [...own];
+    all.push(...more);
+  }
+  return all ?? own;
+}
+function setListensFor(child, code) {
+  child.listensFor = listenPatterns(code?.ast, code?.functions);
+}
+var RUNS = 0;
+function resetRunState(frame, stock) {
+  clearSuspension(frame);
+  frame.observation = null;
+  frame.error = null;
+  frame.unresolved = null;
+  frame.sync = {};
+  frame.run = ++RUNS;
+  frame.midInstant = false;
+  frame._strokeEnd = null;
+  frame._strokeStyle = null;
+  resetInk(frame, stock);
+}
+function attachMeta(frame, targetFrame, stock) {
+  frame.targetFrame = targetFrame || null;
+  frame.isLens = isLensName(frame.name);
+  frame.commandCount = 0;
+  frame.elapsedTime = 0;
+  frame.birthtime = 0;
+  frame.actorState = null;
+  frame.maxMailbox = 8192;
+  frame.seed = null;
+  frame.batch = null;
+  frame.listensFor = null;
+  frame.motionSeq = 0;
+  resetRunState(frame, stock);
+  return frame;
+}
+function seedOf(spec) {
+  return {
+    ast: [...spec.code?.ast ?? []],
+    functions: spec.code?.functions ?? null,
+    userspace: spec.env?.userspace ?? null,
+    color: spec.style?.color ?? null
+  };
+}
+function sameSeed(seed, spec) {
+  if (!seed) return false;
+  const next = spec.code?.ast ?? [];
+  if (seed.ast.length !== next.length) return false;
+  for (let i2 = 0; i2 < next.length; i2++) {
+    if (seed.ast[i2] !== next[i2]) return false;
+  }
+  return seed.functions === (spec.code?.functions ?? null) && seed.userspace === (spec.env?.userspace ?? null) && seed.color === (spec.style?.color ?? null);
+}
+function wireWorldCacheInvalidation(child) {
+  child.transform.watch("worldCache", () => {
+    child._worldDirty = true;
+  });
+  child.transform.watch("configurationRevision", () => {
+    const root = metaRootFrame(child);
+    root._configurationRevision = (root._configurationRevision || 0) + 1;
+  });
+  if (child.parent) {
+    child.parent.transform.watch(`child:${child.id}`, () => {
+      child._worldDirty = true;
+    });
+  }
+  child._worldWatched = true;
+}
+function unwireWorldCache(child) {
+  child.transform.unwatch("worldCache");
+  child.transform.unwatch("configurationRevision");
+  if (child.parent) {
+    child.parent.transform.unwatch(`child:${child.id}`);
+  }
+}
+function reportUnrealizedPlaces(ctx) {
+  if (!ctx.declared || ctx.declared.size === 0) return;
+  const missing2 = [...ctx.declared].filter((name) => !ctx.children.has(name));
+  if (missing2.length > 0) {
+    ctx.unresolved = { reason: `existence not realized: ${missing2.join(", ")}` };
+  }
+}
+function seatPlace(parent, name, pump, pose = null) {
+  const place = attachMeta(
+    createFrame(name, null, {
+      parent,
+      // ONE meaning per field: this is where the place was BORN, and `transform`
+      // is the motion it accumulates afterwards. Seating the pose in `transform`
+      // made motion overwrite the birth, so a nested read asking "where am I
+      // relative to my birth?" had nothing to measure against.
+      // (id:laws-figures-phase34-ground)
+      origin: pose ? SE3.clone(pose) : SE3.identity(),
+      ...pump.channelOpts,
+      logicalBirth: parent.resumeAt > 0 ? parent.resumeAt : parent.logicalBirth ?? 0
+    }),
+    null,
+    pump.stock
+  );
+  place.birthtime = parent.birthtime || 0;
+  place.done = true;
+  place.isPlace = true;
+  place.birthPose = SE3.clone(pose ?? SE3.identity());
+  parent.children.set(name, place);
+  bumpTree(parent);
+  wireChild(place, pump.createDeps(), [], pump.registry, { ast: [], functions: {} }, null, null);
+  return place;
+}
+function withdrawPlace(parent, place, pump) {
+  const root = metaRootFrame(parent);
+  releaseAttemptsFor(root, /* @__PURE__ */ new Set([place.id]));
+  root._readouts?.release(place.id);
+  unwireWorldCache(place);
+  pump.registry.delete(place.id);
+  parent.children.delete(place.name);
+  bumpTree(parent);
+}
+function wireRun(child, deps, mailbox, executionState, code, relationshipBatch, pump = null) {
+  child.deps = deps;
+  if (executionState) child.runIncarnation = (child.runIncarnation ?? 0) + 1;
+  child.mailbox = mailbox;
+  child.batch = executionState;
+  child.declared = relationshipBatch?.declared ?? /* @__PURE__ */ new Set();
+  child.reached = /* @__PURE__ */ new Set();
+  if (child.closed) closeDerivedDeps(deps, child);
+  else bindResolve(deps, child);
+  setListensFor(child, code);
+}
+function wireChild(child, deps, mailbox, registry, code, executionState = null, relationshipBatch = null, pump = null) {
+  child.address = frameAddress(metaRootFrame(child), child);
+  wireRun(child, deps, mailbox, executionState, code, relationshipBatch, pump);
+  wireWorldCacheInvalidation(child);
+  registry.set(child.id, child);
+}
+function rewireChild(child, value, pump) {
+  if (pump.laws) pump.laws.retractFrame(child.id);
+  releaseSourceAttempts(metaRootFrame(child), subtreeIds(child));
+  metaRootFrame(child)._readouts?.release(child.id);
+  if (child.closed) releaseRegion(child, pump);
+  if (value.closed) value.figureSeed = child.address ?? value.figureSeed;
+  const re2 = createChildGenerator(value, pump.createDeps, pump.execOpts);
+  if (child.isPlace === true) {
+    if (value.profile === "derived") {
+      child.origin = SE3.clone(value.origin);
+      re2.batch.transform = SE3.identity();
+    } else {
+      re2.batch.transform = child.transform.deref();
+    }
+  }
+  child.profile = value.profile ?? null;
+  child.closed = value.closed === true;
+  child.generator = re2.generator;
+  child.done = false;
+  wireRun(child, re2.deps, re2.mailbox, re2.batch, value.code, re2.relationshipBatch, pump);
+  resetRunState(child, pump.stock);
+  child.resumeAt = 0;
+  child.logicalBirth = child.parent ? child.parent.resumeAt > 0 ? child.parent.resumeAt : child.parent.logicalBirth : null;
+  child.channel.drain();
+  child.pendingClear = true;
+}
+function advanceChild(initialChild, now, pump, deferredShouts) {
+  const stack = [initialChild];
+  while (stack.length > 0) {
+    const child = stack[stack.length - 1];
+    const spawned = drainUntilPause(child, now, pump, deferredShouts);
+    if (spawned) {
+      stack.push(spawned);
+    } else {
+      child.inlineAdvancing = false;
+      stack.pop();
+      if (child.suspension && SUSPENSIONS[child.suspension.kind].unwinds) {
+        for (const f2 of stack) f2.inlineAdvancing = false;
+        return true;
+      }
+    }
+  }
+  return false;
+}
+function breath(ctx, _value, _route, pump) {
+  if (pump.outOfTime()) {
+    parkBreath(ctx);
+    return { verdict: "parked" };
+  }
+  return { verdict: "continue" };
+}
+function blocked(ctx, value) {
+  suspend(ctx, "dataflow", { on: value?.target ?? null });
+  return { verdict: "paused" };
+}
+function wait2(ctx, value, route) {
+  closeInstant(ctx);
+  const { now, frameTarget, frameTransform } = route;
+  ctx.resumeAt = (ctx.resumeAt > 0 ? ctx.resumeAt : ctx.logicalBirth ?? now) + value.duration;
+  ctx.elapsedTime += value.duration / 1e3;
+  if (value.position) {
+    ctx.transform.swap(() => ({
+      rotation: value.rotation,
+      position: [...value.position]
+    }));
+    putSync(ctx, lensOutput(ctx, projectHead({
+      type: "head",
+      position: value.position,
+      rotation: value.rotation,
+      color: value.color,
+      headSize: value.headSize
+    }, frameTarget, frameTransform)));
+  }
+  return { verdict: "paused", produced: true };
+}
+function yieldEffect(ctx, value) {
+  closeInstant(ctx);
+  if (value.position) {
+    ctx.transform.swap(() => ({
+      rotation: value.rotation,
+      position: [...value.position]
+    }));
+  }
+  metaRootFrame(ctx)._obsEpoch++;
+  return { verdict: "paused", produced: true };
+}
+function limitMailbox(ctx, value) {
+  ctx.maxMailbox = value.limit;
+  return { verdict: "continue" };
+}
+var isThenable = (v2) => v2 !== null && (typeof v2 === "object" || typeof v2 === "function") && typeof v2.then === "function";
+function interpretReply(raw, refusalStroke) {
+  if (raw === null || typeof raw !== "object") {
+    return { kind: "fault", message: `motion responder returned ${raw === null ? "null" : typeof raw}; expected a verdict object` };
+  }
+  if (raw.accepted === false) {
+    return { kind: "refuse", ink: refusalStroke === "continue" ? "continue" : "break" };
+  }
+  if (raw.accepted !== true) {
+    return { kind: "fault", message: "motion responder returned no boolean accepted verdict" };
+  }
+  if (!raw.transform || !Array.isArray(raw.transform.position)) {
+    return { kind: "fault", message: "accepted motion reply has no transform.position" };
+  }
+  const component = raw.component === void 0 ? [] : raw.component;
+  if (!Array.isArray(component)) {
+    return { kind: "fault", message: "motion reply component is not a list" };
+  }
+  const members = [];
+  for (const member of component) {
+    if (!member?.frame || !member.transform || !Array.isArray(member.transform.position)) {
+      return { kind: "fault", message: "component member needs a frame and a transform.position" };
+    }
+    members.push({ frame: member.frame, pose: member.transform });
+  }
+  return { kind: "accept", pose: raw.transform, component: members };
+}
+function woundMotion(ctx, message) {
+  ctx.observation = null;
+  ctx.done = true;
+  ctx.generator = null;
+  closeInstant(ctx);
+  clearSuspension(ctx);
+  ctx.error = { message, span: null, kind: "motion" };
+  ctx.channel.put({ type: "error", ...ctx.error, ambientId: ctx.id });
+  return { verdict: "ended", produced: true };
+}
+function publish(writer, entries, registry, install = null, project = null) {
+  const seen = /* @__PURE__ */ new Set();
+  const settledOnly = metaRootFrame(writer)._settledOnly !== false;
+  for (const { frame, pose } of entries) {
+    if (!frame || seen.has(frame) || registry.get(frame.id) !== frame) {
+      return { kind: "conflict", message: "a publication target is duplicated or no longer in this world" };
+    }
+    seen.add(frame);
+    if (frame !== writer && !frame.done) {
+      if (ownsInstant(frame)) {
+        return { kind: "conflict", message: `publication target '${frame.name}' is mid-instant; the transaction cannot be atomic` };
+      }
+      if (settledOnly) {
+        return { kind: "unsupported", message: `publication target '${frame.name}' is a running member; settled configurations only` };
+      }
+    }
+    if (!pose || !Array.isArray(pose.position)) return { kind: "conflict", message: "a publication entry needs a pose" };
+  }
+  const write = ({ frame, pose, stated, ref }) => {
+    if (!stated) return frame.transform.swapDeferred(() => pose);
+    const world = expressPose(frame, ref ?? "own", pose);
+    const motion2 = frame.transform.deref();
+    const chainTarget = SE3.compose(world, SE3.invert(motion2));
+    const base = frame.parent ? worldTransform(frame.parent) : SE3.identity();
+    frame.origin = SE3.compose(SE3.invert(base), chainTarget);
+    dirtyWorldSubtree(frame);
+    return frame.transform.swapDeferred(() => motion2);
+  };
+  const notify = entries.map(write);
+  for (const { frame, pose } of entries) if (!frame.done && frame.batch) frame.batch.rebase = pose;
+  if (install) install();
+  const root = metaRootFrame(writer);
+  root._motionRevision = (root._motionRevision || 0) + 1;
+  const wasNotifying = root.notifyingCommit === true;
+  root.notifyingCommit = true;
+  const failures = [];
+  try {
+    if (root._readouts?.size > 0) {
+      try {
+        root._readouts.recompute(committedSnapshot());
+      } catch (error) {
+        failures.push(error);
+      }
+    }
+    for (const send of notify) {
+      try {
+        send();
+      } catch (error) {
+        failures.push(error);
+      }
+    }
+    if (project) {
+      try {
+        project();
+      } catch (error) {
+        failures.push(error);
+      }
+    }
+  } finally {
+    root.notifyingCommit = wasNotifying;
+  }
+  if (failures.length === 1) throw failures[0];
+  if (failures.length > 1) throw new AggregateError(failures, "publication subscribers failed");
+  return null;
+}
+var verdictEntries = (writer, verdict) => (
+  // Poses arrive normalized to the frame's own chain (the hand's door converts), so the
+  // entries carry only WHICH FIELD the accepted pose belongs in and whether it was stated.
+  [
+    { frame: writer, pose: verdict.pose, stated: verdict.stated === true },
+    ...verdict.component.map((m2) => ({ frame: m2.frame, pose: m2.pose, stated: verdict.stated === true }))
+  ]
+);
+function commitTransaction(verdict, writer, registry, project = null) {
+  return publish(writer, verdictEntries(writer, verdict), registry, null, project);
+}
+function checkMotion(verdict, writer, registry, validate, request) {
+  if (verdict.kind !== "accept") return verdict;
+  const entries = [{ frame: writer, pose: verdict.pose }, ...verdict.component];
+  const seen = /* @__PURE__ */ new Set();
+  for (const { frame, pose } of entries) {
+    if (seen.has(frame) || registry.get(frame?.id) !== frame || !Array.isArray(pose.position) || pose.position.length !== 3 || !pose.position.every(Number.isFinite) || !["x", "y", "z", "w"].every((key) => Number.isFinite(pose.rotation?.[key]))) {
+      return { kind: "fault", message: "accepted motion has a duplicate, stale or non-finite pose" };
+    }
+    seen.add(frame);
+  }
+  if (validate) {
+    try {
+      if (validate({ request, writer, entries }) !== true) {
+        return { kind: "fault", message: "motion responder proposed geometry that fails independent validation" };
+      }
+    } catch (error) {
+      return { kind: "fault", message: `motion validation failed: ${error.message}` };
+    }
+  }
+  verdict.ref = request?.ref ?? null;
+  verdict.stated = verdict.ref !== null;
+  if (verdict.stated && verdict.ref !== "own") {
+    let toOwn = null;
+    try {
+      toOwn = (frame, pose) => {
+        const world = expressPose(frame, verdict.ref, pose);
+        if (!world) throw new Error(`no frame named '${verdict.ref}' to state a position against`);
+        return SE3.compose(SE3.invert(worldTransform(frame)), world);
+      };
+      verdict.pose = toOwn(writer, verdict.pose);
+      verdict.component = verdict.component.map((m2) => ({ ...m2, pose: toOwn(m2.frame, m2.pose) }));
+    } catch (error) {
+      return { kind: "unresolved", message: error.message };
+    }
+  }
+  return verdict;
+}
+var motionBaseChanged = (ctx, request) => request.baseRevision !== void 0 && request.baseRevision !== metaRootFrame(ctx)._configurationRevision;
+function worldReading(frame, observer, overrides) {
+  const time = (frame.birthtime || 0) + (frame.elapsedTime || 0);
+  if (overrides?.has(frame)) {
+    const world2 = SE3.compose(worldTransform(frame), overrides.get(frame));
+    return { position: world2.position, rotation: world2.rotation, time };
+  }
+  const world = readWorldTransform(frame, observer);
+  return { position: world.position, rotation: world.rotation, time };
+}
+function committedSnapshot() {
+  const read = (frame) => worldReading(frame, null, null);
+  return {
+    read,
+    world: (frame) => read(frame).position,
+    measure: (relation, a2, b2) => measure(relation, a2, b2, read)
+  };
+}
+function releaseReadouts(root, ids) {
+  if (!root?._readouts) return;
+  const released = new Set(ids);
+  for (const id2 of released) root._readouts.release(id2);
+}
+function releaseRegion(frame, pump) {
+  if (frame.children.size === 0) return;
+  const root = metaRootFrame(frame);
+  const ids = subtreeIds(frame);
+  ids.delete(frame.id);
+  releaseAttemptsFor(root, ids);
+  releaseReadouts(root, ids);
+  for (const child of [...frame.children.values()]) terminateAmbient(child);
+  visitPostOrder(frame, (c2) => {
+    if (c2 === frame) return;
+    pump.registry.delete(c2.id);
+    if (pump.laws) pump.laws.retractIdentity(c2.id);
+    resetInk(c2, pump.stock);
+  });
+  frame.children.clear();
+}
+var LAWFUL = Object.freeze({ status: "valid" });
+var cannotMeasure = (law2, reason) => ({ status: "cannot-measure", law: law2, reason });
+function lawCtx(registry, overrides, extras = {}) {
+  return bindWorld((id2) => registry.get(id2), {
+    positionOf: (f2) => worldReading(f2, null, overrides).position,
+    poseOf: (f2) => worldTransform(f2),
+    ...extras
+  });
+}
+function recordAttempt(root, entry) {
+  if (!root) return;
+  root._lastAttempt = { ...entry, revision: root._motionRevision ?? 0 };
+}
+var plainPoses = (x2) => Array.isArray(x2) ? x2.map((p2) => ({ frame: p2.frame?.id ?? p2.frame, pose: p2.pose })) : x2 ?? null;
+function lawViolation(activeLaws, overrides, registry) {
+  if (!activeLaws || activeLaws.length === 0) return LAWFUL;
+  const ctx = lawCtx(registry, overrides);
+  for (const law2 of activeLaws) {
+    const row2 = AUTHORED[law2.feature];
+    if (!row2?.measure) return cannotMeasure(law2, `the whole-law gate does not recognize '${law2.feature}'`);
+    const check = row2.measure(law2, ctx);
+    if (check.status === "cannot-measure") return cannotMeasure(law2, check.reason);
+    if (check.status === "violation") return { status: "violation", law: law2, residual: check.residual };
+  }
+  return LAWFUL;
+}
+function brokenLaw(overrides, registry, laws) {
+  return lawViolation(laws?.active(), overrides, registry);
+}
+var ownerLabel = (law2) => law2?.owner?.line != null ? `line ${law2.owner.line}` : "source";
+function conflictMessage(violation2, candidate) {
+  return `the ${violation2.feature} at ${ownerLabel(violation2)} conflicts with the ${candidate.feature} at ${ownerLabel(candidate)}`;
+}
+var heldFrame = (frame) => (frame?.heldAttempts?.size ?? 0) > 0;
+function subtreeIds(frame) {
+  const ids = /* @__PURE__ */ new Set();
+  visitPostOrder(frame, (c2) => ids.add(c2.id));
+  return ids;
+}
+function registerAttempt(root, info) {
+  if (!root._attempts) {
+    root._attempts = /* @__PURE__ */ new Map();
+    root._attemptSeq = 0;
+  }
+  const id2 = ++root._attemptSeq;
+  const record = {
+    id: id2,
+    source: info.source ?? null,
+    kind: info.kind,
+    message: info.message,
+    span: info.span ?? null,
+    members: []
+  };
+  for (const frame of info.members) {
+    if (!frame) continue;
+    if (!frame.heldAttempts) frame.heldAttempts = /* @__PURE__ */ new Set();
+    frame.heldAttempts.add(id2);
+    frame.held = {
+      attemptId: id2,
+      kind: record.kind,
+      message: record.message,
+      span: record.span,
+      source: record.source
+    };
+    record.members.push(frame);
+  }
+  root._attempts.set(id2, record);
+  return id2;
+}
+function releaseAttempt(root, id2) {
+  const attempt = root?._attempts?.get(id2);
+  if (!attempt) return false;
+  root._attempts.delete(id2);
+  for (const frame of attempt.members) {
+    frame.heldAttempts?.delete(id2);
+    if (!frame.heldAttempts || frame.heldAttempts.size === 0) {
+      frame.heldAttempts = null;
+      frame.held = null;
+    } else {
+      const next = root._attempts.get([...frame.heldAttempts][0]);
+      frame.held = next ? { attemptId: next.id, kind: next.kind, message: next.message, span: next.span, source: next.source } : null;
+    }
+  }
+  return true;
+}
+function releaseSourceAttempts(root, ids) {
+  if (!root?._attempts) return;
+  const set = ids instanceof Set ? ids : new Set(ids);
+  for (const id2 of [...root._attempts.keys()]) {
+    if (set.has(root._attempts.get(id2).source)) releaseAttempt(root, id2);
+  }
+}
+function releaseAttemptsFor(root, ids) {
+  if (!root?._attempts) return;
+  const set = ids instanceof Set ? ids : new Set(ids);
+  for (const id2 of [...root._attempts.keys()]) {
+    const attempt = root._attempts.get(id2);
+    if (set.has(attempt.source) || attempt.members.some((f2) => set.has(f2.id))) releaseAttempt(root, id2);
+  }
+}
+function affectedMembers(registry, laws, seeds, extra = []) {
+  const ids = new Set(componentOf(laws, seeds).frames);
+  for (const frame of extra) if (frame?.id !== void 0) ids.add(frame.id);
+  const frames = [];
+  for (const id2 of ids) {
+    const frame = registry.get(id2);
+    if (frame) frames.push(frame);
+  }
+  return frames;
+}
+function settleAttempt(ctx, pump, outcome) {
+  const record = (kind, message = outcome.message ?? null) => recordAttempt(metaRootFrame(ctx), {
+    path: "reach",
+    owner: ctx.id,
+    outcome: kind,
+    span: outcome.span ?? null,
+    message,
+    candidate: plainPoses(outcome.candidate ?? outcome.poses),
+    residual: outcome.residual ?? null
+  });
+  if (outcome.kind === "commit") {
+    const conflict = publish(ctx, outcome.poses, pump.registry, outcome.install ?? null, () => {
+      if (outcome.head) emitHead(outcome.head.frame, outcome.head.pose);
+      for (const h2 of outcome.heads ?? []) emitHead(h2.frame, h2.pose);
+    });
+    if (conflict) {
+      const kind = conflict.kind === "unsupported" ? "unsupported" : "relation";
+      record(kind, conflict.message);
+      return woundRelation(ctx, conflict.message, kind, outcome.span ?? null);
+    }
+    record("commit");
+    return null;
+  }
+  record(outcome.kind);
+  if (outcome.kind === "contradiction" || outcome.kind === "obstructed") {
+    if (pump.registry.get(ctx.id) !== ctx || ctx.done) return { verdict: "continue", produced: true };
+    registerAttempt(metaRootFrame(ctx), {
+      source: ctx.id,
+      kind: outcome.kind,
+      message: outcome.message,
+      span: outcome.span ?? null,
+      members: outcome.members
+    });
+    return woundRelation(ctx, outcome.message, outcome.kind, outcome.span ?? null);
+  }
+  if (outcome.kind === "unresolved" || outcome.kind === "stale" || outcome.kind === "busy") {
+    return endUnresolved(ctx, outcome.message ?? outcome.kind);
+  }
+  return woundRelation(ctx, outcome.message, outcome.kind ?? "relation", outcome.span ?? null);
+}
+function proposedOverrides(writer, verdict) {
+  return new Map([[writer, verdict.pose], ...verdict.component.map((m2) => [m2.frame, m2.pose])]);
+}
+function continueLaws(verdict, writer, registry, laws) {
+  if (!laws || verdict.kind !== "accept") return verdict;
+  const poses = new Map([[writer, verdict.pose], ...verdict.component.map((m2) => [m2.frame, m2.pose])]);
+  const comp = componentOf(laws.active(), [writer.id]).laws;
+  const meeters = comp.filter((law2) => AUTHORED[law2.feature]?.meet && AUTHORED[law2.feature].touches(law2, writer.id));
+  if (meeters.length >= 1) {
+    const ctx = lawCtx(registry, poses, { writerId: writer.id });
+    const parts = comp.filter((law2) => AUTHORED[law2.feature]?.set && AUTHORED[law2.feature].touches(law2, writer.id));
+    const sets = parts.map((law2) => AUTHORED[law2.feature].set(law2, ctx));
+    if (sets.every(Boolean)) {
+      const wish = worldReading(writer, null, poses).position;
+      const accepted = worldReading(writer, null, null).position;
+      const near = nearest(meetAll(sets), wish, { keep: accepted });
+      if (near.ok) {
+        poses.set(writer, { rotation: verdict.pose.rotation, position: SE3.unapply(worldTransform(writer), near.at) });
+        verdict.pose = poses.get(writer);
+        return verdict;
+      }
+    }
+  }
+  const active = laws.active().filter((law2) => law2.feature === "distance");
+  if (active.length === 0) return verdict;
+  let changed = true;
+  for (let sweep = 0; changed && sweep <= active.length; sweep++) {
+    changed = false;
+    for (const law2 of active) {
+      const a2 = registry.get(law2.endpoints[0]);
+      const b2 = registry.get(law2.endpoints[1]);
+      if (!a2 || !b2) continue;
+      const aMoved = poses.has(a2);
+      const bMoved = poses.has(b2);
+      if (!aMoved && !bMoved) continue;
+      if (aMoved && bMoved) continue;
+      const moved = aMoved ? a2 : b2;
+      const other = aMoved ? b2 : a2;
+      const proposed = poses.get(moved);
+      const r2 = realizeDistance(
+        worldReading(moved, null, poses).position,
+        worldReading(other, null, poses).position,
+        law2.predicate
+      );
+      if (!r2.ok || !r2.moved) continue;
+      poses.set(moved, { rotation: proposed.rotation, position: SE3.unapply(worldTransform(moved), r2.pose) });
+      changed = true;
+    }
+  }
+  verdict.pose = poses.get(writer);
+  for (const member of verdict.component) member.pose = poses.get(member.frame);
+  return verdict;
+}
+function conflictAt(target, worldPos, laws, registry) {
+  for (const law2 of laws.active()) {
+    if (law2.feature !== "distance") continue;
+    const a2 = registry.get(law2.endpoints[0]);
+    const b2 = registry.get(law2.endpoints[1]);
+    if (!a2 || !b2) continue;
+    const other = a2 === target ? b2 : b2 === target ? a2 : null;
+    if (!other) continue;
+    const d2 = measure("distance", target, other, (f2) => f2 === target ? { position: worldPos } : { position: worldReading(f2, null, null).position });
+    if (!Number.isFinite(d2)) return { law: law2, domain: true };
+    if (Math.abs(d2 - law2.predicate) > ACCEPT_TOL) return { law: law2, residual: d2 - law2.predicate };
+  }
+  return null;
+}
+function pinnedLaw(laws, frameId) {
+  for (const law2 of laws.active()) {
+    if (law2.feature === "position" && law2.endpoints[0] === frameId) return law2;
+  }
+  return null;
+}
+function parkOnVerdict(ctx, verdict, pump, request) {
+  if (motionBaseChanged(ctx, request)) verdict = { kind: "stale" };
+  else verdict = checkMotion(verdict, ctx, pump.registry, pump.motionValidate, request);
+  let gate = null;
+  if (verdict.kind === "accept") {
+    gate = brokenLaw(proposedOverrides(ctx, verdict), pump.registry, pump.laws);
+    if (gate.status === "cannot-measure") verdict = { kind: "unresolved", message: gate.reason };
+    else if (heldFrame(ctx) || gate.status === "violation") {
+      verdict = { kind: "refuse", ink: pump.execOpts.refusalStroke === "continue" ? "continue" : "break" };
+    }
+  }
+  recordAttempt(metaRootFrame(ctx), {
+    path: "hand",
+    owner: ctx.id,
+    from: request?.from?.position ?? null,
+    requested: request?.requested?.position ?? null,
+    candidate: verdict.pose?.position ?? null,
+    verdict: verdict.kind,
+    gate: gate ? { status: gate.status, law: gate.law?.address ?? null, residual: gate.residual ?? null, reason: gate.reason ?? null } : null,
+    baseRevision: request?.baseRevision ?? null
+  });
+  if (verdict.kind === "fault") return woundMotion(ctx, verdict.message);
+  if (verdict.kind === "accept" && verdict.component.length > 0) {
+    const conflict = commitTransaction(verdict, ctx, pump.registry);
+    if (conflict) return woundMotion(ctx, conflict.message);
+  }
+  openInstant(ctx);
+  suspend(ctx, "admission", { seq: ++ctx.motionSeq, verdict });
+  return { verdict: "parked", produced: true };
+}
+function motion(ctx, value, _route, pump) {
+  if (pump.motionAdmissionAsync) return delayedMotion(ctx, value, pump);
+  const request = {
+    command: value.command,
+    from: value.from,
+    requested: value.requested,
+    frame: ctx,
+    baseRevision: value.baseRevision
+  };
+  let raw;
+  try {
+    raw = pump.motionAdmission ? pump.motionAdmission(request) : { accepted: true, transform: value.requested };
+  } catch (error) {
+    return woundMotion(ctx, `motion responder failed: ${error.message}`);
+  }
+  if (isThenable(raw)) {
+    return woundMotion(ctx, "motion responder returned a Promise; use motionAdmissionAsync for delayed replies");
+  }
+  return parkOnVerdict(ctx, interpretReply(raw, pump.execOpts.refusalStroke), pump, request);
+}
+function delayedMotion(ctx, value, pump) {
+  const run = ctx.run;
+  const seq = ++ctx.motionSeq;
+  const request = {
+    command: value.command,
+    from: value.from,
+    requested: value.requested,
+    frame: ctx,
+    baseRevision: value.baseRevision
+  };
+  let raw;
+  try {
+    raw = pump.motionAdmissionAsync(request);
+  } catch (error) {
+    return woundMotion(ctx, `motion responder failed: ${error.message}`);
+  }
+  if (!isThenable(raw)) return parkOnVerdict(ctx, interpretReply(raw, pump.execOpts.refusalStroke), pump, request);
+  openInstant(ctx);
+  suspend(ctx, "admission", { seq, verdict: null });
+  const stale = () => ctx.done || ctx.run !== run || ctx.suspension?.kind !== "admission" || ctx.suspension.seq !== seq;
+  Promise.resolve(raw).then((resolved) => {
+    if (stale()) return;
+    if (isThenable(resolved)) return void woundMotion(ctx, "delayed motion responder resolved to another Promise");
+    const checked = motionBaseChanged(ctx, request) ? { kind: "stale" } : checkMotion(
+      interpretReply(resolved, pump.execOpts.refusalStroke),
+      ctx,
+      pump.registry,
+      pump.motionValidate,
+      request
+    );
+    let ruling = checked;
+    const check = ruling.kind === "accept" ? brokenLaw(proposedOverrides(ctx, ruling), pump.registry, pump.laws) : null;
+    if (check?.status === "cannot-measure") ruling = { kind: "unresolved", message: check.reason };
+    else if (check?.status === "violation") ruling = { kind: "refuse", ink: pump.execOpts.refusalStroke === "continue" ? "continue" : "break" };
+    if (ruling.kind === "fault") return void woundMotion(ctx, ruling.message);
+    if (ruling.kind === "accept" && ruling.component.length > 0) {
+      const conflict = commitTransaction(ruling, ctx, pump.registry);
+      if (conflict) return void woundMotion(ctx, conflict.message);
+    }
+    suspend(ctx, "admission", { seq, verdict: ruling });
+  }, (error) => {
+    if (!stale()) woundMotion(ctx, `motion responder failed: ${error.message}`);
+  });
+  return { verdict: "parked", produced: true };
+}
+function shout(ctx, value, route, pump) {
+  interceptShout(ctx, value, pump.registry, route.deferredShouts, pump.onShout);
+  return { verdict: "continue", produced: true };
+}
+function birth(ctx, value, _route, pump) {
+  const existing = ctx.children.get(value.name);
+  if (existing) {
+    const here = SE3.compose(worldTransform(ctx), value.origin);
+    const next = SE3.compose(SE3.invert(worldTransform(existing)), here);
+    existing.birthPose = SE3.clone(next);
+    const check = lawViolation(pump.laws.active(), /* @__PURE__ */ new Map([[existing, next]]), pump.registry);
+    const outcome = check.status === "cannot-measure" ? { kind: "unresolved", message: check.reason, span: value.owner } : check.status === "violation" ? {
+      kind: "obstructed",
+      span: value.owner,
+      message: conflictMessage(check.law, { feature: "being act", owner: value.owner }),
+      members: affectedMembers(pump.registry, pump.laws.active(), check.law.endpoints, [existing, ctx])
+    } : {
+      kind: "commit",
+      poses: [{ frame: existing, pose: next }],
+      heads: [{ frame: existing, pose: next }],
+      span: value.owner
+    };
+    const settled = settleAttempt(ctx, pump, outcome);
+    if (settled) return settled;
+    ctx.reached?.add(value.name);
+    return { verdict: "continue", produced: true };
+  }
+  if (!pump?.createDeps) return { verdict: "continue" };
+  seatPlace(ctx, value.name, pump, value.origin);
+  ctx.reached?.add(value.name);
+  return { verdict: "continue", produced: true };
+}
+function emitHead(member, pose) {
+  if (!member.done) return;
+  const head = {
+    type: "head",
+    position: pose.position,
+    rotation: pose.rotation,
+    color: member.actorState?.style?.color,
+    headSize: member.actorState?.style?.showTurtle
+  };
+  const target = member.targetFrame ? findReferenceFrame(member, member.targetFrame) : null;
+  putSync(member, target ? projectHead(head, target, relativeTransform(member, target)) : head);
+}
+var unsupported = (spec, reason) => ({ kind: "unresolved", message: reason, span: spec.owner });
+function componentMeetCandidate(spec, candidate, comp, pump, scope) {
+  const meeters = comp.laws.filter((law2) => AUTHORED[law2.feature]?.meet);
+  if (meeters.length === 0) return null;
+  const p2 = meeters[0].endpoints[0];
+  if (!meeters.every((law2) => law2.endpoints[0] === p2)) return unsupported(spec, "a relation names another point");
+  const point2 = pump.registry.get(p2);
+  if (!point2) return unsupported(spec, "the point is not seated");
+  const ctx = lawCtx(pump.registry, null, { writerId: p2 });
+  const parts = comp.laws.filter((law2) => AUTHORED[law2.feature]?.set && AUTHORED[law2.feature].touches(law2, p2));
+  const sets = [];
+  for (const law2 of parts) {
+    const s2 = AUTHORED[law2.feature].set(law2, ctx);
+    if (!s2) return unsupported(spec, `cannot form the ${law2.feature}`);
+    sets.push(s2);
+  }
+  const met = meetAll(sets);
+  if (met.kind === "empty") {
+    const movers = /* @__PURE__ */ new Map();
+    for (const law2 of parts) {
+      if (law2.feature !== "distance") continue;
+      const other = law2.endpoints.find((id2) => id2 !== p2);
+      const frame = other != null ? pump.registry.get(other) : null;
+      if (frame && !pinnedLaw(pump.laws, frame.id)) movers.set(frame.id, frame);
+    }
+    if (movers.size > 0) {
+      const held = [...movers.values()];
+      return {
+        kind: "obstructed",
+        message: `the truths have no point in common while ${held.map((f2) => `'${f2.name}'`).join(", ")} hold their places`,
+        span: spec.owner,
+        members: affectedMembers(pump.registry, comp.laws, [p2, ...held.map((f2) => f2.id)])
+      };
+    }
+    return {
+      kind: "contradiction",
+      message: "the truths have no point in common",
+      span: spec.owner,
+      members: affectedMembers(pump.registry, comp.laws, [p2])
+    };
+  }
+  if (met.kind === "uncertain" || met.kind === "unresolved") return unsupported(spec, "the meet is not a named set");
+  const near = nearest(met, worldReading(point2, null, null).position);
+  if (!near.ok) return unsupported(spec, "the meet has no nearest point");
+  const pose = { rotation: point2.transform.deref().rotation, position: SE3.unapply(worldTransform(point2), near.at) };
+  const overrides = /* @__PURE__ */ new Map([[point2, pose]]);
+  const check = lawViolation(scope, overrides, pump.registry);
+  if (check.status === "cannot-measure") return unsupported(spec, check.reason);
+  if (check.status !== "valid") return null;
+  return {
+    kind: "commit",
+    poses: [{ frame: point2, pose }],
+    install: () => pump.laws.apply(candidate),
+    heads: [{ frame: point2, pose }],
+    span: spec.owner
+  };
+}
+function componentCandidate(spec, candidate, pump, scope) {
+  const active = [...pump.laws.active().filter((law2) => addressOf(law2) !== addressOf(candidate)), candidate];
+  const comp = componentOf(active, candidate.endpoints);
+  if (comp.laws.length < 2) return null;
+  if (comp.laws.some((law2) => AUTHORED[law2.feature]?.meet)) {
+    return componentMeetCandidate(spec, candidate, comp, pump, scope);
+  }
+  if (comp.laws.some((law2) => law2.feature !== "distance")) return unsupported(spec, "a component with a pin or a non-distance relation");
+  if (!comp.frames.has(spec.observer.id)) return unsupported(spec, "a component outside the declaring frame");
+  for (const id2 of comp.frames) {
+    if (id2 === spec.observer.id) continue;
+    const frame = pump.registry.get(id2);
+    if (!frame || !frame.done) return unsupported(spec, "a component member is not settled");
+    if (heldFrame(frame)) return null;
+    if (pinnedLaw(pump.laws, id2)) return unsupported(spec, "a pinned component member cannot be reconfigured yet");
+  }
+  const world = (id2) => {
+    const frame = pump.registry.get(id2);
+    return frame ? worldReading(frame, null, null).position : null;
+  };
+  const positions = realizeDistanceTree(comp.laws, spec.observer.id, world, (law2) => law2.predicate);
+  if (!positions) return unsupported(spec, "a cyclic or unanchored component");
+  const poses = [];
+  const heads = [];
+  for (const id2 of comp.frames) {
+    if (id2 === spec.observer.id) continue;
+    const frame = pump.registry.get(id2);
+    const target = positions.get(id2);
+    if (!frame || !target) return unsupported(spec, "a component member left the registry");
+    const pose = { rotation: frame.transform.deref().rotation, position: SE3.unapply(worldTransform(frame), target) };
+    poses.push({ frame, pose });
+    heads.push({ frame, pose });
+  }
+  const overrides = new Map(poses.map(({ frame, pose }) => [frame, pose]));
+  const check = lawViolation(scope, overrides, pump.registry);
+  if (check.status === "cannot-measure") return { kind: "unresolved", message: check.reason, span: spec.owner };
+  if (check.status === "violation") return null;
+  return { kind: "commit", poses, install: () => pump.laws.apply(candidate), heads, span: spec.owner };
+}
+function applyLaw(spec, pump) {
+  const row2 = AUTHORED[spec.feature];
+  if (!row2?.propose || !row2?.validate) return { kind: "unsupported", message: `Unsupported law: ${spec.feature}`, span: spec.owner };
+  const candidate = bindLaw({
+    feature: spec.feature,
+    endpoints: row2.endpoints(spec),
+    scope: spec.observer.id,
+    frame: spec.observer.id,
+    predicate: spec.value,
+    owner: spec.owner,
+    axis: spec.axis
+  });
+  if (!predicateOk(candidate.feature, candidate.predicate)) {
+    return {
+      kind: "relation",
+      span: spec.owner,
+      message: `a ${candidate.feature} payload must be finite${candidate.guards?.nonNegative ? " and non-negative" : ""}`
+    };
+  }
+  const ctx = lawCtx(pump.registry, null, {
+    pinWorld: (target) => {
+      const pin = pinnedLaw(pump.laws, target.id);
+      const pinFrame = pin ? pump.registry.get(pin.frame) : null;
+      return pinFrame ? SE3.apply(worldTransform(pinFrame), pin.predicate) : null;
+    },
+    conflictAt: (target, world) => conflictAt(target, world, pump.laws, pump.registry),
+    ownerOf: ownerLabel
+  });
+  const placed = row2.propose({ ...spec, ...ctx });
+  if (!placed.ok) {
+    if (placed.kind === "obstructed" || placed.kind === "contradiction") {
+      return {
+        kind: placed.kind,
+        message: placed.reason,
+        span: spec.owner,
+        candidate: placed.world ? { frame: spec.target.id, world: placed.world } : null,
+        residual: placed.residual ?? null,
+        members: affectedMembers(
+          pump.registry,
+          [...pump.laws.active().filter((law2) => addressOf(law2) !== addressOf(candidate)), candidate],
+          candidate.endpoints,
+          [spec.target, spec.observer]
+        )
+      };
+    }
+    return { kind: placed.kind ?? "relation", message: placed.reason, span: spec.owner };
+  }
+  const check = row2.validate({ ...spec, world: placed.world, ...ctx });
+  if (!check.ok) return { kind: check.kind ?? "relation", message: check.reason, span: spec.owner };
+  const local = SE3.unapply(worldTransform(spec.target), placed.world);
+  const pose = { rotation: spec.target.transform.deref().rotation, position: local };
+  const surviving = pump.laws.active().filter((law2) => addressOf(law2) !== addressOf(candidate));
+  const scope = [...surviving, candidate];
+  const gate = lawViolation(scope, /* @__PURE__ */ new Map([[spec.target, pose]]), pump.registry);
+  if (gate.status === "cannot-measure") {
+    return { kind: "unresolved", message: gate.reason, span: spec.owner };
+  }
+  if (gate.status === "violation") {
+    const joint = componentCandidate(spec, candidate, pump, scope);
+    if (joint) return joint;
+    return {
+      kind: "obstructed",
+      message: conflictMessage(gate.law, candidate),
+      span: spec.owner,
+      candidate: [{ frame: spec.target.id, pose }],
+      residual: gate.residual,
+      members: affectedMembers(
+        pump.registry,
+        [...surviving, candidate],
+        candidate.endpoints,
+        [spec.target, spec.observer]
+      )
+    };
+  }
+  return {
+    kind: "commit",
+    poses: [{ frame: spec.target, pose }],
+    install: () => pump.laws.apply(candidate),
+    heads: [{ frame: spec.target, pose }],
+    span: spec.owner
+  };
+}
+function scalarReadout(ctx, value, _route, pump) {
+  const id2 = pump.readouts.register(ctx.id, value.owner ?? value.name, value.read);
+  if (!ctx.scalars) ctx.scalars = /* @__PURE__ */ new Map();
+  ctx.scalars.set(value.name, id2);
+  return { verdict: "continue", produced: true };
+}
+function parameterReadout(ctx, value, _route, _pump) {
+  if (!ctx.params) ctx.params = /* @__PURE__ */ new Map();
+  ctx.params.set(value.name, value.value);
+  return { verdict: "continue", produced: true };
+}
+function law(ctx, value, _route, pump) {
+  const targetName = value.target;
+  const visible = findFrame(ctx, targetName, "world");
+  const declaredHere = ctx.declared?.has(targetName) === true;
+  if (value.feature !== "position" && declaredHere && !ctx.children.has(targetName)) {
+    return woundRelation(ctx, `Use before introduction: ${targetName}`, "relation", value.owner);
+  }
+  const introduces = value.feature === "position" && !ctx.children.has(targetName) && (declaredHere || !visible);
+  const born = introduces ? seatPlace(ctx, targetName, pump, SE3.clone(ctx.transform.deref())) : null;
+  const target = findFrame(ctx, targetName, "world");
+  if (!target || target === ctx) {
+    if (born) withdrawPlace(ctx, born, pump);
+    return woundRelation(ctx, `Unknown target: ${targetName}`, "relation", value.owner);
+  }
+  const outcome = applyLaw({
+    feature: value.feature,
+    target,
+    observer: ctx,
+    value: value.value,
+    axis: value.axis ?? null,
+    owner: value.owner
+  }, pump);
+  if (born && outcome.kind === "commit") {
+    const install = outcome.install;
+    outcome.install = () => {
+      if (install) install();
+      ctx.reached?.add(targetName);
+    };
+  }
+  const settled = settleAttempt(ctx, pump, outcome);
+  if (settled) {
+    if (born) withdrawPlace(ctx, born, pump);
+    return settled;
+  }
+  return { verdict: "continue", produced: true };
+}
+function woundRelation(ctx, message, kind = "relation", span = null) {
+  ctx.observation = null;
+  ctx.done = true;
+  ctx.generator = null;
+  closeInstant(ctx);
+  clearSuspension(ctx);
+  ctx.error = { message, span, kind };
+  ctx.channel.put({ type: "error", ...ctx.error, ambientId: ctx.id });
+  return { verdict: "ended", produced: true };
+}
+function registerFigureCell(ctx, value, pump) {
+  if (!pump.readouts) return;
+  const question = () => [...evaluateArgs(ctx, value.argExprs, declaredInputs(value)), ...[...captureFor(ctx, value)].sort(([a2], [b2]) => a2 < b2 ? -1 : 1)];
+  pump.readouts.register(ctx.id, value.name, {
+    capture: question,
+    // The spawn already ran the child with this question; seed it so the first
+    // commit compares instead of always looking new.
+    seed: question(),
+    // This record is an invalidation subscription, NOT an answer: its build
+    // requests a restart, and the run's outcome lives on the frame, where a wound
+    // already carries provenance. Returning the name made a restart read as
+    // completed construction — a refused figure settled as its own success.
+    // (id:laws-figures-phase34-review)
+    build: () => {
+      supersedeFigure(ctx, value, pump);
+    }
+  });
+}
+function supersedeFigure(ctx, value, pump) {
+  const child = ctx.children.get(value.name);
+  if (!child) return;
+  value.capture = captureFor(ctx, value);
+  if (value.argExprs) {
+    value.question = evaluateArgs(ctx, value.argExprs, declaredInputs(value));
+    const args = value.code?.ast?.[0]?.children ?? [];
+    value.question.forEach((input, i2) => {
+      if (args[i2]) args[i2].value = String(input);
+    });
+  }
+  rewireChild(child, value, pump);
+  pump.wake?.();
+}
+function spawn(ctx, value, route, pump) {
+  ctx.transform.swap(() => value.origin);
+  const closed = value.profile === "derived" || ctx.closed === true;
+  value.closed = closed;
+  if (closed) value.capture = captureFor(ctx, value);
+  if (value.profile === "derived") registerFigureCell(ctx, value, pump);
+  const existing = ctx.children.get(value.name);
+  const deferredShouts = route.deferredShouts;
+  if (existing) {
+    if (existing.isPlace !== true) existing.origin = value.origin;
+    existing._worldDirty = true;
+    metaRootFrame(existing)._configurationRevision++;
+    if (existing.done && pump.createDeps) {
+      const derived = existing.profile === "derived" || value.profile === "derived";
+      if (derived && existing.runIncarnation) return { verdict: "continue" };
+      rewireChild(existing, value, pump);
+      if (deferredShouts) deliverDeferredToFrame(deferredShouts, existing);
+      return { verdict: "spawned", spawned: existing, produced: true };
+    }
+    return { verdict: "continue" };
+  }
+  if (pump.createDeps) {
+    const child = seatChild(ctx, value, pump, route, deferredShouts);
+    return { verdict: "spawned", spawned: child, produced: true };
+  }
+  return { verdict: "continue", produced: true };
+}
+function seatChild(ctx, value, pump, route, deferredShouts) {
+  if (value.closed) {
+    value.figureSeed = `${ctx.address ?? frameAddress(metaRootFrame(ctx), ctx)}/${value.name}`;
+  }
+  const { generator, deps, mailbox, batch, relationshipBatch } = createChildGenerator(value, pump.createDeps, pump.execOpts);
+  const child = attachMeta(
+    createFrame(value.name, generator, {
+      parent: ctx,
+      origin: value.origin,
+      ...pump.channelOpts,
+      // Born at the parent's current logical instant: its `resumeAt` once it
+      // has waited, else its own birth. A frame that only spawns never waits;
+      // anchoring at its `resumeAt` of 0 sent children to the axis origin.
+      logicalBirth: ctx.resumeAt > 0 ? ctx.resumeAt : ctx.logicalBirth ?? route.now
+    }),
+    value.frame,
+    pump.stock
+  );
+  child.birthtime = (value.env?.birthtime || 0) / 1e3;
+  child.profile = value.profile ?? null;
+  child.closed = value.closed === true;
+  ctx.children.set(value.name, child);
+  bumpTree(ctx);
+  wireChild(child, deps, mailbox, pump.registry, value.code, batch, relationshipBatch, pump);
+  if (deferredShouts) deliverDeferredToFrame(deferredShouts, child);
+  return child;
+}
+function deposit(ctx, value, route, pump) {
+  const { frameTarget, frameTransform } = route;
+  const refusal = offerDeposit(ctx, value, frameTarget, frameTransform, pump.stock);
+  if (refusal === "ceiling") return { verdict: "ended", produced: true };
+  if (refusal) {
+    parkOwing(ctx, refusal, value);
+    return { verdict: "parked", produced: true };
+  }
+  return { verdict: "continue", produced: true };
+}
+function endUnresolved(ctx, reason) {
+  ctx.observation = null;
+  ctx.unresolved = { reason };
+  if (ctx.batch) {
+    ctx.actorState = ctx.batch;
+    ctx.commandCount += ctx.batch.commandCount;
+    ctx.batch = null;
+  }
+  ctx.done = true;
+  ctx.generator = null;
+  closeInstant(ctx);
+  clearSuspension(ctx);
+  return { verdict: "ended" };
+}
+function motionUnresolved(ctx, value) {
+  return endUnresolved(ctx, value.reason);
+}
+function incomplete(ctx, value) {
+  ctx.channel.put({
+    type: "incomplete",
+    expected: value.expected,
+    found: value.found,
+    span: value.span,
+    ambientId: ctx.id
+  });
+  return { verdict: "continue", produced: true };
+}
+var EFFECTS = {
+  breath,
+  blocked,
+  wait: wait2,
+  yield: yieldEffect,
+  shout,
+  spawn,
+  limitMailbox,
+  motion,
+  motionUnresolved,
+  incomplete,
+  birth,
+  law,
+  scalar: scalarReadout,
+  parameter: parameterReadout
+};
+function stepFrame(ctx, value, done, route, pump) {
+  if (done) {
+    if (ctx.pendingClear) {
+      ctx.channel.put({ type: "clear" });
+      ctx.pendingClear = false;
+    }
+    closeInstant(ctx);
+    const result = value || {};
+    if (result.actorState) {
+      ctx.actorState = result.actorState;
+      ctx.commandCount += result.actorState.commandCount;
+    } else {
+      ctx.commandCount += typeof result === "number" ? result : result.commandCount || 0;
+    }
+    reportUnrealizedPlaces(ctx);
+    ctx.batch = null;
+    ctx.observation = null;
+    ctx.done = true;
+    ctx.generator = null;
+    if (ctx.targetFrame && !route.frameTarget) woundMissingReference(ctx);
+    return { verdict: "ended" };
+  }
+  const handler = EFFECTS[value.type] ?? deposit;
+  return handler(ctx, value, route, pump);
+}
+function stepOnce(ctx, route, pump) {
+  const { frameTarget, frameTransform } = route;
+  const sus = ctx.suspension;
+  if (sus?.owed) {
+    const refusal = deliverDeposit(ctx, sus.owed, frameTarget, frameTransform, pump.stock);
+    if (refusal) {
+      if (sus.kind !== refusal) {
+        sus.kind = refusal;
+        sus.since = null;
+      }
+      return { verdict: "parked" };
+    }
+    clearSuspension(ctx);
+    return { verdict: "continue", produced: true };
+  }
+  const admission = sus?.kind === "admission" ? sus : null;
+  if (admission && !admission.verdict) return { verdict: "parked" };
+  let value, done;
+  if (ctx.batch) ctx.batch.motionProtocol = pump.motionAdmission != null || pump.motionAdmissionAsync != null || pump.laws.count() > 0;
+  try {
+    const input = admission ? admission.verdict : void 0;
+    if (admission) clearSuspension(ctx);
+    ({ value, done } = ctx.generator.next(input));
+  } catch (error) {
+    ctx.observation = null;
+    ctx.done = true;
+    ctx.generator = null;
+    ctx.error = errorRecord(error);
+    ctx.channel.put({ type: "error", ...ctx.error, ambientId: ctx.id });
+    return { verdict: "ended", produced: true };
+  }
+  return stepFrame(ctx, value, done, route, pump);
+}
+function drainUntilPause(child, now, pump, deferredShouts) {
+  let frameTarget = null;
+  let frameTransform = null;
+  if (child.targetFrame) {
+    frameTarget = findReferenceFrame(child, child.targetFrame);
+    if (frameTarget) frameTransform = relativeTransform(child, frameTarget);
+  }
+  child.inlineAdvancing = true;
+  clearSpentPark(child);
+  const route = { frameTarget, frameTransform, now, deferredShouts };
+  while (true) {
+    const step = stepOnce(child, route, pump);
+    if (step.verdict === "continue") continue;
+    if (step.verdict === "spawned") return step.spawned;
+    return null;
+  }
+}
+function createScheduler(generator, opts = {}) {
+  const channelOpts = {
+    channelCapacity: opts.channelCapacity || 4096,
+    lossless: opts.lossless !== false
+  };
+  const createDeps = opts.createDeps || null;
+  const execOpts = { ...opts.execOpts || {} };
+  if (opts.motionAdmission || opts.motionAdmissionAsync) execOpts.motionProtocol = true;
+  if (opts.observePureGoto) execOpts.observePureGoto = true;
+  if (opts.refusalStroke !== void 0) execOpts.refusalStroke = opts.refusalStroke;
+  const onShout = opts.onShout || null;
+  let deadline = null;
+  const clock = opts.clock || (() => performance.now());
+  const stock = createStock();
+  const laws = createLawStore();
+  const readouts = createReadouts();
+  const root = attachMeta(
+    createFrame(ROOT_NAME, generator, channelOpts),
+    null,
+    stock
+  );
+  root.address = ROOT_NAME;
+  root._frontier = 0;
+  root._obsEpoch = 0;
+  root._motionRevision = 0;
+  root._settledOnly = opts.settledOnly !== false;
+  root._attempts = /* @__PURE__ */ new Map();
+  root._attemptSeq = 0;
+  root._readouts = readouts;
+  root._configurationRevision = 0;
+  root.transform.watch("configurationRevision", () => {
+    root._configurationRevision++;
+  });
+  if (opts.rootHears !== void 0) root.listensFor = opts.rootHears;
+  if (opts.rootMailbox) root.mailbox = opts.rootMailbox;
+  if (opts.rootDeps) {
+    root.deps = opts.rootDeps;
+    bindResolve(opts.rootDeps, root);
+  }
+  const registry = /* @__PURE__ */ new Map([[root.id, root]]);
+  const pump = {
+    createDeps,
+    execOpts,
+    motionAdmission: opts.motionAdmission || null,
+    motionAdmissionAsync: opts.motionAdmissionAsync || null,
+    motionValidate: opts.motionValidate || null,
+    channelOpts,
+    registry,
+    laws,
+    readouts,
+    onShout,
+    stock,
+    // Inline drain asks too — unpaced hang is real.
+    outOfTime: () => deadline !== null && clock() > deadline
+  };
+  pump.wake = () => {
+    root._done = false;
+  };
+  return {
+    root,
+    channel: root.channel,
+    // backward compat — root frame's channel
+    registry,
+    stock,
+    get resumeAt() {
+      return root.resumeAt;
+    },
+    set resumeAt(v2) {
+      root.resumeAt = v2;
+    },
+    // Backed by the root so a drain-time re-seat can wake the scheduler.
+    get done() {
+      return root._done === true;
+    },
+    set done(v2) {
+      root._done = v2;
+    },
+    commandCount: 0,
+    lastTickTime: 0,
+    // Arm a timeslice (OS quantum). Prefer withSlice — open deadline is a test seam.
+    // (id:output-ledger-r2-pacer)
+    sliceFor(ms2) {
+      deadline = ms2 == null ? null : clock() + ms2;
+    },
+    // Run the pump inside a timeslice, then close it.
+    // Slice spans many ticks (driver loop, not one tick). Must close: an expired
+    // deadline reads as "no time", so every breath parks — silent freeze if forgotten.
+    // Outside a slice the pump is unpaced (batch/headless complete in one call).
+    withSlice(ms2, drive) {
+      deadline = ms2 == null ? null : clock() + ms2;
+      try {
+        return drive();
+      } finally {
+        deadline = null;
+      }
+    },
+    // Mid-build: last tick let go with work left.
+    get building() {
+      return this._building === true;
+    },
+    // A finished drawing may accept a settled, pen-up hand request without
+    // reviving its coroutine. The same responder, check and component commit
+    // serve program motion. The caller supplies the last seen motion revision.
+    get motionRevision() {
+      return root._motionRevision;
+    },
+    // The play's active laws (address → predicate, owner). Read-only seam.
+    get laws() {
+      return laws;
+    },
+    // Source-owned derived values (id:laws-build-p3-slider). Read-only seam.
+    get readouts() {
+      return readouts;
+    },
+    // `ref` names the frame `requested` is expressed in — 'world', 'parent', or a named
+    // frame. Naming one makes this a STATEMENT (a position); naming none is a motion.
+    // (id:laws-figures-phase34-hand-frame)
+    requestMotion(frame, requested, revision, ref = null) {
+      if (registry.get(frame?.id) !== frame || frame === root) return { kind: "stale" };
+      if (root.notifyingCommit) return { kind: "busy", message: "publication in flight" };
+      if (!frame.done || subtreeUnsettled(frame)) return { kind: "busy" };
+      if (!frame.parent || frame.isLens || frame.error) return { kind: "unresolved" };
+      if (heldFrame(frame)) return { kind: "refuse", ink: execOpts.refusalStroke === "continue" ? "continue" : "break" };
+      if (revision !== root._motionRevision) return { kind: "stale" };
+      const request = { command: "hand", from: frame.transform.deref(), requested, frame, ref };
+      let raw;
+      if (pump.motionAdmission) {
+        try {
+          raw = pump.motionAdmission(request);
+        } catch (error) {
+          return { kind: "fault", message: `motion responder failed: ${error.message}` };
+        }
+        if (isThenable(raw)) {
+          return { kind: "unresolved", message: "hand admission must settle synchronously" };
+        }
+      } else if (pump.motionAdmissionAsync) {
+        return { kind: "unresolved" };
+      } else if (exposed(frame)) {
+        raw = { accepted: true, transform: requested };
+      } else {
+        return { kind: "unresolved" };
+      }
+      const verdict = checkMotion(
+        interpretReply(raw, execOpts.refusalStroke),
+        frame,
+        registry,
+        pump.motionValidate,
+        request
+      );
+      if (verdict.kind !== "accept") return verdict;
+      if (!pump.motionAdmission && !pump.motionAdmissionAsync) {
+        continueLaws(verdict, frame, registry, laws);
+      }
+      const check = brokenLaw(proposedOverrides(frame, verdict), registry, laws);
+      recordAttempt(root, {
+        path: "hand-settled",
+        owner: frame.id,
+        from: frame.transform.deref().position,
+        requested: verdict.pose?.position ?? null,
+        candidate: verdict.pose?.position ?? null,
+        gate: { status: check.status, law: check.law?.address ?? null, residual: check.residual ?? null, reason: check.reason ?? null },
+        baseRevision: revision
+      });
+      if (check.status === "cannot-measure") return { kind: "unresolved", message: check.reason };
+      if (check.status === "violation") return { kind: "refuse", ink: execOpts.refusalStroke === "continue" ? "continue" : "break" };
+      const members = [{ frame, pose: verdict.pose }, ...verdict.component];
+      const targets = /* @__PURE__ */ new Map();
+      for (const { frame: member } of members) {
+        if (member.parent !== frame.parent || member.isLens || member.error)
+          return { kind: "unresolved" };
+        const target = member.targetFrame ? findReferenceFrame(member, member.targetFrame) : null;
+        if (member.targetFrame && target !== member.parent && target?.parent !== member.parent)
+          return { kind: "unresolved" };
+        targets.set(member, target);
+      }
+      const conflict = commitTransaction(verdict, frame, registry, () => {
+        for (const { frame: member, pose } of members) {
+          if (!member.done) continue;
+          const head = {
+            type: "head",
+            position: pose.position,
+            rotation: pose.rotation,
+            color: member.actorState?.style?.color,
+            headSize: member.actorState?.style?.showTurtle
+          };
+          const target = targets.get(member);
+          putSync(member, target ? projectHead(head, target, relativeTransform(member, target)) : head);
+        }
+      });
+      if (conflict) return { kind: conflict.kind === "unsupported" ? "unresolved" : "busy", message: conflict.message };
+      return verdict;
+    },
+    // Same seed → skip; name may update in place. (id:cmp-become-seed)
+    // Caller sees hold by identity: returned frame === the one already seated.
+    // A prepared batch can seat all identities before any executor runs.
+    // The caller must finish seating the batch before calling tick().
+    hotSwapChild(key, forkSpec, { fresh = false, deferStart = false } = {}) {
+      const existing = root.children.get(key);
+      if (existing && !fresh && sameSeed(existing.seed, forkSpec)) {
+        const heldName = forkSpec.name || key;
+        if (existing.name !== heldName) {
+          existing.name = heldName;
+          bumpTree(root);
+        }
+        return existing;
+      }
+      if (existing) {
+        terminateAmbient(existing);
+        releaseAttemptsFor(root, subtreeIds(existing));
+        releaseReadouts(root, subtreeIds(existing));
+        visitPostOrder(existing, (c2) => {
+          resetInk(c2, stock);
+          registry.delete(c2.id);
+          laws.retractIdentity(c2.id);
+        });
+        root.children.delete(key);
+        bumpTree(root);
+      }
+      const displayName = forkSpec.name || key;
+      const { generator: generator2, deps, mailbox, batch, relationshipBatch } = createChildGenerator(forkSpec, createDeps, execOpts);
+      const child = attachMeta(
+        createFrame(displayName, generator2, {
+          parent: root,
+          origin: forkSpec.origin || SE3.identity(),
+          ...channelOpts,
+          // Two seating doors, two clocks (D011, id:host-beat): `fresh` is a NEW
+          // PLAY at the axis origin; an EDIT re-seats in the same play, joining at
+          // its current reveal instant so its first wait lands in the future.
+          logicalBirth: fresh ? 0 : this.lastTickTime || 0
+        }),
+        null,
+        stock
+      );
+      root.children.set(key, child);
+      bumpTree(root);
+      wireChild(child, deps, mailbox, registry, forkSpec.code, batch, relationshipBatch, pump);
+      child.seed = seedOf(forkSpec);
+      const deferredShouts = [];
+      if (!deferStart) advanceChild(child, this.lastTickTime, pump, deferredShouts);
+      if (deferredShouts.length > 0) flushDeferredShouts(deferredShouts, registry);
+      this.done = false;
+      return child;
+    },
+    // Remove a child of root by key and clean up its subtree.
+    removeChild(key) {
+      const child = root.children.get(key);
+      if (!child) return;
+      terminateAmbient(child);
+      releaseAttemptsFor(root, subtreeIds(child));
+      releaseReadouts(root, subtreeIds(child));
+      visitPostOrder(child, (c2) => {
+        resetInk(c2, stock);
+        registry.delete(c2.id);
+        laws.retractIdentity(c2.id);
+      });
+      root.children.delete(key);
+      bumpTree(root);
+      this.done = allDone(root);
+    },
+    get errors() {
+      const errs = [];
+      for (const [id2, ctx] of registry) {
+        if (ctx.error) errs.push({ ambientId: id2, name: ctx.name, address: addrOf(ctx), ...ctx.error });
+      }
+      return errs;
+    },
+    // Earliest resumeAt only; post-order within an instant. (D011 #3)
+    tick(now) {
+      this.lastTickTime = now;
+      if (this.done) {
+        this.done = allDone(root);
+        if (this.done) return false;
+      }
+      let produced = false;
+      let frontier = Infinity;
+      visitPostOrder(root, (ctx) => {
+        if (!ctx.done && ctx.resumeAt <= now && ctx.resumeAt < frontier) {
+          frontier = ctx.resumeAt;
+        }
+      });
+      if (frontier === Infinity) {
+        this.done = allDone(root);
+        if (this.done) this.commandCount = sumCounts(root);
+        return false;
+      }
+      if (frontier !== root._frontier) {
+        root._frontier = frontier;
+        root._obsEpoch++;
+      }
+      let parked = false;
+      visitPostOrderMotionFirst(root, (ctx) => {
+        if (parked || ctx.done || ctx.resumeAt > frontier) return;
+        const deferredShouts = [];
+        let frameTarget = null;
+        let frameTransform = null;
+        if (ctx.targetFrame) {
+          frameTarget = findReferenceFrame(ctx, ctx.targetFrame);
+          if (frameTarget) {
+            frameTransform = relativeTransform(ctx, frameTarget);
+          }
+        }
+        clearSpentPark(ctx);
+        const route = { frameTarget, frameTransform, now, deferredShouts };
+        while (!ctx.done) {
+          const step = stepOnce(ctx, route, pump);
+          if (step.produced) produced = true;
+          if (step.verdict === "continue") continue;
+          if (step.verdict === "spawned") {
+            parked = advanceChild(step.spawned, now, pump, deferredShouts);
+            if (parked) break;
+            continue;
+          }
+          if (step.verdict === "parked") parked = true;
+          break;
+        }
+        if (deferredShouts.length > 0) {
+          flushDeferredShouts(deferredShouts, registry);
+          produced = true;
+        }
+      });
+      if (root._readouts?.size > 0) root._readouts.recompute(committedSnapshot());
+      enforceResidency(registry, clock, stock);
+      this._building = parked;
+      this.done = allDone(root);
+      if (this.done) {
+        this.commandCount = sumCounts(root);
+      }
+      return produced;
+    }
+  };
+}
+function* metaRoot() {
+  return 0;
+}
+
+// assets/js/turtling/render/label-pool.js
+function createLabelPool(group, opts = {}) {
+  const make = opts.createText;
+  const font = opts.font || null;
+  const freeCap = opts.freeCap ?? 64;
+  const pool = [];
+  let live = 0;
+  let disposed = false;
+  const labels = {
+    get size() {
+      return pool.length;
+    },
+    get live() {
+      return live;
+    },
+    // Write one label. A free pooled Text is reused before any is built, so
+    // an identical rewrite keeps its glyph geometry instead of racing a
+    // rebuild against the frame that erases it.
+    write(event, requestRender) {
+      if (disposed) return;
+      const text = pool[live] ?? grow();
+      live++;
+      text.visible = true;
+      text.text = event.text;
+      text.fontSize = event.textSize;
+      text.textAlign = "center";
+      text.anchorX = "center";
+      text.anchorY = "45%";
+      if (font) text.font = font;
+      text.position.set(event.position[0], event.position[1], event.position[2]);
+      text.quaternion.copy(event.rotation);
+      text.color = event.color;
+      text.sync(() => {
+        if (!disposed && text.visible) requestRender?.();
+      });
+    },
+    // A rebuild of the same print: keep the glyphs on screen while the
+    // next writes reuse them. hide() blanks a frame; this does not.
+    rewrite() {
+      live = 0;
+    },
+    // After a rewrite pass, spare Texts from a longer previous pass go away.
+    trim() {
+      for (let i2 = live; i2 < pool.length; i2++) pool[i2].visible = false;
+    },
+    // Erase: hide, never dispose. The built geometry is what the next write
+    // reuses. (id:label-reuse)
+    hide() {
+      for (let i2 = 0; i2 < live; i2++) pool[i2].visible = false;
+      live = 0;
+      if (pool.length > freeCap) {
+        for (const text of pool.splice(freeCap)) {
+          text.removeFromParent?.();
+          disposeText(text);
+        }
+      }
+    },
+    // End of the layer's life (layer teardown / empty canvas).
+    dispose() {
+      if (disposed) return;
+      disposed = true;
+      for (const text of pool) {
+        text.removeFromParent?.();
+        disposeText(text);
+      }
+      pool.length = 0;
+      live = 0;
+    }
+  };
+  return labels;
+  function grow() {
+    const text = make();
+    text._label = true;
+    group.add(text);
+    pool.push(text);
+    return text;
+  }
+  function disposeText(text) {
+    const material = text.material;
+    if (Array.isArray(material)) {
+      for (const m2 of material) m2.dispose?.();
+    } else {
+      material?.dispose?.();
+    }
+    text.dispose?.();
+  }
+}
+
 // assets/js/utils/three-addons/lines/LineSegmentsGeometry.js
 var _box = new Qr();
 var _vector = new Ti();
@@ -19990,8 +23653,8 @@ var _sphere = new En();
 var _clipToWorldVector = new qi();
 var _ray2;
 var _lineWidth;
-function getWorldSpaceHalfWidth(camera, distance, resolution) {
-  _clipToWorldVector.set(0, 0, -distance, 1).applyMatrix4(camera.projectionMatrix);
+function getWorldSpaceHalfWidth(camera, distance2, resolution) {
+  _clipToWorldVector.set(0, 0, -distance2, 1).applyMatrix4(camera.projectionMatrix);
   _clipToWorldVector.multiplyScalar(1 / _clipToWorldVector.w);
   _clipToWorldVector.x = _lineWidth / resolution.width;
   _clipToWorldVector.y = _lineWidth / resolution.height;
@@ -20010,14 +23673,14 @@ function raycastWorldUnits(lineSegments, intersects) {
     _line.end.fromBufferAttribute(instanceEnd, i2);
     _line.applyMatrix4(matrixWorld);
     const pointOnLine = new Ti();
-    const point = new Ti();
-    _ray2.distanceSqToSegment(_line.start, _line.end, point, pointOnLine);
-    const isInside = point.distanceTo(pointOnLine) < _lineWidth * 0.5;
+    const point2 = new Ti();
+    _ray2.distanceSqToSegment(_line.start, _line.end, point2, pointOnLine);
+    const isInside = point2.distanceTo(pointOnLine) < _lineWidth * 0.5;
     if (isInside) {
       intersects.push({
-        point,
+        point: point2,
         pointOnLine,
-        distance: _ray2.origin.distanceTo(point),
+        distance: _ray2.origin.distanceTo(point2),
         object: lineSegments,
         face: null,
         faceIndex: i2,
@@ -20090,12 +23753,12 @@ function raycastScreenSpace(lineSegments, camera, intersects) {
       _line.start.applyMatrix4(matrixWorld);
       _line.end.applyMatrix4(matrixWorld);
       const pointOnLine = new Ti();
-      const point = new Ti();
-      _ray2.distanceSqToSegment(_line.start, _line.end, point, pointOnLine);
+      const point2 = new Ti();
+      _ray2.distanceSqToSegment(_line.start, _line.end, point2, pointOnLine);
       intersects.push({
-        point,
+        point: point2,
         pointOnLine,
-        distance: _ray2.origin.distanceTo(point),
+        distance: _ray2.origin.distanceTo(point2),
         object: lineSegments,
         face: null,
         faceIndex: i2,
@@ -20224,16 +23887,16 @@ var LineGeometry = class extends LineSegmentsGeometry {
    */
   setPositions(array) {
     const length = array.length - 3;
-    const points = new Float32Array(2 * length);
+    const points2 = new Float32Array(2 * length);
     for (let i2 = 0; i2 < length; i2 += 3) {
-      points[2 * i2] = array[i2];
-      points[2 * i2 + 1] = array[i2 + 1];
-      points[2 * i2 + 2] = array[i2 + 2];
-      points[2 * i2 + 3] = array[i2 + 3];
-      points[2 * i2 + 4] = array[i2 + 4];
-      points[2 * i2 + 5] = array[i2 + 5];
+      points2[2 * i2] = array[i2];
+      points2[2 * i2 + 1] = array[i2 + 1];
+      points2[2 * i2 + 2] = array[i2 + 2];
+      points2[2 * i2 + 3] = array[i2 + 3];
+      points2[2 * i2 + 4] = array[i2 + 4];
+      points2[2 * i2 + 5] = array[i2 + 5];
     }
-    super.setPositions(points);
+    super.setPositions(points2);
     return this;
   }
   /**
@@ -20262,16 +23925,16 @@ var LineGeometry = class extends LineSegmentsGeometry {
    * @param {Array<Vector3|Vector2>} points - An array of points in 2D or 3D space.
    * @return {LineGeometry} A reference to this geometry.
    */
-  setFromPoints(points) {
-    const length = points.length - 1;
+  setFromPoints(points2) {
+    const length = points2.length - 1;
     const positions = new Float32Array(6 * length);
     for (let i2 = 0; i2 < length; i2++) {
-      positions[6 * i2] = points[i2].x;
-      positions[6 * i2 + 1] = points[i2].y;
-      positions[6 * i2 + 2] = points[i2].z || 0;
-      positions[6 * i2 + 3] = points[i2 + 1].x;
-      positions[6 * i2 + 4] = points[i2 + 1].y;
-      positions[6 * i2 + 5] = points[i2 + 1].z || 0;
+      positions[6 * i2] = points2[i2].x;
+      positions[6 * i2 + 1] = points2[i2].y;
+      positions[6 * i2 + 2] = points2[i2].z || 0;
+      positions[6 * i2 + 3] = points2[i2 + 1].x;
+      positions[6 * i2 + 4] = points2[i2 + 1].y;
+      positions[6 * i2 + 5] = points2[i2 + 1].z || 0;
     }
     super.setPositions(positions);
     return this;
@@ -20282,8 +23945,8 @@ var LineGeometry = class extends LineSegmentsGeometry {
    * @param {Line} line - The line that should be used as a data source for this geometry.
    * @return {LineGeometry} A reference to this geometry.
    */
-  fromLine(line) {
-    const geometry = line.geometry;
+  fromLine(line2) {
+    const geometry = line2.geometry;
     this.setPositions(geometry.attributes.position.array);
     return this;
   }
@@ -20355,17 +24018,17 @@ var GrowLine = class {
   // Append polyline points, continuing from the previous endpoint (or starting a
   // fresh polyline). Each point past the join adds one segment. `rgb` is the ink
   // for new segments ([r,g,b] 0..1); hard edge — both ends of a segment share it.
-  append(points, rgb) {
-    if (!points || points.length === 0) return;
+  append(points2, rgb) {
+    if (!points2 || points2.length === 0) return;
     if (rgb) this._rgb = rgb;
-    const need = this._segs + (points.length - 1);
+    const need = this._segs + (points2.length - 1);
     if (need > this._cap) this._grow(need);
     const a2 = this._array;
     const c2 = this._colors;
     const [r2, g2, b2] = this._rgb;
-    let from = this._from || points[0];
-    for (let i2 = 1; i2 < points.length; i2++) {
-      const p2 = points[i2];
+    let from = this._from || points2[0];
+    for (let i2 = 1; i2 < points2.length; i2++) {
+      const p2 = points2[i2];
       const o2 = this._segs * 6;
       a2[o2] = from[0];
       a2[o2 + 1] = from[1];
@@ -20410,6 +24073,13 @@ var GrowLine = class {
 };
 
 // assets/js/turtling/materializer.js
+var LABEL_FONT = "/fonts/paperLang.ttf";
+function createLabels(group, opts = {}) {
+  if (typeof opts.createText !== "function") {
+    throw new TypeError("createLabels: opts.createText is required (the stage owns the Text constructor)");
+  }
+  return createLabelPool(group, { createText: opts.createText, font: opts.font ?? LABEL_FONT });
+}
 function materialize(event, groups, ctx) {
   switch (event.type) {
     case "path":
@@ -20422,13 +24092,10 @@ function materialize(event, groups, ctx) {
       materializeView(event, ctx);
       break;
     case "label":
-      materializeLabel(event, groups.glyphGroup, ctx);
+      materializeLabel(event, ctx);
       break;
     case "grid":
       materializeGrid(event, groups.gridGroup);
-      break;
-    case "clear":
-      clearGroups(groups, ctx.head);
       break;
     case "wait":
       break;
@@ -20464,10 +24131,10 @@ function materializePath(event, pathGroup, shapist, sourceId, materials) {
 }
 var SELF_SOURCE = "self";
 function newRun(event, source, layer, materials) {
-  const line = new GrowLine(materials.getInk(event.thickness));
-  line.mesh._sourceId = source;
-  layer.group.add(line.mesh);
-  return { runId: event.runId, source, line };
+  const line2 = new GrowLine(materials.getInk(event.thickness));
+  line2.mesh._sourceId = source;
+  layer.group.add(line2.mesh);
+  return { runId: event.runId, source, line: line2 };
 }
 function accumulateTrail(event, layer, materials) {
   if (!event.points || event.points.length === 0) return layer;
@@ -20510,10 +24177,10 @@ function materializeHead(event, ctx) {
     }
   }
   if (event.headSize) {
-    ctx.head.show();
-    ctx.head.update(pos, event.rotation, event.color, event.headSize);
+    ctx.head?.show?.();
+    ctx.head?.update?.(pos, event.rotation, event.color, event.headSize);
   } else {
-    ctx.head.hide();
+    ctx.head?.hide?.();
   }
 }
 function materializeView(event, ctx) {
@@ -20524,23 +24191,9 @@ function materializeView(event, ctx) {
     ctx.camera.updateProjectionMatrix();
   }
 }
-function materializeLabel(event, glyphGroup, ctx) {
+function materializeLabel(event, ctx) {
   try {
-    const newText = new ft2();
-    glyphGroup.add(newText);
-    newText.text = event.text;
-    newText.fontSize = event.textSize;
-    newText.textAlign = "center";
-    newText.anchorX = "center";
-    newText.anchorY = "45%";
-    newText.font = "/fonts/paperLang.ttf";
-    newText.position.x = event.position[0];
-    newText.position.y = event.position[1];
-    newText.position.z = event.position[2];
-    newText.quaternion.copy(event.rotation);
-    newText.color = event.color;
-    newText.sync(() => ctx?.requestRender?.());
-    glyphGroup.elements.push(newText);
+    ctx.labels?.write(event, ctx.requestRender);
   } catch (error) {
     console.warn("Error writing text:", error);
   }
@@ -20555,18 +24208,6 @@ function materializeGrid(event, gridGroup) {
   gridHelper.position.set(event.position[0], event.position[1], event.position[2]);
   gridHelper.quaternion.copy(event.rotation);
   gridGroup.add(gridHelper);
-}
-function clearGroups(groups, head) {
-  const headGroup = head?.turtleGroup;
-  for (const child of [...groups.pathGroup.children]) {
-    if (child !== headGroup) groups.pathGroup.remove(child);
-  }
-  groups.gridGroup.clear();
-  if (groups.glyphGroup.elements) {
-    groups.glyphGroup.elements.forEach((text) => text.dispose());
-    groups.glyphGroup.elements = [];
-  }
-  groups.glyphGroup.clear();
 }
 
 // assets/js/turtling/timeline.js
@@ -20685,13 +24326,16 @@ function createCompositor(scheduler, stage, opts = {}) {
   const ambientLayers = /* @__PURE__ */ new Map();
   function getOrCreateLayer(id2, makeHead = true) {
     const existing = ambientLayers.get(id2);
-    if (existing) return existing;
+    if (existing) {
+      if (makeHead && !existing.head && createHead) existing.head = createHead(existing.group);
+      return existing;
+    }
     const group = new Tr();
-    group.elements = [];
+    const labels = createLabels(group, { createText: opts.createText });
     stage.scene.add(group);
     const head = createHead && makeHead ? createHead(group) : null;
     const shapist = createShapist ? createShapist(group) : null;
-    const layer = { group, head, shapist, trails: /* @__PURE__ */ new Map() };
+    const layer = { group, head, shapist, labels, trails: /* @__PURE__ */ new Map() };
     ambientLayers.set(id2, layer);
     return layer;
   }
@@ -20699,26 +24343,22 @@ function createCompositor(scheduler, stage, opts = {}) {
     if (c2.geometry) c2.geometry.dispose();
     if (c2.material && !c2.material._cached) c2.material.dispose();
   }
-  function clearChildLayer(layer) {
+  function clearChildLayer(layer, { keepLabels = false } = {}) {
     const headGroup = layer.head?.turtleGroup;
     for (const child of [...layer.group.children]) {
-      if (child === headGroup) continue;
+      if (child === headGroup || child._label) continue;
       child.traverse(disposeMesh);
       layer.group.remove(child);
     }
-    if (layer.group.elements) {
-      layer.group.elements.forEach((text) => text.dispose?.());
-      layer.group.elements = [];
-    }
+    if (keepLabels) layer.labels.rewrite();
+    else layer.labels.hide();
     layer.trails.clear();
   }
   function disposeLayer(id2, layer) {
     if (layer.head) layer.head.hide();
     if (layer.shapist) layer.shapist.dispose();
+    layer.labels.dispose();
     layer.group.traverse(disposeMesh);
-    if (layer.group.elements) {
-      layer.group.elements.forEach((t2) => t2.dispose?.());
-    }
     stage.scene.remove(layer.group);
     ambientLayers.delete(id2);
   }
@@ -20728,13 +24368,16 @@ function createCompositor(scheduler, stage, opts = {}) {
     for (const [id2, ambient] of scheduler.registry) {
       const events = ambient.channel.drain();
       const poses = takeSync(ambient);
-      if (events.length === 0 && poses.length === 0) continue;
       const isRoot = ambient === scheduler.root;
-      const layer = getOrCreateLayer(id2, !isRoot);
+      const isPlace = !isRoot && exposed(ambient);
+      if (events.length === 0 && poses.length === 0) continue;
+      const visibleHead = poses.some((p2) => p2.type === "head" && p2.headSize) || events.some((e2) => e2.type === "head" && e2.headSize);
+      const layer = getOrCreateLayer(id2, !isRoot && (!isPlace || visibleHead));
       const camOn = ambient.isLens ? inFocusedSubtree(ambient) : focus.isFocused(ambient);
       const childCtx = {
         materials: stage.materials,
         shapist: layer.shapist,
+        labels: layer.labels,
         head: layer.head,
         camera: camOn ? stage.camera : null,
         controls: camOn ? controls : null,
@@ -20742,7 +24385,9 @@ function createCompositor(scheduler, stage, opts = {}) {
         // Wake render-on-demand when async geometry lands.
         requestRender: stage.requestRender
       };
-      const childGroups = { pathGroup: layer.group, gridGroup: layer.group, glyphGroup: layer.group };
+      const childGroups = { pathGroup: layer.group, gridGroup: layer.group };
+      const willPrint = events.some((e2) => e2.type === "label");
+      let printing = false;
       for (const event of events) {
         if (event.type === "error") continue;
         if (event.type === "beat") {
@@ -20750,13 +24395,18 @@ function createCompositor(scheduler, stage, opts = {}) {
           continue;
         }
         if (event.type === "clear") {
-          clearChildLayer(layer);
+          clearChildLayer(layer, { keepLabels: willPrint });
+        } else if (event.type === "label") {
+          if (!printing && !events.some((e2) => e2.type === "clear")) layer.labels.rewrite();
+          printing = true;
+          materialize(event, childGroups, childCtx);
         } else if (event.type === "path") {
           accumulateTrail(event, layer, stage.materials);
         } else {
           materialize(event, childGroups, childCtx);
         }
       }
+      if (printing || willPrint) layer.labels.trim();
       for (const pose of poses) materialize(pose, childGroups, childCtx);
       flushTrail(layer);
       produced = true;
@@ -20865,9 +24515,9 @@ function createCompositor(scheduler, stage, opts = {}) {
   const _scratchHeadPos = new Ti();
   function scaleChildHeads() {
     for (const [id2, layer] of ambientLayers) {
+      const gp = layer.group.position;
       if (!layer.head) continue;
       const headPos = layer.head.position();
-      const gp = layer.group.position;
       _scratchHeadPos.set(gp.x + headPos.x, gp.y + headPos.y, gp.z + headPos.z);
       const dist = stage.camera.position.distanceTo(_scratchHeadPos);
       layer.head.scale(dist / 250);
@@ -20902,7 +24552,61 @@ function createCompositor(scheduler, stage, opts = {}) {
     get light() {
       return focus;
     },
+    // The pin shares the actual rendered head, not a guess from execution state.
+    // An empty place keeps its bead; once A walks, the ring leaves its centre open.
+    visibleHeadFor(id2) {
+      return !!ambientLayers.get(id2)?.head?.turtleGroup?.visible;
+    },
+    // The one world→scene mapping: eye and hand compose here, and the camera
+    // draws the result. Markers and gestures both read it, so a drawn point
+    // and its hit target cannot live in different frames. (id:laws-decl-interface)
+    viewReframe,
     // Play-gauge: layer poses + head local + first mesh opacity (probe only).
+    // Diagnostic: what the place's own layer holds, and whether each child is
+    // actually visible. (id:laws-decl-handle)
+    probeLayerFor(id2) {
+      const layer = ambientLayers.get(id2);
+      if (!layer) return null;
+      const meshInfo = (c2) => ({
+        type: c2.type,
+        visible: c2.visible,
+        renderOrder: c2.renderOrder,
+        parentIsGroup: c2.parent === layer.group,
+        groupInScene: stage.scene.children.includes(layer.group),
+        instanceCount: c2.geometry?.instanceCount ?? null,
+        startCount: c2.geometry?.attributes?.instanceStart?.count ?? null,
+        boundingSphere: c2.geometry?.boundingSphere ? [
+          c2.geometry.boundingSphere.center.x,
+          c2.geometry.boundingSphere.center.y,
+          c2.geometry.boundingSphere.center.z,
+          c2.geometry.boundingSphere.radius
+        ] : null,
+        material: c2.material ? {
+          type: c2.material.type,
+          visible: c2.material.visible,
+          opacity: c2.material.opacity,
+          transparent: c2.material.transparent,
+          linewidth: c2.material.linewidth,
+          resolution: c2.material.resolution ? [c2.material.resolution.x, c2.material.resolution.y] : null,
+          color: c2.material.color?.getHex?.() ?? null
+        } : null
+      });
+      return {
+        groupInScene: stage.scene.children.includes(layer.group),
+        children: layer.group.children.map(meshInfo),
+        trails: [...layer.trails.keys()].map((k2) => ({
+          key: String(k2),
+          segs: layer.trails.get(k2).line?.segmentCount ?? null,
+          synced: layer.trails.get(k2).line?._synced ?? null,
+          sameGeom: layer.trails.get(k2).line ? layer.trails.get(k2).line.mesh.geometry === layer.trails.get(k2).line.geometry : null,
+          geomInstanceCount: layer.trails.get(k2).line?.geometry?.instanceCount ?? null,
+          hasLine: !!layer.trails.get(k2).line,
+          meshVisible: layer.trails.get(k2).line?.mesh?.visible ?? null,
+          groupHas: layer.trails.get(k2).line?.mesh ? layer.group.children.includes(layer.trails.get(k2).line.mesh) : null
+        })),
+        head: layer.head ? "present" : null
+      };
+    },
     probeLayers() {
       const out = [];
       for (const [id2, layer] of ambientLayers) {
@@ -20945,8 +24649,18 @@ function createCompositor(scheduler, stage, opts = {}) {
       }
       setOpacityByAddress(kindled, degree.kindled);
     },
+    // A NEW PLAY (D011): reset the reveal origin. `now = t − epoch` returns to 0
+    // and the scheduler frontier clears, so a fresh seat at the axis origin plays
+    // from its start. An EDIT must not call this — it re-seats in place.
+    beginPlay() {
+      epoch = null;
+      lastWallT = null;
+      scheduler.lastTickTime = 0;
+    },
     // Own timeslice: never inherit a spent deadline (would park on first breath).
     flush() {
+      scheduler.withSlice(pacer.budgetMs, driveToRest);
+      scheduler.readouts.drain();
       scheduler.withSlice(pacer.budgetMs, driveToRest);
       drainAndMaterialize();
       updateGroupPositions();
@@ -20968,10 +24682,9 @@ function createCompositor(scheduler, stage, opts = {}) {
         else pacer.observe(t2 - frameStart);
       }
       frameStart = t2;
-      if (!scheduler.done) {
-        scheduler.withSlice(pacer.budgetMs, () => driveOneFrame(now));
-        drainAndMaterialize();
-      }
+      scheduler.readouts.drain();
+      scheduler.withSlice(pacer.budgetMs, () => driveOneFrame(now));
+      drainAndMaterialize();
       updateGroupPositions();
       cleanupOrphanedLayers();
       scaleChildHeads();
@@ -20994,6 +24707,24 @@ function createCompositor(scheduler, stage, opts = {}) {
       stage.materials.clear();
     }
   };
+}
+
+// assets/js/turtling/lab.js
+var LAB_INPUTS = [
+  "motionAdmission",
+  "motionAdmissionAsync",
+  "motionValidate",
+  "refusalStroke",
+  "observePureGoto"
+];
+function labInputs(law2) {
+  if (law2 == null) return {};
+  const inputs = {};
+  for (const key of Object.keys(law2)) {
+    if (!LAB_INPUTS.includes(key)) throw new Error(`unknown laboratory input: ${key}`);
+    inputs[key] = law2[key];
+  }
+  return inputs;
 }
 
 // assets/js/turtling/focus.js
@@ -21071,6 +24802,902 @@ function hatchVerdict({ now, present, mine, walking, changedAt, lastHatchAt, fir
   return { owed: true, reason: now - since >= BEAT[beat] ? beat : null };
 }
 
+// assets/js/turtling/laws/hand.js
+var wrapPi = (t2) => Math.atan2(Math.sin(t2), Math.cos(t2));
+var unit32 = (v2) => {
+  const n2 = Math.hypot(v2[0], v2[1], v2[2]) || 1;
+  return [v2[0] / n2, v2[1] / n2, v2[2] / n2];
+};
+function coneRig(cone2, anchor, x2, y2, project) {
+  const frame = cone2 && typeof project === "function" && Array.isArray(cone2.apex) && Array.isArray(cone2.axis) ? coneFrame(cone2.apex, cone2.axis, cone2.halfAngle) : null;
+  if (!frame || !anchor) return null;
+  const { apex: A2, axis: a2, u: u2, v: v2, open, point: point2 } = frame;
+  const hub = project(A2);
+  if (!hub) return null;
+  const d2 = [anchor[0] - A2[0], anchor[1] - A2[1], anchor[2] - A2[2]];
+  const h0 = dot(d2, a2);
+  const phi0 = Math.atan2(dot(d2, v2), dot(d2, u2));
+  const r0 = Math.hypot(x2 - hub.x, y2 - hub.y);
+  const psi0 = Math.atan2(y2 - hub.y, x2 - hub.x);
+  const here = project(point2(h0, phi0));
+  const probe = project(point2(h0, phi0 + 1e-3));
+  let handed = 1;
+  if (here && probe) {
+    const t0 = Math.atan2(here.y - hub.y, here.x - hub.x);
+    const t1 = Math.atan2(probe.y - hub.y, probe.x - hub.x);
+    if (Math.sin(t1 - t0) < 0) handed = -1;
+  }
+  const up2 = project(point2(h0 + 1, phi0));
+  const scale2 = here && up2 ? Math.hypot(up2.x - here.x, up2.y - here.y) : 1;
+  return {
+    apex: A2,
+    axis: a2,
+    u: u2,
+    v: v2,
+    open,
+    h0,
+    phi: phi0,
+    h: h0,
+    point: point2,
+    r0,
+    psi0,
+    psi: psi0,
+    handed,
+    hub: { x: hub.x, y: hub.y },
+    scale: scale2 > 1e-9 ? scale2 : 1
+  };
+}
+function coneTurn(rig, x2, y2) {
+  const dx = x2 - rig.hub.x, dy = y2 - rig.hub.y;
+  const r2 = Math.hypot(dx, dy);
+  const psi = Math.atan2(dy, dx);
+  rig.phi += rig.handed * wrapPi(psi - rig.psi);
+  rig.psi = psi;
+  const want = rig.h0 + (r2 - rig.r0) / rig.scale * CONE_RATE;
+  rig.h += CONE_EASE * (want - rig.h);
+  return rig.point(rig.h, rig.phi);
+}
+var sphereHand = {
+  rejects: true,
+  freeze({ anchor, ray: ray2, facing, locus }) {
+    const center = locus.center, radius = locus.radius;
+    const h0 = touchPlane(ray2, facingPlane(center, facing));
+    if (!h0) return null;
+    const f2 = unit32(facing);
+    const ax = anchor[0] - center[0], ay = anchor[1] - center[1], az = anchor[2] - center[2];
+    const along = ax * f2[0] + ay * f2[1] + az * f2[2];
+    return {
+      center: [...center],
+      radius,
+      planeNormal: [...facing],
+      far: along > 0,
+      disk: [
+        ax - along * f2[0] - (h0[0] - center[0]),
+        ay - along * f2[1] - (h0[1] - center[1]),
+        az - along * f2[2] - (h0[2] - center[2])
+      ]
+    };
+  },
+  place(state, { ray: ray2, detents }) {
+    const hit = touchPlane(ray2, facingPlane(state.center, state.planeNormal));
+    if (!hit) return null;
+    const { center, radius, disk, far } = state;
+    const f2 = unit32(state.planeNormal);
+    const vx = hit[0] - center[0] + disk[0];
+    const vy = hit[1] - center[1] + disk[1];
+    const vz = hit[2] - center[2] + disk[2];
+    const r2 = Math.hypot(vx, vy, vz);
+    let point2;
+    if (r2 >= radius) {
+      const k2 = radius / r2;
+      point2 = [center[0] + vx * k2, center[1] + vy * k2, center[2] + vz * k2];
+    } else {
+      const lift = (far ? 1 : -1) * Math.sqrt(radius * radius - r2 * r2);
+      point2 = [center[0] + vx + f2[0] * lift, center[1] + vy + f2[1] * lift, center[2] + vz + f2[2] * lift];
+    }
+    return detents ? magnet(center, radius, point2, detents) : point2;
+  }
+};
+var coneHand = {
+  rejects: false,
+  freeze({ anchor, project, pointer, locus }) {
+    const rig = coneRig(locus, anchor, pointer.x, pointer.y, project);
+    return rig ? { rig } : null;
+  },
+  place(state, { pointer }) {
+    return coneTurn(state.rig, pointer.x, pointer.y);
+  }
+};
+function handFor(locus) {
+  if (locus?.kind === "sphere" && locus.radius > 0 && Array.isArray(locus.center)) return sphereHand;
+  if (locus?.kind === "cone" && Array.isArray(locus.apex) && isOpenCone(locus.halfAngle)) return coneHand;
+  return null;
+}
+var smoothstep = (t2) => t2 <= 0 ? 0 : t2 >= 1 ? 1 : t2 * t2 * (3 - 2 * t2);
+var slerp = (a2, b2, t2) => {
+  const dot2 = Math.max(-1, Math.min(1, a2[0] * b2[0] + a2[1] * b2[1] + a2[2] * b2[2]));
+  const th2 = Math.acos(dot2);
+  if (th2 < 1e-9) return [...a2];
+  const s2 = Math.sin(th2);
+  const ka3 = Math.sin((1 - t2) * th2) / s2;
+  const kb = Math.sin(t2 * th2) / s2;
+  return [a2[0] * ka3 + b2[0] * kb, a2[1] * ka3 + b2[1] * kb, a2[2] * ka3 + b2[2] * kb];
+};
+function magnet(center, radius, point2, opts = {}) {
+  const { paper = false, poles = false, band = DETENT_BAND, hold = DETENT_HOLD } = opts ?? {};
+  if (!point2 || !(radius > 0) || !(band > 0) || !paper && !poles) return point2;
+  const d2 = [point2[0] - center[0], point2[1] - center[1], point2[2] - center[2]];
+  const r2 = Math.hypot(d2[0], d2[1], d2[2]);
+  if (!(r2 > 1e-12)) return point2;
+  const u2 = [d2[0] / r2, d2[1] / r2, d2[2] / r2];
+  let best = null;
+  let bestAng = band;
+  const arming = (target) => {
+    const t2 = [target[0] - center[0], target[1] - center[1], target[2] - center[2]];
+    const tm = Math.hypot(t2[0], t2[1], t2[2]);
+    if (!(tm > 1e-12)) return;
+    const ang = Math.acos(Math.max(-1, Math.min(1, (u2[0] * t2[0] + u2[1] * t2[1] + u2[2] * t2[2]) / tm)));
+    if (ang < bestAng) {
+      bestAng = ang;
+      best = [t2[0] / tm, t2[1] / tm, t2[2] / tm];
+    }
+  };
+  if (paper && center[2] * center[2] <= radius * radius) {
+    const rho = Math.sqrt(radius * radius - center[2] * center[2]);
+    const a2 = Math.atan2(point2[1] - center[1], point2[0] - center[0]);
+    arming([center[0] + rho * Math.cos(a2), center[1] + rho * Math.sin(a2), 0]);
+  }
+  if (poles) {
+    arming([center[0], center[1], center[2] + radius]);
+    arming([center[0], center[1], center[2] - radius]);
+  }
+  if (!best) return point2;
+  const inner = Math.min(Math.max(hold, 0), band * 0.999);
+  const w2 = bestAng <= inner ? 1 : smoothstep((band - bestAng) / (band - inner));
+  const bent = slerp(u2, best, w2);
+  return [center[0] + radius * bent[0], center[1] + radius * bent[1], center[2] + radius * bent[2]];
+}
+
+// assets/js/turtling/laws/gesture.js
+function pointerSamples(event) {
+  const coalesced = typeof event?.getCoalescedEvents === "function" ? event.getCoalescedEvents() : null;
+  return coalesced && coalesced.length ? coalesced : [event];
+}
+function moveGesture(handle, event) {
+  let cancelled = false;
+  for (const sample of pointerSamples(event)) {
+    const answer = handle.pointerMove({ pointerId: sample.pointerId, x: sample.clientX, y: sample.clientY });
+    if (answer?.cancelled) cancelled = true;
+  }
+  return cancelled;
+}
+function createGesture(deps) {
+  const {
+    candidates,
+    // () => [{ name, frame }] — the places currently offered
+    anchorOf,
+    // (frame) => live world transform — where the point IS
+    birthOf,
+    // (frame) => birth frame — the frame the request is expressed in
+    registered,
+    // (frame) => boolean
+    canTouch = () => true,
+    // an empty point may be touched; a walking head owns its point
+    requestMotion,
+    // (frame, pose, revision) => verdict
+    onAccepted = null,
+    // ({ frame, from, to }) => void — one accepted hand move
+    revision,
+    // () => number
+    wake,
+    // () => void — an idle canvas must paint an accepted move
+    project,
+    // (worldPosition) => { x, y } in CSS pixels
+    rayAt,
+    // (x, y) => { origin, direction }
+    facing,
+    // () => the camera's world viewing direction
+    capture,
+    // ({ pointerId }) => void
+    release,
+    // ({ pointerId }) => void
+    setControls,
+    // (enabled) => void
+    controlsEnabled,
+    // () => boolean — the camera's OWN current state
+    onReadout,
+    // (line) => void
+    radius = HIT_RADIUS,
+    slop = DRAG_SLOP,
+    locusOf = null,
+    // (frame) => named locus — a sphere's hand is its camera-plane disk
+    detents = null
+    // { paper, poles, band, hold } — slight stickiness at the ball's landmarks
+  } = deps;
+  const poseOf = (frame) => frame.transform.deref();
+  let grab = null;
+  const endCapture = (reason, acceptedPosition) => {
+    if (!grab) return false;
+    const { pointerId, name, controlsWasEnabled } = grab;
+    grab = null;
+    release({ pointerId });
+    setControls(controlsWasEnabled);
+    if (reason) {
+      onReadout(readout({ point: name, accepted: acceptedPosition ?? null, requested: null, outcome: reason }));
+    }
+    return true;
+  };
+  return {
+    // Decide ownership here, before the camera consumes the event.
+    pointerDown({ pointerId, x: x2, y: y2 }) {
+      if (grab) return { claimed: false };
+      const here = { x: x2, y: y2 };
+      for (const candidate of candidates()) {
+        if (!canTouch(candidate.frame)) continue;
+        const anchor = anchorOf(candidate.frame).position;
+        const projected = project(anchor);
+        if (!projected) continue;
+        if (!hitTest(here, projected, radius)) continue;
+        const accepted = poseOf(candidate.frame);
+        const gate = eligibility({
+          frame: candidate.frame,
+          registered: registered(candidate.frame),
+          accepted
+        });
+        if (!gate.ok) {
+          onReadout(readout({
+            point: candidate.name,
+            accepted: accepted.position ?? null,
+            requested: null,
+            outcome: gate.reason
+          }));
+          return { claimed: false };
+        }
+        const ray2 = rayAt(x2, y2);
+        if (!ray2) return { claimed: false };
+        const face = facing();
+        const plane2 = facingPlane(anchor, face);
+        const hit = touchPlane(ray2, plane2);
+        if (!hit) return { claimed: false };
+        const locus = locusOf?.(candidate.frame);
+        let hand = handFor(locus);
+        let handState = null;
+        if (hand) {
+          handState = hand.freeze({ anchor, ray: ray2, facing: face, pointer: { x: x2, y: y2 }, project, locus });
+          if (!handState) {
+            if (hand.rejects) return { claimed: false };
+            hand = null;
+          }
+        }
+        grab = {
+          pointerId,
+          name: candidate.name,
+          frame: candidate.frame,
+          plane: plane2,
+          hand,
+          handState,
+          origin: [...anchor],
+          offset: [anchor[0] - hit[0], anchor[1] - hit[1], anchor[2] - hit[2]],
+          down: { x: x2, y: y2 },
+          armed: false,
+          controlsWasEnabled: controlsEnabled()
+        };
+        capture({ pointerId });
+        setControls(false);
+        return { claimed: true, point: candidate.name, frame: candidate.frame };
+      }
+      return { claimed: false };
+    },
+    pointerMove({ pointerId, x: x2, y: y2 }) {
+      if (!grab || grab.pointerId !== pointerId) return { moved: false };
+      const accepted = poseOf(grab.frame);
+      const gate = eligibility({
+        frame: grab.frame,
+        registered: registered(grab.frame),
+        accepted
+      });
+      if (!gate.ok || !canTouch(grab.frame)) {
+        endCapture(gate.ok ? OUTCOME.cancelled : gate.reason, accepted.position ?? null);
+        return { moved: false, cancelled: true };
+      }
+      if (!grab.armed) {
+        if (Math.hypot(x2 - grab.down.x, y2 - grab.down.y) <= slop) return { moved: false };
+        grab.armed = true;
+      }
+      const birth2 = birthOf(grab.frame);
+      const ray2 = rayAt(x2, y2);
+      if (!ray2) return { moved: false };
+      const placed = grab.hand ? grab.hand.place(grab.handState, { ray: ray2, pointer: { x: x2, y: y2 }, project, detents }) : null;
+      let request = placed;
+      if (!request) {
+        const hit = touchPlane(ray2, grab.plane);
+        if (!hit) return { moved: false };
+        request = [hit[0] + grab.offset[0], hit[1] + grab.offset[1], hit[2] + grab.offset[2]];
+      }
+      const requested = requestedPose(accepted, birthLocal(request, birth2));
+      const verdict = requestMotion(grab.frame, requested, revision());
+      const outcome = verdict.kind === "accept" ? OUTCOME.accepted : outcomeOf(verdict);
+      if (verdict.kind === "accept" && onAccepted) {
+        onAccepted({ frame: grab.frame, from: accepted.position, to: verdict.pose.position });
+      }
+      onReadout(readout({
+        point: grab.name,
+        accepted: accepted.position,
+        requested: requested.position,
+        outcome
+      }));
+      if (verdict.kind === "accept") wake();
+      return { moved: true, outcome };
+    },
+    // Release keeps every accepted move and asks for nothing further.
+    pointerUp({ pointerId }) {
+      if (!grab || grab.pointerId !== pointerId) return { ended: false };
+      endCapture(null);
+      return { ended: true };
+    },
+    // Cancellation discards the pending target; accepted movement stands.
+    pointerCancel({ pointerId }) {
+      if (!grab || grab.pointerId !== pointerId) return { ended: false };
+      endCapture(OUTCOME.cancelled, poseOf(grab.frame).position ?? null);
+      return { ended: true };
+    },
+    // Disposal, fresh play and a replaced scope all arrive here.
+    dispose() {
+      const ended = endCapture(OUTCOME.cancelled, grab ? poseOf(grab.frame).position ?? null : null);
+      return { ended };
+    },
+    get grabbed() {
+      return grab ? { name: grab.name, pointerId: grab.pointerId } : null;
+    }
+  };
+}
+
+// assets/js/turtling/laws/pin.js
+var TAU = Math.PI * 2;
+var PAPER = "243,237,223";
+var DOT_REST = 2.5;
+var DOT_HELD = 3.5;
+var FACING_MIN = 4;
+var ARM_MIN = 4;
+function coordinate2(position2) {
+  const [x2, y2, z2] = position2;
+  const plane2 = `${x2.toFixed(2)}, ${y2.toFixed(2)}`;
+  if (!Number.isFinite(z2)) return plane2;
+  const depth = z2.toFixed(2);
+  return depth === "0.00" || depth === "-0.00" ? plane2 : `${plane2}, ${depth}`;
+}
+function drawPin(ctx, {
+  cx,
+  cy,
+  name = "",
+  width = 0,
+  withHead = false,
+  touchable = false,
+  held = false,
+  accepted = null,
+  outcome = null,
+  ghost = null,
+  facing = null,
+  ink = null
+}) {
+  const radius = touchable || withHead ? 18 : 9;
+  const dot2 = held ? DOT_HELD : DOT_REST;
+  const reach = radius - 5;
+  const base = dot2 + 0.5;
+  const span = facing ? Math.hypot(facing.x, facing.y) : 0;
+  if (!withHead && span >= FACING_MIN && reach - base >= ARM_MIN) {
+    const ux = facing.x / span, uy = facing.y / span;
+    const half = held ? 2.2 : 1.6;
+    ctx.beginPath();
+    ctx.moveTo(cx + ux * base - uy * half, cy + uy * base + ux * half);
+    ctx.lineTo(cx + ux * reach, cy + uy * reach);
+    ctx.lineTo(cx + ux * base + uy * half, cy + uy * base - ux * half);
+    ctx.closePath();
+    ctx.fillStyle = ink || `rgba(${PAPER},${held ? 0.75 : 0.62})`;
+    ctx.fill();
+  }
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius, 0, TAU);
+  ctx.strokeStyle = ink || `rgba(${PAPER},${touchable ? held ? 0.85 : 0.5 : 0.28})`;
+  ctx.lineWidth = touchable && held ? 1.6 : 1;
+  ctx.stroke();
+  if (!withHead) {
+    ctx.beginPath();
+    ctx.arc(cx, cy, dot2, 0, TAU);
+    const dotAlpha = held ? 0.95 : 0.82;
+    if (facing && span < FACING_MIN) {
+      ctx.strokeStyle = ink || `rgba(${PAPER},${dotAlpha})`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    } else {
+      ctx.fillStyle = ink || `rgba(${PAPER},${dotAlpha})`;
+      ctx.fill();
+    }
+  }
+  const lines = [name];
+  if (held && accepted) lines.push(coordinate2(accepted));
+  if (held && outcome && outcome !== "accepted") lines.push(outcome);
+  else if (!held && touchable && ghost?.fade > 0) lines.push(ghost.text);
+  ctx.font = "11px ui-monospace, SFMono-Regular, Menlo, monospace";
+  const gap = radius + 12;
+  const flip = cx + gap + Math.max(...lines.map((s2) => ctx.measureText(s2).width)) > width;
+  ctx.textAlign = flip ? "right" : "left";
+  ctx.textBaseline = "alphabetic";
+  lines.forEach((line2, index) => {
+    const fade = !held && index > 0 ? ghost?.fade ?? 1 : 1;
+    ctx.fillStyle = `rgba(${PAPER},${(index === 0 ? 0.52 : 0.34) * fade})`;
+    ctx.fillText(line2, cx + (flip ? -gap : gap), cy - radius + 2 + index * 13);
+  });
+  ctx.textAlign = "left";
+}
+var GHOST_DASH = [4, 5];
+function strokeDashed(ctx, screenPoints, alpha) {
+  if (!screenPoints || screenPoints.length < 2) return;
+  ctx.save();
+  ctx.beginPath();
+  let pen = false;
+  for (const p2 of screenPoints) {
+    if (!p2) {
+      pen = false;
+      continue;
+    }
+    if (pen) ctx.lineTo(p2.x, p2.y);
+    else ctx.moveTo(p2.x, p2.y);
+    pen = true;
+  }
+  ctx.setLineDash(GHOST_DASH);
+  ctx.strokeStyle = `rgba(${PAPER},${alpha})`;
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.restore();
+}
+function drawTrace(ctx, screenPoints) {
+  strokeDashed(ctx, screenPoints, 0.26);
+}
+var RIM_ALPHA = 0.18;
+function drawRim(ctx, screenPoints) {
+  if (!screenPoints || screenPoints.length < 2) return;
+  ctx.save();
+  ctx.beginPath();
+  let pen = false;
+  for (const p2 of screenPoints) {
+    if (!p2) {
+      pen = false;
+      continue;
+    }
+    if (pen) ctx.lineTo(p2.x, p2.y);
+    else ctx.moveTo(p2.x, p2.y);
+    pen = true;
+  }
+  ctx.strokeStyle = `rgba(${PAPER},${RIM_ALPHA})`;
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.restore();
+}
+function drawGhostMark(ctx, x2, y2, r2 = 3.5) {
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(x2, y2, r2, 0, Math.PI * 2);
+  ctx.setLineDash(GHOST_DASH);
+  ctx.strokeStyle = `rgba(${PAPER},0.4)`;
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.restore();
+}
+var WISH_DASH = [1, 3];
+function drawWish(ctx, from, to) {
+  if (!from || !to) return;
+  if (Math.hypot(from.x - to.x, from.y - to.y) < 1) return;
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(from.x, from.y);
+  ctx.lineTo(to.x, to.y);
+  ctx.setLineDash(WISH_DASH);
+  ctx.strokeStyle = `rgba(${PAPER},0.32)`;
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.beginPath();
+  ctx.arc(to.x, to.y, 3, 0, TAU);
+  ctx.strokeStyle = `rgba(${PAPER},0.5)`;
+  ctx.stroke();
+  ctx.restore();
+}
+var SPOKE_DASH = [1, 3];
+function drawSpoke(ctx, from, to) {
+  if (!from || !to) return;
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(from.x, from.y);
+  ctx.lineTo(to.x, to.y);
+  ctx.setLineDash(SPOKE_DASH);
+  ctx.strokeStyle = `rgba(${PAPER},0.34)`;
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.restore();
+}
+function drawAxis(ctx, a2, b2, { strong = false } = {}) {
+  if (!a2 || !b2) return;
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(a2.x, a2.y);
+  ctx.lineTo(b2.x, b2.y);
+  ctx.strokeStyle = `rgba(${PAPER},${strong ? 0.5 : 0.26})`;
+  ctx.lineWidth = strong ? 1.4 : 1;
+  if (!strong) ctx.setLineDash([2, 3]);
+  ctx.stroke();
+  ctx.restore();
+}
+function drawCurve(ctx, points2, { near = 0.5, far = 0.14 } = {}) {
+  if (!points2) return;
+  ctx.save();
+  ctx.lineWidth = 1;
+  for (let i2 = 1; i2 < points2.length; i2++) {
+    const a2 = points2[i2 - 1], b2 = points2[i2];
+    if (!a2 || !b2) continue;
+    const t2 = ((a2.t ?? 0) + (b2.t ?? 0)) / 2;
+    ctx.beginPath();
+    ctx.moveTo(a2.x, a2.y);
+    ctx.lineTo(b2.x, b2.y);
+    ctx.strokeStyle = `rgba(${PAPER},${(near + (far - near) * t2).toFixed(3)})`;
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+// assets/js/turtling/laws/constraints.js
+function rankOf(normals) {
+  const basis = [];
+  for (const n2 of normals) {
+    let v2 = [...n2];
+    for (const b2 of basis) {
+      const d2 = dot(v2, b2);
+      v2 = [v2[0] - d2 * b2[0], v2[1] - d2 * b2[1], v2[2] - d2 * b2[2]];
+    }
+    const m2 = len(v2);
+    if (m2 > 1e-9) basis.push(v2.map((x2) => x2 / m2));
+  }
+  return basis.length;
+}
+function stateOf({
+  at: at2 = null,
+  headed = false,
+  exposed: exposed2 = true,
+  isPlace = true,
+  error = null,
+  unresolved = null,
+  constraints = []
+} = {}) {
+  const known = finite3(at2);
+  const role = headed ? "headed" : "point";
+  const status = !known || error ? "unresolved" : unresolved || !exposed2 || !isPlace ? "previous" : "accepted";
+  const distances = constraints.filter((c2) => c2.feature === "distance" && Number.isFinite(c2.radius) && finite3(c2.other)).map((c2) => ({ other: [...c2.other], radius: c2.radius, held: c2.otherHeld === true }));
+  const pinned = constraints.some((c2) => c2.pinned) || distances.some((c2) => c2.radius === 0 && c2.held);
+  const coincident = distances.some((c2) => c2.radius === 0 && !c2.held);
+  const coordinates = constraints.filter((c2) => c2.feature === "coordinate" && c2.plane && finite3(c2.plane.point) && c2.plane.normal).map((c2) => ({ axis: c2.axis, value: c2.value, plane: { point: [...c2.plane.point], normal: [...c2.plane.normal] } }));
+  const cones = constraints.filter((c2) => c2.feature === "tilt" && finite3(c2.apex) && finite3(c2.axis) && Number.isFinite(c2.halfAngle)).map((c2) => ({ apex: [...c2.apex], axis: [...c2.axis], halfAngle: c2.halfAngle }));
+  const truth = { pinned, coincident, distances, coordinates, cones };
+  const resolved = pinned || status !== "accepted" || role === "headed" ? [] : distances.filter((c2) => c2.radius > 0).map((c2) => ({
+    normal: unit(sub(at2, c2.other)) ?? [1, 0, 0],
+    // coincident: a stated direction
+    locus: { kind: "sphere", center: [...c2.other], radius: c2.radius }
+  }));
+  const normals = resolved.map((r2) => r2.normal);
+  const coupled = coincident && !pinned;
+  let dof = !known || role === "headed" || status !== "accepted" ? 0 : pinned ? 0 : coupled ? 0 : Math.max(0, 3 - rankOf(normals));
+  const pointLocus = !known ? null : pinned ? constraints.some((c2) => c2.pinned) ? { kind: "point", at: [...at2] } : { kind: "point", at: [...distances.find((c2) => c2.radius === 0 && c2.held).other] } : resolved.length === 1 ? resolved[0].locus : null;
+  const setOf = (c2) => {
+    if (c2.set) return c2.set;
+    if (c2.feature === "coordinate" && c2.plane) return plane(c2.plane.point, c2.plane.normal);
+    if (c2.feature === "tilt" && finite3(c2.apex) && finite3(c2.axis) && Number.isFinite(c2.halfAngle)) {
+      return cone(c2.apex, c2.axis, c2.halfAngle);
+    }
+    if (c2.feature === "distance" && Number.isFinite(c2.radius) && finite3(c2.other)) {
+      if (c2.radius > 0) return sphere(c2.other, c2.radius);
+      if (c2.radius === 0) return point(c2.other);
+      return null;
+    }
+    return null;
+  };
+  const sets = constraints.map(setOf).filter(Boolean);
+  let locus = pointLocus;
+  if (status === "accepted" && role === "point" && !pinned && sets.length > 0) {
+    const met = meetAll(sets);
+    const named = (kind, extra = {}) => ({ kind, ...extra });
+    if (met.kind === "plane") locus = named("plane", { point: [...met.point], normal: [...met.normal] });
+    else if (met.kind === "halfplane") locus = named("halfplane", { point: [...met.point], normal: [...met.normal], dir: [...met.dir] });
+    else if (met.kind === "line") locus = named("line", { point: [...met.point], dir: [...met.dir] });
+    else if (met.kind === "ray") locus = named("ray", { point: [...met.point], dir: [...met.dir] });
+    else if (met.kind === "circle") locus = named("circle", { center: [...met.center], normal: [...met.normal], radius: met.radius, ...met.keep ? { keep: [...met.keep] } : {} });
+    else if (met.kind === "sphere") locus = named("sphere", { center: [...met.center], radius: met.radius });
+    else if (met.kind === "cone") locus = named("cone", { apex: [...met.apex], axis: [...met.axis], halfAngle: met.halfAngle });
+    else if (met.kind === "point") locus = named("point", { at: [...met.at] });
+    else if (met.kind === "conic") locus = named("conic", { shape: met.shape, origin: [...met.origin], u: [...met.u], v: [...met.v], normal: [...met.normal], Q: [...met.Q] });
+    else if (met.kind === "points") locus = named("points", { at: met.at.map((p2) => [...p2]) });
+    else locus = null;
+    dof = dofOf(met);
+  }
+  const offered = status === "accepted" && role === "point" && !pinned;
+  const interaction = {
+    offered,
+    movable: !offered ? "none" : dof ? "point" : "none",
+    partners: coupled ? distances.filter((c2) => c2.radius === 0 && !c2.held).map((c2) => [...c2.other]) : [],
+    normals,
+    dof,
+    locus
+  };
+  const tag = status !== "accepted" ? "unresolved" : role === "headed" ? "headed" : pinned ? "pinned" : "free";
+  return {
+    role,
+    truth,
+    status,
+    interaction,
+    tag,
+    at: known ? [...at2] : null,
+    headed,
+    pinned,
+    normals,
+    dof,
+    locus
+  };
+}
+function heldIdentity(candidate, laws, registry, seen = /* @__PURE__ */ new Set()) {
+  if (!candidate) return true;
+  if (seen.has(candidate.id)) return false;
+  if (candidate.generator != null || candidate.actorState != null) return true;
+  seen.add(candidate.id);
+  for (const law2 of laws) {
+    if (law2.feature === "position" && law2.endpoints[0] === candidate.id) return true;
+    if (law2.feature === "distance" && law2.predicate === 0 && (law2.endpoints[0] === candidate.id || law2.endpoints[1] === candidate.id)) {
+      const otherId = law2.endpoints[0] === candidate.id ? law2.endpoints[1] : law2.endpoints[0];
+      if (heldIdentity(registry.get(otherId), laws, registry, seen)) return true;
+    }
+  }
+  return false;
+}
+function silhouette(locus, viewDir, segments = 48, eye = null) {
+  if (!locus || locus.kind !== "sphere") return null;
+  const { center, radius } = locus;
+  if (!(radius > 0)) return null;
+  if (finite3(eye)) {
+    const oc2 = sub(center, eye);
+    const d2 = len(oc2);
+    if (d2 > radius) {
+      const axis = unit(oc2);
+      const shift = radius * radius / d2;
+      const rim = radius * Math.sqrt(1 - radius * radius / (d2 * d2));
+      const mid = [center[0] - axis[0] * shift, center[1] - axis[1] * shift, center[2] - axis[2] * shift];
+      return ringOf(mid, axis, rim, segments);
+    }
+  }
+  return ringOf(center, unit(viewDir) ?? [0, 0, 1], radius, segments);
+}
+function axesOf(state) {
+  if (!state || state.tag !== "free" || state.normals.length === 0) return null;
+  const b2 = basisOf(state.normals[0]);
+  return b2 ? { normal: b2.n, tangent: [b2.u, b2.v] } : null;
+}
+function sphereCurves(locus, at2, segments = 48) {
+  if (!locus || locus.kind !== "sphere" || !finite3(at2)) return null;
+  const { center, radius } = locus;
+  if (!(radius > 0)) return null;
+  const d2 = sub(at2, center);
+  const r2 = len(d2);
+  if (r2 < 1e-12) return null;
+  const el2 = Math.asin(Math.max(-1, Math.min(1, d2[2] / r2)));
+  const az = Math.atan2(d2[1], d2[0]);
+  const pt2 = (a2, e2) => [
+    center[0] + radius * Math.cos(e2) * Math.cos(a2),
+    center[1] + radius * Math.cos(e2) * Math.sin(a2),
+    center[2] + radius * Math.sin(e2)
+  ];
+  const parallel = [];
+  for (let i2 = 0; i2 <= segments; i2++) parallel.push(pt2(az + i2 / segments * Math.PI * 2, el2));
+  const meridian = [];
+  for (let i2 = 0; i2 <= segments; i2++) meridian.push(pt2(az, -Math.PI / 2 + i2 / segments * Math.PI));
+  return { parallel, meridian };
+}
+function circleCurve(locus, segments = 72) {
+  if (!locus || locus.kind !== "circle") return null;
+  return ringOf(locus.center, locus.normal, locus.radius, segments);
+}
+function coneCurve(cone2, at2, segments = 48) {
+  const axis = unit(cone2.axis);
+  if (!axis || !finite3(cone2.apex) || !finite3(at2)) return null;
+  const h2 = dot(sub(at2, cone2.apex), axis);
+  const open = openAngle(cone2.halfAngle);
+  if (open <= 1e-9) {
+    const reach = Math.abs(h2) > 1e-9 ? h2 : 1;
+    const tip = [0, 1, 2].map((k2) => cone2.apex[k2] + axis[k2] * reach);
+    return { ring: null, generators: [[[...cone2.apex], tip]] };
+  }
+  if (!(open < 90) || Math.abs(h2) <= 1e-9) return null;
+  const radius = coneLateral(h2, open);
+  const centre = [0, 1, 2].map((k2) => cone2.apex[k2] + axis[k2] * h2);
+  const ring = circleCurve({ kind: "circle", center: centre, normal: axis, radius }, segments);
+  if (!ring) return null;
+  const pick = (i2) => ring[Math.round(i2 / 4 * segments)];
+  return { ring, generators: [pick(0), pick(1), pick(2), pick(3)].map((p2) => [[...cone2.apex], p2]) };
+}
+function planePatch(locus, at2, size = 3.5) {
+  if (!locus || locus.kind !== "plane" || !finite3(at2)) return null;
+  const b2 = basisOf(locus.normal);
+  if (!b2) return null;
+  const r2 = Number.isFinite(size) ? size : 3.5;
+  const corner = (s2, t2) => [0, 1, 2].map((k2) => at2[k2] + r2 * (s2 * b2.u[k2] + t2 * b2.v[k2]));
+  const along = (d2) => [
+    [0, 1, 2].map((k2) => at2[k2] - r2 * d2[k2]),
+    [0, 1, 2].map((k2) => at2[k2] + r2 * d2[k2])
+  ];
+  return {
+    corners: [corner(-1, -1), corner(1, -1), corner(1, 1), corner(-1, 1), corner(-1, -1)],
+    axes: [{ from: along(b2.u)[0], to: along(b2.u)[1] }, { from: along(b2.v)[0], to: along(b2.v)[1] }]
+  };
+}
+var RIM_AXIS_COS = Math.cos(25 * Math.PI / 180);
+var POLE = [0, 0, 1];
+function rimReads(locus, viewDir, eye) {
+  if (locus?.kind !== "sphere" || !finite3(eye)) return true;
+  const sight = Array.isArray(viewDir) ? unit(viewDir) : null;
+  return !sight || Math.abs(dot(sight, POLE)) < RIM_AXIS_COS;
+}
+function marksOf(locus, { at: at2 = null, size = 3.5, viewDir = null, eye = null, segments } = {}) {
+  const empty = { curves: [], traces: [], axes: [], ghosts: [], rings: [], spokes: [] };
+  if (!locus) return empty;
+  switch (locus.kind) {
+    case "conic":
+      return { ...empty, traces: conicSamples(locus) };
+    case "circle": {
+      let c2 = circleCurve(locus, segments ?? 72);
+      if (c2 && locus.keep) c2 = c2.filter((p2) => {
+        const d2 = p2.map((x2, i2) => x2 - locus.center[i2]);
+        return d2[0] * locus.keep[0] + d2[1] * locus.keep[1] + d2[2] * locus.keep[2] >= -1e-9;
+      });
+      const spokes = at2 && finite3(locus.center) ? [[[...locus.center], [...at2]]] : [];
+      return c2 && c2.length > 1 ? { ...empty, curves: [c2], spokes } : { ...empty, spokes };
+    }
+    case "cone": {
+      const open = openAngle(locus.halfAngle);
+      if (open >= 90 - 1e-9) {
+        const patch = planePatch({ kind: "plane", point: locus.apex, normal: locus.axis }, at2, size);
+        return patch ? { ...empty, curves: [patch.corners], axes: patch.axes.map((ax) => [ax.from, ax.to]) } : empty;
+      }
+      const cc = coneCurve(locus, at2, segments ?? 48);
+      return cc ? { ...empty, curves: cc.ring ? [cc.ring] : [], axes: cc.generators } : empty;
+    }
+    case "plane":
+    case "halfplane": {
+      const patch = planePatch({ kind: "plane", point: locus.point, normal: locus.normal }, at2, size);
+      return patch ? { ...empty, curves: [patch.corners], axes: patch.axes.map((ax) => [ax.from, ax.to]) } : empty;
+    }
+    case "line": {
+      if (!finite3(at2) || !locus.dir) return empty;
+      const half = Number.isFinite(size) ? size : 3.5;
+      const a2 = [0, 1, 2].map((k2) => at2[k2] - locus.dir[k2] * half);
+      const b2 = [0, 1, 2].map((k2) => at2[k2] + locus.dir[k2] * half);
+      return { ...empty, axes: [[a2, b2]] };
+    }
+    case "ray": {
+      if (!finite3(at2) || !locus.dir) return empty;
+      const half = Number.isFinite(size) ? size : 3.5;
+      const b2 = [0, 1, 2].map((k2) => at2[k2] + locus.dir[k2] * half);
+      return { ...empty, axes: [[at2, b2]] };
+    }
+    case "points":
+      return { ...empty, ghosts: locus.at ?? [] };
+    case "sphere": {
+      const ring = (eye || viewDir) && rimReads(locus, viewDir, eye) ? silhouette(locus, viewDir, segments ?? 48, eye) : null;
+      const curves = at2 ? sphereCurves(locus, at2, segments ?? 48) : null;
+      return {
+        ...empty,
+        // Parallel and meridian through the point — the axes made real. (id:laws-freedom)
+        curves: [curves?.parallel, curves?.meridian].filter(Boolean),
+        rings: ring ? [ring] : [],
+        spokes: at2 && finite3(locus.center) ? [[[...locus.center], [...at2]]] : []
+      };
+    }
+    default:
+      return empty;
+  }
+}
+function boundsOf2(locus, at2 = null) {
+  if (!locus) return null;
+  switch (locus.kind) {
+    case "point":
+      return finite3(locus.at) ? { center: [...locus.at], radius: 0 } : null;
+    case "points":
+      return unionBounds((locus.at ?? []).map((p2) => ({ center: [...p2], radius: 0 })));
+    case "line":
+    case "ray":
+    case "plane":
+    case "halfplane":
+      return finite3(locus.point) ? { center: [...locus.point], radius: 0 } : null;
+    case "circle":
+    case "sphere":
+      return finite3(locus.center) ? { center: [...locus.center], radius: Math.abs(locus.radius) } : null;
+    case "cone": {
+      const axis = unit(locus.axis);
+      if (!axis || !finite3(locus.apex) || !(locus.halfAngle > 0 && locus.halfAngle < 90)) {
+        return finite3(locus.apex) ? { center: [...locus.apex], radius: 0 } : null;
+      }
+      const h2 = at2 ? dot(sub(at2, locus.apex), axis) : 0;
+      const radius = coneLateral(h2, locus.halfAngle);
+      return { center: locus.apex.map((a2, k2) => a2 + axis[k2] * h2), radius };
+    }
+    case "conic": {
+      const pts = conicSamples(locus).flat();
+      return pts.length ? unionBounds(pts.map((p2) => ({ center: [...p2], radius: 0 }))) : null;
+    }
+    default:
+      return null;
+  }
+}
+
+// assets/js/turtling/laws/reveal.js
+var REVEAL_MOVE_TOL = 1e-6;
+var normalizeReveal = (mode) => mode === "delayed" ? "delayed" : "visible";
+var hintsVisible = (mode, revealed) => normalizeReveal(mode) !== "delayed" || revealed === true;
+function movedEnough(from, to, tol = REVEAL_MOVE_TOL) {
+  if (!Array.isArray(from) || !Array.isArray(to)) return false;
+  if (from.length < 3 || to.length < 3) return false;
+  if (![...from, ...to].every(Number.isFinite)) return false;
+  return Math.hypot(to[0] - from[0], to[1] - from[1], to[2] - from[2]) > tol;
+}
+
+// assets/js/turtling/overlay.js
+var Z_ABOVE_CANVAS = 2;
+function createOverlay({ onResize, space = CLIENT_SPACE } = {}) {
+  if (space !== CLIENT_SPACE) throw new Error(`overlay: no placement for space "${space}"`);
+  const canvas = document.createElement("canvas");
+  Object.assign(canvas.style, {
+    position: "fixed",
+    inset: "0",
+    width: "100%",
+    height: "100%",
+    pointerEvents: "none",
+    zIndex: String(Z_ABOVE_CANVAS)
+  });
+  canvas.setAttribute("aria-hidden", "true");
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext("2d");
+  let dpr = 1;
+  let width = 0;
+  let height = 0;
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = Math.max(1, Math.floor(width * dpr));
+    canvas.height = Math.max(1, Math.floor(height * dpr));
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    onResize?.();
+  }
+  resize();
+  window.addEventListener("resize", resize);
+  return {
+    get ctx() {
+      return ctx;
+    },
+    get width() {
+      return width;
+    },
+    get height() {
+      return height;
+    },
+    begin() {
+      ctx.clearRect(0, 0, width, height);
+    },
+    dispose() {
+      window.removeEventListener("resize", resize);
+      canvas.remove();
+    }
+  };
+}
+
 // assets/js/turtling/vitals.js
 function worldProgress(scheduler, seats = null) {
   if (!scheduler) return { phase: "settled", lines: 0, commands: 0, ambients: 0, run: 0 };
@@ -21104,12 +25731,18 @@ var SELF = "self";
 
 // assets/js/turtling/turtle.js
 var PROGRESS_FLOOR_MS = 100;
+var FACING_STEP = 20;
 var Turtle = class {
   constructor(canvas, options = {}) {
     this._caps = options.caps ?? null;
+    this._law = options.law ?? null;
     this.bridge = bridged("turtle");
+    this._reveal = normalizeReveal(options.reveal);
+    this._hintsRevealed = false;
+    this._handMoves = { accepted: 0, displaced: 0 };
     const stage = createStage(canvas, this.bridge, options.instruments);
     this.stage = stage;
+    stage.fitTargets = () => this._fitTargets();
     this.renderstate = stage.renderstate;
     this.renderLoop = new render_default.Loop(null, {
       onRender: (t2) => this.onFrame(t2),
@@ -21121,6 +25754,8 @@ var Turtle = class {
     this._renderRequested = false;
     this._keepRendering = false;
     this._controlsActiveUntil = 0;
+    this._lastRefusal = null;
+    this._ghost = null;
     this._onControlsActive = () => {
       this._controlsActiveUntil = performance.now() + 700;
       this.requestRender();
@@ -21184,15 +25819,296 @@ var Turtle = class {
     for (const ev of ["start", "change", "end"]) {
       this.stage.controls.removeEventListener(ev, this._onControlsActive);
     }
+    this._handle?.dispose();
+    this._handle = null;
+    this._overlay?.dispose();
+    this._overlay = null;
     this.compositor?.dispose();
+    for (const key of this.scheduler?.root.children.keys() ?? []) this.scheduler.removeChild(key);
     this.compositor = null;
     this.scheduler = null;
     this.focus.bind(null);
     this.onBeat = null;
     this.stage.dispose();
   }
-  // Lazy init: one scheduler (meta-root) + one compositor for the lifetime.
-  // Focus register is rebound (not recreated) so kindled/warm survive empty canvas.
+  // Compose the compositor's reframe with the stage's camera once, so the
+  // drawn mark and the gesture's ray/plane share one frame.
+  // (id:laws-decl-interface)
+  _view() {
+    return viewMapping(this.compositor?.viewReframe?.() ?? null, this.stage);
+  }
+  // The one description of a point: free / headed / pinned / unresolved, with
+  // its normals, degrees of freedom and the exact locus. (id:laws-decl-point-agent)
+  _stateOf(frame) {
+    const scheduler = this.scheduler;
+    const headed = frame.generator != null || frame.actorState != null;
+    const laws = scheduler.laws.active();
+    const ctx = bindWorld((id2) => scheduler.registry.get(id2), {
+      writerId: frame.id,
+      positionOf: (f2) => frameWorldTransform(f2).position,
+      poseOf: (f2) => worldTransform(f2),
+      heldOf: (id2) => heldIdentity(scheduler.registry.get(id2), laws, scheduler.registry)
+    });
+    return stateOf({
+      at: frameWorldTransform(frame).position,
+      headed,
+      exposed: exposed(frame),
+      isPlace: frame.isPlace === true,
+      error: frame.error ?? null,
+      // A failed attempt's hold is not an offer. The pin still draws (its
+      // previous state), but it is not touchable until an edit releases it.
+      // (id:laws-activation-verdicts)
+      unresolved: frame.unresolved ?? frame.held ?? null,
+      constraints: constraintsOn(frame.id, laws, ctx)
+    });
+  }
+  // Frame the figure: every exposed place, plus the true radius of each
+  // bounded locus it names. A bounded mark is framed by the eye, never
+  // enlarged for it. (id:laws-freedom)
+  _fitTargets() {
+    const scheduler = this.scheduler;
+    if (!scheduler) return null;
+    const spheres = [];
+    let primary = null;
+    for (const frame of scheduler.registry.values()) {
+      if (frame === scheduler.root || frame.isLens || !exposed(frame)) continue;
+      spheres.push({ center: frameWorldTransform(frame).position, radius: 0 });
+      const state = this._stateOf(frame);
+      const bounds2 = boundsOf2(state.locus, state.at);
+      if (bounds2) spheres.push(bounds2);
+      if (bounds2 && state.locus?.normal && bounds2.radius > (primary?.radius ?? -1)) {
+        primary = { normal: state.locus.normal, radius: bounds2.radius };
+      }
+    }
+    const bounds = unionBounds(spheres);
+    return bounds ? { bounds, dir: viewDirection(primary?.normal ?? null) } : null;
+  }
+  // The shell verb and the probe call share this one path: frame, don't enlarge.
+  fit({ dir = null } = {}) {
+    const target = this._fitTargets();
+    if (!target) return null;
+    return this.stage.fitTo(target.bounds, { dir: dir ?? target.dir });
+  }
+  // The gesture's one question, answered by the same state the view draws.
+  _touchable(frame) {
+    return this._stateOf(frame).interaction.offered;
+  }
+  // An unanchored `let A` can be touched. Once A has a walking head, the
+  // marker observes its accepted position but never takes the pointer.
+  // (id:laws-place-head-frame)
+  _drawPins() {
+    const overlay = this._overlay;
+    if (!overlay) return;
+    overlay.begin();
+    const view = this._view();
+    const scheduler = this.scheduler;
+    if (!scheduler) return;
+    if (this._heldFrame && (!this._touchable(this._heldFrame) || scheduler.registry.get(this._heldFrame.id) !== this._heldFrame)) {
+      this._handle?.cancel();
+    }
+    const now = performance.now();
+    if (this._ghost && now - this._ghost.at >= VERDICT_DECAY_MS) this._ghost = null;
+    const facing = view.facing();
+    const eye = view.eye();
+    const cp2 = { x: eye[0], y: eye[1], z: eye[2] };
+    const showHints = this._hintsVisible();
+    for (const frame of scheduler.registry.values()) {
+      if (!showHints || frame === scheduler.root || !exposed(frame)) continue;
+      const state = this._stateOf(frame);
+      if (state.tag !== "free") continue;
+      const at2 = state.at;
+      const dist = Math.hypot(at2[0] - cp2.x, at2[1] - cp2.y, at2[2] - cp2.z);
+      const fov = (this.stage.camera?.fov ?? 60) * Math.PI / 180;
+      const perPixel = 2 * dist * Math.tan(fov / 2) / (overlay.height || 600);
+      const shade = (worlds) => {
+        const pts = worlds.map((p2) => {
+          const s2 = view.project(p2);
+          return s2 ? {
+            x: s2.x,
+            y: s2.y,
+            depth: Math.hypot(p2[0] - cp2.x, p2[1] - cp2.y, p2[2] - cp2.z)
+          } : null;
+        });
+        const ds2 = pts.filter(Boolean).map((p2) => p2.depth);
+        const min = Math.min(...ds2), max = Math.max(...ds2);
+        for (const p2 of pts) if (p2) p2.t = max > min ? (p2.depth - min) / (max - min) : 0;
+        return pts;
+      };
+      const marks = marksOf(state.locus, { at: at2, size: perPixel * 90, viewDir: facing, eye });
+      for (const c2 of marks.curves) drawCurve(overlay.ctx, shade(c2));
+      for (const tr3 of marks.traces) drawTrace(overlay.ctx, tr3.map((p2) => view.project(p2)));
+      for (const [a2, b2] of marks.axes) drawAxis(overlay.ctx, view.project(a2), view.project(b2), { strong: false });
+      for (const p2 of marks.ghosts) {
+        if (Math.hypot(p2[0] - at2[0], p2[1] - at2[1], p2[2] - at2[2]) <= 1e-6) continue;
+        const s2 = view.project(p2);
+        if (s2) drawGhostMark(overlay.ctx, s2.x, s2.y);
+      }
+      for (const ring of marks.rings) drawRim(overlay.ctx, ring.map((p2) => view.project(p2)));
+      for (const [a2, b2] of marks.spokes) drawSpoke(overlay.ctx, view.project(a2), view.project(b2));
+      const axes = axesOf(state);
+      if (axes && marks.spokes.length === 0) {
+        const scale2 = perPixel * 60;
+        const along = (d2) => [at2[0] + d2[0] * scale2, at2[1] + d2[1] * scale2, at2[2] + d2[2] * scale2];
+        drawAxis(
+          overlay.ctx,
+          view.project(along(axes.normal.map((n2) => -n2))),
+          view.project(along(axes.normal)),
+          { strong: true }
+        );
+      }
+    }
+    for (const frame of scheduler.registry.values()) {
+      if (frame === scheduler.root || !exposed(frame)) continue;
+      const world = frame.profile === "derived" && frame.birthPose ? SE3.compose(worldTransform(frame), frame.birthPose) : frameWorldTransform(frame);
+      const at2 = view.project(world.position);
+      if (!at2) continue;
+      const [fx, fy, fz] = world.rotation.rotateVec(FACING_STEP, 0, 0);
+      const facing2 = view.project([
+        world.position[0] + fx,
+        world.position[1] + fy,
+        world.position[2] + fz
+      ]);
+      const touchable = this._touchable(frame);
+      const held = touchable && this._heldFrame === frame;
+      const readout2 = held && this.lastReadout?.point === frame.name ? this.lastReadout : null;
+      const ghost = this._ghost?.point === frame.name ? { text: this._ghost.text, fade: verdictFade(now - this._ghost.at) } : null;
+      drawPin(overlay.ctx, {
+        cx: at2.x,
+        cy: at2.y,
+        width: overlay.width,
+        name: frame.name,
+        ink: this.color,
+        withHead: this.compositor?.visibleHeadFor(frame.id) ?? false,
+        touchable,
+        held,
+        accepted: frame.transform.deref().position,
+        facing: facing2 ? { x: facing2.x - at2.x, y: facing2.y - at2.y } : null,
+        outcome: readout2?.outcome,
+        ghost: held ? null : ghost
+      });
+      if (held && readout2 && readout2.requested && readout2.outcome === OUTCOME.accepted) {
+        const wish = view.project(SE3.apply(worldTransform(frame), readout2.requested));
+        if (wish) drawWish(overlay.ctx, at2, wish);
+      }
+    }
+  }
+  _ensureHandle() {
+    if (this._handle || !this.scheduler) return;
+    const scheduler = this.scheduler;
+    const stage = this.stage;
+    const canvas = stage.canvas;
+    const controls = stage.controls;
+    let captured = null;
+    let damping = null;
+    const handle = createGesture({
+      candidates: () => pointCandidates(scheduler.registry.values(), (frame) => this._touchable(frame)).map((frame) => ({ name: frame.name, frame })),
+      canTouch: (frame) => this._touchable(frame),
+      anchorOf: (frame) => frameWorldTransform(frame),
+      birthOf: (frame) => worldTransform(frame),
+      registered: (frame) => scheduler.registry.get(frame.id) === frame,
+      requestMotion: (frame, pose, revision) => scheduler.requestMotion(frame, pose, revision),
+      onAccepted: ({ from, to }) => this._recordAcceptedHandMove(from, to),
+      revision: () => scheduler.motionRevision,
+      wake: () => this.requestRender(),
+      project: (world) => this._view().project(world),
+      rayAt: (x2, y2) => this._view().rayAt(x2, y2),
+      facing: () => this._view().facing(),
+      // A sphere's hand rides its camera-plane disk; a cone its own polar.
+      // (id:laws-decl-anchor)
+      locusOf: (frame) => this._stateOf(frame).locus,
+      // Slight stickiness at the ball's own landmarks: the paper it rests on.
+      // (id:laws-decl-anchor)
+      detents: { paper: true, poles: true },
+      capture: ({ pointerId }) => {
+        captured = pointerId;
+        try {
+          canvas.setPointerCapture?.(pointerId);
+        } catch {
+        }
+        damping = controls.enableDamping;
+        controls.enableDamping = false;
+      },
+      release: ({ pointerId }) => {
+        if (captured === pointerId) {
+          try {
+            canvas.releasePointerCapture?.(pointerId);
+          } catch {
+          }
+          captured = null;
+        }
+        if (damping !== null) {
+          controls.enableDamping = damping;
+          damping = null;
+        }
+      },
+      setControls: (enabled) => {
+        controls.enabled = enabled;
+      },
+      controlsEnabled: () => controls.enabled,
+      onReadout: (line2) => {
+        this.lastReadout = line2;
+        if (line2.outcome === "accepted") {
+          this._lastRefusal = null;
+          this._ghost = null;
+        } else if (line2.outcome && this._heldFrame) {
+          this._lastRefusal = { point: line2.point, text: line2.outcome };
+        }
+        this.requestRender();
+      }
+    });
+    const down = (event) => {
+      if (event.target !== canvas) return;
+      const answer = handle.pointerDown({ pointerId: event.pointerId, x: event.clientX, y: event.clientY });
+      if (!answer.claimed) return;
+      event.stopImmediatePropagation();
+      event.preventDefault();
+      this._heldFrame = answer.frame;
+      this._lastRefusal = null;
+      this._ghost = null;
+      this.requestRender();
+    };
+    const move = (event) => {
+      if (event.target !== canvas && captured !== event.pointerId) return;
+      if (moveGesture(handle, event)) this._heldFrame = null;
+    };
+    const end = (event) => {
+      if (captured !== event.pointerId) return;
+      handle.pointerUp({ pointerId: event.pointerId });
+      this._heldFrame = null;
+      if (this._lastRefusal) {
+        this._ghost = { ...this._lastRefusal, at: performance.now() };
+        this._lastRefusal = null;
+      }
+      this.requestRender();
+    };
+    const cancel = (event) => {
+      if (captured !== event.pointerId) return;
+      handle.pointerCancel({ pointerId: event.pointerId });
+      this._heldFrame = null;
+      this.requestRender();
+    };
+    window.addEventListener("pointerdown", down, { capture: true });
+    window.addEventListener("pointermove", move, { capture: true });
+    window.addEventListener("pointerup", end, { capture: true });
+    window.addEventListener("pointercancel", cancel, { capture: true });
+    canvas.addEventListener("lostpointercapture", cancel);
+    this._handle = {
+      cancel: () => {
+        if (captured !== null) handle.pointerCancel({ pointerId: captured });
+        this._heldFrame = null;
+        this._lastRefusal = null;
+        this._ghost = null;
+      },
+      dispose: () => {
+        window.removeEventListener("pointerdown", down, { capture: true });
+        window.removeEventListener("pointermove", move, { capture: true });
+        window.removeEventListener("pointerup", end, { capture: true });
+        window.removeEventListener("pointercancel", cancel, { capture: true });
+        canvas.removeEventListener("lostpointercapture", cancel);
+        handle.dispose();
+      }
+    };
+  }
   _ensureScheduler() {
     if (this.scheduler) return;
     this.scheduler = createScheduler(metaRoot(), {
@@ -21206,9 +26122,14 @@ var Turtle = class {
       // onShout carries the emitter's name; routing is read-side.
       onShout: (sourceName, msg, payload) => {
         this._onShout?.(sourceName, msg, payload);
-      }
+      },
+      // createScheduler reads the seam at the top level, not from execOpts;
+      // only the permitted laboratory inputs pass. (id:laws-decl-lab)
+      ...labInputs(this._law)
     });
     this.focus.bind(this.scheduler);
+    this._overlay ||= createOverlay({ onResize: () => this.requestRender(), space: this.stage.space });
+    this._ensureHandle();
     this.compositor = createCompositor(
       this.scheduler,
       this.stage,
@@ -21220,6 +26141,7 @@ var Turtle = class {
           layerMethod: "renderOrder",
           polygonOffset: { factor: -0.1, units: -1 }
         }),
+        createText: () => new render_default.Text(),
         frameMs: this.renderLoop.frameInterval,
         controls: this.stage.controls
       }
@@ -21251,6 +26173,11 @@ var Turtle = class {
       controlsChanged = controls.update();
       renderer.render(scene, camera);
     }
+    try {
+      this._drawPins();
+    } catch (error) {
+      console.error("overlay draw error:", error);
+    }
     const verdict = hatchVerdict({
       now,
       present: !!this.compositor,
@@ -21268,7 +26195,7 @@ var Turtle = class {
     }
     const recording = !!this.stage.recorder?.isRecording;
     const controlsSettling = now < this._controlsActiveUntil;
-    this._keepRendering = walking || recording || controlsChanged || controlsSettling || verdict.owed || this._snapOwed || this.stage.hatching;
+    this._keepRendering = walking || recording || controlsChanged || controlsSettling || verdict.owed || this._snapOwed || this.stage.hatching || !!this._ghost;
     this._sayProgress(now);
   }
   // Clock not payload — reader pulls the world. Phase/run edges always speak
@@ -21344,6 +26271,7 @@ var Turtle = class {
         this._parseMemo.set(key, { text: code, ast: instructions });
       }
       this._ensureScheduler();
+      if (fresh) this.compositor?.beginPlay();
       const ns2 = vocab ? this.rehearseVocab(vocab, vocabNodes) : null;
       this._rehearsalDiagnostics ??= /* @__PURE__ */ new Map();
       if (ns2?.error) {
@@ -21364,6 +26292,7 @@ var Turtle = class {
         style: { color: this.color },
         env: ns2?.userspace?.size ? { userspace: ns2.userspace } : null
       }, { fresh }));
+      if (seat !== before) this._hintsRevealed = false;
       if (hatch) this._hatchMine = true;
       this._seatFaults?.delete(key);
       if (before && seat === before) {
@@ -21419,6 +26348,11 @@ var Turtle = class {
     this._lastReflectChange = performance.now();
     this.scheduler.removeChild(key);
     if (this.scheduler.root.children.size === 0) {
+      this._handle?.dispose();
+      this._handle = null;
+      this._heldFrame = null;
+      this._lastRefusal = null;
+      this._ghost = null;
       this.compositor.dispose();
       this.compositor = null;
       this.scheduler = null;
@@ -21460,8 +26394,57 @@ var Turtle = class {
     }
     return null;
   }
+  // View-only reveal control (id:laws-experiment-3-possibility). Visible shows
+  // every law-derived hint at once; Delayed withholds them together until one
+  // accepted hand move has landed. Drawing only — no geometry, no law, no
+  // eligibility and no motion revision.
+  get reveal() {
+    return this._reveal;
+  }
+  setReveal(mode) {
+    const next = normalizeReveal(mode);
+    if (next !== this._reveal) {
+      this._reveal = next;
+      this._hintsRevealed = false;
+      this.requestRender();
+    }
+    return this._reveal;
+  }
+  _hintsVisible() {
+    return hintsVisible(this._reveal, this._hintsRevealed);
+  }
+  // The facilitator's view-only reveal. Delayed keeps the hints hidden no
+  // matter how many moves land; this one action shows them, and nothing else
+  // changes. The condition stays 'delayed' — visibility and condition are
+  // different facts.
+  revealNow() {
+    if (!this._hintsRevealed) {
+      this._hintsRevealed = true;
+      this.requestRender();
+    }
+    return this._hintsVisible();
+  }
+  get hintsRevealed() {
+    return this._hintsRevealed;
+  }
+  get handMoves() {
+    return { ...this._handMoves };
+  }
+  // Behaviour recording only. An accepted move is counted, and a real
+  // displacement is told from a request the law absorbs in place; neither
+  // opens the reveal gate. Visibility opens only through revealNow().
+  _recordAcceptedHandMove(from, to) {
+    this._handMoves.accepted += 1;
+    if (movedEnough(from, to)) this._handMoves.displaced += 1;
+  }
   reset() {
     if (this.scheduler) {
+      this._handle?.dispose();
+      this._handle = null;
+      this._heldFrame = null;
+      this._lastRefusal = null;
+      this._hintsRevealed = false;
+      this._ghost = null;
       for (const name of [...this.scheduler.root.children.keys()]) {
         this.scheduler.removeChild(name);
       }
@@ -21484,8 +26467,8 @@ var Turtle = class {
 };
 
 // assets/js/host.js
-function createHatch(canvas, { caps } = {}) {
-  const turtle = new Turtle(canvas, { caps });
+function createHatch(canvas, { caps, law: law2 } = {}) {
+  const turtle = new Turtle(canvas, { caps, law: law2 });
   let disposed = false;
   let generation = 0;
   let finishReject = null;
@@ -21495,8 +26478,8 @@ function createHatch(canvas, { caps } = {}) {
     reject?.(new Error("superseded"));
   }
   function refuse(wound) {
-    const line = wound?.span?.line;
-    const message = wound ? line ? `${wound.message} (line ${line})` : wound.message : "program failed";
+    const line2 = wound?.span?.line;
+    const message = wound ? line2 ? `${wound.message} (line ${line2})` : wound.message : "program failed";
     const err = new Error(message);
     if (wound) err.wound = wound;
     return err;
@@ -21519,7 +26502,7 @@ function createHatch(canvas, { caps } = {}) {
         reject = rej;
       });
       finishReject = reject;
-      const settle = () => {
+      const settle2 = () => {
         if (disposed || generation !== gen) return;
         if (!turtle.scheduler?.done) return;
         finishReject = null;
@@ -21528,9 +26511,9 @@ function createHatch(canvas, { caps } = {}) {
       const prev = turtle.onProgress;
       turtle.onProgress = (p2) => {
         prev?.(p2);
-        if (p2?.phase === "settled") settle();
+        if (p2?.phase === "settled") settle2();
       };
-      settle();
+      settle2();
       return { finished, commandCount: result.commandCount };
     },
     // The beat is a second milestone, never a constructor option (D030).

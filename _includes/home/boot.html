@@ -1,7 +1,3 @@
-{%- comment -%}
-  Page-local decoration for the Helios look. The shared player and writer are
-  already on the page via media/boot.html (folio layout); this file only reads
-  what they publish — marks and the media:carousel event — and never opens a
-  file or calls play().
-{%- endcomment -%}
+{%- comment -%}Helios decoration and the three-card who reel. Playback stays in media/boot.html.{%- endcomment -%}
 <script src="{{ '/assets/js/home/helios.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/home/helios-who.js' | relative_url }}" defer></script>

@@ -1,0 +1,27 @@
+{%- comment -%}
+  The note head: kicker, dateline, title, deck, sign-in. The identity block of
+  the edition's opening.
+
+  Params:
+    note   the note document (required)
+
+  Copy contract:
+    kicker  page.kicker, falling back to the edition's standing kicker
+    deck    page.deck, falling back to page.excerpt; omitted when neither
+            exists — a deck is written, not derived from the first paragraph
+
+  There is no byline. The author signs in at the right — a CRT login line, no
+  "By", no reading time; the tilde is the prompt. Date and author come from the
+  note's own front matter (`last_date`, `author`), never from a second source.
+{%- endcomment -%}
+{%- assign deck = include.note.deck | default: include.note.excerpt -%}
+<header class="essay-header">
+  {%- comment -%} The dateline shares the kicker's line: publication date, right. {%- endcomment -%}
+  <div class="essay-header__top">
+    <p class="eyebrow"><span class="ember">{{ include.note.kicker | default: "Notes" }}</span><span class="eyebrow-divider">/</span>{{ include.note.kicker_subject | default: "On learning" }}</p>
+    <time class="dateline" datetime="{{ include.note.last_date | date: '%Y-%m-%d' }}">{{ include.note.last_date | date: "%B %-d, %Y" }}</time>
+  </div>
+  <h1 id="note-title">{{ include.note.title }}</h1>
+  {% if deck %}<p class="deck">{{ deck }}</p>{% endif %}
+  <p class="essay-signin"><span class="crt-login">~ <a class="internal-link" href="{{ '/about' | relative_url }}">{{ include.note.author }}</a><span class="crt-cursor" aria-hidden="true"></span></span></p>
+</header>

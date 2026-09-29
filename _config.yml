@@ -1,4 +1,4 @@
-title:               "PaperLand : where math Lives"
+title:               "We See Math Differently"
 include:             ['_pages']
 exclude:             ['_includes/notes_graph.json', 'design']
 # You may need to change the base URL depending on your deploy configuration.
@@ -52,6 +52,11 @@ defaults:
       path: "_notes/"
     values:
       layout: "note"
+      # The edition is a dark document, so the shared nav needs light ink.
+      # It was on the default 'light' tone — near-black ink on a dark ground —
+      # and the nav's old mix-blend-mode hid it by accident rather than design.
+      # There is no `nav:` key any more: one template serves every page.
+      nav_tone: "dark"
 
 tailwind:
   input: assets/css/app.css

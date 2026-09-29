@@ -6,14 +6,14 @@
 
 waves:
   src: /assets/lib/helios/waves-ffbdda.mp4
-  poster: /assets/lib/helios/waves-9258dd.webp
+  poster: /assets/lib/helios/waves-start.webp
   alt: Number patterns, shared over a shoulder
   width: 720
   height: 1280
 
 spring:
   src: /assets/lib/helios/spring-88005d.mp4
-  poster: /assets/lib/helios/spring-75136e.webp
+  poster: /assets/lib/helios/spring-start.webp
   alt: The room turns; someone begins to teach
   width: 720
   height: 1280
@@ -63,21 +63,21 @@ prime_numbers:
 
 shell:
   src: /assets/lib/helios/shell-2dfe4d.mp4
-  poster: /assets/lib/helios/shell-3ae724.webp
+  poster: /assets/lib/helios/shell-start.webp
   alt: Leaning in until the table is a council
   width: 720
   height: 1280
 
 benz:
   src: /assets/lib/helios/benz-ccbf06.mp4
-  poster: /assets/lib/helios/benz-5aee0a.webp
+  poster: /assets/lib/helios/benz-start.webp
   alt: Looking up into a figure they just made
   width: 720
   height: 1280
 
 star:
   src: /assets/lib/helios/star-126ed5.mp4
-  poster: /assets/lib/helios/star-57cbcd.webp
+  poster: /assets/lib/helios/star-start.webp
   alt: A voice, a tree of code on the wall
   width: 720
   height: 1280
@@ -169,3 +169,22 @@ see_helix:
   alt: An amber helix drawing itself across the dark
   width: 1280
   height: 644
+
+# The Library notes. A note clip belongs to its note, so the id names the
+# idea (not the page it appears on), and the files live under
+# assets/lib/notes/<note>/ rather than the landing catalogs above.
+recursion-tree:
+  src: /assets/lib/notes/our-approach/recursion-tree.mp4
+  webm: /assets/lib/notes/our-approach/recursion-tree.webm
+  poster: /assets/lib/notes/our-approach/recursion-tree-poster.webp
+  alt: A tree of recursion growing from a handful of repeated branches
+  width: 640
+  height: 332
+
+chaos-game:
+  src: /assets/lib/notes/our-approach/chaos-game.mp4
+  webm: /assets/lib/notes/our-approach/chaos-game.webm
+  poster: /assets/lib/notes/our-approach/chaos-game-poster.webp
+  alt: A Sierpinski triangle emerging from the chaos game
+  width: 640
+  height: 376

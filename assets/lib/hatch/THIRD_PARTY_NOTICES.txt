@@ -5,7 +5,7 @@ This bundle is a single esbuild artifact. It contains code from the
 components listed below. The list is derived from the build's esbuild
 metafile by design/vendor.mjs, not maintained by hand.
 
-artifact sha256: 2f1bd7aee3b555ca8f8dd3786cf5e0a3e1ec6390240c7f394bfe8f0768463d40
+artifact sha256: 5f7e0e251f0ae68e90f19adf1a63f9f89c5c75d9e46da4a22c14363146656d0e
 
 --------------------------------------------------------------------------------
 three.js r185 (core + module)
@@ -114,7 +114,7 @@ This artifact is a build of the dojo runtime and is offered under the GNU
 Affero General Public License v3.0 only. The complete corresponding source
 for this build is the dojo repository at the commit named in the pin:
 
-  dojo commit: bf00c5b
+  dojo commit: 614f79f
   source     : https://dojo.paperland.sg
 
 The site imports this artifact as an unmodified build output; no dojo file

@@ -1,51 +1,93 @@
----
-layout: default
----
+{%- comment -%}
+  The notes edition — the evening document.
 
-<article>
-  {%- comment -%} gap, not space-y. v4's space-y applies to :not(:last-child) and
-     sets margin-block-start, which reaches the FIRST child and zeroes whatever
-     leading margin it had — this stripped the heading's entrance entirely.
-     gap gives the same spacing without touching the children. {%- endcomment -%}
-  <div class="flex flex-col gap-2 mb-6">
-    <h1 class="font-bold md:mr-32 lg:mr-80">{{ page.title }}</h1>
+  A standalone document, like twilight.html and folio.html: the edition
+  replaces the standing frame (masthead, reading grid, colophon) rather than
+  wearing it. `_includes/head.html` is shared; the chrome below is the
+  edition's own, composed from _includes/notes/.
 
-    <div class="flex justify-between items-center">
-      <time datetime="{{ page.last_modified_at | date_to_xmlschema }}" class="text-sm text-gray-600">
-        {% if page.type != 'pages' %}
-        Last updated on {{ page.last_date | date: "%B %-d, %Y" }}
-        {% endif %}
-      </time>
+  The page is assembled in three moves, in this order:
 
-      <p class="text-sm text-gray-600 text-right">
-        From the desks <a class=" hover:underline" href="/about"><b>@paperland</b></a>
-      </p>
+    essay      the note's rendered content, once, through note_edition —
+               every margin note, sidenote and footnote becomes edition
+               marginalia AT its source passage (_plugins/notes_edition.rb)
+    contents   the rail, derived from the ids kramdown rendered in that
+               essay — never a second outline that can drift
+    graph      captured once from _includes/notes_graph.json (written at
+               build by _plugins/bidirectional_links_generator.rb) and
+               rendered by notes/connections.html
+
+  `<content class="essay-body">` is deliberate: _includes/link-previews.html
+  fetches a linked note into an iframe and reads its `<content>` element for
+  the hover preview. That coupling is recorded in design/architecture.org as
+  phase-5 work — resolve it there, not incidentally here.
+
+  A note's front matter, for whoever writes one:
+    title, author, last_date   the head, the sign-in, the dateline
+    heroimgurl                 the hero image — also the og:image
+    deck                       optional head line; else excerpt; else none
+    kicker, kicker_subject     optional; default "Notes / On learning"
+    hero_alt, hero_label       optional alt text and plate label for the hero
+
+  Marginalia are authored in the note itself: the `margin` tag for an aside at
+  its source, the `notes/side_link.html` include for a door out beside the
+  passage that mentions its destination.
+
+  A margin note whose only element is a picture is a WINDOW in the rail: no
+  marker, no label. Give it a caption beside the image, and it keeps it:
+  `<span class="edition-window-caption">…</span>`. Both are spans because
+  the note sits inside a paragraph — a block element there ends the
+  paragraph, and the note is the thing that breaks. Anything block-level
+  (a clip, a plate) belongs in the essay body, not in the margin.
+
+  The layout owns no colours, sizes or links; those live in
+  assets/css/components/evening.css and _data/nav.yml.
+{%- endcomment -%}
+<!doctype html>
+<html lang="en" class="scroll-smooth motion-reduce:scroll-auto">
+  {% include head.html %}
+  <body data-theme="evening">
+    <div class="evening-grain" aria-hidden="true"></div>
+    <a class="skip-link internal-link" href="#essay">Skip to the essay</a>
+    {%- comment -%} The masthead is helios's: the shared nav (one template on
+       every page now; the edition sets `nav_tone: dark` in the _notes_ defaults
+       because this is a dark document) and home's
+       the shared chrome at rest in components/evening.css. `id="top"` is
+       the return target for "Back to the beginning". {%- endcomment -%}
+    <div id="top">
+      {% include nav.html %}
+      {% include home/wordmark.html %}
     </div>
-  </div>
-  <div  class="prose prose-headings:text-orange-700 lg:prose-lg w-full">
-    <content>
-      {{ content }}
-    </content>
-  </div>
-  <div style="text-align: right; color: #f93;"> <i>~ {{ page.author }}</i></div>
-      <hr><br>
 
-    <side style="font-size: 0.9em">
-      {% if page.backlinks.size > 0 %}
-      <h3 style="margin-bottom: 1em">Notes mentioning this note</h3>
-      <div style="display: grid; grid-gap: 1em; grid-template-columns: repeat(1fr);">
-      {% for backlink in page.backlinks %}
-        <div class="backlink-box">
-        <a class="internal-link" href="{{ site.baseurl }}{{ backlink.url }}{%- if site.use_html_extension -%}.html{%- endif -%}">{{ backlink.title }}</a><br>
-        <div style="font-size: 0.9em">{{ backlink.excerpt | strip_html | truncatewords: 20 }}</div>
-        </div>
-      {% endfor %}
+    {%- assign note = page -%}
+    {%- capture essay -%}{{ content | note_edition }}{%- endcapture -%}
+    {%- assign essay_toc = essay | note_contents -%}
+    {%- capture graph_data -%}{% include notes_graph.json %}{%- endcapture -%}
+
+    <main class="reading-grid">
+      <div class="evening-opening evening-field">
+        {% include notes/hero.html note=note %}
+        {% include notes/header.html note=note %}
       </div>
-    </side>
-      {% endif %}
-</article>
+
+      {% include notes/contents.html toc=essay_toc %}
+
+      <article class="essay evening-field" id="essay" aria-labelledby="note-title" tabindex="-1">
+        <content class="essay-body">{{ essay }}</content>
+        <footer class="essay-footer">
+          <span class="end-mark" aria-hidden="true">✳</span>
+          <a class="internal-link back-top" href="#top" aria-label="Back to the beginning" title="Back to the beginning">↑</a>
+        </footer>
+      </article>
 
 
-<p>Here are all our notes in Paperland interlinked.</p>
+      {% include notes/connections.html note=note graph=graph_data %}
+    </main>
 
-{% include notes_graph.html %}
+    {% include notes/lightbox.html %}
+
+    {% include link-previews.html wrapperQuerySelector="content" %}
+    {% include media/boot.html %}
+    <script src="{{ '/assets/js/notes/edition.js' | relative_url }}" defer></script>
+  </body>
+</html>

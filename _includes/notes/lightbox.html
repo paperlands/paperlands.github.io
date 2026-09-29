@@ -1,0 +1,20 @@
+{%- comment -%}
+  The image viewer: a window in the rail opens the picture in the top layer.
+
+  Native <dialog>, so the browser owns the hard parts — the focus trap, Escape,
+  and the modal stack — and there is no second overlay to maintain. It is
+  markup, not script: with no JavaScript this element stays closed and inert
+  and the window still reads in the margin. edition.js fills it with the
+  window's image, alt and caption, so nothing is fetched twice.
+
+  Styled in components/evening.css with the rest of the edition's marginalia.
+{%- endcomment -%}
+<dialog class="edition-lightbox" id="edition-lightbox" aria-label="Enlarged image">
+  <figure class="edition-lightbox__frame">
+    <img class="edition-lightbox__image" data-lightbox-image alt="">
+    <figcaption class="edition-lightbox__caption" data-lightbox-caption hidden></figcaption>
+  </figure>
+  <button type="button" class="edition-lightbox__close" data-lightbox-close aria-label="Close image">
+    <span aria-hidden="true">✕</span>
+  </button>
+</dialog>
