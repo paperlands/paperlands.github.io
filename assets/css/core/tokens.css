@@ -150,6 +150,23 @@
   --animate-shimmer: shimmer 3s ease-in-out infinite;
   --animate-riseUp: riseUp 0.65s ease both;
 
+  /* ---- the passage (see core/passage.css) ---------------------------------
+     The crossing between documents — one duration and one curve, named here
+     because that animation belongs to no component: it is the site letting go
+     of one document and taking up the next. Every other duration in this file
+     is an @keyframes shorthand for something a page does to itself; this one
+     is read by a view-transition pseudo-element, which nothing else can name.
+
+     400ms is a dissolve you can read. Long enough to see the room you were in
+     and stop seeing it on purpose, short enough that the second crossing of a
+     session does not feel gated by the first. The curve is the standard
+     ease-in-out: the departing page holds for the first fifth, the dissolve
+     commits through the middle, the destination settles. Uneven by design —
+     a linear dissolve spends its middle at 50/50, which is the one moment
+     neither page is readable. */
+  --passage-dur: 400ms;
+  --passage-ease: cubic-bezier(.4, 0, .2, 1);
+
   /* ---- scales the v3 config extended ---- */
   --spacing-7: 1.75rem;
   --spacing-9: 2.25rem;

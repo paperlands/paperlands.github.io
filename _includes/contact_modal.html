@@ -1,0 +1,129 @@
+{%- comment -%}
+  The letter to PaperLand — the site's one way of writing to us, on every page.
+
+  FOUR FILES ARE THE WHOLE COMPONENT, and this is one of them:
+
+    this include                        the markup: a native <dialog>
+    assets/css/components/contact.css   the skin, in the shared app.css entry
+    assets/js/contact.js                the behaviour, which opens it and owns
+                                        the status line
+    _data/contact.yml                   the words, the route, the arrival
+
+  Placement is the only thing a page does: _layouts/default.html,
+  _layouts/folio.html and _layouts/note.html — the three that carry the nav —
+  each include this once. ONE LETTER PER PAGE: the id is the component's, so a
+  page must not place a second one.
+
+  THE ROUTE IS NOT WRITTEN HERE OR IN THE SCRIPT. `_data/contact.yml` declares
+  `route` and `arrival`; this include writes them onto the dialog as
+  data-contact-route and data-contact-arrival, and the script reads them back.
+  So the nav's "Join Us", a link in a note's prose, _pages/contact.md (which IS
+  the route) and the cold arrival all resolve through one pair of values — a
+  moved route or a second surface is a data edit, not a hunt.
+
+  The consequence to keep: any link to `route` opens the letter WHERE THE
+  READER IS, and the href is left alone, so a modifier-click, a middle-click or
+  no JavaScript still resolves the route — which then redirects to `arrival`,
+  where the script opens the dialog. That is the whole difference between a
+  reader related to a page and a cold arrival.
+
+  A native <dialog>, so the browser owns the hard parts: the focus trap, Escape,
+  the modal stack, and inertness of everything behind it. `showModal()` puts the
+  panel in the top layer, above the fixed nav and the grain, with no z-index to
+  maintain.
+
+  The form is `_includes/contact_form.html` in its `night` skin, which is the
+  modal's own, under `id_prefix="contact-"`: /lesson-plans carries the paper
+  form, so the two must not share field ids. Turnstile is NOT emitted with the
+  form — `lazy_turnstile: true` leaves the script to open it the first time the
+  dialog does, so a reader who never opens the letter never pays for the
+  challenge. `return_url` defaults to the page the reader wrote from, so a note
+  gets its own reader back.
+
+  Bound by components/contact.css, which is in the shared entry: the classes are
+  `contact*` because the letter belongs to no look — the look's own probe
+  (design/probe/looks.py) requires every class a [data-look] rule names to be
+  namespaced to that look, and this panel is opened from all of them.
+
+  Params: none. The words are _data/contact.yml.
+
+  THE WORDS ARE MARKED UP, BECAUSE THE SITE'S WORDS ARE. Each prose field is
+  read with `| markup` (_plugins/site_markup.rb): a `[[note|label]]` resolves
+  to that note's address, and the string is read as kramdown, so the letter
+  links and wears faces exactly as a note's prose does. This include says only
+  WHICH fields are prose — title, title_em, lede, address, and the receipt's two
+  messages below. `message_placeholder` is an attribute, so it is not, and takes
+  no markup.
+{%- endcomment -%}
+{%- assign letter = site.data.contact -%}
+<dialog id="contact-modal" class="contact"
+        data-contact-route="{{ letter.route }}"
+        data-contact-arrival="{{ letter.arrival }}"
+        aria-labelledby="contact-modal-title">
+  <div class="contact__panel">
+    <button type="button" class="contact__close" data-contact-close aria-label="Close contact form">
+      <span aria-hidden="true">✕</span>
+    </button>
+
+    {%- comment -%}
+      TWO LETTERHEADS, ONE PANEL. The letter is addressed TO PaperLand; what comes
+      back when one is sent says FROM PaperLand, and the invitation gives way to
+      the thank-you — so both strings are rendered here and the SKIN swaps them,
+      keyed on the one class the script writes (`.contact--received`). A letter
+      that was never sent carries the second pair at no cost: they are
+      `display: none` until the class arrives.
+    {%- endcomment -%}
+    <header class="contact__head">
+      <h2 class="contact__title" id="contact-modal-title">{{ letter.title | markup }}<em>{{ letter.title_em | markup }}</em></h2>
+      <h2 class="contact__title contact__title--received">{{ letter.sent_title | markup }}<em>{{ letter.title_em | markup }}</em></h2>
+    </header>
+
+    <p class="contact__lede">{{ letter.lede | markup }}</p>
+    <p class="contact__lede contact__lede--received">{{ letter.sent_message | markup }}</p>
+
+    <p class="contact__desk" aria-hidden="true"></p>
+
+    {% include contact_form.html
+       variant="night"
+       id_prefix="contact-"
+       lazy_turnstile=true
+       turnstile_theme="dark"
+       toasts=false
+       message_placeholder=letter.message_placeholder
+       button_text=letter.button_text %}
+
+    <p class="contact__address font-paperlang">{{ letter.address | markup }}</p>
+
+    <p class="contact__status" id="contact-modal-status" role="status" aria-live="polite" hidden></p>
+
+    {%- comment -%}
+      THE FAILURE'S WORDS ARE THE LETTER'S TOO, and they are only ever ANNOUNCED:
+      the visible line above is the letter's, and the script copies one of these
+      into the live region when the proxy hands the reader back. The copy has to
+      be a WRITE — a receipt that CSS merely revealed is never announced — and
+      that is the one thing this markup cannot do by itself. The thank-you has a
+      template for the same reason, though its visible home is the letterhead:
+      in the received state the live region is the announcement and nothing more.
+      Both are data because they are words, which is how @PaperLand is a link.
+    {%- endcomment -%}
+    <template data-contact-receipt="sent">{{ letter.sent_message | markup }}</template>
+    <template data-contact-receipt="bad">{{ letter.error_message | markup }}</template>
+
+    {%- comment -%}
+      THE DESK THE LETTER REACHED. The letterhead above has already turned around —
+      it says From PaperLand — and this is the room it was written in: character
+      art, drawn by components/contact.css in the brand's own orange, because a
+      site that draws its creatures in character art draws its furniture there too.
+
+      It arrives WITH the letterhead and for nothing else, so a letter that was
+      never sent carries none of it and pays nothing: the drawing is `display:
+      none` until the state appears, there is nothing to animate — a drawing that
+      does not pretend to move is the whole point (the first version of this was
+      two butterflies, and it was the motion that made them look dead) — and
+      nothing to download: a monospace grid is not a face. Decoration, and it says
+      so: aria-hidden, while the letter's own lines are the words.
+    {%- endcomment -%}
+  </div>
+</dialog>
+
+<script src="{{ '/assets/js/contact.js' | relative_url }}" defer></script>

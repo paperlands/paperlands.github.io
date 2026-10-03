@@ -1,9 +1,17 @@
+{%- comment -%}
+  One target, resolved once. A stub declares its own `redirect_link`; the one
+  page that declares none is /contact, and its destination belongs to the
+  letter, not to this layout — `_data/contact.yml` says where a cold arrival
+  lands, and the dialog opens there. So the letter's address is written in
+  exactly one file, and this layout is the thing that knows how to find it.
+{%- endcomment -%}
+{%- assign redirect_link = page.redirect_link | default: site.data.contact.arrival -%}
 <html>
   <head>
     <meta charset="utf-8">
     <title>Redirecting...</title>
     <meta name="theme-color" content="#140806">
-    <link rel="canonical" href="{{ page.redirect_link }}">
+    <link rel="canonical" href="{{ redirect_link }}">
 
     <script type="text/javascript">
       
@@ -70,10 +78,10 @@
               });
           }
 
-      {% if page.redirect_link %}
+      {% if redirect_link %}
           // redirect
           
-          window.location.replace("{{ page.redirect_link }}");
+          window.location.replace("{{ redirect_link }}");
       {% endif %}
       })();
     </script>
@@ -142,8 +150,8 @@
         />
     </svg>
     <noscript>
-      <meta http-equiv="refresh" content="0; url={{ page.redirect_link }}">
-      <a href="{{ page.redirect_link }}">Continue</a>
+      <meta http-equiv="refresh" content="0; url={{ redirect_link }}">
+      <a href="{{ redirect_link }}">Continue</a>
     </noscript>
   </body>
 </html>

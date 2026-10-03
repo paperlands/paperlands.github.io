@@ -1,0 +1,83 @@
+# =============================================================================
+# contact.yml — the letter to PaperLand, and its addresses
+# =============================================================================
+#
+# ONE FILE, because the letter is one component. It is four files and no more:
+#
+#   _includes/contact_modal.html       the markup — a native <dialog>, placed by
+#                                      the three layouts that carry the nav
+#   assets/css/components/contact.css  the skin, in the shared app.css entry
+#   assets/js/contact.js               the behaviour: opens it from any link that
+#                                      resolves to `route`, loads Turnstile the
+#                                      first time it opens, owns the status line
+#   _data/contact.yml                  THIS FILE — what it says, and where it is
+#                                      reachable
+#
+# Nothing else knows it exists. The three layouts place the include; no page
+# writes a `contact:` block of its own, and no page restates the copy.
+#
+# THE ROUTE IS DECLARED HERE, ONCE. The include writes these two values onto the
+# dialog as data-contact-route and data-contact-arrival, and assets/js/contact.js
+# reads them back — so the script holds no address of its own and a second
+# surface, or a moved route, is an edit on these two lines.
+#
+#   route     the site's own address for the letter. The nav links it (its label
+#             is "Join Us", in _data/nav.yml), a note's prose links it, and
+#             _pages/contact.md IS this route.
+#   arrival   where a reader arrives when they had no page to open the letter on
+#             — an external link, a bookmark, a share, no JavaScript. /contact
+#             redirects here (_pages/contact.md declares no target of its own),
+#             and the script opens the dialog when it sees this fragment.
+#
+# The words are the site's, not the mainpage's: every page says the same thing.
+# A page that must speak differently is a design decision, not a config one.
+#
+# THE WORDS ARE MARKED UP, IN THE SITE'S OWN GRAMMAR. Every string below is
+# resolved by _plugins/site_markup.rb — the one resolver a note's prose also
+# goes through — and then read as kramdown. So the letter links, and wears
+# faces, exactly as a note or a page does:
+#
+#   [[experiences|Experience]]   a note or a page, named by its file or by its
+#                                title. A name that matches nothing is greyed
+#                                out here as it is in a note, so a typo shows
+#                                on the page rather than failing silently.
+#   *emphasis*   **strong**      as in a note's prose.
+#   <span class="font-paperlang">PaperLand</span>
+#                                a word wearing classes — HOW A FACE IS SET
+#                                FROM THIS FILE. The classes are the site's
+#                                own (font-paperlang, text-primary, …), so
+#                                what can be set here is what the site
+#                                draws. Every page accents a word this way;
+#                                the letter's title is one of them.
+#
+# message_placeholder is the exception, and for a reason: it is an
+# attribute, not prose — it goes into placeholder="…" of a textarea, where
+# a <span> would be read out as text.
+route: /contact
+arrival: /#contact
+
+title: <span class="font-paperlang not-italic">To <span class="text-primary" >PaperLand</span></span>
+title_em: ","
+lede: Bring your questions, your boldest ideas, or your hopes for an [[experiences|experience]] you like to craft. There is a place for all of it here at <span class="font-paperlang text-primary not-italic">PaperLand</span>.
+message_placeholder: What's on your mind?
+button_text: Send
+# The line under the form. It is words, so it lives here with the rest of
+# them; the face it wears (font-paperlang) is contact_modal.html's, because
+# it is the element's design and not a word of the letter.
+address: Or write to [info@paperland.sg](mailto:info@paperland.sg)
+
+# THE RECEIPT, and the one failure worth naming. A letter that ARRIVES gets the
+# letterhead back the other way round: the title that said To PaperLand says FROM
+# PaperLand, the invitation gives way to the thank-you, the form is done with and
+# goes, and the desk it reached is drawn under it (components/contact.css draws
+# that; the markup places it). A letter that FAILS keeps everything it had — the
+# invitation, the form, and the reader's own words in it — and is told so at the
+# foot of the panel, in red.
+#
+# The thank-you is also copied into the live region by the script, because a
+# receipt revealed by CSS alone is never ANNOUNCED; there it is out of sight, and
+# the letter's own line above is the visible one. The grammar above applies to all
+# of them, which is how @PaperLand is a link.
+sent_title: <span class="font-paperlang not-italic">From <span class="text-primary">PaperLand</span></span>
+sent_message: Thank you! Your message was sent to the desks <span class="font-paperlang not-italic">[@PaperLand](/about)</span>
+error_message: If you are human, please try again.

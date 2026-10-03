@@ -10,7 +10,21 @@
   } catch (e) {}
   var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
   var poor = !!(saveData || (conn && (conn.saveData || conn.effectiveType === 'slow-2g' || conn.effectiveType === '2g')));
-  if (reduced || poor) return;
+  if (reduced || poor) {
+    // The priority clip carries its sources in the markup so its bytes start at
+    // parse rather than after this script. A reader who has asked for reduced
+    // motion matches no <source> (the `media` attribute sees to that) — but a
+    // reader on a poor connection cannot be seen from CSS, so the sources the
+    // markup started are taken back here. A still is the whole picture either
+    // way; there is no reason to spend their data on a clip that will not play.
+    Array.prototype.slice.call(document.querySelectorAll('[data-media-priority]')).forEach(function (video) {
+      Array.prototype.slice.call(video.querySelectorAll('source')).forEach(function (s) { s.remove(); });
+      video.removeAttribute('data-media-attached');
+      video.preload = 'none';
+      try { video.load(); } catch (e) {}
+    });
+    return;
+  }
 
   var nearOf = new WeakMap();
   var visOf = new WeakMap();
@@ -44,7 +58,7 @@
     video.preload = preload || 'auto';
     if (video.dataset.mediaAttached === '1') return;
     if (video.dataset.srcAv1) {
-      addSource(video, video.dataset.srcAv1, 'video/mp4; codecs="av01.0.05M.08"');
+      addSource(video, video.dataset.srcAv1, 'video/mp4; codecs="av01.0.04M.08"');
     }
     if (video.dataset.srcWebm && video.dataset.srcWebm !== src) {
       addSource(video, video.dataset.srcWebm, 'video/webm');
@@ -96,7 +110,10 @@
   }
 
   function reveal(video) {
+    var first = !video.hasAttribute('data-ready');
     video.setAttribute('data-ready', '');
+    // ...and that is the moment warming may begin. See reconcileAll.
+    if (first) reconcileAll();
   }
 
   // play() can jump the document (Safari/iOS). Undo that jump only,
@@ -185,8 +202,27 @@
       return { v: v, p: p, s: score(v, p), want: wantsAttach(p, v) };
     }).sort(function (a, b) { return b.s - a.s; });
 
+    // Warm is a bet on what the reader will look at next. It is only worth
+    // placing once the thing they ARE looking at has a first frame: measured on
+    // a throttled phone, warming the hero's second clip pulled 531KB down the
+    // same 1.6Mbps pipe as the first clip's 755KB, and the first frame the
+    // reader was waiting for arrived behind it. A clip left unwarmed shows its
+    // own still, which is the same picture, so the cost of being wrong is a
+    // slower handover — never a hole.
+    // Per group, not globally: another carousel's clip coming up to its first
+    // frame is no reason to spend this one's bandwidth — the "see" act's 33KB
+    // still opened the door for the hero's 531KB next clip while the hero itself
+    // had not painted yet.
+    var readyGroups = {};
+    ranked.forEach(function (row) {
+      if (row.p === 'play' && row.v.hasAttribute('data-ready')) {
+        readyGroups[row.v.dataset.mediaGroup || ''] = true;
+      }
+    });
+
     var attached = 0;
     ranked.forEach(function (row) {
+      if (row.p === 'warm' && !readyGroups[row.v.dataset.mediaGroup || '']) return;
       var video = row.v;
       var p = row.p;
       if (!row.want || attached >= MAX_ATTACH) {
@@ -214,7 +250,7 @@
     video.setAttribute('muted', '');
     video.setAttribute('playsinline', '');
     video.setAttribute('webkit-playsinline', '');
-    video.preload = 'none';
+    if (video.dataset.mediaAttached !== '1') video.preload = 'none';
     var mode = video.dataset.mediaMode || 'loop';
 
     if (mode === 'hover') {
@@ -233,6 +269,17 @@
     });
     near.observe(video);
     vis.observe(video);
+
+    // The clip in the reader's first viewport does not wait for an observer to
+    // tell it so. Everything else here is discovered: the observers are how a
+    // clip that is off screen stays UNfetched. But the first one is known —
+    // media/video.html marked it — and an IntersectionObserver's callback needs
+    // a frame the main thread may not have: measured on a throttled phone, the
+    // hero's own bytes were asked for 1267ms in, after the stylesheet had been
+    // parsed and laid out, which is most of the way to a first frame that the
+    // reader is already looking at a still of. Attaching here starts the
+    // request in the same task as this script, before either observer fires.
+    if (video.dataset.mediaPriority === '1') attach(video, 'auto');
   }
 
   var near = new IntersectionObserver(function (entries) {

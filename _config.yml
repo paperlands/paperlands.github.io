@@ -1,6 +1,16 @@
 title:               "We See Math Differently"
 include:             ['_pages']
-exclude:             ['_includes/notes_graph.json', 'design']
+# The stylesheets are sources, not files to copy: all four sheets — `app.css`
+# and the mode sheets — are built into the destination's assets/css/ by
+# _plugins/fast_styles.rb. Excluding the tree keeps 200KB of raw sources (and
+# their design commentary) out of the deploy.
+exclude:             ['design', 'assets/css']
+# The stylesheets are BUILT INTO the destination (see _plugins/fast_styles.rb),
+# which is why they are excluded above — and which also puts them beyond
+# Jekyll's cleaner: it deletes every file in the destination it did not produce,
+# and without this line it sweeps the four sheets at CLEANUP and the pipeline
+# rebuilds them from scratch, every build, cache or no cache.
+keep_files:          ['assets/css']
 # You may need to change the base URL depending on your deploy configuration.
 url: "https://paperland.sg"
 baseurl:             ''
@@ -20,6 +30,33 @@ open_external_links_in_new_tab: true
 embed_tweets: false
 
 permalink:           pretty
+
+# FAIL CLOSED, in every environment and not only in development. These are the
+# mistakes that otherwise ship silently:
+#
+#   error_mode strict        a template that does not parse stops the build,
+#                            instead of warning and rendering what it can
+#   strict_filters           an unknown filter stops the build. Liquid's default
+#                            is to print the filter's INPUT unchanged, which is
+#                            how a letter in _data/contact.yml once rendered
+#                            with its `[[brackets]]` and its markdown intact —
+#                            the failure _plugins/site_markup.rb documents at
+#                            the top of the file
+#   strict_front_matter      malformed front matter stops the build, instead of
+#                            quietly dropping the page
+#
+# strict_variables is deliberately OFF, and it is not an oversight: absence is
+# part of this site's data contract. `_includes/contact_form.html` reads
+# `include.message_label`, `_includes/twilight/world_card.html` documents
+# `date?/title?/description?/lesson_url?` as optional, `_data/festivals/gmff2026.yml`
+# marks `grade` optional, and the header of every card include takes params the
+# caller may not pass. Turning it on fails those templates for doing what they
+# say they do.
+liquid:
+  error_mode:        strict
+  strict_filters:    true
+  strict_variables:  false
+strict_front_matter: true
 
 plugins:
   - jekyll-last-modified-at
@@ -62,3 +99,23 @@ tailwind:
   input: assets/css/app.css
   output: _site/assets/css/app.css
   minify: true
+
+# css_modes — one stylesheet per surface, linked only where the surface is
+# (see _plugins/css_modes.rb). A mode's name is its file's name: `page.look`
+# names one on a look page (`look: helios` -> helios.css), and a layout names
+# its own with `css_mode:` in its front matter (the note -> evening.css,
+# Twilight -> twilight.css).
+#
+# What is NOT here is as deliberate: folio.css stays in app.css (it is the
+# ground every folio page stands on, two declarations), as do the foundation
+# sheets — tokens, lights, faces, the bar, the drawn mark, media, document.
+css_modes:
+  helios:
+    input: assets/css/components/helios.css
+    output: assets/css/mode-helios.css
+  evening:
+    input: assets/css/components/evening.css
+    output: assets/css/mode-evening.css
+  twilight:
+    input: assets/css/components/twilight.css
+    output: assets/css/mode-twilight.css

@@ -2632,8 +2632,12 @@ function limitMessage(ctx, limit = 8192) {
 }
 var COMMANDS = /* @__PURE__ */ new Map([
   ["fw", fw],
+  ["forward", fw],
+  ["fd", fw],
   ["rt", right],
+  ["right", right],
   ["lt", left],
+  ["left", left],
   ["yaw", yaw],
   ["pitch", pitch],
   ["dive", pitch],
@@ -2642,11 +2646,13 @@ var COMMANDS = /* @__PURE__ */ new Map([
   ["hide", hide],
   ["hd", hide],
   ["jmp", jmp],
+  ["jump", jmp],
   ["bold", bold],
   ["grid", grid],
   ["goto", goTo],
   ["faceto", faceto],
   ["jmpto", jmpto],
+  ["jumpto", jmpto],
   ["label", label],
   ["erase", erase],
   ["home", home],
@@ -2656,7 +2662,9 @@ var COMMANDS = /* @__PURE__ */ new Map([
   ["limitRecurse", limitRecurse],
   ["limitCommand", limitCommand],
   ["limitMessage", limitMessage],
-  ["beColour", beColour]
+  ["beColour", beColour],
+  ["color", beColour],
+  ["colour", beColour]
 ]);
 var DEFAULT_STYLE = Object.freeze({
   down: true,
@@ -2776,6 +2784,8 @@ function chargeReductions(state) {
 }
 var ARG_DOMAINS = {
   beColour: ["word"],
+  color: ["word"],
+  colour: ["word"],
   label: ["word", "measure"],
   shout: ["word", "measure"]
 };
@@ -20403,15 +20413,21 @@ function createAtom(initial) {
     },
     swap(fn2) {
       const old = value;
-      value = fn2(old);
-      for (const watcher of watchers.values()) watcher(old, value);
-      return value;
+      const next = fn2(old);
+      value = next;
+      if (!Object.is(old, next)) {
+        for (const watcher of watchers.values()) watcher(old, next);
+      }
+      return next;
     },
     // Install now; let the caller notify only after related atoms are installed.
+    // Identity is not news: a stated pose keeps motion and must not fan.
     swapDeferred(fn2) {
       const old = value;
       const next = fn2(old);
       value = next;
+      if (Object.is(old, next)) return () => {
+      };
       return () => {
         for (const watcher of watchers.values()) watcher(old, next);
       };
@@ -21204,6 +21220,8 @@ function transformEvent(event, t2, sourceId) {
   }
 }
 var _samePt = (a2, b2) => a2 && b2 && Math.abs(a2[0] - b2[0]) < 1e-6 && Math.abs(a2[1] - b2[1]) < 1e-6 && Math.abs(a2[2] - b2[2]) < 1e-6;
+var _sameRot = (a2, b2) => a2 && b2 && Math.abs(a2.w - b2.w) < 1e-6 && Math.abs(a2.x - b2.x) < 1e-6 && Math.abs(a2.y - b2.y) < 1e-6 && Math.abs(a2.z - b2.z) < 1e-6;
+var samePose = (a2, b2) => a2 && b2 && _samePt(a2.position, b2.position) && _sameRot(a2.rotation, b2.rotation);
 function tagRun(ctx, value) {
   if (value.type !== "path" || !value.points || !value.points.length) return;
   const style = `${value.thickness}`;
@@ -22106,18 +22124,27 @@ function publish(writer, entries, registry, install = null, project = null) {
     if (!pose || !Array.isArray(pose.position)) return { kind: "conflict", message: "a publication entry needs a pose" };
   }
   const write = ({ frame, pose, stated, ref }) => {
-    if (!stated) return frame.transform.swapDeferred(() => pose);
+    if (!stated) {
+      if (samePose(frame.transform.deref(), pose)) return null;
+      return frame.transform.swapDeferred(() => pose);
+    }
     const world = expressPose(frame, ref ?? "own", pose);
     const motion2 = frame.transform.deref();
     const chainTarget = SE3.compose(world, SE3.invert(motion2));
     const base = frame.parent ? worldTransform(frame.parent) : SE3.identity();
-    frame.origin = SE3.compose(SE3.invert(base), chainTarget);
+    const origin = SE3.compose(SE3.invert(base), chainTarget);
+    if (samePose(frame.origin, origin)) return null;
+    frame.origin = origin;
     dirtyWorldSubtree(frame);
     return frame.transform.swapDeferred(() => motion2);
   };
   const notify = entries.map(write);
-  for (const { frame, pose } of entries) if (!frame.done && frame.batch) frame.batch.rebase = pose;
+  const changed = notify.some(Boolean);
+  if (changed) {
+    for (const { frame, pose } of entries) if (!frame.done && frame.batch) frame.batch.rebase = pose;
+  }
   if (install) install();
+  if (!changed && !install) return null;
   const root = metaRootFrame(writer);
   root._motionRevision = (root._motionRevision || 0) + 1;
   const wasNotifying = root.notifyingCommit === true;
@@ -22132,6 +22159,7 @@ function publish(writer, entries, registry, install = null, project = null) {
       }
     }
     for (const send of notify) {
+      if (!send) continue;
       try {
         send();
       } catch (error) {
@@ -22838,7 +22866,7 @@ function woundRelation(ctx, message, kind = "relation", span = null) {
 }
 function registerFigureCell(ctx, value, pump) {
   if (!pump.readouts) return;
-  const question = () => [...evaluateArgs(ctx, value.argExprs, declaredInputs(value)), ...[...captureFor(ctx, value)].sort(([a2], [b2]) => a2 < b2 ? -1 : 1)];
+  const question = () => evaluateArgs(ctx, value.argExprs, declaredInputs(value));
   pump.readouts.register(ctx.id, value.name, {
     capture: question,
     // The spawn already ran the child with this question; seed it so the first
@@ -24473,13 +24501,11 @@ function createCompositor(scheduler, stage, opts = {}) {
         if (target) wt2 = worldTransform(target);
       }
       if (eyeInv && !ambient.isLens) wt2 = SE3.compose(eyeInv, wt2);
-      layer.group.position.set(wt2.position[0], wt2.position[1], wt2.position[2]);
-      layer.group.quaternion.set(
-        wt2.rotation.x,
-        wt2.rotation.y,
-        wt2.rotation.z,
-        wt2.rotation.w
-      );
+      const p2 = layer.group.position, q2 = layer.group.quaternion;
+      const pos = wt2.position, r2 = wt2.rotation;
+      if (p2.x === pos[0] && p2.y === pos[1] && p2.z === pos[2] && q2.x === r2.x && q2.y === r2.y && q2.z === r2.z && q2.w === r2.w) continue;
+      p2.set(pos[0], pos[1], pos[2]);
+      q2.set(r2.x, r2.y, r2.z, r2.w);
     }
   }
   function reclaimDeposits(layer, deadIds) {

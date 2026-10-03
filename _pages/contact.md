@@ -1,33 +1,26 @@
 ---
-layout: page
-title: Contact Us
-excerpt: Email us at info@paperland.sg — or send us a message about sharing your love for math with your community.
+layout: redirect
 permalink: /contact
+# NO redirect_link: this page IS the letter's route, and where a cold arrival
+# lands is the letter's own business — _data/contact.yml declares it and
+# _layouts/redirect.html resolves it. One address, one file.
+title: Contact Us
+excerpt: Email us at info@paperland.sg or send us a message about sharing your love for math with your community.
+sitemap: false
 ---
 
 {%- comment -%}
-  Let's Work Together. Lifted out of the old homepage when Helios took `/`.
+  The cold arrival, and only that.
 
-  This page exists so the site keeps one addressable contact surface: both navs
-  linked `/#contact`, and the folio nav's "Join Us" is the primary action on the
-  homepage. Both now point here instead of at a fragment of a drafted page.
+  The letter itself is four files — markup (_includes/contact_modal.html), skin
+  (components/contact.css), behaviour (assets/js/contact.js) and words and
+  addresses (_data/contact.yml) — placed by every layout that carries the nav
+  and opened in place from whichever page the reader is on. This route is for
+  the reader with NO relation to a page: an external link, a bookmark, a share,
+  no JavaScript. It funnels them to the letter's `arrival`, where the dialog is
+  waiting, without knowing that address itself.
+
+  So the route must keep working and must keep being cheap: it is the fallback
+  for a reader who has nothing else, the target the nav can link without a
+  second form to keep in step, and the address the proxy can be handed.
 {%- endcomment -%}
-
-<section id="contact" class="mt-16">
-  <h2 class="my-8 text-4xl font-bold text-center lg:text-5xl text-secondary">Let's Work<span class="text-primary font-paperlang"> Together!</span></h2>
-
-  <div class="my-8 sm:flex sm:justify-center">
-    <div class="m-8 sm:w-5/12">
-      <p>Wish to share your <span class="text-primary font-paperlang"> love</span> for math with your community?</p><br>
-      <p>Have a burning question, a wild idea, or a creation you're unreasonably proud of?</p><br>
-      <p>Or maybe you just want to say hello!</p><br>
-
-      Email us at <a class="underline" href="mailto:info@paperland.sg">info@paperland.sg</a> or send us a message!
-    </div>
-
-    {% include contact_form.html
-      message_placeholder="Ask us anything!"
-      button_text="Send!"
-      %}
-  </div>
-</section>

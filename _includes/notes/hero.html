@@ -18,6 +18,7 @@
 <div class="hero-image">
   <img
     src="{% if hero_image contains '://' %}{{ hero_image }}{% else %}{{ hero_image | relative_url }}{% endif %}"
+    fetchpriority="high" decoding="async"
     alt="{{ include.alt | default: include.note.hero_alt }}"
     {% unless include.alt or include.note.hero_alt %}aria-hidden="true"{% endunless %}
   >

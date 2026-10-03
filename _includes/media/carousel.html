@@ -43,7 +43,9 @@
   <div class="media-strip" data-media-track>
     {%- for media_item in include.items -%}
     <article class="media-pane" data-media-cell data-title="{{ media_item.title | escape }}" data-slate="{{ media_item.slate | default: media_item.caption | escape }}">
-      {% include media/video.html id=media_item.id src=media_item.src poster=media_item.poster alt=media_item.alt width=media_item.width height=media_item.height group=media_group loop=false %}
+      {%- assign media_item_priority = false -%}
+      {%- if include.priority and forloop.first -%}{%- assign media_item_priority = true -%}{%- endif -%}
+      {% include media/video.html id=media_item.id src=media_item.src poster=media_item.poster alt=media_item.alt width=media_item.width height=media_item.height group=media_group loop=false priority=media_item_priority %}
       {%- if media_item.title or media_item.slate or media_item.caption -%}
       <div class="media-pane-meta">
         {%- if media_item.title -%}<h3 data-media-slot="title">{{ media_item.title }}</h3>{%- endif -%}
@@ -58,7 +60,9 @@
   <div class="media-stack">
     {%- for media_item in include.items -%}
     <div data-media-cell data-title="{{ media_item.title | escape }}" data-slate="{{ media_item.slate | default: media_item.caption | escape }}">
-      {% include media/video.html id=media_item.id src=media_item.src poster=media_item.poster alt=media_item.alt width=media_item.width height=media_item.height group=media_group loop=false %}
+      {%- assign media_item_priority = false -%}
+      {%- if include.priority and forloop.first -%}{%- assign media_item_priority = true -%}{%- endif -%}
+      {% include media/video.html id=media_item.id src=media_item.src poster=media_item.poster alt=media_item.alt width=media_item.width height=media_item.height group=media_group loop=false priority=media_item_priority %}
     </div>
     {%- endfor -%}
   </div>

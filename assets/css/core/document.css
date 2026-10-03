@@ -122,33 +122,38 @@
     border-radius: 4px;
   }
 
-  /* Library ink. A theme (folio, twilight) or app shell does not inherit these. */
-  body:not([data-theme]):not([data-shell]) a:not(:has(*)) {
+  /* Library ink. A theme (folio, twilight) or app shell does not inherit these,
+     and neither does the TOP LAYER: a <dialog> — the contact letter, which
+     every layout places — carries its own ground and its own ink, so the
+     Library's paper focus field and black hover chip never paint inside one.
+     `:not(dialog, dialog *)` is the whole of that exclusion: the dialog and
+     everything it holds. */
+  body:not([data-theme]):not([data-shell]) a:not(:has(*)):not(dialog, dialog *) {
     transition: background 300ms;
     padding: 0 0.1em;
     text-decoration: none;
     color: hsl(0deg 0% 10%);
   }
 
-  body:not([data-theme]):not([data-shell]) a:not(:has(*)):hover {
+  body:not([data-theme]):not([data-shell]) a:not(:has(*)):not(dialog, dialog *):hover {
     color: white !important;
     background: #000000;
   }
 
-  body:not([data-theme]):not([data-shell]) a:not(:has(*))::after {
+  body:not([data-theme]):not([data-shell]) a:not(:has(*)):not(dialog, dialog *)::after {
     position: relative;
     top: -0.5em;
     font-size: 0.7em;
     color: #aaaaaa;
   }
 
-  body:not([data-theme]):not([data-shell]) a:not(:has(*)).internal-link::after,
-  body:not([data-theme]):not([data-shell]) a:not(:has(*)).footnote::after,
-  body:not([data-theme]):not([data-shell]) a:not(:has(*)).reversefootnote::after {
+  body:not([data-theme]):not([data-shell]) a:not(:has(*)):not(dialog, dialog *).internal-link::after,
+  body:not([data-theme]):not([data-shell]) a:not(:has(*)):not(dialog, dialog *).footnote::after,
+  body:not([data-theme]):not([data-shell]) a:not(:has(*)):not(dialog, dialog *).reversefootnote::after {
     content: "";
   }
 
-  body:not([data-theme]):not([data-shell]) *:focus {
+  body:not([data-theme]):not([data-shell]) *:focus:not(dialog, dialog *) {
     background: #ffe8bc !important;
     color: black !important;
   }

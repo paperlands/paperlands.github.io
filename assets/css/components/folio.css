@@ -8,7 +8,7 @@
 
 @layer components {
   [data-theme="folio"] {
-    color: #f6e6c4;
-    background: #050009;
+    color: var(--light-ink);
+    background: var(--light-ground);
   }
 }

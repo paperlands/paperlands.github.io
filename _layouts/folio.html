@@ -3,12 +3,15 @@
   {% include head.html %}
   {%- comment -%}
     `look` lets a page name a look without a new layout. It becomes
-    data-look on <body>; components/<look>.css binds it. Helios is the first
+    data-look on <body>; components/<look>.css binds it, and head.html links
+    it as that page's mode sheet. Helios is the first
     consumer (_pages/helios.md -> components/helios.css).
   {%- endcomment -%}
   <body data-theme="folio"{% if page.look %} data-look="{{ page.look }}"{% endif %}>
     {% include nav.html %}
     <main>{{ content }}</main>
     {% include media/boot.html %}
+    {%- comment -%} The letter — see _includes/contact_modal.html. {%- endcomment -%}
+    {% include contact_modal.html %}
   </body>
 </html>

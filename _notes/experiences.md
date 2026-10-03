@@ -1,5 +1,5 @@
 ---
-title: Math takes the stage
+title: Math Takes The Stage
 author: princeton
 heroimgurl: /assets/lib/notes/experiences/lesson-in-flight.webp
 excerpt: Mathematics was always meant to be experienced.

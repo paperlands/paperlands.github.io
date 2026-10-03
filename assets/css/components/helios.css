@@ -50,7 +50,7 @@
    tie the look to the document and stop it nesting inside another theme. The
    look declares vocabulary and bindings only.
 
-   PALETTE is deliberately local. `--helios-brand` (#ff9933) equals
+   PALETTE is deliberately local. `--light-accent` (#ff9933) equals
    `--color-primary`, and that is not evidence of a shared model — see
    design/architecture.org, "Does the folio palette become the site palette?".
    Nothing here is promoted to core/tokens.css or to @theme; a look that mints
@@ -78,13 +78,9 @@
 @layer components {
   /* ---- vocabulary, scoped to the look -------------------------------- */
   [data-look="helios"] {
-    --helios-brand: #ff9933;
-    --helios-cream: #f6e6c4;
-    --helios-verse: #f2d2b0;
-    --helios-ember: #d45a14;
-    --helios-ridge: #8b2e0c;
-    --helios-night: #050009;
-    --helios-air: #140910;
+    /* The lights are roles now: core/lights.css names them and this surface's
+       exposure gives the values. This block is the composition — geometry, type
+       scale, and the apparatus the edition has and no other surface does. */
     --helios-ease: cubic-bezier(.22, 1, .36, 1);
     --helios-gutter: clamp(1.25rem, 4.2vw, 4.2rem);
     --helios-verse-size: clamp(1.32rem, 2.05vw, 1.82rem);
@@ -116,53 +112,18 @@
       0.045em 0.032em 0 rgb(255 153 51 / 0.62),
       0 0 0.38em rgb(255 153 51 / 0.58),
       0 0 1.05em rgb(255 153 51 / 0.28);
-    /* The drawn identity's box — the corner it is born in and the width it
-       takes there. Two elements sit at it, so it is one source: the wordmark
-       paints there, and the nav's invisible brand link spreads its hit area
-       over it (see [data-nav-mark] below). */
-    /* Read from the bar's corner, not restated. The nav's brand link and this
-       drawn identity occupy the same place on different pages, and they are
-       siblings, so neither can inherit the value from the other; <body> carries
-       it once. See components/nav.css.
-       The literal is a fallback for a page that draws the identity without the
-       bar, which no page does today. */
-    --helios-wm-box-x: var(--nav-logo-x, 1.1rem);
-    --helios-wm-box-y: 0.9rem;
-    --helios-wm-box-w: min(12rem, calc(100vw - 12rem));
+    /* The drawn identity's corner is the bar's, declared once on <body>
+       (--nav-mark-y, --nav-logo-x, --nav-mark-w): see components/nav.css for
+       why, and components/identity.css for the component that reads it. */
   }
-  /* The nav keeps its link and hit area; the drawn identity covers it. The
-     ring lands on the drawn twin because the link itself is opacity 0, and an
-     outline on an invisible element is invisible.
-
-     `:has(.helios-wordmark)` is load-bearing, not tidiness. Hiding the mark is
-     only correct when something is painted over it. /helios-interval declares
-     the look but includes no wordmark, so an unconditional rule left that page
-     with no brand in the nav at all — and the nav is now shared by every page,
-     so a look that hides a logo it does not replace loses one everywhere it is
-     named. */
-  [data-look="helios"]:has(.helios-wordmark) [data-nav-mark] {
-    opacity: 0;
-  }
-
-  /* The drawn mark is wider than the word it replaces: "PaperLand" at the
-     nav's 1.15rem box stops around the third letter, so the rest of the
-     identity was dead ground — the link IS the hit area (the wordmark is
-     pointer-events: none), so it spreads over the box the look paints, the
-     same box the focus ring above outlines. Absolute, against the fixed nav,
-     which is the positioned ancestor: the pseudo-element holds no
-     layout and paints nothing. */
-  [data-look="helios"] [data-nav-mark]::after {
-    content: "";
-    position: absolute;
-    left: var(--helios-wm-box-x);
-    top: var(--helios-wm-box-y);
-    width: var(--helios-wm-box-w);
-    aspect-ratio: 1280 / 250;
-  }
-
-  [data-look="helios"]:has([data-nav-mark]:focus-visible) .helios-wordmark {
-    outline: 1px solid var(--helios-brand);
-    outline-offset: 4px;
+  /* The nav's link, its hit area and the focus ring are the shared component's
+     (components/identity.css) — the condition that matters is that the mark is
+     actually here, which `:has(.helios-wordmark)` states for both surfaces.
+     /helios-interval declares the look and includes no wordmark, so a rule
+     keyed on the look alone would take that page's brand away. The ring's ink
+     is the one thing that is this surface's: */
+  [data-look="helios"] {
+    --identity-ring: var(--light-accent);
   }
 
   /* ---- air ------------------------------------------------------------ */
@@ -194,44 +155,26 @@
      slots (data-helios-build / -dawn / -light / -shade / -word / -banner) and
      the geometry the pieces declare with data-from / data-to / data-turn;
      assets/js/home/helios.js owns the clock and nothing else. */
+  /* The box, the retract, the rest state and the bar's hit area are the same on
+     this surface and in a note, and live in components/identity.css. What the
+     look owns is what only the look does: the veil, the art's shadow, the "In"
+     that holds the unbuilt mark, and the assembly below. */
   [data-look="helios"] .helios-wordmark {
-    position: fixed;
-    z-index: 91;
-    left: var(--helios-wm-box-x);
-    top: var(--helios-wm-box-y);
-    width: var(--helios-wm-box-w);
-    aspect-ratio: 1280 / 250;
-    pointer-events: none;
-    /* ---- the identity retracts to its mark ---------------------------- */
-    /* This is what makes the collapse visible on the landing and the notes at
-       all. Their brand is not the bar's banner — that is opacity 0 on those
-       pages — so clipping the bar alone collapsed something nobody could see.
-       The drawn identity is the brand there, and its assembled state is ONE
-       raster: [data-helios-banner] is bannerpaperlang.png with the emblem AND
-       the word inside it, so the word cannot be hidden, only cropped away.
-       The `[data-helios-word]` sibling covers the assembling state, where the
-       two are separate elements.
-       
-       `clip-path`, not `width`: geometry is what the probes measure.
-       design/probe/helios.mjs wants `identity renders` over 80px and walks the
-       identity's own box; a clip paints less without moving a single rect, and
-       the identity is pointer-events: none, so there is nothing to hit-test
-       away. x=220 of the 1280 viewBox — past the emblem (ends at 189) with
-       slack for the rays the assembling state draws a few units wider, and
-       well inside the empty gap before the word starts at 249. */
-    clip-path: inset(0 0 0 0);
-    transition: clip-path 320ms var(--helios-ease);
-    /* Where "In" waits while the mark is unbuilt, read against the box above:
-       two corners, one origin. */
+    /* Where "In" waits while the mark is unbuilt, read against the shared box
+       in components/identity.css: two corners, one origin. */
     --helios-wm-hero-left: 1.5rem;
     --helios-wm-hero-top: 1.15rem;
     --helios-wm-mark: clamp(1.2rem, 2.4vw, 1.7rem);
     --helios-wm-veil: 0.4;
   }
 
-  [data-look="helios"][data-helios-collapsed="true"] .helios-wordmark {
-    clip-path: inset(0 82.8125% 0 0);   /* keep x 0..220 of 1280 */
+  /* Kept here, not in the shared file: --helios-ease is the look's own motion
+     (acts, cards, the ticker), and it is the same shape as the bar's
+     --nav-ease, which the shared retract reads. */
+  [data-look="helios"] {
+    --helios-ease: var(--nav-ease);
   }
+
 
   [data-look="helios"] .helios-wordmark::before {
     content: "";
@@ -251,10 +194,6 @@
   [data-look="helios"] .helios-wordmark__art {
     position: relative;
     z-index: 1;
-    display: block;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
     transform-origin: 0 0;
     filter: drop-shadow(0 0 0.55rem rgb(255 153 51 / 0.3));
   }
@@ -263,8 +202,8 @@
   [data-look="helios"] .helios-wordmark__in {
     display: none;
     position: absolute;
-    left: calc(var(--helios-wm-hero-left) - var(--helios-wm-box-x));
-    top: calc(var(--helios-wm-hero-top) - var(--helios-wm-box-y) + 2px);
+    left: calc(var(--helios-wm-hero-left) - var(--nav-logo-x, 1.1rem));
+    top: calc(var(--helios-wm-hero-top) - var(--nav-mark-y, 1.1rem) + 2px);
     z-index: 1;
     font-family: var(--font-serif);
     font-style: italic;
@@ -272,20 +211,52 @@
     font-size: calc(var(--helios-wm-mark) * 0.86);
     letter-spacing: 0.04em;
     line-height: 1;
-    color: var(--helios-verse);
+    color: var(--light-voice);
     padding-right: 0.26em;
     transform-origin: right bottom;
   }
 
-  /* Banner at rest, pieces while writing. */
-  [data-look="helios"] [data-helios-blocks],
-  [data-look="helios"] [data-helios-dawn],
-  [data-look="helios"] [data-helios-light],
-  [data-look="helios"] [data-helios-shade],
-  [data-look="helios"] [data-helios-word] {
+  /* ---- the word arrives, the banner returns -----------------------------
+     The word "PaperLand" is a raster of its own while the mark assembles, and
+     the banner is a raster with the word inside it at rest. Swapping one for
+     the other, or bringing the word up for the first time, is a fade: fast
+     enough to keep up with a scroll under it (260ms), and the reason the
+     handover does not read as a pop. See `data-helios-posed` below. */
+  [data-look="helios"] .helios-wordmark [data-helios-word],
+  [data-look="helios"] .helios-wordmark [data-helios-banner] {
+    transition: opacity 260ms var(--nav-ease);
+  }
+
+  /* ---- nothing assembles before the clock starts ------------------------
+     helios.js poses the mark when the hero's clip has its first frame (or the
+     reader scrolls, or 2.5s pass). Until it does, the assembly stands down:
+     the pieces are `display: none` and the word is transparent, so the reader
+     sees exactly what the unposed state would have shown — the "In" holding
+     the identity — instead of the pieces at the positions they were authored
+     in, which is the assembled mark. The pose sets `data-helios-posed`, and
+     the word fades up under the "In". */
+  [data-look="helios"] .helios-wordmark[data-helios-writing="on"]:not([data-helios-posed]) [data-helios-blocks],
+  [data-look="helios"] .helios-wordmark[data-helios-writing="on"]:not([data-helios-posed]) [data-helios-dawn],
+  [data-look="helios"] .helios-wordmark[data-helios-writing="on"]:not([data-helios-posed]) [data-helios-light],
+  [data-look="helios"] .helios-wordmark[data-helios-writing="on"]:not([data-helios-posed]) [data-helios-shade] {
     display: none;
   }
 
+  [data-look="helios"] .helios-wordmark[data-helios-writing="on"]:not([data-helios-posed]) [data-helios-word] {
+    opacity: 0;
+  }
+
+  /* The one move that is not the scroll's: the handover. `data-helios-posed`
+     is `entering` for the length of it, which is what carries the transition —
+     without it every scroll frame would be interpolated and the mark would
+     lag the reader's finger. The banner fades (its own rule, above), the word
+     fades up under the "In", and the art travels from the corner to the place
+     the hero measured for it. */
+  [data-look="helios"] .helios-wordmark[data-helios-posed="entering"] .helios-wordmark__art {
+    transition: transform 340ms var(--nav-ease);
+  }
+
+  /* Banner at rest (components/identity.css), pieces while writing. */
   [data-look="helios"] .helios-wordmark[data-helios-writing="on"] [data-helios-blocks],
   [data-look="helios"] .helios-wordmark[data-helios-writing="on"] [data-helios-dawn],
   [data-look="helios"] .helios-wordmark[data-helios-writing="on"] [data-helios-light],
@@ -377,12 +348,12 @@
     line-height: 1.2;
     letter-spacing: -0.016em;
     white-space: nowrap;
-    color: var(--helios-cream);
+    color: var(--light-ink);
   }
 
   [data-look="helios"] .helios-thesis em {
     font-style: italic;
-    color: var(--helios-brand);
+    color: var(--light-accent);
     text-shadow: var(--helios-glow);
   }
 
@@ -403,7 +374,7 @@
     grid-template-columns: auto auto;
     justify-content: start;
     align-items: baseline;
-    color: var(--helios-cream);
+    color: var(--light-ink);
   }
 
   [data-look="helios"] [data-media-slot="kicker"] {
@@ -421,7 +392,7 @@
     letter-spacing: var(--helios-verse-ls);
     text-transform: none;
     opacity: 1;
-    color: var(--helios-verse);
+    color: var(--light-voice);
   }
 
   [data-look="helios"] [data-media-carousel="stack"] [data-media-slot="title"] {
@@ -439,12 +410,12 @@
     font-size: var(--helios-hero-action);
     line-height: 0.98;
     letter-spacing: -0.015em;
-    color: var(--helios-brand);
+    color: var(--light-accent);
     text-shadow: var(--helios-glow);
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 0.14em;
-    text-decoration-color: color-mix(in srgb, var(--helios-brand) 62%, var(--helios-cream));
+    text-decoration-color: color-mix(in srgb, var(--light-accent) 62%, var(--light-ink));
   }
 
   [data-look="helios"] [data-media-carousel="stack"] [data-media-slot="slate"] {
@@ -455,7 +426,7 @@
     letter-spacing: 0.012em;
     font-style: italic;
     opacity: 1;
-    color: color-mix(in srgb, var(--helios-cream) 78%, transparent);
+    color: color-mix(in srgb, var(--light-ink) 78%, transparent);
   }
 
   /* The writer sets the text; the look makes its arrival an event. The state
@@ -510,19 +481,19 @@
     display: block;
     height: 100%;
     width: 0;
-    background: var(--helios-ember);
+    background: var(--light-ember);
     transform: translateZ(0);
   }
 
   /* ---- the ticker ----------------------------------------------------- */
   [data-look="helios"] .helios-ticker {
     flex: 0 0 auto;
-    border-block: 2px solid var(--helios-ridge);
+    border-block: 2px solid var(--light-ridge);
     overflow: hidden;
     white-space: nowrap;
     padding: 0.45rem 0;
-    background: var(--helios-ember);
-    color: var(--helios-night);
+    background: var(--light-ember);
+    color: var(--light-ground);
   }
 
   [data-look="helios"] .helios-ticker__track {
@@ -555,7 +526,7 @@
       radial-gradient(ellipse 42% 22% at 16% 34%, rgb(212 90 20 / 0.09), transparent 72%),
       radial-gradient(ellipse 50% 24% at 82% 47%, rgb(232 160 32 / 0.14), transparent 68%),
       radial-gradient(ellipse 64% 28% at 70% 56%, rgb(41 29 87 / 0.32), transparent 74%),
-      var(--helios-air);
+      var(--light-ground-2);
   }
 
 
@@ -565,8 +536,6 @@
      change climate. Masks retire the editor. The arc may leave the frame. */
   [data-look="helios"] .helios-see {
     --helios-see-night: #110a16;
-    --helios-see-violet: 41 29 87;
-    --helios-see-mist: #d4c4ee;
     --helios-see-step: clamp(1.1rem, 5.2vw, 4.6rem);
     position: relative;
     flex: 1 1 auto;
@@ -737,7 +706,7 @@
   [data-look="helios"] .helios-see__head .helios-verse {
     margin: 0 0 0.22em;
     font-size: var(--helios-see-verse);
-    color: color-mix(in srgb, var(--helios-see-mist) 46%, var(--helios-verse));
+    color: color-mix(in srgb, var(--light-mist) 46%, var(--light-voice));
   }
 
   [data-look="helios"] .helios-see__line {
@@ -750,7 +719,7 @@
     line-height: 0.96;
     letter-spacing: -0.02em;
     white-space: nowrap;
-    color: var(--helios-cream);
+    color: var(--light-ink);
     text-shadow: 0 0 1.4rem rgb(17 10 22 / 0.85);
   }
 
@@ -763,10 +732,10 @@
   [data-look="helios"] .helios-see__line em {
     font-style: italic;
     font-weight: 500;
-    color: color-mix(in srgb, var(--helios-see-mist) 58%, var(--helios-cream));
+    color: color-mix(in srgb, var(--light-mist) 58%, var(--light-ink));
     text-shadow:
       0 0 0.65rem rgb(212 196 238 / 0.4),
-      0 0 1.5rem rgb(var(--helios-see-violet) / 0.5),
+      0 0 1.5rem color-mix(in srgb, var(--light-violet) 50%, transparent),
       0 0 2.1rem rgb(232 160 32 / 0.16);
   }
 
@@ -782,7 +751,7 @@
   [data-look="helios"] .helios-see__star {
     font-size: 1.25rem;
     line-height: 1.35;
-    color: color-mix(in srgb, var(--helios-see-mist) 50%, var(--helios-verse));
+    color: color-mix(in srgb, var(--light-mist) 50%, var(--light-voice));
   }
 
   [data-look="helios"] .helios-see__lede {
@@ -794,7 +763,7 @@
     font-size: clamp(1.05rem, 1.4vw, 1.28rem);
     line-height: 1.38;
     letter-spacing: 0.01em;
-    color: color-mix(in srgb, var(--helios-see-mist) 42%, var(--helios-verse));
+    color: color-mix(in srgb, var(--light-mist) 42%, var(--light-voice));
   }
 
   /* ---- the interval, rehearsed ---------------------------------------- */
@@ -875,7 +844,7 @@
     font-weight: 400;
     letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--helios-see-mist) 58%, transparent);
+    color: color-mix(in srgb, var(--light-mist) 58%, transparent);
   }
 
   [data-look="helios"] .helios-interval__verse {
@@ -886,7 +855,7 @@
     letter-spacing: 0.015em;
     white-space: pre;
     tab-size: 2;
-    color: var(--helios-see-mist);
+    color: var(--light-mist);
   }
 
 
@@ -898,37 +867,37 @@
      The tokenizer (home/helios-plang-tokens.js) decides the kind; these rules
      decide the ink, and they are the whole of the look. */
   [data-look="helios"] .helios-interval__tok--verb {
-    color: color-mix(in srgb, var(--helios-brand) 82%, var(--helios-see-mist));
+    color: color-mix(in srgb, var(--light-accent) 82%, var(--light-mist));
   }
 
   [data-look="helios"] .helios-interval__tok--kw {
-    color: var(--helios-cream);
+    color: var(--light-ink);
   }
 
   [data-look="helios"] .helios-interval__tok--def {
-    color: var(--helios-verse);
+    color: var(--light-voice);
     font-weight: 600;
   }
 
   [data-look="helios"] .helios-interval__tok--addr {
-    color: var(--helios-verse);
+    color: var(--light-voice);
   }
 
   [data-look="helios"] .helios-interval__tok--cmt {
-    color: color-mix(in srgb, var(--helios-see-mist) 58%, var(--helios-night));
+    color: color-mix(in srgb, var(--light-mist) 58%, var(--light-ground));
     font-style: italic;
   }
 
   [data-look="helios"] .helios-interval__tok--name {
-    color: var(--helios-see-mist);
+    color: var(--light-mist);
   }
 
   [data-look="helios"] .helios-interval__tok--num {
-    color: color-mix(in srgb, var(--helios-see-mist) 62%, var(--helios-night));
+    color: color-mix(in srgb, var(--light-mist) 62%, var(--light-ground));
   }
 
   [data-look="helios"] .helios-interval__tok--op {
-    color: color-mix(in srgb, var(--helios-see-mist) 42%, var(--helios-night));
+    color: color-mix(in srgb, var(--light-mist) 42%, var(--light-ground));
   }
 
   /* The current line, marked by position and light, never by hue: a caret in the
@@ -940,7 +909,7 @@
     top: 0.16em;
     bottom: 0.16em;
     width: 2px;
-    background: var(--helios-cream);
+    background: var(--light-ink);
     box-shadow: 0 0 0.5em rgb(246 230 196 / 0.7);
   }
 
@@ -964,11 +933,11 @@
   [data-look="helios"] .helios-interval__line--mark {
     margin-top: 0.7em;
     padding-left: 0.55em;
-    border-left: 1px solid color-mix(in srgb, var(--helios-see-mist) 34%, transparent);
+    border-left: 1px solid color-mix(in srgb, var(--light-mist) 34%, transparent);
     opacity: 0.62;
     /* Mist, not cream: the warm inks belong to the language, and a movement
        title is this page's furniture. */
-    color: color-mix(in srgb, var(--helios-see-mist) 78%, var(--helios-night));
+    color: color-mix(in srgb, var(--light-mist) 78%, var(--light-ground));
     letter-spacing: 0.06em;
   }
 
@@ -988,7 +957,7 @@
      highlighting there is no second axis for this colour to collide with. */
   [data-look="helios"] .helios-interval__line--lit {
     opacity: 1;
-    color: var(--helios-brand);
+    color: var(--light-accent);
     text-shadow:
       0 0 0.3em rgb(255 153 51 / 0.5),
       0 0 0.8em rgb(255 153 51 / 0.18);
@@ -1014,7 +983,7 @@
     width: 2px;
     height: 0.42em;
     border-radius: 1px;
-    background: var(--helios-ember);
+    background: var(--light-ember);
     box-shadow: 0 0 0.4em rgb(212 90 20 / 0.7);
   }
 
@@ -1059,7 +1028,7 @@
     font-size: 0.6rem;
     letter-spacing: 0.24em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--helios-brand) 70%, transparent);
+    color: color-mix(in srgb, var(--light-accent) 70%, transparent);
   }
 
   @media (max-width: 1000px) {
@@ -1081,7 +1050,7 @@
     font-size: clamp(1.5rem, 2.6vw, 2.15rem);
     font-weight: 400;
     letter-spacing: 0.03em;
-    color: var(--helios-cream);
+    color: var(--light-ink);
   }
 
   [data-look="helios"] .helios-interval__notes h3 {
@@ -1091,7 +1060,7 @@
     font-weight: 400;
     letter-spacing: 0.28em;
     text-transform: uppercase;
-    color: var(--helios-brand);
+    color: var(--light-accent);
   }
 
   [data-look="helios"] .helios-interval__notes p,
@@ -1100,7 +1069,7 @@
     font-size: 1.06rem;
     font-style: italic;
     line-height: 1.62;
-    color: color-mix(in srgb, var(--helios-see-mist) 62%, var(--helios-verse));
+    color: color-mix(in srgb, var(--light-mist) 62%, var(--light-voice));
   }
 
   [data-look="helios"] .helios-interval__notes ul {
@@ -1113,18 +1082,18 @@
   [data-look="helios"] .helios-interval__notes strong {
     font-style: normal;
     font-weight: 600;
-    color: var(--helios-cream);
+    color: var(--light-ink);
   }
 
   [data-look="helios"] .helios-interval__notes em {
-    color: color-mix(in srgb, var(--helios-brand) 78%, var(--helios-cream));
+    color: color-mix(in srgb, var(--light-accent) 78%, var(--light-ink));
   }
 
   [data-look="helios"] .helios-interval__notes code {
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 0.86em;
     font-style: normal;
-    color: var(--helios-see-mist);
+    color: var(--light-mist);
     overflow-wrap: anywhere;
   }
 
@@ -1153,7 +1122,7 @@
     font-size: var(--helios-verse-size);
     line-height: var(--helios-verse-lh);
     letter-spacing: var(--helios-verse-ls);
-    color: var(--helios-verse);
+    color: var(--light-voice);
   }
 
   [data-look="helios"] .helios-stress {
@@ -1163,7 +1132,7 @@
     font-size: clamp(2rem, 4vw, 3.35rem);
     line-height: 0.98;
     letter-spacing: -0.015em;
-    color: var(--helios-brand);
+    color: var(--light-accent);
     text-shadow: var(--helios-glow);
   }
 
@@ -1191,8 +1160,8 @@
     position: relative;
     flex: 1 1 auto;
     min-height: 0;
-    background: var(--helios-night);
-    border: 1px solid color-mix(in srgb, var(--helios-verse) 30%, transparent);
+    background: var(--light-ground);
+    border: 1px solid color-mix(in srgb, var(--light-voice) 30%, transparent);
     box-shadow: 0 0 0 1px rgb(232 160 32 / 0.18), 0 18px 40px rgb(8 2 6 / 0.45);
     overflow: hidden;
   }
@@ -1232,7 +1201,7 @@
 
   [data-look="helios"] .helios-who__meta {
     padding-top: 0.7rem;
-    color: var(--helios-cream);
+    color: var(--light-ink);
   }
 
   [data-look="helios"] .helios-who__meta h3 {
@@ -1281,9 +1250,9 @@
     margin: 0;
     font-size: inherit;
     color: inherit;
-    border-top: 2px solid var(--helios-ridge);
+    border-top: 2px solid var(--light-ridge);
     padding: clamp(2.4rem, 7vh, 4.2rem) var(--helios-gutter);
-    background: var(--helios-night);
+    background: var(--light-ground);
   }
 
   [data-look="helios"] .helios-colophon h2 {
@@ -1296,12 +1265,12 @@
     font-size: clamp(1.6rem, 4.2vw, 3.4rem);
     line-height: 1.12;
     letter-spacing: -0.01em;
-    color: var(--helios-cream);
+    color: var(--light-ink);
   }
 
   [data-look="helios"] .helios-colophon h2 em {
     font-style: italic;
-    color: var(--helios-brand);
+    color: var(--light-accent);
     text-shadow: var(--helios-glow);
   }
 
@@ -1310,7 +1279,7 @@
     align-items: center;
     justify-content: center;
     padding: 0.85rem 1.5rem;
-    border: 1px solid var(--helios-brand);
+    border: 1px solid var(--light-accent);
     color: #ffe27a;
     font-family: var(--font-display);
     font-size: 0.68rem;
@@ -1321,9 +1290,10 @@
   }
 
   [data-look="helios"] .helios-seal:hover {
-    background: var(--helios-brand);
-    color: var(--helios-night);
+    background: var(--light-accent);
+    color: var(--light-ground);
   }
+
 
   /* ---- keyframes ------------------------------------------------------ */
   @keyframes helios-grain {
@@ -1375,13 +1345,9 @@
 
   /* ---- narrow --------------------------------------------------------- */
   @media (max-width: 640px) {
-    /* The mark's corner moves in and the hit area moves with it: both read the
-       same three values, so the pair cannot drift apart. */
-    [data-look="helios"] {
-      --helios-wm-box-x: 1rem;
-      --helios-wm-box-y: 0.8rem;
-      --helios-wm-box-w: min(9rem, calc(100vw - 8rem));
-    }
+    /* (The mark's corner and width on a phone are the bar's, declared once in
+       components/nav.css beside the desktop value. Both the mark and the nav
+       link that owns the clicks read them, so the pair cannot drift.) */
 
     [data-look="helios"] .helios-thesis {
       left: 12vw;
@@ -1468,21 +1434,21 @@
     max-width: 34rem;
     margin: 0 auto;
     padding: 22vh var(--helios-gutter) 18vh;
-    color: var(--helios-cream);
+    color: var(--light-ink);
   }
 
   [data-look="helios"] .helios-about-kicker {
     font: 500 0.625rem/1.6 var(--font-display);
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--helios-verse);
+    color: var(--light-voice);
     margin: 0 0 1.4rem;
   }
 
   [data-look="helios"] .helios-about h1 {
     font: 400 clamp(2.6rem, 7vw, 4.2rem)/1.12 var(--font-paperlang);
     letter-spacing: -0.03em;
-    color: var(--helios-cream);
+    color: var(--light-ink);
     margin: 0 0 1.15rem;
     text-shadow: var(--helios-glow);
   }
@@ -1490,7 +1456,7 @@
   [data-look="helios"] .helios-about-mission {
     font-size: var(--helios-verse-size);
     line-height: 1.45;
-    color: var(--helios-verse);
+    color: var(--light-voice);
     margin: 0 0 2.8rem;
   }
 
@@ -1499,7 +1465,7 @@
     margin: 0 0 1.75rem;
     background: none;
     font: italic 1.15rem/1.55 var(--font-serif);
-    color: var(--helios-cream);
+    color: var(--light-ink);
   }
 
   [data-look="helios"] .helios-about blockquote p {
@@ -1510,7 +1476,7 @@
     margin: 0;
     text-align: right;
     font: italic 1rem var(--font-serif);
-    color: var(--helios-brand);
+    color: var(--light-accent);
   }
 
 }

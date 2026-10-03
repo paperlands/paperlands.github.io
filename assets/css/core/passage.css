@@ -1,0 +1,132 @@
+/* ==========================================================================
+   core/passage.css — the crossing between documents
+   --------------------------------------------------------------------------
+   Every navigation on this site is a real page load. The notes are documents,
+   the Library is a document, the landing is a document. That is deliberate —
+   there is no router, no fetch, no history shim — and this file is what keeps
+   it from *feeling* like one.
+
+   A cross-document view transition lets the browser keep the page you are
+   leaving on screen, at the scroll offset you left it, while the next document
+   loads and paints, and then dissolves one into the other. It is the whole of
+   the site's answer to the two things a document swap costs a reader: the blank
+   frame while the next page arrives, and the jump to the top of it. Both go
+   away, in CSS, with nothing to load and nothing to fail.
+
+   ---- THE ONE RECIPE ------------------------------------------------------
+   `navigation: auto` opts in every same-origin navigation. There is no
+   allow-list and no per-page opt-out, because the site has no navigation that
+   is not a crossing. (The redirect surfaces in _layouts/redirect.html carry
+   their own <head> and never load this stylesheet, so they take part in
+   nothing — which is right: a redirect is a correction, not a journey.)
+
+   The cross-fade is NOT two fades. It is one, and the departing page is the
+   ground:
+
+     ::view-transition-old(root)   holds, opaque — the room you are in
+     ::view-transition-new(root)   rises from 0 to 1 over it — the room
+                                   you are moving to
+
+   Two complementary fades would be wrong, and the arithmetic is worth writing
+   down. A layer at opacity a over a layer at opacity b leaves (1-a)(1-b) of
+   whatever sits behind the pair showing through; at the midpoint of a 1-t / t
+   cross-fade that is a quarter of the page — a dip toward the canvas at exactly
+   the moment the reader is looking hardest. Holding the old page fully opaque
+   keeps the sum at 1 for the whole dissolve. The two documents mix, and nothing
+   else does.
+
+   It also buys the stillness of the frame, for free. The bar is the same markup
+   with the same rasters, and on the surfaces this crossing runs between it is in
+   the same place to the pixel: both fixed layers, the plates' box and the corner
+   of the banner are identical on the landing, on /about and on every note
+   (design/probe/passage.mjs, "frame census"). Identical pixels dissolve into
+   identical pixels, so the bar does not move, does not re-ink and does not
+   flicker while everything beneath it changes.
+
+   Which is why nothing here is named, and this is the part that is easy to get
+   backwards. A `view-transition-name` is for elements that MOVE between two
+   pages — and on this site the pieces that move have no business being lifted
+   out of the dissolve: the note's hero is z-index -1 *behind* the opening's
+   title, so naming it would paint it over the text it is composed under for the
+   length of the crossing, and the identity is a fixed element standing in for
+   the nav's invisible brand link. Naming is not what makes a frame stand still;
+   the frame standing still is what makes naming unnecessary.
+
+   The mark USED to be the exception, and this file is where that was found: it
+   stood 0.2rem higher on the look's pages than in the edition
+   (--helios-wm-box-y 0.9rem against --evening-wm-box-y 1.1rem, measured at
+   1440x900: y 14.39 against 17.59), so it softened through every landing-note
+   dissolve instead of holding still. The corner is now one declaration on
+   <body> — the same move components/nav.css already made for --nav-logo-x —
+   and components/identity.css styles the mark once for both surfaces. Measured
+   after: y 17.59 on the landing, on /about and in every note.
+
+   One softness is measured and deliberately left alone, because it belongs to
+   a page's own composition rather than to the crossing: the Library lays the bar
+   out in flow instead of centring the plates in the fixed bar, so a crossing to
+   /blog re-composes the bar (plates 7.9px left and 8.6px up of where the dark
+   surfaces put them) as the page arrives. Crossings between the dark surfaces —
+   the ones this site is made of — do not have this to say for themselves.
+
+   And nothing here moves either. With the old page as the ground, any transform
+   on the arriving page separates it from the page it is superimposed on, and the
+   whole document double-images: a dissolve is the effect, and the movement this
+   site has (the scroll-driven acts, the nav's own transitions) is the page's,
+   not the crossing's.
+
+   ---- WHAT IS NOT HERE ----------------------------------------------------
+   No `view-transition-name` anywhere, for the reason above — this is the whole
+   of the site's element-level view-transition CSS: there is none.
+
+   No `pageswap` / `pagereveal` JavaScript. The CSS is the entire contract, so a
+   reader with scripting blocked crosses exactly as everyone else does. (Both
+   events are dispatched, and design/probe/passage.mjs listens for them as
+   evidence — but nothing in the site does.)
+
+   ---- WHERE IT DOES NOT APPLY ---------------------------------------------
+   Firefox has not shipped cross-document view transitions. `@view-transition`
+   is dropped there and every navigation is the plain document swap it is today
+   — no polyfill, no shim, no fallback to write. Chrome/Edge 126+ and Safari
+   18.2+ run it; _includes/head.html also carries the older
+   `<meta name="view-transition">` spelling, which is what Chrome 111-125 reads.
+   ========================================================================== */
+
+/* The one at-rule in this codebase that cannot live in a layer — and it is why
+   this is a file of its own rather than a block inside components/nav.css.
+   `@view-transition` is a document-level rule, like `@page`, not a style rule
+   about any element; wrapped in `@layer` it is invalid and silently dropped. */
+@view-transition {
+  navigation: auto;
+}
+
+@layer base {
+  /* The departing document is the ground: opaque, still, under everything the
+     arriving one does. See the header for the arithmetic. */
+  ::view-transition-old(root) {
+    animation: none;
+  }
+
+  /* The arriving document rises over it. `both` is load-bearing: without it the
+     first frame paints the new page at its natural opacity before the fade
+     takes hold, and the dissolve starts with a flash of the destination. */
+  ::view-transition-new(root) {
+    animation: passage-rise var(--passage-dur) var(--passage-ease) both;
+  }
+
+  @keyframes passage-rise {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* Reduced motion: the crossing still happens — it is what removes the blank
+     frame and the scroll jump, and neither of those is motion — but it happens
+     at once. A 1ms duration rather than `animation: none`, because a new layer
+     with no animation paints at its natural opacity from the first frame and
+     the two documents would simply be stacked on top of each other. */
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation-duration: 1ms;
+    }
+  }
+}

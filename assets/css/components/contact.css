@@ -1,0 +1,557 @@
+/* ==========================================================================
+   components/contact.css — the contact modal
+   --------------------------------------------------------------------------
+   One letter to PaperLand, and the site's way of writing it. `_layouts/
+   default.html`, `_layouts/folio.html` and `_layouts/note.html` each place
+   `_includes/contact_modal.html`, so the dialog is present on every page that
+   carries the nav; `assets/js/contact.js` opens it from any link pointing at
+   /contact and leaves the href alone — a modifier-click, a middle-click or a
+   reader with no JavaScript still resolves the route.
+
+   WHY IT IS HERE AND NOT IN THE LOOK. It was written inside
+   components/helios.css and scoped `[data-look="helios"]`, because the mainpage
+   was the only page that had it; the look's own probe (design/probe/looks.py)
+   requires every class a look names to be namespaced to that look, which is why
+   the vocabulary read `helios-contact__*`. The modal is not the look's — it is
+   every surface's, opened from wherever the reader is — so the sheet moved to
+   the shared entry (assets/css/app.css) and the classes lost the look's prefix.
+
+   THE EXPOSURE. A component every surface loads cannot read `--light-ink` and
+   hope: the light roles are answered by [data-theme="evening"],
+   [data-look="helios"] and [data-theme="folio"] (core/lights.css), so on a
+   standing page — the Library, /about — there is no exposure at all and those
+   rules would paint nothing. The tokens below take the surface's role where the
+   surface answers one and fall back to the landing's values where it does not
+   (the landing is where this panel was drawn). Nothing here re-lights a
+   surface; it is lit by one.
+
+   The geometry, the motion and the security surface are unchanged: a native
+   top-layer dialog with no card, the lazy Turnstile challenge the opener loads,
+   and the grain tile (the shared asset, as in the edition).
+   ========================================================================== */
+
+@layer components {
+
+  /* ---- the exposure ---------------------------------------------------- */
+  /* Read once, at the dialog, so a surface re-lights the modal by being
+     itself, and no rule below names a role directly. */
+  .contact {
+    --contact-ground: var(--light-ground, #050009);
+    --contact-ink: var(--light-ink, #f6e6c4);
+    --contact-voice: var(--light-voice, #f2d2b0);
+    --contact-accent: var(--light-accent, #ff9933);
+    /* The look's own ease, carried: the modal kept its motion when it left
+       components/helios.css, and no surface has asked for another one. */
+    --contact-ease: cubic-bezier(.22, 1, .36, 1);
+  }
+
+  /* ---- the contact field --------------------------------------------- */
+  /* A native top-layer dialog, not a card. A letter held in feathered light,
+     with no enclosing frame or registration edge.
+     The top layer carries the same real grain as the page. All light and
+     arrival effects are behind the sharp, immediately usable form. */
+  body.contact-open {
+    overflow: hidden;
+  }
+
+  .contact {
+    position: fixed;
+    inset: 0;
+    isolation: isolate;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: clamp(0.75rem, 3vw, 2.5rem);
+    border: 0;
+    /* Give top-layer grain a dark ground to blend into, not transparent air. */
+    background: rgb(5 0 9 / 0.5);
+    color: var(--contact-ink);
+    color-scheme: dark;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .contact[open] {
+    display: grid;
+    place-items: safe center;
+  }
+
+  .contact::backdrop {
+    background:
+      radial-gradient(ellipse 72% 62% at 50% 40%, rgb(139 46 12 / 0.14), transparent 68%),
+      rgb(5 0 9 / 0.88);
+  }
+
+  .contact::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.1;
+    background-image: url("/assets/lib/helios-grain.png");
+    background-size: 220px 220px;
+    mix-blend-mode: overlay;
+  }
+
+  .contact__panel {
+    position: relative;
+    z-index: 1;
+    isolation: isolate;
+    width: min(37rem, 100%);
+    margin: 0 auto;
+    padding: clamp(1.4rem, 4vw, 2.6rem) clamp(1.25rem, 4.2vw, 2.75rem);
+    border: 0;
+    background: transparent;
+  }
+
+  /* Mask/filter only this decorative light, never the panel or its text. */
+  .contact__panel::before {
+    content: "";
+    position: absolute;
+    inset: -4.75rem max(-5.75rem, calc((100% - 100vw) / 2)) 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 58% 42% at 43% 20%, rgb(212 90 20 / 0.17), transparent 64%),
+      radial-gradient(ellipse 68% 66% at 50% 46%,
+        rgb(20 9 16 / 0.9) 0%, rgb(8 2 9 / 0.78) 48%,
+        rgb(5 0 9 / 0.42) 67%, transparent 94%);
+    filter: blur(22px);
+    transform-origin: 50% 44%;
+  }
+
+  .contact__close {
+    position: absolute;
+    top: 0.15rem;
+    right: 0.15rem;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: color-mix(in srgb, var(--contact-voice) 72%, transparent);
+    font: 1.05rem/1 var(--font-body);
+    cursor: pointer;
+    transition: color 180ms var(--contact-ease);
+  }
+
+  .contact__close:hover {
+    color: var(--contact-accent);
+  }
+
+  .contact__close:focus-visible {
+    color: var(--contact-accent);
+    outline: 1px solid var(--contact-accent);
+    outline-offset: 2px;
+  }
+
+  .contact__head {
+    margin: 0 0 0.9rem;
+    padding-right: 3rem;
+  }
+
+  .contact__title {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.55rem, 3.5vw, 1.85rem);
+    line-height: 1.2;
+    letter-spacing: 0;
+    color: var(--contact-ink);
+  }
+
+  .contact__title em {
+    font-style: inherit;
+    color: inherit;
+  }
+
+  .contact__lede {
+    max-width: 31rem;
+    margin: 0 0 1.7rem;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--contact-voice) 76%, transparent);
+  }
+
+  .contact__address {
+    margin: 1.25rem 0 0;
+    font: 1.125rem/1.5 var(--font-body);
+    color: color-mix(in srgb, var(--contact-voice) 72%, transparent);
+  }
+
+  /* A LINK IS A COLOUR, NOT A HINT. A word in the letter that goes somewhere is
+     set in the surface's accent — --contact-accent, the brand's own #ff9933
+     where the surface answers a light role and the landing's where it does not.
+     MEASURED, because the claim is about paint and not about a token: sampling
+     the four surfaces the letter opens on (the landing, the Library, a note, a
+     standing page) the ground behind the lede reads between rgb(13 4 9) and
+     rgb(16 7 12), the accent's own pixels 8.0–8.2:1 on it and the address's
+     9.4:1 — against the 7:1 WCAG AAA asks of body text. The underline is the
+     letter's other cue, at 3.9:1, so a reader who does not see this orange
+     still sees a link.
+
+     Said at all because Tailwind's preflight leaves an anchor `color: inherit;
+     text-decoration: inherit` — and the lede carried no link until its words
+     became the site's markup (_plugins/site_markup.rb resolves `[[note|label]]`
+     in _data/contact.yml), so a word that IS a link was drawn as a word. A
+     surface's blanket anchor rule can also tie with this one and win on sheet
+     order: components/evening.css excludes the dialog for exactly that reason,
+     and design/probe/contact.mjs asserts this accent on every surface. */
+  .contact__status a,
+  .contact__lede a,
+  .contact__address a {
+    color: var(--contact-accent);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--contact-accent) 55%, transparent);
+    text-underline-offset: 0.2em;
+  }
+
+  .contact__status a:hover,
+  .contact__status a:focus-visible,
+  .contact__lede a:hover,
+  .contact__lede a:focus-visible,
+  .contact__address a:hover,
+  .contact__address a:focus-visible {
+    color: color-mix(in srgb, var(--contact-accent) 78%, white);
+    text-decoration-color: currentColor;
+  }
+
+  .contact__status a:focus-visible,
+  .contact__lede a:focus-visible,
+  .contact__address a:focus-visible {
+    outline: 1px solid var(--contact-accent);
+    outline-offset: 3px;
+  }
+
+  .contact__form {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    background: none;
+  }
+
+  .contact__label {
+    display: block;
+    margin: 0 0 0.18rem;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+    color: color-mix(in srgb, var(--contact-voice) 76%, transparent);
+  }
+
+  .contact__input {
+    width: 100%;
+    min-height: 2.75rem;
+    margin: 0 0 1.05rem;
+    padding: 0.32rem 0.08rem 0.55rem;
+    border: 0;
+    border-radius: 0;
+    background-color: transparent;
+    background-image: linear-gradient(90deg, transparent,
+      color-mix(in srgb, var(--contact-voice) 18%, transparent) 6%,
+      color-mix(in srgb, var(--contact-voice) 24%, transparent) 20%,
+      color-mix(in srgb, var(--contact-voice) 20%, transparent) 84%, transparent);
+    background-position: left bottom;
+    background-repeat: no-repeat;
+    background-size: 100% 1px;
+    color: var(--contact-ink);
+    caret-color: var(--contact-accent);
+    font-family: var(--font-body);
+    font-size: 1.05rem;
+    font-style: italic;
+    line-height: 1.4;
+    transition: box-shadow 180ms var(--contact-ease);
+  }
+
+  .contact__input::placeholder {
+    color: color-mix(in srgb, var(--contact-voice) 48%, transparent);
+    font-style: italic;
+  }
+
+  .contact__input:focus {
+    outline: none;
+    background-image: linear-gradient(90deg, transparent,
+      color-mix(in srgb, var(--contact-accent) 72%, transparent) 6%,
+      var(--contact-accent) 20%, var(--contact-accent) 86%, transparent);
+    background-size: 100% 2px;
+    box-shadow: 0 0.75rem 1.1rem -1rem rgb(255 153 51 / 0.4);
+  }
+
+  textarea.contact__input {
+    min-height: 6rem;
+    resize: vertical;
+  }
+
+  /* The external security surface stays honest: no masking or scaling. */
+  .contact__captcha {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: 65px;
+    margin: 0.05rem 0 0.7rem;
+  }
+
+  .contact__turnstile {
+    width: 300px;
+    max-width: 100%;
+  }
+
+  .contact__submit {
+    align-self: flex-end;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0.55rem 0.08rem 0.4rem;
+    border: 0;
+    border-radius: 0;
+    background: linear-gradient(90deg, transparent,
+      color-mix(in srgb, var(--contact-accent) 62%, transparent) 14%,
+      color-mix(in srgb, var(--contact-accent) 62%, transparent) 86%, transparent)
+      left bottom / 100% 1px no-repeat;
+    color: var(--contact-ink);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: 0.015em;
+    cursor: pointer;
+    transition: color 180ms var(--contact-ease), text-shadow 180ms var(--contact-ease);
+  }
+
+  .contact__submit:hover {
+    color: var(--contact-accent);
+    text-shadow: 0 0 0.7rem rgb(255 153 51 / 0.28);
+  }
+
+  .contact__submit:focus-visible {
+    color: var(--contact-accent);
+    outline: 1px solid var(--contact-accent);
+    outline-offset: 4px;
+  }
+
+  /* ---- the letter's small print, two sizes up ---------------------------- */
+  /* What a reader reads AFTER writing — the address, the receipt, the drawing —
+     and "small" had gone too far on this panel: each is a quarter bigger than it
+     was (0.9 → 1.125 for the address, 1 → 1.25 for the receipt and for the
+     thank-you that stands in the invitation's place, 0.72 → 0.9 for the drawing),
+     which is two steps on the panel's own scale. The FORM is untouched: its
+     labels, fields and button are exactly what they were, and its fields stay at
+     16px so a phone does not zoom into them. A bigger field is a different form,
+     and this is not the type anybody writes in. */
+  .contact__status {
+    margin: 1rem 0 0;
+    font-family: var(--font-body);
+    font-size: 1.25rem;
+    color: var(--contact-accent);
+  }
+
+  .contact__status[hidden] {
+    display: none;
+  }
+
+  .contact__status--bad {
+    color: #ff5340;
+    /* The failure is the one line in the letter allowed to shout a little: a clear
+       red rather than the pink it was — measured from the pixels it is actually
+       drawn in, 6.5:1 on the panel's ground — and it sits at the BOTTOM RIGHT,
+       where it reads as an answer to the form rather than as the next line of it. */
+    text-align: right;
+  }
+
+  /* ---- the desk the letter reached -------------------------------------- */
+  /* The desk the letter reached, under a letterhead that now says FROM PaperLand:
+     the room it was written in, in the brand's own orange. Character art, because
+     this is a site that draws what it means in character art (the twilight sky's
+     fellowship, the mark's own line work), and because the letter belongs to no
+     look and so draws its own.
+
+     IT IS STILL, ON PURPOSE. The first version of this was two butterflies and
+     they read as dead — a drawing that flaps at 8fps is a drawing pretending to
+     be alive, and it fails at both. Furniture does not need to breathe.
+
+     AND IT COSTS NOTHING UNTIL IT IS EARNED: a letter that was never sent is the
+     same panel it was before any of this existed. There is no animation to pause
+     and nothing to download — the drawing needs a monospace GRID, not a face, and
+     the reader already has one. */
+
+  /* ---- one state, one class --------------------------------------------- */
+  /* A letter that ARRIVED is a different panel, not a decorated one: the
+     letterhead turns around (From PaperLand), the invitation gives way to the
+     thank-you, the form goes — it is done with — and the desk it reached is drawn
+     under it. A letter that FAILED keeps everything it had and is told so at the
+     foot of the panel, in red.
+     
+     THE SCRIPT WRITES ONE CLASS for that (.contact--received / .contact--failed)
+     and everything below keys off it, including the two things a reader never
+     sees: the alternate letterhead, which is `display: none` until it is the
+     letter's own, and the live region, which in the received state is out of
+     sight — the thank-you is the letter's line above, and the region is only
+     there to announce it. */
+  .contact__title--received,
+  .contact__lede--received,
+  .contact__desk {
+    display: none;
+  }
+
+  /* What a received letter does NOT show: the letter it was, the invitation it
+     answered, the form it is done with — and the address, which on a receipt is a
+     footnote to a letter that has just been written. */
+  .contact--received .contact__title,
+  .contact--received .contact__lede,
+  .contact--received .contact__address,
+  .contact--received .contact__form {
+    display: none;
+  }
+
+  .contact--received .contact__title--received,
+  .contact--received .contact__lede--received,
+  .contact--received .contact__desk {
+    display: block;
+  }
+
+  /* THE RECEIPT IS A CARD. Its two lines take the panel's ink, at the size the
+     invitation had room for, and then share ONE AXIS with the drawing below them
+     — centred, which is what the drawing already was and what a card is. Left
+     as it was, a wide panel left the drawing floating in a half-empty column. */
+  .contact__lede--received {
+    max-width: none;
+    margin-bottom: 0;
+    font-size: 1.25rem;
+    color: var(--contact-ink);
+  }
+
+  .contact--received .contact__head,
+  .contact--received .contact__lede--received {
+    text-align: center;
+  }
+
+  /* Announced, not shown: the script copies the receipt's words in here, and in
+     the received state the letter itself says them. Out of sight, still in the
+     accessibility tree. */
+  .contact--received .contact__status {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .contact__desk {
+    width: fit-content;
+    /* A little more air than the drawing first had: its head takes the top three
+       lines, so the mass sits high and the gap under the thank-you has to carry
+       it. */
+    margin: 1.75rem auto 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.9rem;
+    line-height: 1.06;
+    /* THE BRAND'S OWN ORANGE, at full strength: this is the desk the letter was
+       sent TO, which is what the reader was told they were writing to, and the one
+       thing on the panel allowed to be this loud. Measured 7.9:1 on the ground the
+       panel is painted over — the token resolves to 9.5:1, the character art draws
+       with thin strokes and lands at 7.9, which is still the loudest ink here. */
+    color: var(--contact-accent);
+  }
+
+  /* Eleven lines, and not one of them may lose its leading space: the drawing is
+     a character grid, so `pre` is the whole typesetting story. */
+  .contact__desk::before {
+    display: block;
+    white-space: pre;
+    /* The drawing, escaped: `\a` + ONE space (the escape's terminator, which CSS
+       eats) + the line's own indentation. Written the other way round — `\a` and
+       then the indentation itself — every line after the first comes out a space
+       short and the figure shears, which is exactly what happened here first time
+       out. Re-counting it by eye is not a plan, so the escapes were decoded and
+       compared against the drawing itself, line for line. */
+    content: "        _)/_\a        (_' <\a          )(_\a    ,--.''-`'.\a   :.'  :  =- :\a   |:   | ._|]|\a   |____|_____|\a  /.:. /-_-_/\a (.:: / |=|\a  `--'  |=|\a        |=| ";
+  }
+
+
+  @media (max-width: 30rem) {
+    .contact {
+      padding: 0.75rem;
+    }
+
+    .contact__panel {
+      padding: 1.3rem 1rem 1.5rem;
+    }
+  }
+
+  /* Preserve the normal 300px challenge at 320px without clipping it. */
+  @media (max-width: 21.25rem) {
+    .contact {
+      padding-inline: 0;
+    }
+
+    .contact__panel {
+      padding-inline: 10px;
+    }
+  }
+
+  @media (max-height: 38.75rem) and (orientation: landscape) {
+    .contact[open] {
+      place-items: start center;
+    }
+
+    .contact__panel {
+      margin-block: 0.35rem;
+      padding-block: 1rem;
+    }
+
+    .contact__head {
+      margin-bottom: 0.6rem;
+    }
+
+    .contact__lede {
+      margin-bottom: 0.8rem;
+    }
+
+    .contact__input {
+      margin-bottom: 0.75rem;
+    }
+
+    textarea.contact__input {
+      min-height: 4.75rem;
+    }
+  }
+
+  /* Light acquires energy once. Text, focus and form geometry never move. */
+  @media (prefers-reduced-motion: no-preference) {
+    .contact::backdrop {
+      animation: contact-veil 240ms ease-out both;
+    }
+
+    .contact[open] .contact__panel::before {
+      animation: contact-phosphor 820ms var(--contact-ease) both;
+    }
+  }
+
+  @keyframes contact-veil {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes contact-phosphor {
+    0% { opacity: 0; filter: blur(32px); transform: scaleX(0.985) scaleY(0.88); }
+    28% { opacity: 0.82; filter: blur(27px); transform: scaleX(1.006) scaleY(0.985); }
+    100% { opacity: 1; filter: blur(22px); transform: none; }
+  }
+
+
+}

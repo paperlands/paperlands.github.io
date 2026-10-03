@@ -116,7 +116,53 @@ module NotesEdition
       footnote.remove
     end
     doc.css('.footnotes').each { |node| node.remove if node.css('li').empty? }
+
+    wrap_dropcap(doc)
     doc.to_html
+  end
+
+  # The drop cap is an ELEMENT, not a `::first-letter` pseudo.
+  #
+  # The pseudo cannot be authored. Its float box is the engine's decision, and
+  # the engines disagree about it: measured on /our-approach with this
+  # stylesheet and this face, the same rule builds a 74px box in Chromium 153
+  # and a 50px box in Firefox 152, an explicit `height` on the pseudo is
+  # ignored by both, and stating `line-height` moves only Chromium's offset. The
+  # letter lands 23px apart — Chromium sinks it below the two lines it should
+  # cap — and no property settles it, because the box is not in the CSS. A real
+  # span lays out identically in both engines (73.59 vs 73.63px), so the letter
+  # is wrapped here and its geometry is stated in evening.css.
+  #
+  # WHICH PASSAGE. The same one the pseudo targeted: the essay's first
+  # paragraph, skipping a paragraph that is itself a door out (a side-link) —
+  # the door is the opening gesture and the cap belongs to the prose after it.
+  # Direct children only: the epigraph's paragraph belongs to its blockquote.
+  #
+  # WHAT IS WRAPPED. The first LETTER as `::first-letter` defines it: leading
+  # punctuation and quotes belong to the cap ('“W' caps the W's quote, not the
+  # W), and leading whitespace stays outside it. Trailing punctuation is not
+  # included; no note in the Library opens with '(A)' or a closing quote.
+  def wrap_dropcap(doc)
+    paragraph = doc.children.find { |node| node.name == 'p' && node.css('a.side-link').empty? }
+    return unless paragraph
+
+    paragraph.xpath('.//text()').each do |text|
+      match = text.content.match(/\A(?<space>\s*)(?<punct>[^\p{L}\s]*)(?<letter>\p{L})/)
+      next unless match
+
+      remainder = text.content[match.end(0)..] || ''
+      span = Nokogiri::XML::Node.new('span', doc)
+      span['class'] = 'edition-dropcap'
+      span.content = match[:punct] + match[:letter]
+      if match[:space].empty?
+        text.replace(span)
+      else
+        text.content = match[:space]
+        text.add_next_sibling(span)
+      end
+      span.add_next_sibling(Nokogiri::XML::Text.new(remainder, doc)) unless remainder.empty?
+      break
+    end
   end
 
   # Contents for the rail, from the ids kramdown actually generated — never a
@@ -151,8 +197,8 @@ module NotesEdition
   # distinguished, and no invented proximity. Two renditions — a horizontal
   # constellation and a vertical thread for narrow screens — rather than one
   # layout shrinking labels into illegibility. Nodes come from
-  # _includes/notes_graph.json, written at build by
-  # _plugins/bidirectional_links_generator.rb.
+  # site.data.notes_graph, built in memory by
+  # _plugins/bidirectional_links_generator.rb (a build writes no source files).
   def note_graph(json, current_url, compact = false)
     data = JSON.parse(json)
     nodes = data.fetch('nodes')

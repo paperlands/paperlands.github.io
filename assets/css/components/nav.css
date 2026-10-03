@@ -81,6 +81,35 @@
      This was 1.6rem, which is where the plates still sit. */
   body {
     --nav-logo-x: 1.1rem;
+    /* ---- the identity's corner ------------------------------------------
+       The mark components/identity.css draws is the SAME element on the landing
+       and in every note: _includes/home/wordmark.html, included by both. It
+       stands in for the bar's own banner (which is opacity 0 wherever the mark
+       paints), so its corner is the bar's — the top of the banner's ink is
+       --nav-pad-y, and the left is the logo inset above.
+
+       It used to be written three times and drifted, exactly as the left inset
+       did: --helios-wm-box-y was 0.9rem and --evening-wm-box-y was 1.1rem, so
+       the drawn mark sat 3.2px higher on the landing than in a note. Nothing
+       looked wrong on either page alone; what it cost was the crossing between
+       them, where the mark double-images for the length of a dissolve
+       (design/probe/passage.mjs measures both boxes).
+
+       `min(12rem, calc(100vw - 12rem))`, and 9rem on a phone, is the width the
+       banner takes before the bar's plates need the room. */
+    --nav-mark-y: 1.1rem;
+    --nav-mark-w: min(12rem, calc(100vw - 12rem));
+
+    /* The chrome's one curve. The bar's own transitions, the mark's retract
+       and the look's act choreography all read this shape; it was a literal
+       cubic-bezier(.22, 1, .36, 1) written out in five places. */
+    --nav-ease: cubic-bezier(.22, 1, .36, 1);
+  }
+
+  @media (max-width: 640px) {
+    body {
+      --nav-mark-w: min(9rem, calc(100vw - 10rem));
+    }
   }
 
   .site-nav {
@@ -116,7 +145,44 @@
     --nav-accent: var(--color-primary);
     --nav-hover-bg: color-mix(in srgb, var(--color-text) 7%, transparent);
     --nav-line: color-mix(in srgb, var(--color-text) 18%, transparent);
-    --nav-panel: var(--color-background);
+    /* ---- the bar's field (see the FIELD block, far below) -----------------
+       One pigment — the warm dark this tone already used — thrown from the
+       corner the control sits in: ONE radial, centred on that corner, so the
+       light simply falls away from where it comes from. It began as two
+       linear falls (left across the bar, down over the destinations), which is
+       a waterfall with a corner attached: it described the bar's two extents
+       rather than the throw, and the corner — the one point the field is
+       actually about — was the only place it could not be dense in.
+
+       The radii are far larger than the box, deliberately. A tight radial
+       would fade each word along its own length (the labels are left-aligned,
+       so the far end of every line is further from the corner than the near
+       one); at ~120% of the box, a 90px word crosses ~8% of the fall, which
+       reads as one ground rather than a gradient.
+
+       The density is the surface's call, written rather than derived, because
+       the two surfaces want opposite things from it:
+
+         light  the bar is a shadow the ink sits in. Dark ink on cream reads
+                whatever is behind it, so this may thin right out — and the
+                fall is what stops the field reading as a panel (measured: a
+                soft-sided plateau still reads as a box).
+         dark   over a photograph the density IS the legibility, so it thins
+                more slowly: ~0.45 on the last label is what it is read against.
+
+       It used to be a veil of `--color-background` — the page's own cream —
+       and a veil of the page is a veil of nothing: on the Library the menu
+       opened as bare links over the page. */
+    --nav-sheet:
+      radial-gradient(118% 128% at 100% 0%, rgb(20 8 6 / 0.2) 0%,
+        rgb(20 8 6 / 0.16) 34%, rgb(20 8 6 / 0.075) 62%,
+        rgb(20 8 6 / 0.022) 84%, rgb(20 8 6 / 0) 100%);
+    /* Where the bar's right edge is, as an inset for the field's box: this is
+       the point the radial is centred on, so it has to be the CORNER and not
+       wherever the chrome happens to stop. Here the chrome is a flex item
+       inside the shell's padding and the links take the rest; on the dark
+       surfaces it is the bar itself. */
+    --nav-field-right: calc(-1 * (var(--nav-pad-x) + 1.4rem));
   }
 
   .site-nav[data-tone="dark"] {
@@ -125,7 +191,15 @@
     --nav-accent: var(--color-primary);
     --nav-hover-bg: color-mix(in srgb, #f6e6c4 12%, transparent);
     --nav-line: color-mix(in srgb, #f6e6c4 24%, transparent);
-    --nav-panel: #140806;
+    /* The same throw, the same radii — laid down thicker, and landing on a
+       higher floor: over a photograph this is what the ink is read against. */
+    --nav-sheet:
+      radial-gradient(118% 128% at 100% 0%, rgb(20 8 6 / 0.62) 0%,
+        rgb(20 8 6 / 0.54) 34%, rgb(20 8 6 / 0.32) 62%,
+        rgb(20 8 6 / 0.13) 84%, rgb(20 8 6 / 0) 100%);
+    /* The chrome IS the bar here, so its padding box already ends at the
+       corner. */
+    --nav-field-right: 0px;
   }
 
   /* ---- the chrome: brand and burger, never blended ---------------------- */
@@ -156,7 +230,7 @@
     display: block;
     overflow: hidden;
     width: var(--nav-mark-box-w);
-    transition: width 320ms cubic-bezier(.22, 1, .36, 1);
+    transition: width 320ms var(--nav-ease);
   }
 
   /* `max-width: none` is load-bearing: preflight sets `img { max-width: 100% }`
@@ -180,13 +254,22 @@
     color: var(--nav-ink);
   }
 
+  /* The plates carry the whole navigation, always over a backdrop of
+     unknowable brightness, so they are set for PRESENCE rather than for
+     texture: Cinzel 600 at 0.72rem, with the tracking eased from 0.28em to
+     0.22em to buy back the width that the extra size and weight spend. At
+     0.62rem/400 the links read as grain over the notes' photographs — the
+     weight is there to hold them, and the tracking still separates the
+     letters. Colour is the blend's business (see the header); this is size.
+     Six plates still clear the banner at the 1024px breakpoint. */
   .folio-nav__plates {
     display: flex;
     align-items: center;
     gap: 1.1rem;
     font-family: var(--font-display);
-    font-size: 0.62rem;
-    letter-spacing: 0.28em;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
     transition: opacity 220ms ease;
   }
@@ -220,7 +303,7 @@
     visibility: hidden;
   }
 
-  /* ---- the mobile menu: one box, the burger IS the sheet ---------------- */
+  /* ---- the mobile menu: one box, and the burger is its lid -------------- */
   .folio-nav__menu {
     display: none;
   }
@@ -249,7 +332,7 @@
     height: 1.5px;
     background: currentColor;
     transform-origin: center;
-    transition: transform 320ms cubic-bezier(.22, 1, .36, 1), opacity 200ms ease;
+    transition: transform 320ms var(--nav-ease), opacity 200ms ease;
   }
 
   .folio-nav__menu.is-open .folio-nav__burger-bars span:nth-child(1) {
@@ -351,23 +434,191 @@
       width: 2.9rem;
       overflow: hidden;
       background: transparent;
+      /* The delay is the CLOSE's, not the open's: the words are gone before
+         the box starts to clip them, so the close never shows a frame sweeping
+         over the labels (see the list's fade below). Opening overrides it. */
       transition:
-        width 320ms cubic-bezier(.22, 1, .36, 1),
-        grid-template-rows 320ms cubic-bezier(.22, 1, .36, 1),
-        background 220ms ease;
+        width 320ms var(--nav-ease) 160ms,
+        grid-template-rows 320ms var(--nav-ease) 160ms;
     }
 
     .folio-nav__menu.is-open {
       width: min(13.5rem, calc(100vw - 1.4rem));
       grid-template-rows: 2.9rem 1fr;
-      background: color-mix(in srgb, var(--nav-panel) 38%, transparent);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      transition-delay: 0ms;
+      /* No material here: the bar carries it (see the field below). The panel
+         is geometry — the width the destinations need, opened out of the bar's
+         corner — and nothing more. */
     }
 
+    /* ---- the FIELD: the bar's light, not the panel's ----------------------
+       The effect is thrown from the corner the control sits in, and it runs
+       the bar's full width and down over the destinations: ONE radial on that
+       corner, densest there and thinning away from it on every side. Nothing
+       is bounded to the panel — the panel is only where the destinations
+       happen to be, and a field painted inside it was a box with soft edges,
+       which is the thing this is meant not to be.
+
+       WHERE IT LIVES. On the CHROME, behind the bar's own ink, in a group of
+       its own (`z-index: -1` inside a stacking context the chrome opens). The
+       mark, the control and every label paint over it without any of them
+       needing a z-index; nothing clips it; and the box it is painted in — the
+       bar plus the furthest the menu can reach below it — is never visible as
+       an edge, because the gradients and the mask both run out long before it
+       ends.
+
+       WHERE IT BEGINS. The field is cut by the bar's own edges. An earlier
+       pass painted the ground on the panel's list, where the menu box's first
+       row (the close control, a 2.9rem touch target that nothing else may
+       occupy) opened as 2.9rem of empty material above "Home" — the first
+       destination padded off its own top edge by a row that is not part of
+       the menu at all. Nothing of the panel's is painted now: the field begins
+       at the bar, and the close control stays where the burger it replaces
+       already sits.
+
+       WHAT IT IS MADE OF. The letter's three things (components/contact.css): a
+       ground, a breath of the accent at the corner, and the shared grain tile,
+       at the same 220px the edition and the dialog use. And, like the letter,
+       it ARRIVES: the field resolves out of a bloom — dim, blurred, a touch
+       too bright — while the grain rolls away under it and one band of light
+       crosses the bar. The labels never move.
+
+       THE FIELD HAS NO EDGE. Ground, frost and grain share one mask, and the
+       mask is what makes the FROST soft: `backdrop-filter` blurs its whole
+       BOX, so without one the softest ground in the world still arrives inside
+       a hard-edged blur. Measured in Chromium over a striped backdrop:
+       unmasked, the blur keeps the rectangle; masked, the blur itself fades
+       through the feather.
+
+       The frost has a trap of its own, written the safe way here: only the
+       standard `backdrop-filter` is declared. Hand-writing
+       `-webkit-backdrop-filter` beside it makes the minifier keep the prefix
+       and DROP the standard declaration, and Chromium does not answer the
+       prefix (CSS.supports() is false), so this rule once shipped with no
+       frost at all. lightningcss adds the Safari prefix itself, as it does for
+       the edition's lightbox.
+
+       TWO feathers, INTERSECTED. A mask list composites with `add` by default,
+       so the two fades would UNION into a solid rectangle with only its
+       corners cut — measured side by side in Chromium — and `intersect` is
+       what turns them into a frame. Both spellings are carried because they
+       are one mechanism under two names and Safari answers only the prefixed
+       one.
+
+       The field follows the MENU's state and not the bar's: `:has()`, because
+       the class is on the menu and the field is on its parent. Declared open
+       or shut and gated on opacity, so that closing dissolves. */
+    .folio-nav__chrome {
+      /* Its own group, so the field's `z-index: -1` stays inside the bar and
+         behind everything the bar draws. */
+      position: relative;
+      z-index: 0;
+
+      /* The silhouette. The top and the right are the bar's edges, where the
+         field is CUT: they carry only the few pixels of softness a screen
+         needs. The left is the penumbra, spent over the bar's first 30% (a
+         dissolve across the brand, which is the far end of the throw), and the
+         bottom runs out below the last label. Measured on the Library: with
+         every edge feathered alike, the densest part sat over the middle of
+         the bar and the corner the field comes FROM was its faintest point —
+         which is a wash, not a cast. */
+      --folio-field-mask:
+        linear-gradient(90deg, transparent 0, #000 30%, #000 100%),
+        linear-gradient(180deg, #000 0 78%, rgb(0 0 0 / 0.7) 90%, transparent 100%);
+    }
+
+    .folio-nav__chrome::before,
+    .folio-nav__chrome::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0;
+      /* The bar's band, its own padding included, and 10rem below it — further
+         than the menu reaches, because the gradients and the mask both run out
+         long before this box ends and its own edges are never what is seen.
+
+         The right edge is the corner the radial is centred on, and each tone
+         says where that is (--nav-field-right): the box has to reach it, or the
+         field's dense end — the whole point of it — lands off screen. */
+      inset: calc(-1 * var(--nav-pad-y)) var(--nav-field-right) -10rem
+        calc(-1 * var(--nav-logo-x));
+      /* The field is thrown from this corner, so the transform's origin is
+         that corner: shut, it is scaled down FROM it, and a close therefore
+         pulls the light back into the bar instead of switching a rectangle
+         off. The same transition plays it back out on the way open. */
+      transform-origin: 100% 0;
+      transform: scale(0.9);
+      mask-image: var(--folio-field-mask);
+      -webkit-mask-image: var(--folio-field-mask);
+      mask-composite: intersect;
+      -webkit-mask-composite: source-in;
+      /* The frost is a filter list, so it interpolates out of and back into
+         `none` with the ground rather than snapping off on the way closed. */
+      transition: opacity 320ms ease, transform 320ms var(--nav-ease),
+        backdrop-filter 320ms ease;
+    }
+
+    /* THE GROUND AND ITS FROST. The breath of accent at the corner, then the
+       shadow the tone declares — `--nav-sheet`, above: one warm pigment
+       thrown from that corner. What falls away is the ALPHA, not the colour,
+       and that is the whole difference between a shadow and a panel. A
+       plateau with soft sides still reads as a box, however soft the sides
+       are; the eye needs the fall. */
+    .folio-nav__chrome::before {
+      background:
+        radial-gradient(52% 96% at 97% 0%,
+          color-mix(in srgb, var(--nav-accent) 17%, transparent), transparent 72%),
+        var(--nav-sheet);
+    }
+
+    /* THE STATIC — the page's own grain, then one band of light that crosses
+       the field once while it comes online. */
+    .folio-nav__chrome::after {
+      background-image:
+        url("/assets/lib/helios-grain.png"),
+        linear-gradient(180deg, transparent,
+          color-mix(in srgb, var(--nav-ink) 14%, transparent), transparent);
+      background-size: 220px 220px, 100% 26%;
+      background-repeat: repeat, no-repeat;
+      background-position: 0 0, 0 -80%;
+      mix-blend-mode: overlay;
+    }
+
+    .folio-nav__chrome:has(.folio-nav__menu.is-open)::before {
+      opacity: 1;
+      transform: none;
+      backdrop-filter: blur(12px);
+    }
+
+    .folio-nav__chrome:has(.folio-nav__menu.is-open)::after {
+      opacity: 0.05;
+      transform: none;
+    }
+
+    /* The panel's box. It is layout and nothing else now — the material is the
+       bar's — so this is the width the destinations are read across, plus the
+       air they sit in.
+
+       THE WORDS FADE. They are the first thing to go on a close (160ms, while
+       the box is still at its full width) and the last thing to arrive on an
+       open (held 120ms, so the field is up before they are read). Without the
+       fade the close is a rectangle sweeping over them, which is what "a
+       frame" means: the panel's clip is an edge no reader should ever see, and
+       the only way not to see it is to have nothing left for it to cut. */
     .folio-nav__menu-list {
       justify-self: stretch;
       padding: 0 0.35rem 0.4rem;
+      opacity: 0;
+      transition: opacity 160ms ease;
+    }
+
+    .folio-nav__menu.is-open .folio-nav__menu-list {
+      /* The panel's own top air, so the first label is not flush with the bar's
+         underside, and the words themselves. */
+      padding-top: 0.35rem;
+      opacity: 1;
+      transition: opacity 180ms ease 120ms;
     }
   }
 
@@ -377,12 +628,55 @@
     }
   }
 
+  /* ---- the arrival: the field comes online ----------------------------- */
+  /* The letter's rule, kept: only the material moves. The field resolves out of
+     a bloom — dim, blurred, a little too bright, a little short — the grain
+     rolls away under it, and one band of light crosses the bar. The labels are
+     never touched, and the panel's geometry is its own transition (width and
+     rows, 320ms), which these ride on top of. */
+  @media (prefers-reduced-motion: no-preference) {
+    .folio-nav__chrome:has(.folio-nav__menu.is-open)::before {
+      animation: folio-field-power-on 560ms var(--nav-ease) both;
+    }
+
+    .folio-nav__chrome:has(.folio-nav__menu.is-open)::after {
+      animation: folio-field-static 640ms ease-out both;
+    }
+  }
+
+  /* `filter` ONLY, and no opacity or transform, deliberately. An animation with
+     `both` fill owns what it animates, and a property handed back by a
+     departing animation does not transition — it snaps. So the three properties
+     a close has to move (opacity, transform, the frost) are all plain
+     transitions on the field, gated on `.is-open`, and this keyframe adds the
+     bloom on top of them. Measured before it was written this way: the field's
+     retreat jumped to its shut scale in one frame. */
+  @keyframes folio-field-power-on {
+    0%   { filter: blur(18px) brightness(1.9); }
+    36%  { filter: blur(9px) brightness(1.42); }
+    68%  { filter: blur(3px) brightness(1.1); }
+    100% { filter: none; }
+  }
+
+  /* Two tracks on the static: the tile rolls up out of the corner, and the
+     band crosses the bar once. Both settle rather than stop dead, so the last
+     frame is the resting grain. */
+  @keyframes folio-field-static {
+    0%   { opacity: 0.2; background-position: 0 -150px, 0 -80%; }
+    38%  { opacity: 0.12; background-position: 0 -50px, 0 60%; }
+    100% { opacity: 0.05; background-position: 0 0, 0 180%; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .site-nav__link,
     .folio-nav__plates a,
     .folio-nav__mark-box,
     .folio-nav__burger-bars span,
-    .folio-nav__menu {
+    .folio-nav__menu,
+    .folio-nav__menu-list,
+    .folio-nav__menu.is-open .folio-nav__menu-list,
+    .folio-nav__chrome::before,
+    .folio-nav__chrome::after {
       transition: none;
     }
   }

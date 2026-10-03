@@ -68,16 +68,28 @@
     {%- assign media_webm_url = media_webm | relative_url -%}
   {%- endif -%}
 {%- endif -%}
+{%- assign media_src_type = 'video/mp4' -%}
+{%- if media_src_url contains '.webm' -%}{%- assign media_src_type = 'video/webm' -%}{%- endif -%}
+{%- if media_src_url contains '.ogv' -%}{%- assign media_src_type = 'video/ogg' -%}{%- endif -%}
+
 {%- assign media_ar_w = media_width -%}
 {%- assign media_ar_h = media_height -%}
 {%- if media_ar_w == '' or media_ar_h == '' -%}
   {%- assign media_ar_w = '16' -%}
   {%- assign media_ar_h = '9' -%}
 {%- endif -%}
-{%- capture media_attrs -%}data-media="video" data-media-mode="{{ media_mode }}" data-src="{{ media_src_url }}"{% if media_av1_url != '' %} data-src-av1="{{ media_av1_url }}"{% endif %}{% if media_webm_url != '' %} data-src-webm="{{ media_webm_url }}"{% endif %}{% if media_poster_url != '' %} poster="{{ media_poster_url }}"{% endif %}{% if include.group %} data-media-group="{{ include.group }}"{% endif %}{% if media_width != '' %} width="{{ media_width }}"{% endif %}{% if media_height != '' %} height="{{ media_height }}"{% endif %}{% if include.loop == false or include.loop == 'false' %}{% else %} loop{% endif %} muted playsinline webkit-playsinline preload="none" disablepictureinpicture disableremoteplayback aria-label="{{ media_alt | escape }}"{%- endcapture -%}
+{%- comment -%} `priority` marks the one clip that is in the reader's first
+   viewport. It is the still, not the clip, that gets the hint: the still is
+   what paints — the clip is opacity 0 until media-video.js makes it ready,
+   and with no JavaScript, or reduced motion, or a poor connection, the still
+   is the whole picture. Exactly one clip per page should carry it, or the
+   hint means nothing. {%- endcomment -%}
+{%- assign media_priority = false -%}
+{%- if include.priority == true or include.priority == 'true' -%}{%- assign media_priority = true -%}{%- endif -%}
+{%- capture media_attrs -%}data-media="video" data-media-mode="{{ media_mode }}" data-src="{{ media_src_url }}"{% if media_av1_url != '' %} data-src-av1="{{ media_av1_url }}"{% endif %}{% if media_webm_url != '' %} data-src-webm="{{ media_webm_url }}"{% endif %}{% if media_poster_url != '' %} poster="{{ media_poster_url }}"{% endif %}{% if media_priority %} data-media-priority="1"{% endif %}{% if include.group %} data-media-group="{{ include.group }}"{% endif %}{% if media_width != '' %} width="{{ media_width }}"{% endif %}{% if media_height != '' %} height="{{ media_height }}"{% endif %}{% if include.loop == false or include.loop == 'false' %}{% else %} loop{% endif %} muted playsinline webkit-playsinline {% if media_priority %}preload="auto" data-media-attached="1" fetchpriority="high"{% else %}preload="none"{% endif %} disablepictureinpicture disableremoteplayback aria-label="{{ media_alt | escape }}"{%- endcapture -%}
 {%- if media_mode == 'hero' -%}
 <video class="{{ include.class }}" {{ media_attrs }}></video>
 {%- else -%}
-<div class="media-clip {{ include.class }}" data-media-slot="frame" style="--media-ar: {{ media_ar_w }} / {{ media_ar_h }};">{% if media_poster_url != '' %}<img class="media-clip-poster" src="{{ media_poster_url }}" alt="" decoding="async" aria-hidden="true">{% endif %}<video class="media-clip-el" {{ media_attrs }}></video></div>
+<div class="media-clip {{ include.class }}" data-media-slot="frame" style="--media-ar: {{ media_ar_w }} / {{ media_ar_h }};">{% if media_poster_url != '' %}<img class="media-clip-poster" src="{{ media_poster_url }}" alt="" {% if media_priority %}fetchpriority="high"{% else %}loading="lazy"{% endif %} decoding="async" aria-hidden="true">{% endif %}<video class="media-clip-el" {{ media_attrs }}>{%- if media_priority -%}{%- comment -%} The sources, in the markup, for the one clip the reader is already looking at. Everything else waits for media-video.js to say the clip is near the viewport; this one cannot, because a deferred script runs only after the document has been parsed and laid out — measured on a throttled phone, the hero's own bytes were asked for 1.3s in. `media` is the whole policy: a reader who has asked for reduced motion matches no source, fetches no video, and keeps the still that is already there. media-video.js takes the same sources back if it finds a poor connection. {%- endcomment -%}{% if media_av1_url != '' %}<source src="{{ media_av1_url }}" type="video/mp4; codecs=&quot;av01.0.04M.08&quot;" media="(prefers-reduced-motion: no-preference)">{% endif %}{% if media_webm_url != '' and media_webm_url != media_src_url %}<source src="{{ media_webm_url }}" type="video/webm" media="(prefers-reduced-motion: no-preference)">{% endif %}<source src="{{ media_src_url }}" type="{{ media_src_type }}" media="(prefers-reduced-motion: no-preference)">{%- endif -%}</video></div>
 {%- endif -%}
 {%- endif -%}

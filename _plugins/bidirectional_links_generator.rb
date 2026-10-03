@@ -1,5 +1,13 @@
 # frozen_string_literal: true
 class BidirectionalLinksGenerator < Jekyll::Generator
+  # The notes' apparatus: what every note and page is LINKED to, and the graph
+  # the note layout draws (site.data.notes_graph, in memory).
+  #
+  # THE BRACKETS ARE NOT THIS FILE'S. `[[a note|label]]` is resolved by
+  # SiteMarkup (_plugins/site_markup.rb), because a letter's words in
+  # _data/contact.yml are written in the same grammar and must not get a second
+  # implementation of it. What is left here is the half only a generator can
+  # do: walk the documents before they render.
   def generate(site)
     graph_nodes = []
     graph_edges = []
@@ -9,68 +17,13 @@ class BidirectionalLinksGenerator < Jekyll::Generator
 
     all_docs = all_notes + all_pages
 
-    link_extension = !!site.config["use_html_extension"] ? '.html' : ''
-
-    # Convert all Wiki/Roam-style double-bracket link syntax to plain HTML
-    # anchor tag elements (<a>) with "internal-link" CSS class
-    all_docs.each do |current_note|
-      all_docs.each do |note_potentially_linked_to|
-        note_title_regexp_pattern = Regexp.escape(
-          File.basename(
-            note_potentially_linked_to.basename,
-            File.extname(note_potentially_linked_to.basename)
-          )
-        ).gsub('\_', '[ _]').gsub('\-', '[ -]').capitalize
-
-        title_from_data = note_potentially_linked_to.data['title']
-        if title_from_data
-          title_from_data = Regexp.escape(title_from_data)
-        end
-
-        new_href = "#{site.baseurl}#{note_potentially_linked_to.url}#{link_extension}"
-        anchor_tag = "<a class='internal-link' href='#{new_href}'>\\1</a>"
-
-        # Replace double-bracketed links with label using note title
-        # [[A note about cats|this is a link to the note about cats]]
-        current_note.content.gsub!(
-          /\[\[#{note_title_regexp_pattern}\|(.+?)(?=\])\]\]/i,
-          anchor_tag
-        )
-
-        # Replace double-bracketed links with label using note filename
-        # [[cats|this is a link to the note about cats]]
-        current_note.content.gsub!(
-          /\[\[#{title_from_data}\|(.+?)(?=\])\]\]/i,
-          anchor_tag
-        )
-
-        # Replace double-bracketed links using note title
-        # [[a note about cats]]
-        current_note.content.gsub!(
-          /\[\[(#{title_from_data})\]\]/i,
-          anchor_tag
-        )
-
-        # Replace double-bracketed links using note filename
-        # [[cats]]
-        current_note.content.gsub!(
-          /\[\[(#{note_title_regexp_pattern})\]\]/i,
-          anchor_tag
-        )
-      end
-
-      # At this point, all remaining double-bracket-wrapped words are
-      # pointing to non-existing pages, so let's turn them into disabled
-      # links by greying them out and changing the cursor
-      current_note.content = current_note.content.gsub(
-        /\[\[([^\]]+)\]\]/i, # match on the remaining double-bracket links
-        <<~HTML.delete("\n") # replace with this HTML (\\1 is what was inside the brackets)
-          <span title='There is no note that matches this link.' class='invalid-link'>
-            <span class='invalid-link-brackets'>[[</span>
-            \\1
-            <span class='invalid-link-brackets'>]]</span></span>
-        HTML
-      )
+    # The brackets are resolved by the one resolver the letter also uses —
+    # SiteMarkup (_plugins/site_markup.rb). A note's prose and a letter's words
+    # in _data/contact.yml are one grammar, so they are one code: the generator
+    # walks the DOCUMENTS, which is the half Liquid cannot reach, and the
+    # filter resolves a data string at render time.
+    all_docs.each do |doc|
+      doc.content = SiteMarkup.resolve(site, doc.content)
     end
 
     # Identify note backlinks and add them to each note
@@ -88,7 +41,7 @@ class BidirectionalLinksGenerator < Jekyll::Generator
       # Nodes: Graph
       graph_nodes << {
         id: note_id_from_note(current_note),
-        path: "#{site.baseurl}#{current_note.url}#{link_extension}",
+        path: "#{site.baseurl}#{current_note.url}#{SiteMarkup.link_extension(site)}",
         label: current_note.data['title'],
       } unless current_note.path.include?('_notes/index.html')
 
@@ -104,10 +57,20 @@ class BidirectionalLinksGenerator < Jekyll::Generator
       end
     end
 
-    File.write('_includes/notes_graph.json', JSON.dump({
-      edges: graph_edges,
-      nodes: graph_nodes,
-    }))
+    # THE GRAPH IS DATA, NOT A FILE THIS BUILD WRITES INTO THE SOURCE TREE.
+    # It used to be written to `_includes/notes_graph.json` and picked up by
+    # `{% include %}` in the note layout. That made a build a writer of source:
+    # several agents share this tree, a build could land between another agent's
+    # read and write of that file, and the write itself was not atomic — so one
+    # builder could render a half-written graph, or overwrite a newer one with an
+    # older one. Jekyll renders `site.data` into every template, and a generator
+    # runs after the data is read and before anything renders, so the graph can
+    # live where all the other data lives and be read as
+    # `{{ site.data.notes_graph | jsonify }}`.
+    site.data['notes_graph'] = {
+      'edges' => graph_edges,
+      'nodes' => graph_nodes,
+    }
   end
 
   def note_id_from_note(note)

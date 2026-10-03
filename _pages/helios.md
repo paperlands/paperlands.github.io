@@ -85,6 +85,11 @@ colophon:
   title_em: Differently
   action: Enter PaperLand
   href: https://dojo.paperland.sg/welcome
+
+# The letter's words are NOT here. The contact modal is the site's, not this
+# page's: one component (markup in _includes/contact_modal.html, skin in
+# components/contact.css, behaviour in assets/js/contact.js) and one source for
+# its copy and its route, _data/contact.yml. Every page says the same thing.
 ---
 
 {%- comment -%}

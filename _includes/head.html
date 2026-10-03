@@ -5,6 +5,15 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  {%- comment -%} The crossing between documents is declared in CSS
+     (assets/css/core/passage.css, `@view-transition { navigation: auto }`),
+     which is where it belongs. This meta tag says the same thing in the
+     spelling Chrome 111-125 reads — those versions can start a cross-document
+     view transition but have no @view-transition rule, and browsers that
+     understand neither ignore one line of markup. Keep the two in agreement:
+     if the CSS ever stops saying `auto`, this has to go. {%- endcomment -%}
+  <meta name="view-transition" content="same-origin">
+
   {%- comment -%} The homepage is the page served at `/`. Derived from the URL,
      not declared in front matter — it used to be `page.id == "home"`, a key a
      page could silently lack, so a new mainpage inherited the suffix
@@ -22,14 +31,28 @@
   {%- comment -%} One stylesheet. Everything else is a layer inside it
      (see assets/css/app.css). {%- endcomment -%}
   <link rel="stylesheet" href="{{ "/assets/css/app.css" | relative_url }}">
+  {%- comment -%} The surface's own composition, and only its own. `page.look`
+     names one on a look page (`look: helios` -> mode-helios.css, the same
+     value _layouts/folio.html writes to data-look); a layout names its own
+     with `css_mode:` in its front matter (the note layout -> the edition,
+     _layouts/twilight.html -> Twilight). A folio page with no look wants
+     neither, and gets neither.
+
+     ORDER IS LOAD-BEARING: app.css first. Layer order is settled by first
+     appearance — `@layer theme, base, components, utilities` — and a mode
+     sheet linked ahead of it would put its own `components` before `base`.
+     See _plugins/css_modes.rb. {%- endcomment -%}
+  {%- assign css_mode = page.look | default: layout.css_mode -%}
+  {%- if css_mode -%}
+  <link rel="stylesheet" href="{{ "/assets/css/mode-" | append: css_mode | append: ".css" | relative_url }}">
+  {%- endif -%}
   {%- comment -%} The type system: Cinzel (display), Cormorant Garamond (serif),
-     EB Garamond (body). paperLang is @font-face'd from assets/fonts. One
-     request; layouts may add families via `google_fonts` (Twilight adds IBM
-     Plex Mono). {%- endcomment -%}
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
-  {% if layout.google_fonts %}<link href="https://fonts.googleapis.com/css2?{{ layout.google_fonts }}&display=swap" rel="stylesheet">{% endif %}
+     EB Garamond (body), and — for the sealed Twilight pages — IBM Plex Mono and
+     Lora. Every one of them is @font-face'd from assets/fonts by
+     core/webfonts.css, inside the one stylesheet above: one request, first
+     party, and no render-blocking round trip to fonts.googleapis.com before
+     the page can paint. Adding a family is a token plus a face — see
+     assets/fonts/README.md for the fetch. {%- endcomment -%}
 
   {%- comment -%} The brand is PaperLand; the title is the promise. They are not
      the same string, so og:site_name takes the brand from nav.yml — the same

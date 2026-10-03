@@ -2,14 +2,14 @@
   The wider conversation: the notes graph.
 
   The graph is server-rendered by the note_graph filter (see
-  _plugins/notes_edition.rb) from _includes/notes_graph.json — real links,
-  real edges, the current note distinguished, and no invented proximity. Two
+  _plugins/notes_edition.rb) from site.data.notes_graph — real links, real
+  edges, the current note distinguished, and no invented proximity. Two
   renditions rather than one shrinking layout: a horizontal constellation on
   wide screens, a vertical thread below 960px.
 
   Params:
     note  the note document (required)
-    graph the notes graph JSON (required), captured from notes_graph.json
+    graph the notes graph JSON (required), from site.data.notes_graph
 {%- endcomment -%}
 {%- assign current_note_url = include.note.url | relative_url -%}
 <section class="connections evening-field" id="notesgraph" aria-labelledby="graph-title">

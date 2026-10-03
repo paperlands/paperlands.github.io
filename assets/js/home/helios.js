@@ -106,14 +106,19 @@
   var phase = function (p, a, b) { var t = clamp01((p - a) / (b - a)); return t * t * (3 - 2 * t); };
   var geometry = null;
   var flashed = false;
+  /* The pose writes --helios-wm-veil per scroll (0.12 at p 0). Priming it here
+     means a deferred first pose cannot change the mark's glow when it runs. */
+  if (wordmark) wordmark.style.setProperty('--helios-wm-veil', '0.12');
 
   /* The flash is the scroll's clock, not the writer's. It fires once, at the
-     moment the build is whole: the sun has risen (rise = 1 at p 0.70) and the
-     art has carried back to the full size the hero measured the banner for
-     (carry = 1 at p 0.86; measured, the art is at scale 1.000 there, with the
-     sun already up since 0.75). Scrolling back down re-arms it, and the gap
-     between the two thresholds means scrubbing cannot strobe it. */
-  var FLASH_RISEN = 0.86;
+     moment the build is whole — the sun up (rise = 1 at p 0.70), the last ray
+     in, and the art carried back to the full size the hero measured the banner
+     for (carry = 1 at p 1.0, which is 80% of the act). Setting it a little
+     before the end would light the sun while the mark was still assembling;
+     firing it AT the end puts the bloom on the finished mark, which is what
+     the flash is for. Scrolling back down re-arms it, and the gap between the
+     two thresholds means scrubbing cannot strobe it. */
+  var FLASH_RISEN = 1;
   var FLASH_REARM = 0.62;
 
   function sunrise(p) {
@@ -174,7 +179,7 @@
     previous = p;
     wordmark.setAttribute('data-helios-writing', 'on');
     wordmark.style.setProperty('--helios-wm-veil', String(0.12 + 0.28 * phase(p, 0.06, 0.40)));
-    var carry = phase(p, 0.06, 0.86);
+    var carry = phase(p, 0.06, 1);
     if (art) art.style.transform = 'translate(' + geometry.x * (1 - carry) + 'px, ' + geometry.y * (1 - carry)
       + 'px) scale(' + (geometry.scale + (1 - geometry.scale) * carry) + ')';
     var lift = phase(p, 0.015, 0.30);
@@ -208,6 +213,14 @@
   function measure() {
     if (!wordmark || !art || !intro || reduced) return;
     wordmark.setAttribute('data-helios-writing', 'on');
+    /* `entering` first: the handover from the banner to the assembling mark is
+       the one move in this choreography that is not driven by the scroll, so it
+       is the one with a transition on it — the art slides from where the reader
+       first saw the mark (the corner) to the place the hero measured for it,
+       the banner fades out and the word fades in, all on the chrome's curve.
+       See components/helios.css. It becomes plain `on` a beat later, so the
+       scroll itself stays unwrapped. */
+    wordmark.setAttribute('data-helios-posed', 'entering');
     var style = getComputedStyle(intro);
     var width = wordmark.getBoundingClientRect().width;
     var startWidth = parseFloat(style.fontSize) / 0.86 * 5.8;
@@ -216,10 +229,24 @@
       x: parseFloat(style.left) + intro.offsetWidth - startWidth * 249 / 1280,
       y: parseFloat(style.top) - 2,
       scale: startWidth / width,
-      distance: Math.max(1, Math.round((hero ? hero.clientHeight : window.innerHeight) * 0.55)),
+      /* The build ends at 80% of the hero. It was 0.55 — at 1440x900 the mark
+         was whole (the banner back) at y=460 of an 837px act, less than
+         two-thirds of the way through the act it belongs to, and the whole
+         rise happened inside the first screen and a half. At 0.80 the same
+         choreography is spread across the act and completes at 80% of it:
+         pieces from 8% of the act, the sun up by 56%, the last ray by 72%,
+         whole at 80%. */
+      distance: Math.max(1, Math.round((hero ? hero.clientHeight : window.innerHeight) * 0.80)),
     };
     previous = -1;
     pose();
+    /* Let the enter settle, then take the transition off the art: from here on
+       its transform is written per scroll frame and must not be interpolated. */
+    window.setTimeout(function () {
+      if (wordmark.getAttribute('data-helios-posed') === 'entering') {
+        wordmark.setAttribute('data-helios-posed', 'on');
+      }
+    }, 360);
   }
 
   function schedule() {
@@ -235,6 +262,59 @@
 
   if (!reduced) restart(copy, 'data-helios-copy', 'in');
   bindPlay();
-  measure();
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+
+  /* ---- when the mark's clock starts --------------------------------------
+     Not at load. Nothing is posed until the hero's own clip has its first
+     frame — or until the reader scrolls, or 2.5s pass, whichever comes first.
+     The assembly is scroll-driven, so before any of that it would be posing
+     into a state nobody has asked to see; measured, the pose cost 218ms of
+     main thread on a throttled phone at ~700ms, inside the window Lighthouse
+     charges to TBT. The pieces are hidden by CSS until this runs
+     (components/helios.css) and at p 0 every piece is hidden anyway, so the
+     reader sees what the unposed state would have shown — the "In" holding the
+     identity — and then the word arrives under it.
+
+     1.8s is the floor for a clip that never plays at all: a reader on the
+     connection policy's `drop` path, or with the file blocked, still gets a
+     brand — measured, the pose lands on that path at ~1.8s and the mark is
+     whole, word and all, a quarter second later. (It was 2.5s, which is three
+     seconds of "In" with no word for those readers, and bought nothing: the
+     clip they are waiting for is not coming.) See the README's note on the
+     player's policy. */
+  /* The STATE is set now, the WORK is deferred. `data-helios-writing` is what
+     puts the "In" on screen and stands the assembly down (components/helios.css
+     hides the pieces and the word until `data-helios-posed`), so setting it at
+     startup costs a style recalc and nothing else — and it means the reader's
+     first impression is the state the look intends (the "In" holding the
+     identity), not the assembled banner flipping into it a second later. The
+     measurement, the filter rasterisation and the 14 pieces are what wait. */
+  if (wordmark && !reduced) {
+    wordmark.setAttribute('data-helios-writing', 'on');
+    wordmark.style.setProperty('--helios-wm-veil', '0.12');
+  }
+
+  var started = false;
+  function startPose() {
+    if (started) return;
+    started = true;
+    measure();
+  }
+
+  var heroClip = hero ? hero.querySelector('[data-media="video"]') : null;
+  if (!heroClip || heroClip.hasAttribute('data-ready')) {
+    startPose();
+  } else if (window.MutationObserver) {
+    var readyWatch = new MutationObserver(function () {
+      if (!heroClip.hasAttribute('data-ready')) return;
+      readyWatch.disconnect();
+      startPose();
+    });
+    readyWatch.observe(heroClip, { attributes: true, attributeFilter: ['data-ready'] });
+  }
+  window.addEventListener('scroll', startPose, { passive: true, once: true });
+  window.setTimeout(startPose, 1800);
+
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () { if (started) measure(); });
+  }
 })();

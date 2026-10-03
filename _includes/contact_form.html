@@ -1,51 +1,135 @@
-<!-- https://india.fly.dev/proxy/apps/guru/work -->
-<form id="lettertopaperland" class="flex flex-col p-6 space-y-4 rounded-md shadow-md bg-primary-light" accept-charset="UTF-8" action="https://book.paperland.sg/proxy/apps/guru/work" method="POST">
-  <label for="name-input" class="font-medium text-gray-700">Name*</label>
-  <input id="name-input" type="text" name="name" placeholder="Alan Kay" class="w-full p-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-primary" />
+{%- comment -%}
+  The letter to PaperLand: one form, two skins.
 
-  <label for="email-input" class="font-medium text-gray-700">Email*</label>
-  <input id="email-input" type="email" name="email" placeholder="alan@paperland.sg" class="w-full p-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-primary" />
+  The fields are the same in both; only the clothing differs. `paper` (the
+  default) is the light card the lesson page has always shown. `night` is the
+  Helios contact modal's skin — it wears `contact__*`, which
+  components/contact.css binds — so the modal can be re-skinned without
+  reaching into this include's own classes. The sheet is in the shared entry,
+  not in the look: the modal is opened on every page, not only on `/`.
 
-  <label for="message-input" class="font-medium text-gray-700">{% if include.message_label %}{{ include.message_label }}{% else %}Message*{% endif %}</label>
-  <textarea id="message-input" name="message" rows="4" placeholder="{% if include.message_placeholder %}{{ include.message_placeholder }}{% else %}Tell us briefly about your context or background{% endif %}" class="w-full p-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-primary"></textarea>
+  DECLARATIVE MARKUP, BEHAVIOUR IN A FILE. This include emits no behaviour of
+  its own: the form's two jobs — composing the proxy's return address at submit,
+  and answering `?sent=` with the paper skin's toast — are
+  `assets/js/contact-form.js`, which this include loads with `defer`, the way
+  every component here loads its own (_includes/nav.html loads nav.js,
+  _includes/media/boot.html loads its player). The hooks are the markup's:
+  `data-contact-form` on the form, `data-toast` and `data-toast-close` on the
+  receipt; a page may hold two forms — /lesson-plans carries the paper one and
+  the letter — and each is set up once. The Turnstile `<script>` below is not
+  behaviour: it is the challenge's own loader, and the letter hands that job to
+  `assets/js/contact.js` instead (`lazy_turnstile`).
 
-  <input type="hidden" name="return_url" value="{{ page.url | absolute_url }}" />
+  Turnstile is eager by default, as it has always been: the script is emitted
+  with the form and renders on load. `lazy_turnstile: true` hands that job to
+  the host instead — the modal loads the script the first time it opens, so a
+  reader who never opens the dialog never pays for the challenge.
 
-  <div class="flex justify-center">
+  The hidden `return_url` is where the proxy sends the reader back, with a
+  `sent=true|false` query appended. The toast reader below consumes it; a host
+  that renders its own status (the modal) passes `toasts: false`.
+
+  `id_prefix` namespaces the form's ids. It exists because the modal is on
+  EVERY page now: /lesson-plans already carries the paper form, so the page
+  would hold two forms with two `#name-input`s — duplicate ids, and the modal's
+  own labels would point at the field behind it. The paper skin keeps the bare
+  ids (a third-party analytics hook and the lesson page's own history read
+  them); the modal's instance is `contact-`.
+  THE RETURN ADDRESS IS COMPOSED AT SUBMIT, NOT BAKED AT BUILD. The proxy sends
+  the reader back to the hidden `return_url`, and the markup can only offer the
+  page's DEPLOYED address (`page.url | absolute_url`, the site's own url) — the
+  one answer a build without a browser can give, and the no-JavaScript answer.
+  The script at the foot of this file replaces it, at submit, with
+  `origin + pathname`: where the form actually is. So one build returns a reader
+  to localhost in development, to a preview host on a preview, and to the live
+  site in production, with no second build and nothing to keep in step. The
+  query and the fragment are dropped deliberately — the proxy appends `?sent=`,
+  and an appended query after a `#` would land inside the fragment.
+
+  THE THREE FIELDS ARE REQUIRED, and the labels have said so with an asterisk
+  since before the markup did. A letter with no name, no address to answer, or
+  no message is not one anyone can act on, and the browser is the cheapest place
+  to say so: `required` is native validation — no script, no second copy of the
+  rule in JS, and a screen reader announces it. It is a COURTESY, not a
+  guarantee: the proxy is the only place it can be enforced, and the letter's
+  status line is where a refusal shows.
+  Params: variant, id_prefix, message_label, message_placeholder, button_text,
+          return_url, lazy_turnstile, turnstile_theme, toasts
+{%- endcomment -%}
+{%- assign cf_prefix = include.id_prefix | default: '' -%}
+{%- assign cf_variant = include.variant | default: 'paper' -%}
+{%- assign cf_return_url = include.return_url | default: page.url | absolute_url -%}
+{%- assign cf_turnstile_theme = include.turnstile_theme | default: 'light' -%}
+{%- if include.lazy_turnstile -%}
+  {%- assign cf_lazy = true -%}
+{%- else -%}
+  {%- assign cf_lazy = false -%}
+{%- endif -%}
+{%- if include.toasts == false -%}
+  {%- assign cf_toasts = false -%}
+{%- else -%}
+  {%- assign cf_toasts = true -%}
+{%- endif -%}
+{%- if cf_variant == 'night' -%}
+  {%- assign cf_form_class = 'contact__form' -%}
+  {%- assign cf_label_class = 'contact__label' -%}
+  {%- assign cf_input_class = 'contact__input' -%}
+  {%- assign cf_action_class = 'contact__submit' -%}
+  {%- assign cf_field_class = 'contact__turnstile' -%}
+  {%- assign cf_captcha_class = 'contact__captcha' -%}
+{%- else -%}
+  {%- assign cf_form_class = 'flex flex-col p-6 space-y-4 rounded-md shadow-md bg-primary-light' -%}
+  {%- assign cf_label_class = 'font-medium text-gray-700' -%}
+  {%- assign cf_input_class = 'w-full p-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-primary' -%}
+  {%- assign cf_action_class = 'px-4 py-2 text-white rounded-md bg-primary hover:bg-primary-dark focus:outline-hidden focus:ring-2 focus:ring-primary' -%}
+  {%- assign cf_field_class = 'cf-turnstile' -%}
+  {%- assign cf_captcha_class = 'flex justify-center' -%}
+{%- endif -%}
+<form id="{{ cf_prefix }}lettertopaperland" data-contact-form class="{{ cf_form_class }}" accept-charset="UTF-8" action="https://book.paperland.sg/proxy/apps/guru/work" method="POST">
+  <label for="{{ cf_prefix }}name-input" class="{{ cf_label_class }}">Name*</label>
+  <input id="{{ cf_prefix }}name-input" type="text" name="name" placeholder="Alan Kay" class="{{ cf_input_class }}" required />
+
+  <label for="{{ cf_prefix }}email-input" class="{{ cf_label_class }}">Email*</label>
+  <input id="{{ cf_prefix }}email-input" type="email" name="email" placeholder="alan@paperland.sg" class="{{ cf_input_class }}" required />
+
+  <label for="{{ cf_prefix }}message-input" class="{{ cf_label_class }}">{% if include.message_label %}{{ include.message_label }}{% else %}Message*{% endif %}</label>
+  <textarea id="{{ cf_prefix }}message-input" name="message" rows="4" placeholder="{% if include.message_placeholder %}{{ include.message_placeholder }}{% else %}Tell us briefly about your context or background{% endif %}" class="{{ cf_input_class }}" required></textarea>
+
+  <input type="hidden" name="return_url" value="{{ cf_return_url }}" />
+
+  <div class="{{ cf_captcha_class }}">
+  {%- unless cf_lazy -%}
   <script
     src="https://challenges.cloudflare.com/turnstile/v0/api.js"
     async
     defer
   ></script>
-  <div class="cf-turnstile" data-sitekey="0x4AAAAAACugliz5rFIg0aRA" data-theme="light"></div>
+  {%- endunless -%}
+  <div class="{{ cf_field_class }}"{% if cf_lazy %} data-turnstile{% endif %} data-sitekey="0x4AAAAAACugliz5rFIg0aRA" data-theme="{{ cf_turnstile_theme }}"></div>
   </div>
-  
-  <button type="submit" class="px-4 py-2 text-white rounded-md bg-primary hover:bg-primary-dark focus:outline-hidden focus:ring-2 focus:ring-primary">{% if include.button_text %}{{ include.button_text }}{% else %}Book a call{% endif %}</button>
-</form>
 
-<div class="fixed z-50 hidden bottom-4 right-4" id="toast-good">
+  <button type="submit" class="{{ cf_action_class }}">{% if include.button_text %}{{ include.button_text }}{% else %}Book a call{% endif %}</button>
+</form>
+{%- if cf_toasts -%}
+
+<div class="fixed z-50 hidden bottom-4 right-4" id="toast-good" data-toast="sent">
   <div class="flex items-center p-4 text-green-700 bg-green-100 border border-green-400 rounded-md shadow-md" >
       <i class="mr-2 fa fa-check-circle"></i>
       <span>Sent! To the desks <a class="text-blue-600 underline" href="/about"><b>@paperland</b></a></span>
-      <button class="ml-auto text-gray-500 hover:text-gray-700 focus:outline-hidden" onclick="document.getElementById('toast-good').style.display = 'none';">X</button>
+      <button class="ml-auto text-gray-500 hover:text-gray-700 focus:outline-hidden" data-toast-close>X</button>
   </div>
 </div>
 
-<div class="fixed z-50 hidden bottom-4 right-4" id="toast-bad">
+<div class="fixed z-50 hidden bottom-4 right-4" id="toast-bad" data-toast="failed">
   <div class="flex items-center p-4 text-red-700 bg-red-100 border border-red-400 rounded-md shadow-md">
     <i class="mr-2 fa fa-check-circle"></i>
       <span>If you are human, please try again!  </span>
-      <button class="ml-auto text-gray-500 hover:text-gray-700 focus:outline-hidden" onclick="document.getElementById('toast-bad').style.display = 'none';">X</button>
+      <button class="ml-auto text-gray-500 hover:text-gray-700 focus:outline-hidden" data-toast-close>X</button>
   </div>
 </div>
+{%- endif -%}
 
-<script>
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get('sent') == "true") {
-      const element = document.getElementById('toast-good');
-      element.style.display = 'block'; // Show the element
-  } else if (urlParams.get('sent') == "false") {
-      const element = document.getElementById('toast-bad');
-      element.style.display = 'block'; // Show the element
-  }
-</script>
+{%- comment -%} The form's behaviour, and only the form's: see the head of this
+   file. Loaded here, once per form, defer — so a page holding two forms loads
+   it twice but sets up each form once. {%- endcomment -%}
+<script src="{{ '/assets/js/contact-form.js' | relative_url }}" defer></script>

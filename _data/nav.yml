@@ -42,6 +42,10 @@ links:
     # what that destination is actually called now.
     href: /experiences
   contact:
+    # The label is the action; the target is the letter's route, declared with
+    # the letter in _data/contact.yml and opened in place on every page by
+    # assets/js/contact.js. Not a page: a <dialog>, so there is no destination
+    # for a nav to jump to.
     label: Join Us
     href: /contact
 

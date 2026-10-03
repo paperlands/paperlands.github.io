@@ -33,10 +33,18 @@ yt_gallery:
 
   Standing document treatment for now (layout: page), not Helios. Retheming
   this is phase-4 work, not a consequence of the permalink swap.
+
+  Two inks here are darker than the brand's own, and both are measured rather
+  than chosen: the brand orange on paper is 1.98:1 and the pale ink on the
+  orange button was 1.83:1 — both under WCAG AA, and the button is body-sized
+  text. `text-orange-850` reads 3.27:1 on paper (AA for the 36px heading) and
+  the page's own dark ink reads 5.93:1 on the button. Neither is a new colour:
+  both are in core/tokens.css. Put the brand orange back the day the Library is
+  rethemed, not before.
 {%- endcomment -%}
 
 <section id="blog" class="mt-16">
-  <h2 class="my-8 text-4xl font-bold tracking-tight text-center lg:text-5xl text-secondary">Our <span class="text-primary font-paperlang">Library.</span></h2>
+  <h2 class="my-8 text-4xl font-bold tracking-tight text-center lg:text-5xl text-secondary">Our <span class="text-orange-850 font-paperlang">Library.</span></h2>
 
   <div class="grid grid-cols-1 gap-8 my-12 sm:grid-cols-2">
     {% assign recent_notes = site.notes | sort: "last_date" %}
@@ -44,9 +52,16 @@ yt_gallery:
       <div class="relative overflow-hidden transition-all duration-300 rounded-lg group hover:shadow-md">
       <a href="{{ site.baseurl }}{{ note.url }}" data-tooltip="true" >
         <div class="relative h-64 overflow-hidden">
+          {%- comment -%} Five covers of photographs at their own full size, and
+             the Library is the heaviest first view on the site because of it: on a
+             phone each card is a full screen, so only the first is in the reader's
+             viewport and only the first is worth fetching at high priority. The
+             other four arrive as the reader scrolls to them. {%- endcomment -%}
           <img
             src="{{note.heroimgurl}}"
             alt=""
+            decoding="async"
+            {% if forloop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %}
             class="object-cover w-full h-full transition-transform duration-700 transform group-hover:scale-105"
           >
           <!-- Hovering effect -->
@@ -77,6 +92,6 @@ yt_gallery:
   <hr class="my-8">
   {% include gallery.html items=page.yt_gallery id="yt-gallery" %}
   <div class="flex justify-center">
-  <a class="px-4 py-2 my-4 rounded-md text-primary-light bg-primary" href="https://www.youtube.com/@realPaperLand">Discover More</a>
+  <a class="px-4 py-2 my-4 rounded-md text-secondary bg-primary" href="https://www.youtube.com/@realPaperLand">Discover More</a>
 </div>
 </section>

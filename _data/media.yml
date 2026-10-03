@@ -100,6 +100,7 @@ knowledge_park:
 # creators is the Helios pane.
 sine_curve_with_code:
   src: /assets/lib/helios/sine_curve_with_code-73cd5b.mp4
+  av1: /assets/lib/helios/sine_curve_with_code-0f23be.av1.mp4
   poster: /assets/lib/helios/sine_curve_with_code-63bc98.webp
   alt: Toying with circular motion on a laptop
   width: 1920
@@ -107,6 +108,7 @@ sine_curve_with_code:
 
 polygon_fill:
   src: /assets/lib/helios/polygon_fill-99b7f6.mp4
+  av1: /assets/lib/helios/polygon_fill-e68025.av1.mp4
   poster: /assets/lib/helios/polygon_fill-20eac5.webp
   alt: Playing with randomness to form faces
   width: 1920
@@ -114,6 +116,7 @@ polygon_fill:
 
 fibonacci_spiral:
   src: /assets/lib/helios/fibonacci_spiral-646e11.mp4
+  av1: /assets/lib/helios/fibonacci_spiral-5dfee0.av1.mp4
   poster: /assets/lib/helios/fibonacci_spiral-cc8f08.webp
   alt: Recreating a Fibonacci spiral in code
   width: 1920
@@ -121,6 +124,7 @@ fibonacci_spiral:
 
 tree_fractal:
   src: /assets/lib/helios/tree_fractal-aa0fe5.mp4
+  av1: /assets/lib/helios/tree_fractal-bd62c7.av1.mp4
   poster: /assets/lib/helios/tree_fractal-a88fe6.webp
   alt: Exploring the hidden geometry of stars
   width: 1920
@@ -128,6 +132,7 @@ tree_fractal:
 
 prime_sequence:
   src: /assets/lib/helios/prime_sequence-dd5ba6.mp4
+  av1: /assets/lib/helios/prime_sequence-8227c9.av1.mp4
   poster: /assets/lib/helios/prime_sequence-f1c1a9.webp
   alt: Modelling spider webs in nature
   width: 1920
