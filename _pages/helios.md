@@ -21,9 +21,6 @@ hero:
   kicker: In how we
   label: In how we
   items:
-    - id: sine_curve_with_code
-      title: Tinker
-      slate: with orbits of a circle
     - id: tree_fractal
       title: Observe
       slate: the hidden geometry of stars
@@ -123,7 +120,6 @@ ticker:
   - In PaperLand
   - We See Math Differently
   - In How We
-  - Tinker
   - Experiment
   - Explore
   - Observe
