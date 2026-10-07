@@ -1,0 +1,32 @@
+# site.yml — the standing frame's words
+#
+# The small copy that belongs to the site rather than to any one page: what the
+# frame says around a document. It is a data file for the same reason every other
+# component's words are — a sentence written inside a template has no owner, no
+# page can change it, and nothing can find it later.
+#
+# This is NOT the letter (_data/contact.yml, which every page says the same way)
+# and NOT a page's copy (each page's own front matter, where a page says
+# something no other page says). It is the frame: the line under the Library, the
+# words a layout draws on every document it wraps.
+#
+# MARKUP: read with `| markup` (_plugins/site_markup.rb), so a `[[bracket]]`
+# resolves like it does in a note's prose and a face is set the site's way.
+
+# The colophon line the standing footer carries (_includes/footer.html), on every
+# page that uses the standing frame — _layouts/default.html, and therefore
+# _layouts/page.html and its pages (/blog, /lesson-plans).
+# The link is the site's grammar (`[[about|…]]` resolves to the page, by its
+# filename or its title, and wears `internal-link`), and the FACE is the
+# grammar the site sets a face with — the same `<span class="font-paperlang">`
+# the letter uses. Neither is written twice: the resolver owns the href, the
+# class owns the drawing.
+footer: Written in [[about|<span class="font-paperlang">PaperLand</span>]]
+
+# The redirect stub's two words (_layouts/redirect.html). A stub is the cheapest
+# thing on the site and it is still a page a reader can land on: `title` is the
+# tab, `continue` is the link that finishes the journey by hand — for the reader
+# whose browser refused the meta refresh, which is the reader the link is for.
+# It is the same stub, with the same words, for twenty addresses.
+redirect_title: Redirecting...
+redirect_continue: Continue

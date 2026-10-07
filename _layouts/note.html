@@ -52,7 +52,7 @@ css_mode: evening
   {% include head.html %}
   <body data-theme="evening">
     <div class="evening-grain" aria-hidden="true"></div>
-    <a class="skip-link internal-link" href="#essay">Skip to the essay</a>
+    <a class="skip-link internal-link" href="#essay">{{ site.data.notes.skip }}</a>
     {%- comment -%} The masthead is helios's: the shared nav (one template on
        every page now; the edition sets `nav_tone: dark` in the _notes_ defaults
        because this is a dark document) and home's
@@ -80,7 +80,7 @@ css_mode: evening
         <content class="essay-body">{{ essay }}</content>
         <footer class="essay-footer">
           <span class="end-mark" aria-hidden="true">✳</span>
-          <a class="internal-link back-top" href="#top" aria-label="Back to the beginning" title="Back to the beginning">↑</a>
+          <a class="internal-link back-top" href="#top" aria-label="{{ site.data.notes.return_label }}" title="{{ site.data.notes.return_label }}">↑</a>
         </footer>
       </article>
 

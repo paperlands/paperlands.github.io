@@ -5,8 +5,9 @@
   Params:
     note   the note document (required)
 
-  Copy contract:
-    kicker  page.kicker, falling back to the edition's standing kicker
+  Copy contract, and where the words live:
+    kicker  page.kicker, falling back to _data/notes.yml's standing kicker —
+            the edition's words, not this file's. Nothing here is a literal.
     deck    page.deck, falling back to page.excerpt; omitted when neither
             exists — a deck is written, not derived from the first paragraph
 
@@ -18,7 +19,8 @@
 <header class="essay-header">
   {%- comment -%} The dateline shares the kicker's line: publication date, right. {%- endcomment -%}
   <div class="essay-header__top">
-    <p class="eyebrow"><span class="ember">{{ include.note.kicker | default: "Notes" }}</span><span class="eyebrow-divider">/</span>{{ include.note.kicker_subject | default: "On learning" }}</p>
+  {%- assign edition = site.data.notes -%}
+    <p class="eyebrow"><span class="ember">{{ include.note.kicker | default: edition.kicker }}</span><span class="eyebrow-divider">/</span>{{ include.note.kicker_subject | default: edition.kicker_subject }}</p>
     <time class="dateline" datetime="{{ include.note.last_date | date: '%Y-%m-%d' }}">{{ include.note.last_date | date: "%B %-d, %Y" }}</time>
   </div>
   <h1 id="note-title">{{ include.note.title }}</h1>

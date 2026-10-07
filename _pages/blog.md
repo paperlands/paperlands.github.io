@@ -24,6 +24,20 @@ yt_gallery:
     video_id: cFJKHatepQo
     thumbnail: https://img.youtube.com/vi/cFJKHatepQo/mqdefault.jpg
     title: What if Pythagoras Theorem was forgotten? 
+copy:
+  # The page's words. The gallery's own copy is yt_gallery above — each card
+  # names its own video — and the rest is here: what the Library says, and what
+  # its one action says and where it goes.
+  title: Our
+  title_em: Library.
+  # The card's hover line. Read out, not shown, so it is an attribute, not prose.
+  more: Learn more..
+  # The gallery's unopened frame — the two lines the reader sees before they
+  # choose to load a video. They are the page's, not the component's.
+  cover_title: Interactive Content
+  cover_action: Click to load
+  action: Discover More
+  action_href: https://www.youtube.com/@realPaperLand
 ---
 
 {%- comment -%}
@@ -44,7 +58,7 @@ yt_gallery:
 {%- endcomment -%}
 
 <section id="blog" class="mt-16">
-  <h2 class="my-8 text-4xl font-bold tracking-tight text-center lg:text-5xl text-secondary">Our <span class="text-orange-850 font-paperlang">Library.</span></h2>
+  <h2 class="my-8 text-4xl font-bold tracking-tight text-center lg:text-5xl text-secondary">{{ page.copy.title }} <span class="text-orange-850 font-paperlang">{{ page.copy.title_em }}</span></h2>
 
   <div class="grid grid-cols-1 gap-8 my-12 sm:grid-cols-2">
     {% assign recent_notes = site.notes | sort: "last_date" %}
@@ -79,7 +93,7 @@ yt_gallery:
           >{{ note.title }}</div>
           <!-- Read more link that appears on hover -->
           <p class="inline-flex items-center mt-3 text-sm transition-all duration-300 opacity-0 text-white/90 group-hover:opacity-100">
-            Learn more..
+            {{ page.copy.more }}
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-1 transition-transform duration-300 transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
@@ -90,8 +104,9 @@ yt_gallery:
     {% endfor %}
   </div>
   <hr class="my-8">
-  {% include gallery.html items=page.yt_gallery id="yt-gallery" %}
+  {% include gallery.html items=page.yt_gallery id="yt-gallery"
+     cover_title=page.copy.cover_title cover_action=page.copy.cover_action %}
   <div class="flex justify-center">
-  <a class="px-4 py-2 my-4 rounded-md text-secondary bg-primary" href="https://www.youtube.com/@realPaperLand">Discover More</a>
+  <a class="px-4 py-2 my-4 rounded-md text-secondary bg-primary" href="{{ page.copy.action_href }}">{{ page.copy.action }}</a>
 </div>
 </section>

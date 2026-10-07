@@ -53,8 +53,16 @@
   rule in JS, and a screen reader announces it. It is a COURTESY, not a
   guarantee: the proxy is the only place it can be enforced, and the letter's
   status line is where a refusal shows.
-  Params: variant, id_prefix, message_label, message_placeholder, button_text,
-          return_url, lazy_turnstile, turnstile_theme, toasts
+  EVERY WORD IS A PARAM. A component that invents a label is a component whose
+  label a page cannot change: /lesson-plans and the letter place the same form
+  and do not say the same thing, so `Name*` and `Sent!` live in their copy
+  surfaces (_data/contact.yml `form:` and the page's `contact_form:` block),
+  not here. Nothing below is a word this file chose.
+
+  Params: variant, id_prefix, name_label, name_placeholder, email_label,
+          email_placeholder, message_label, message_placeholder, button_text,
+          receipt_sent, receipt_bad, close_label, return_url, lazy_turnstile,
+          turnstile_theme, toasts
 {%- endcomment -%}
 {%- assign cf_prefix = include.id_prefix | default: '' -%}
 {%- assign cf_variant = include.variant | default: 'paper' -%}
@@ -86,14 +94,14 @@
   {%- assign cf_captcha_class = 'flex justify-center' -%}
 {%- endif -%}
 <form id="{{ cf_prefix }}lettertopaperland" data-contact-form class="{{ cf_form_class }}" accept-charset="UTF-8" action="https://book.paperland.sg/proxy/apps/guru/work" method="POST">
-  <label for="{{ cf_prefix }}name-input" class="{{ cf_label_class }}">Name*</label>
-  <input id="{{ cf_prefix }}name-input" type="text" name="name" placeholder="Alan Kay" class="{{ cf_input_class }}" required />
+  <label for="{{ cf_prefix }}name-input" class="{{ cf_label_class }}">{{ include.name_label }}</label>
+  <input id="{{ cf_prefix }}name-input" type="text" name="name" placeholder="{{ include.name_placeholder }}" class="{{ cf_input_class }}" required />
 
-  <label for="{{ cf_prefix }}email-input" class="{{ cf_label_class }}">Email*</label>
-  <input id="{{ cf_prefix }}email-input" type="email" name="email" placeholder="alan@paperland.sg" class="{{ cf_input_class }}" required />
+  <label for="{{ cf_prefix }}email-input" class="{{ cf_label_class }}">{{ include.email_label }}</label>
+  <input id="{{ cf_prefix }}email-input" type="email" name="email" placeholder="{{ include.email_placeholder }}" class="{{ cf_input_class }}" required />
 
-  <label for="{{ cf_prefix }}message-input" class="{{ cf_label_class }}">{% if include.message_label %}{{ include.message_label }}{% else %}Message*{% endif %}</label>
-  <textarea id="{{ cf_prefix }}message-input" name="message" rows="4" placeholder="{% if include.message_placeholder %}{{ include.message_placeholder }}{% else %}Tell us briefly about your context or background{% endif %}" class="{{ cf_input_class }}" required></textarea>
+  <label for="{{ cf_prefix }}message-input" class="{{ cf_label_class }}">{{ include.message_label }}</label>
+  <textarea id="{{ cf_prefix }}message-input" name="message" rows="4" placeholder="{{ include.message_placeholder }}" class="{{ cf_input_class }}" required></textarea>
 
   <input type="hidden" name="return_url" value="{{ cf_return_url }}" />
 
@@ -108,23 +116,23 @@
   <div class="{{ cf_field_class }}"{% if cf_lazy %} data-turnstile{% endif %} data-sitekey="0x4AAAAAACugliz5rFIg0aRA" data-theme="{{ cf_turnstile_theme }}"></div>
   </div>
 
-  <button type="submit" class="{{ cf_action_class }}">{% if include.button_text %}{{ include.button_text }}{% else %}Book a call{% endif %}</button>
+  <button type="submit" class="{{ cf_action_class }}">{{ include.button_text }}</button>
 </form>
 {%- if cf_toasts -%}
 
 <div class="fixed z-50 hidden bottom-4 right-4" id="toast-good" data-toast="sent">
   <div class="flex items-center p-4 text-green-700 bg-green-100 border border-green-400 rounded-md shadow-md" >
       <i class="mr-2 fa fa-check-circle"></i>
-      <span>Sent! To the desks <a class="text-blue-600 underline" href="/about"><b>@paperland</b></a></span>
-      <button class="ml-auto text-gray-500 hover:text-gray-700 focus:outline-hidden" data-toast-close>X</button>
+      <span>{{ include.receipt_sent | markup }}</span>
+      <button class="ml-auto text-gray-500 hover:text-gray-700 focus:outline-hidden" data-toast-close aria-label="{{ include.close_label }}">✕</button>
   </div>
 </div>
 
 <div class="fixed z-50 hidden bottom-4 right-4" id="toast-bad" data-toast="failed">
   <div class="flex items-center p-4 text-red-700 bg-red-100 border border-red-400 rounded-md shadow-md">
     <i class="mr-2 fa fa-check-circle"></i>
-      <span>If you are human, please try again!  </span>
-      <button class="ml-auto text-gray-500 hover:text-gray-700 focus:outline-hidden" data-toast-close>X</button>
+      <span>{{ include.receipt_bad | markup }}</span>
+      <button class="ml-auto text-gray-500 hover:text-gray-700 focus:outline-hidden" data-toast-close aria-label="{{ include.close_label }}">✕</button>
   </div>
 </div>
 {%- endif -%}

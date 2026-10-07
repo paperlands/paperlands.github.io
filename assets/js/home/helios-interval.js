@@ -52,10 +52,15 @@ function boot() {
   var status = root.querySelector("[data-helios-interval-status]");
   var still = root.querySelector("[data-helios-interval-still]");
   var hatchUrl = root.getAttribute("data-helios-interval-hatch");
+  /* The status line's WORDS are the page's, not this script's: they arrive as
+     data attributes on the root (see _pages/helios-interval.md), so the page can
+     say what its own rehearsal is doing without a second copy of the vocabulary
+     here. `fallback` is a PREFIX — the runtime appends the error to it. */
+  var words = root.dataset;
   if (!canvas || !verse) return;
   /* An empty URL means _data/hatch.yml is missing — the pin did not survive the
      build. Say so on the page rather than rendering nothing. */
-  if (!hatchUrl) { showStill("the pin is missing — no runtime was vendored"); return; }
+  if (!hatchUrl) { showStill(words.intervalMissingPin); return; }
 
   /* The hatch is over a megabyte of runtime. Reduced motion and Save-Data ask for the
      finished figure instead, and never fetch it (design/hatch.org, origin
@@ -281,14 +286,14 @@ function boot() {
     var close = 0;
     for (var line in endOf) if (endOf[line] > close) close = endOf[line];
     if (close && spans[close]) spans[close].classList.add("helios-interval__line--afterglow");
-    if (status) status.textContent = "the finished figure";
+    if (status) status.textContent = words.intervalFinished;
   }
 
   function fail(err) {
     running = false;
     quiet();
     if (hatch) { try { hatch.dispose(); } catch (e) {} hatch = null; }
-    showStill("fell back to the finished figure — " + (err && err.message ? err.message : err));
+    showStill(words.intervalFallback + " " + (err && err.message ? err.message : err));
   }
 
   function run() {
@@ -308,7 +313,7 @@ function boot() {
       );
       spans[i].style.removeProperty("--helios-rest");
     }
-    if (status) status.textContent = "performing";
+    if (status) status.textContent = words.intervalPerforming;
     import(hatchUrl).then(function (mod) {
       hatch = mod.createHatch(canvas);
       hatch.onLine(kindle);
@@ -342,7 +347,7 @@ function boot() {
       run();
     }
   } else {
-    showStill("the finished figure");
+    showStill(words.intervalFinished);
   }
 }
 

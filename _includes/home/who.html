@@ -4,16 +4,20 @@
   screens all three are visible; on smaller screens the row is a loop: it
   opens on the middle identity and wraps in both directions, the active card
   advancing after its footage ends (assets/js/home/helios-who.js).
-  Copy and clip ids come from page.who.
+  Copy and clip ids come from page.who, including each card's own entry label —
+  this file invents no word.
 {%- endcomment -%}
 {%- assign home_who = include.who | default: page.who -%}
 {%- assign home_who_items = include.items | default: home_who.items -%}
-{%- assign home_who_label = include.label | default: home_who.label | default: 'In who we become' -%}
-<section class="helios-who" aria-label="{{ home_who_label | escape }}">
-  <h2 class="helios-who__head"><span class="helios-verse">{{ include.verse | default: home_who.verse | default: 'In who we' }}</span> <span class="helios-stress">{{ include.stress | default: home_who.stress | default: 'become' }}</span></h2>
+{%- assign home_who_label = include.label | default: home_who.label -%}
+<section class="helios-who"{% if home_who_label %} aria-label="{{ home_who_label | escape }}"{% endif %}>
+  <h2 class="helios-who__head"><span class="helios-verse">{{ include.verse | default: home_who.verse }}</span> <span class="helios-stress">{{ include.stress | default: home_who.stress }}</span></h2>
   <div class="helios-who__cards">
     {%- for item in home_who_items -%}
     <article class="helios-who__card" data-who-card>
+      {%- if item.possibility -%}
+      <a class="helios-who__entry" href="#become-{{ item.possibility }}" data-possibility-link="{{ item.possibility }}"{% if item.entry %} aria-label="{{ item.entry | escape }}"{% endif %} aria-controls="become-{{ item.possibility }}"></a>
+      {%- endif -%}
       <div class="helios-who__reel">
         {%- for clip in item.clips -%}
         <div class="helios-who__shot"{% if forloop.first %} data-who-current{% else %} aria-hidden="true"{% endif %}>

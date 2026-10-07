@@ -57,6 +57,7 @@ core:
     - /lesson-plans
     - /helios-dojo
     - /helios-interval
+    - /helios-hall
     # One route per file in _notes/ (collection permalink /:slug).
     # Listed rather than wildcarded: adding a note should require
     # classifying it.

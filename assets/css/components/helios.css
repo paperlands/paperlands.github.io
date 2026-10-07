@@ -1241,6 +1241,431 @@
     }
   }
 
+
+  /* ---- becoming, expressed: parallel lives ----------------------------
+     The same night continues. No new card grid: three folds in one field.
+     Each photograph and the live drawing belong to a plane, not an overlay. */
+  [data-look="helios"] .helios-who__card { position: relative; }
+  [data-look="helios"] .helios-who__entry {
+    position: absolute; inset: 0; z-index: 3;
+    border-radius: 1px;
+  }
+  [data-look="helios"] .helios-who__entry:focus-visible {
+    outline: 1px solid var(--light-accent); outline-offset: 6px;
+  }
+  [data-look="helios"] .helios-who__card:has(.helios-who__entry) h3::after {
+    content: ' ↗'; font-size: .65em; color: var(--light-accent);
+    opacity: .55; transition: opacity .3s ease;
+  }
+  [data-look="helios"] .helios-who__card:has(.helios-who__entry:hover) h3::after { opacity: 1; }
+  [data-look="helios"] .helios-possibilities {
+    --parallel-ground: #140910;
+    --parallel-wheat: #f5deb3;
+    --parallel-dim: #c1a48b;
+    position: relative; overflow-anchor: none;
+    color: var(--parallel-wheat);
+    background: linear-gradient(180deg, var(--light-ground-2), var(--parallel-ground) 24rem, var(--parallel-ground) 85%, var(--light-ground));
+  }
+  [data-look="helios"] .helios-possibilities__seam { padding: clamp(1.4rem, 4vh, 2.8rem) var(--helios-gutter) 1.5rem; }
+  [data-look="helios"] .helios-possibilities__seam h2 {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: .4em 1.1em;
+    margin: 0; font: italic 400 clamp(1.35rem, 2.6vw, 2.3rem)/1.3 var(--font-serif);
+    letter-spacing: -.02em; color: var(--light-voice);
+  }
+  [data-look="helios"] .helios-possibilities__feeling { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: .3em; }
+  [data-look="helios"] .helios-possibilities__electric {
+    position: relative; font-size: 1.38em; font-weight: 400; color: var(--light-accent);
+    text-shadow: 0 0 1px #ff993333, 0 0 18px #ff993326;
+  }
+  /* Two pen gestures, not two effects: a little fault in the electric line,
+     then an open curve that holds the shared word. The night stays unbroken. */
+  [data-look="helios"] .helios-possibilities__electric svg {
+    position: absolute; left: 1%; width: 99%; height: .25em; bottom: -.05em;
+    overflow: visible; fill: none; stroke: var(--light-accent); stroke-width: 1.15; pointer-events: none;
+  }
+  [data-look="helios"] .helios-possibilities__electric path {
+    vector-effect: non-scaling-stroke; stroke-linecap: round;
+    stroke-dasharray: 1; stroke-dashoffset: 0; opacity: .35;
+    filter: drop-shadow(0 0 3px #ff993355);
+  }
+  [data-look="helios"] [data-experience-seam][data-arrived] .helios-possibilities__electric path { animation: helios-experience-catch .85s var(--helios-ease) both; }
+  [data-look="helios"] .helios-possibilities__sharing { color: #cbb49c; }
+  [data-look="helios"] .helios-possibilities__sharing em { position: relative; font-weight: 400; color: #ffeac3; text-shadow: 0 0 1px #fff5df66, 0 0 18px #ffb44f26; }
+  [data-look="helios"] .helios-possibilities__sharing svg {
+    position: absolute; left: -2%; width: 104%; height: .23em; bottom: -.12em;
+    overflow: visible; fill: none; stroke: #ffe8b6; stroke-width: .8; opacity: .4; pointer-events: none;
+  }
+  [data-look="helios"] .helios-possibilities__sharing path { vector-effect: non-scaling-stroke; stroke-linecap: round; }
+  @keyframes helios-experience-catch {
+    from { stroke-dashoffset: 1; opacity: .2; }
+    42% { opacity: .9; filter: drop-shadow(0 0 4px #ff993399); }
+    to { stroke-dashoffset: 0; opacity: .35; }
+  }
+  [data-look="helios"] .helios-possibilities__opening {
+    position: relative; padding: clamp(5rem, 16vh, 10rem) var(--helios-gutter);
+  }
+  [data-look="helios"] .helios-possibilities__thread {
+    display: block; width: 1px; height: clamp(3rem, 9vh, 6rem);
+    margin-bottom: 2rem;
+    background: linear-gradient(transparent, #e9ae6466);
+  }
+  [data-look="helios"] .helios-possibilities__opening h2 {
+    max-width: 20ch; margin: 0;
+    font: 400 clamp(2.5rem, 5.6vw, 5.5rem)/1.06 var(--font-serif);
+    letter-spacing: -.035em; text-wrap: balance;
+  }
+  [data-look="helios"] .helios-possibilities__chapters { padding-inline: var(--helios-gutter); }
+  /* Each fold's light answers its own scene, not a shared rainbow: creators
+     violet (the stage's #bf7bd0 haze), explorers a soft ember running to
+     apricot — the question's heat, held at its siblings' exposure — and
+     leaders rose (the stage's #ad7185 blush). Each program inks itself with
+     its own fold's light, so the drawing and the light are one colour. */
+  [data-look="helios"] [data-chapter="creators"] { --fold-accent: #d6a8ee; --mark-glow: #9d6ce0; }
+  [data-look="helios"] [data-chapter="inquiry"] { --fold-accent: #f0a172; --mark-glow: #cf6a44; }
+  [data-look="helios"] [data-chapter="leaders"] { --fold-accent: #f0a4c2; --mark-glow: #e07ba6; }
+  [data-look="helios"] .helios-possibility__mark {
+    position: absolute; right: -4rem; top: 50%; width: 70%; height: 8rem;
+    transform: translateY(-50%); z-index: 0; opacity: .24; pointer-events: none;
+    transition: opacity .55s var(--helios-ease);
+    mask-image: linear-gradient(90deg, transparent, #0002 12%, #000 38%, #000d 88%, transparent);
+  }
+  [data-look="helios"] .helios-possibility__mark img {
+    width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; mix-blend-mode: screen;
+    filter: drop-shadow(0 0 5px var(--mark-glow));
+  }
+  [data-look="helios"] .helios-possibility > summary:hover .helios-possibility__mark { opacity: .36; }
+  [data-look="helios"] .helios-possibility[open] > summary .helios-possibility__mark { opacity: 0; }
+  [data-look="helios"] .helios-possibility > summary > span:not(.helios-possibility__mark) { position: relative; z-index: 1; }
+  [data-look="helios"] .helios-possibility {
+    border-top: 1px solid #e9ae6438; scroll-margin-top: 5rem;
+  }
+  [data-look="helios"] .helios-possibility:last-child { border-bottom: 1px solid #e9ae6438; }
+  [data-look="helios"] .helios-possibility > summary {
+    display: flex; align-items: baseline; gap: clamp(.75rem, 2vw, 2rem);
+    position: relative; isolation: isolate; overflow: hidden;
+    min-height: var(--fold-header, 4.5rem); padding: .8rem .3rem; box-sizing: border-box;
+    list-style: none; cursor: pointer;
+  }
+  [data-look="helios"] .helios-possibility > summary::-webkit-details-marker { display: none; }
+  [data-look="helios"] .helios-possibility > summary:focus-visible {
+    outline: 1px solid var(--light-accent); outline-offset: 5px;
+  }
+  [data-look="helios"] .helios-possibility__number,
+  [data-look="helios"] .helios-possibility__event,
+  [data-look="helios"] .helios-possibility__eyebrow {
+    font: 400 .62rem/1.6 var(--font-display); letter-spacing: .17em;
+    text-transform: uppercase; color: var(--parallel-dim);
+  }
+  [data-look="helios"] .helios-possibility__number { opacity: .7; }
+  [data-look="helios"] .helios-possibility__identity {
+    min-width: 5.8ch; font: italic 500 clamp(1.5rem, 2.6vw, 2.3rem)/1 var(--font-serif);
+    transition: color .35s ease;
+  }
+  [data-look="helios"] .helios-possibility__invitation {
+    font: italic 400 clamp(1rem, 1.5vw, 1.3rem)/1.3 var(--font-serif);
+    color: var(--parallel-dim);
+  }
+  [data-look="helios"] .helios-possibility__event { margin-left: auto; text-align: right; }
+  [data-look="helios"] .helios-possibility__toggle {
+    position: relative; width: 1rem; height: 1rem; flex: none; align-self: center;
+  }
+  [data-look="helios"] .helios-possibility__toggle::before,
+  [data-look="helios"] .helios-possibility__toggle::after {
+    content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 1px;
+    background: var(--light-accent); transition: transform .4s var(--helios-ease);
+  }
+  [data-look="helios"] .helios-possibility__toggle::after { transform: rotate(90deg); }
+  [data-look="helios"] .helios-possibility[open] .helios-possibility__toggle::after { transform: rotate(0); }
+  [data-look="helios"] .helios-possibility[open] .helios-possibility__identity,
+  [data-look="helios"] .helios-possibility > summary:hover .helios-possibility__identity { color: var(--fold-accent, var(--light-accent)); }
+  [data-look="helios"] .helios-possibility__passage { padding-bottom: 2rem; }
+  [data-look="helios"] .helios-possibility__stage {
+    --ink-light: .94; --ember: .18; --spiral: 0deg;
+    --thought-x: 48%; --thought-y: -18%; --thought-w: 76%; --thought-h: 100%; --thought-scale: 2.2;
+    position: relative; height: calc(100svh - 13rem); min-height: 420px;
+    isolation: isolate; overflow: hidden;
+    background:
+      radial-gradient(ellipse 29% 40% at 82% 28%, #ffe8ba52, #e9a34a21 28%, #9e42120e 58%, transparent 85%),
+      radial-gradient(ellipse 110% 110% at 64% 40%, #29110a, #160906 44%, #090303 77%, #020101);
+  }
+  /* The plate spills off the light side: the reading side keeps its ground so the
+     copy holds a dark field, the light side runs to the viewport edge. One rule
+     covers both readings — in flow the stage widens past the chapters' right
+     padding, and in the pinned surface `inset: 0` widens past the surface's right
+     edge by the same gutter. The stage's own overflow: hidden crops what a plane
+     puts past the edge (leaders' near shoulder ships at right: -10%), so the
+     document gains no horizontal scrollbar — measured 0px at 1440/390/320.
+
+     Every plane is placed in per cent, so widening the stage moves and grows the
+     scene with it, and the per-chapter numbers below were measured against the
+     narrower box. Those numbers were read again against this one, all three scenes
+     in the pinned desktop reading: the copy column is untouched (the reading edge
+     keeps its gutter), the headers keep their ground on both sides, and what
+     changes is exactly what the spill intends — the ink, the figcaption and the
+     near objects (Newton's apple, leaders' shoulder) now sit at or past the light
+     edge instead of stopping short of it. No number wanted moving. */
+  [data-look="helios"] .helios-possibility__stage {
+    margin-right: calc(var(--helios-gutter) * -1);
+  }
+  /* One constant runway, one sticky field. Opening folds never changes page
+     height. The actual scenes move into this surface once; nothing is cloned. */
+  [data-look="helios"] [data-possibilities-enhanced] .helios-possibilities__journey { height: 460svh; }
+  [data-look="helios"] [data-possibilities-enhanced] .helios-possibilities__chapters {
+    --fold-header: clamp(3.6rem, 7.5svh, 4.5rem);
+    position: sticky; top: 3.8rem; height: calc(100svh - 4.2rem);
+    display: flex; flex-direction: column; padding-inline: var(--helios-gutter);
+  }
+  [data-look="helios"] [data-possibilities-enhanced] .helios-possibility { flex: none; }
+  [data-look="helios"] [data-possibilities-enhanced] .helios-possibility > summary {
+    height: var(--fold-header); min-height: 0; align-items: center;
+    background: #140910; position: relative; z-index: 12;
+  }
+  [data-look="helios"] [data-possibilities-enhanced] .helios-possibility[open] > summary { animation: helios-fold-header .45s var(--helios-ease); }
+  [data-look="helios"] [data-possibilities-enhanced] .helios-possibility__passage { display: none; }
+  [data-look="helios"] .helios-possibilities__surface { position: relative; flex: 1; min-height: 0; isolation: isolate; }
+  [data-look="helios"] .helios-possibilities__surface .helios-possibility__stage {
+    position: absolute; inset: 0; height: 100%; min-height: 0;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity .52s var(--helios-ease), visibility 0s .52s;
+  }
+  [data-look="helios"] .helios-possibilities__surface .helios-possibility__stage[data-current] {
+    opacity: 1; visibility: visible; pointer-events: auto; transition-delay: 0s;
+  }
+  @keyframes helios-fold-header { from { opacity: .45; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+  /* No drawn hairline. The plate used to carry a 1px border just inside the
+     ground, and it was the fourth edge and the only one doing no work: the
+     vignette below already holds the copy's dark field and the per-plane masks
+     already dissolve the art. Removing it is what lets the scene leave the light
+     side — a drawn rectangle is exactly what a scene cannot cross. The other two
+     edges stay: the ground on the reading side, the vignette everywhere.
+     The wager and the evidence are design/iterations/18-bleed.html. */
+  [data-look="helios"] .helios-possibility__stage::after {
+    content: ''; position: absolute; inset: 0; z-index: 7; pointer-events: none;
+    background:
+      linear-gradient(90deg, #140910 0%, #140910f2 17%, #140910a6 32%, transparent 54%),
+      linear-gradient(0deg, #140910 1%, transparent 25%, transparent 85%, #14091077);
+  }
+  [data-look="helios"] .helios-possibility__art { position: absolute; inset: 0; margin: 0; }
+  [data-look="helios"] .helios-possibility__plane {
+    position: absolute; inset: 0; pointer-events: none;
+    transform: translate3d(var(--dx, 0px), var(--dy, 0px), 0);
+  }
+  [data-look="helios"] .helios-possibility__plane img,
+  [data-look="helios"] .helios-possibility__plane canvas { position: absolute; max-width: none; object-fit: contain; }
+  [data-look="helios"] .helios-possibility__echo { z-index: 1; }
+  [data-look="helios"] .helios-possibility__echo img {
+    left: 30%; top: -7%; width: 48%; height: 94%; opacity: .25;
+    filter: grayscale(.7) sepia(.55) brightness(.8);
+    mask-image: radial-gradient(ellipse 56% 56% at 50% 44%, #000 18%, #0007 54%, transparent 86%);
+  }
+  [data-look="helios"] .helios-possibility__memory { z-index: 2; }
+  [data-look="helios"] .helios-possibility__memory img { right: 1%; top: 1%; width: 30%; height: 66%; opacity: .11; mix-blend-mode: screen; }
+  [data-look="helios"] .helios-possibility__thought { z-index: 3; }
+  /* The current hatch pin writes viewport-sized inline canvas dimensions on
+     create/resize. The plane owns its CSS box; only width/height outrank those
+     inline styles. object-fit keeps the drawing buffer's own aspect ratio. */
+  [data-look="helios"] .helios-possibility__thought canvas {
+    left: var(--thought-x); top: var(--thought-y);
+    width: var(--thought-w) !important; height: var(--thought-h) !important;
+    mix-blend-mode: screen; opacity: 0;
+    transform: rotate(var(--spiral)) scale(var(--thought-scale)); transform-origin: 50% 50%;
+    filter: saturate(.55) hue-rotate(8deg) brightness(var(--ink-light)) contrast(1.28)
+      drop-shadow(0 0 20px rgb(233 174 100 / var(--ember))) drop-shadow(0 0 60px #c96e281a);
+    mask-image: radial-gradient(ellipse 58% 60% at 52% 46%, #000 26%, #000b 61%, transparent 94%);
+    transition: opacity .35s ease;
+  }
+  [data-look="helios"] .helios-possibility__stage[data-drawing-active] .helios-possibility__thought canvas { opacity: 1; }
+  /* The mathematics' own air — the mirror of __light. The ink is screened, so it
+     can only add: where the plate under it is already bright (a light pool, an
+     echo's face) it has nothing left to add and the line dissolves. A dark edge
+     cannot help — black is screen's identity, so it vanishes exactly where it
+     is needed. What works is a pool under the ink only, multiplied into the
+     plate, so the drawing always has a dark field to be drawn on. It takes the
+     canvas' own box, mask and transform, and it must blend against the stage's
+     own backdrop (a real backdrop, not a stacking-context group), which is why
+     it is a sibling plane and not a child of the thought plane. --ink-pool is
+     its depth; the probe is design/probe/helios-ink-contrast.mjs. */
+  [data-look="helios"] .helios-possibility__pool {
+    z-index: 2; inset: auto;
+    left: var(--thought-x); top: var(--thought-y);
+    width: var(--thought-w); height: var(--thought-h);
+    transform: rotate(var(--spiral, 0deg)) scale(var(--thought-scale, 1)); transform-origin: 50% 50%;
+    background: radial-gradient(ellipse 56% 58% at 52% 46%, #0a0308, #0a0308b3 48%, transparent 78%);
+    mix-blend-mode: multiply; opacity: 0;
+    mask-image: radial-gradient(ellipse 58% 60% at 52% 46%, #000 24%, #000b 60%, transparent 94%);
+    transition: opacity .35s ease;
+  }
+  [data-look="helios"] .helios-possibility__stage[data-drawing-active] .helios-possibility__pool { opacity: var(--ink-pool, .3); }
+  [data-look="helios"] .helios-possibility__thought canvas.glint { animation: helios-ink-glint .46s var(--helios-ease); }
+  /* Light belongs to the ink. No full-stage pulse: a short glint and a long
+     falloff, following the same wheat -> ember -> near-black value ladder. */
+  @keyframes helios-ink-glint {
+    0%, 100% { filter: saturate(.55) hue-rotate(8deg) brightness(var(--ink-light)) contrast(1.28)
+      drop-shadow(0 0 20px rgb(233 174 100 / var(--ember))) drop-shadow(0 0 60px #c96e281a); }
+    22% { filter: saturate(.55) hue-rotate(8deg) brightness(calc(var(--ink-light) + .18)) contrast(1.28)
+      drop-shadow(0 0 24px #ffeac44d) drop-shadow(0 0 65px #de8a3a2e); }
+  }
+  [data-look="helios"] .helios-possibility__body { z-index: 4; }
+  [data-look="helios"] .helios-possibility__body img {
+    left: 54%; top: 28%; width: 43%; height: 72%; object-position: center bottom;
+    mask-image: linear-gradient(#000 72%, transparent 99%);
+  }
+  [data-look="helios"] .helios-possibility__light {
+    z-index: 5; mix-blend-mode: screen; opacity: calc(var(--ember) + .12);
+    background: linear-gradient(177deg, transparent 42%, #e284321a 43%, #fff2d699 44%, #ffd69666 44.4%, transparent 46%);
+    mask-image: linear-gradient(90deg, transparent 25%, #000 48%, transparent);
+  }
+  [data-look="helios"] .helios-possibility__near { z-index: 6; }
+  [data-look="helios"] .helios-possibility__near img { width: 7%; height: auto; right: 5%; top: 14%; transform: rotate(calc(15deg + var(--fall-spin, 0deg))); opacity: .8; }
+  [data-look="helios"] .helios-possibility__spine {
+    position: absolute; z-index: 8; left: 4%; top: 7%; margin: 0;
+    writing-mode: vertical-rl; color: #f5deb35c;
+    font: .53rem/1 var(--font-display); letter-spacing: .3em; text-transform: uppercase;
+  }
+  [data-look="helios"] .helios-possibility__art figcaption {
+    position: absolute; right: 4%; bottom: 2.5rem; z-index: 8;
+    max-width: 45%; text-align: right; color: var(--parallel-dim);
+    font: .52rem/1.8 var(--font-display); letter-spacing: .13em; text-transform: uppercase;
+  }
+  [data-look="helios"] .helios-possibility__copy {
+    position: relative; z-index: 9; width: 34%; padding: 0;
+    margin-left: 7%; top: 50%; transform: translateY(-50%);
+  }
+  [data-look="helios"] .helios-possibility__eyebrow { margin: 0 0 1.6rem; color: var(--light-accent); }
+  [data-look="helios"] .helios-possibility__copy h3 {
+    margin: 0 0 1.3rem; max-width: 12ch;
+    font: italic 400 clamp(2.3rem, 4.1vw, 4.2rem)/1.03 var(--font-serif); letter-spacing: -.035em;
+  }
+  [data-look="helios"] .helios-possibility__description {
+    max-width: 31ch; color: var(--parallel-dim); margin: 0;
+    font: 400 clamp(1.05rem, 1.3vw, 1.2rem)/1.6 var(--font-body); text-wrap: pretty;
+  }
+  [data-look="helios"] .helios-possibility__outcome {
+    max-width: 30ch; margin: 1.3rem 0 1.6rem; color: var(--parallel-wheat);
+    font: italic 400 clamp(1.05rem, 1.5vw, 1.3rem)/1.4 var(--font-serif);
+  }
+  [data-look="helios"] .helios-possibility__more,
+  [data-look="helios"] .helios-possibilities__call {
+    color: var(--light-accent); text-decoration: none;
+    border-bottom: 1px solid #e9ae6466; padding-bottom: .4rem;
+    transition: border-color .3s ease, color .3s ease;
+  }
+  [data-look="helios"] .helios-possibility__more { display: inline-block; padding-top: .2rem; font: .63rem/1.8 var(--font-display); letter-spacing: .1em; }
+  [data-look="helios"] .helios-possibility__more span,
+  [data-look="helios"] .helios-possibilities__call span { display: inline-block; margin-left: .65em; transition: transform .3s ease; }
+  [data-look="helios"] .helios-possibility__more:hover span,
+  [data-look="helios"] .helios-possibilities__call:hover span { transform: translate(2px, -2px); }
+  [data-look="helios"] .helios-possibility__more:focus-visible,
+  [data-look="helios"] .helios-possibilities__call:focus-visible { outline: 1px solid var(--light-accent); outline-offset: 6px; }
+  [data-look="helios"] .helios-possibility__stage[data-life="creators"] {
+    background: radial-gradient(ellipse 32% 48% at 84% 24%, #bf7bd02b, transparent 76%),
+      radial-gradient(ellipse 32% 42% at 73% 42%, #efb87c2e, transparent 80%),
+      radial-gradient(ellipse 95% 105% at 62% 42%, #281320, #160b12 45%, #090409 78%, #020102);
+  }
+  /* The cut carries the raised arm now (design/cutouts/creators.py), so the
+     portrait is 530 tall instead of 446. 14% + 86% is the box that keeps the
+     students at exactly the size the shorter crop rendered them at, while the
+     fingertip rises into the top of the light pool instead of being pushed off
+     the plate. Below 851px the mobile box (left 32% / top 19% / 65% x 81%) still
+     owns the placement and is bound by width, so this rule changes nothing
+     there: measured 227x287 css px before and after.
+     The old crop started at the fingertip: the pointing hand was never lost to
+     the matte, it was outside the frame. Do not re-tighten this crop. */
+  [data-look="helios"] [data-life="creators"] .helios-possibility__body img { top: 14%; height: 86%; }
+  [data-look="helios"] .helios-possibility__stage[data-life="inquiry"] {
+    --thought-x: 20%; --thought-y: 0%; --thought-w: 90%; --thought-h: 105%; --thought-scale: 1;
+    background: radial-gradient(ellipse 30% 32% at 68% 25%, #ffe8ba47, #e9a34a1a 35%, transparent 84%),
+      radial-gradient(ellipse 110% 110% at 62% 44%, #28120b, #160906 44%, #090303 77%, #020101);
+  }
+  [data-look="helios"] [data-life="inquiry"] .helios-possibility__echo img { left: 37%; top: -12%; width: 43%; height: 94%; opacity: .32; }
+  [data-look="helios"] [data-life="inquiry"] .helios-possibility__body img { left: 48%; top: 29%; width: 39%; height: 69%; }
+  [data-look="helios"] [data-life="inquiry"] .helios-possibility__light {
+    background: linear-gradient(168deg, transparent 28%, #ffe8be66 32%, #fff8e488 33%, #eea44e44 36%, transparent 40%); filter: blur(7px);
+  }
+  [data-look="helios"] .helios-possibility__stage[data-life="leaders"] {
+    background: radial-gradient(ellipse 34% 46% at 78% 28%, #b8cbab2b, transparent 80%),
+      radial-gradient(ellipse 40% 42% at 62% 45%, #ad718522, transparent 86%),
+      radial-gradient(ellipse 110% 110% at 67% 44%, #24151a, #130b0f 44%, #070506 80%, #020101);
+    --thought-x: 39%; --thought-y: 1%; --thought-w: 34%; --thought-h: 48%; --thought-scale: 1;
+  }
+  [data-look="helios"] [data-life="leaders"] .helios-possibility__echo img { left: 28%; top: -8%; width: 64%; height: 66%; }
+  [data-look="helios"] [data-life="leaders"] .helios-possibility__body img {
+    left: 18%; top: 20%; width: 80%; height: 80%;
+    mask-image: linear-gradient(#000 84%, transparent 100%);
+  }
+  [data-look="helios"] [data-life="leaders"] .helios-possibility__near img { width: 32%; top: auto; bottom: 6%; right: -10%; opacity: .25; filter: blur(5px); }
+  [data-look="helios"] [data-life="leaders"] .helios-possibility__light { background: radial-gradient(ellipse 38% 46% at 64% 34%, #ffe8be66, #e9a34a33 38%, transparent 80%); }
+  @media (min-width: 851px) {
+    [data-look="helios"] .helios-possibility__stage[data-life="inquiry"] {
+      --thought-x: 37%; --thought-y: -7%; --thought-scale: .86;
+      background: radial-gradient(ellipse 32% 36% at 82% 18%, #83cfd526, transparent 84%),
+        radial-gradient(ellipse 30% 32% at 74% 25%, #ffe8ba37, #e9a34a17 35%, transparent 84%),
+        radial-gradient(ellipse 110% 110% at 68% 44%, #25101a, #140b12 44%, #080407 77%, #020101);
+    }
+    [data-look="helios"] [data-life="inquiry"] .helios-possibility__echo img { left: 43%; }
+    [data-look="helios"] [data-life="inquiry"] .helios-possibility__body img { left: 54%; }
+    [data-look="helios"] [data-life="inquiry"] .helios-possibility__light { --dx: 17%; }
+    [data-look="helios"] .helios-possibility__stage[data-life="leaders"] {
+      --thought-x: 42%; --thought-y: -8%; --thought-w: 50%; --thought-h: 78%; --thought-scale: 1.2;
+    }
+    [data-look="helios"] [data-life="leaders"] .helios-possibility__echo img { left: 34%; }
+    [data-look="helios"] [data-life="leaders"] .helios-possibility__body img { left: 39%; top: 10%; width: 66%; height: 90%; }
+    [data-look="helios"] [data-life="leaders"] .helios-possibility__light {
+      background: radial-gradient(ellipse calc(28% + var(--growth, .5) * 16%) calc(34% + var(--growth, .5) * 18%) at 70% 34%, #ffe8be66, #e9a34a33 38%, transparent 80%);
+    }
+  }
+  [data-look="helios"] .helios-possibilities__opening { padding-block: clamp(6rem, 20vh, 14rem); }
+  [data-look="helios"] .helios-possibilities__opening h2 { color: var(--parallel-wheat); }
+  [data-look="helios"] .helios-possibilities__opening > p {
+    color: var(--parallel-dim); font: 400 clamp(1.15rem, 1.8vw, 1.6rem)/1.8 var(--font-serif); margin: 1.4rem 0;
+  }
+  [data-look="helios"] .helios-possibilities__opening .helios-possibilities__verse { font-style: italic; color: var(--parallel-wheat); }
+  [data-look="helios"] .helios-possibilities__call { display: inline-block; margin-top: 1rem; font: italic 400 clamp(1.3rem, 2.3vw, 2rem)/1.4 var(--font-serif); }
+  @media (max-width: 850px) {
+    [data-look="helios"] .helios-possibility__invitation { display: none; }
+    [data-look="helios"] .helios-possibility__event { max-width: 19ch; font-size: .5rem; }
+    [data-look="helios"] .helios-possibility > summary { gap: .7rem; }
+    [data-look="helios"] .helios-possibility__mark { right: -22%; width: 84%; height: 6.5rem; opacity: .16; }
+    [data-look="helios"] .helios-possibility__mark img { object-position: 64% 50%; }
+    [data-look="helios"] .helios-possibility > summary:hover .helios-possibility__mark { opacity: .25; }
+    [data-look="helios"] [data-possibilities-enhanced] .helios-possibilities__journey { height: 400svh; }
+    [data-look="helios"] [data-possibilities-enhanced] .helios-possibilities__chapters { --fold-header: 3.4rem; top: 3.4rem; height: calc(100svh - 3.7rem); }
+    [data-look="helios"] .helios-possibility__stage { min-height: 570px; }
+    [data-look="helios"] .helios-possibility__copy {
+      position: absolute; width: auto; top: 0; transform: none; margin: 0;
+      padding: 1.25rem 1.5rem 0;
+    }
+    [data-look="helios"] .helios-possibility__eyebrow { margin-bottom: .55rem; font-size: .5rem; }
+    [data-look="helios"] .helios-possibility__copy h3 { max-width: 18ch; font-size: clamp(1.85rem, 7.6vw, 2.7rem); margin-bottom: .65rem; }
+    [data-look="helios"] .helios-possibility__description { max-width: 39ch; font-size: 1rem; line-height: 1.4; }
+    [data-look="helios"] .helios-possibility__outcome { margin: .55rem 0 .8rem; max-width: none; font-size: 1.05rem; }
+    [data-look="helios"] .helios-possibility__more { font-size: .58rem; letter-spacing: .075em; }
+    [data-look="helios"] .helios-possibility__art { top: 32%; }
+    [data-look="helios"] .helios-possibility__stage { --thought-x: 17%; --thought-y: -22%; --thought-w: 120%; --thought-h: 110%; --thought-scale: 1.9; }
+    [data-look="helios"] .helios-possibility__stage::after { background: linear-gradient(180deg, #140910 0%, #140910ee 27%, #14091055 47%, transparent 67%, #140910 100%); }
+    [data-look="helios"] .helios-possibility__spine { left: 5%; top: 14%; font-size: .43rem; }
+    [data-look="helios"] .helios-possibility__art figcaption { bottom: 1.2rem; max-width: 75%; font-size: .43rem; }
+    [data-look="helios"] .helios-possibility__echo img { left: 11%; width: 68%; }
+    [data-look="helios"] .helios-possibility__body img { left: 32%; top: 19%; width: 65%; height: 81%; }
+    [data-look="helios"] .helios-possibility__stage[data-life="inquiry"] { --thought-x: 10%; --thought-y: -1%; --thought-w: 124%; --thought-h: 108%; }
+    [data-look="helios"] [data-life="inquiry"] .helios-possibility__echo img { left: 11%; top: -15%; width: 72%; height: 96%; }
+    [data-look="helios"] [data-life="inquiry"] .helios-possibility__body img { left: 25%; width: 61%; top: 21%; height: 75%; }
+    [data-look="helios"] [data-life="leaders"] .helios-possibility__body img { left: -18%; top: 0%; width: 140%; height: 86%; }
+    [data-look="helios"] .helios-possibility__stage[data-life="leaders"] { --thought-x: 25%; --thought-y: -2%; --thought-w: 46%; --thought-h: 55%; }
+  }
+  /* A deliberate close returns to the people, not to an empty pinned field. */
+  [data-look="helios"] [data-possibilities-enhanced][data-folds-closed] .helios-possibilities__journey { height: auto; }
+  [data-look="helios"] [data-possibilities-enhanced][data-folds-closed] .helios-possibilities__chapters {
+    position: relative; top: 0; height: auto; animation: helios-fold-header .35s var(--helios-ease);
+  }
+  [data-look="helios"] [data-folds-closed] .helios-possibilities__surface { display: none; }
+  [data-look="helios"] [data-folds-closed] .helios-possibilities__opening { padding-block: clamp(3rem, 8vh, 5rem); }
+  @media (prefers-reduced-motion: reduce) {
+    [data-look="helios"] [data-possibilities-enhanced] .helios-possibilities__journey { height: auto; }
+    [data-look="helios"] [data-possibilities-enhanced] .helios-possibilities__chapters { position: relative; top: 0; }
+    [data-look="helios"] .helios-possibility__plane { transform: none; }
+    [data-look="helios"] .helios-possibilities *, [data-look="helios"] .helios-possibilities *::after { animation: none !important; transition: none !important; }
+  }
   /* ---- the close ------------------------------------------------------ */
   [data-look="helios"] .helios-colophon {
     display: flex;
@@ -1341,6 +1766,18 @@
         0 0 0.32em rgb(255 190 110 / 0.55),
         0 0 0.95em rgb(212 90 20 / 0.30);
     }
+  }
+
+  /* The hall's two motions, and only two: the beacon's breath and the vault's
+     shimmer. Everything else about the room is still. */
+  @keyframes helios-hall-beacon {
+    from { opacity: 0.72; transform: translate(-50%, -56%) scale(0.94); }
+    to { opacity: 1; transform: translate(-50%, -56%) scale(1.06); }
+  }
+
+  @keyframes helios-hall-shimmer {
+    from { opacity: 0.5; }
+    to { opacity: 0.9; }
   }
 
   /* ---- narrow --------------------------------------------------------- */
@@ -1479,6 +1916,349 @@
     color: var(--light-accent);
   }
 
+
+  /* ---- the hall (rehearsal) --------------------------------------------
+     The landing's close, tried at /helios-hall before the colophon takes it.
+     It adds no picture, no file and no word: it is the same #050009 ground the
+     last viewport already had, with a room in it. Light goes up — the vault,
+     the beacon, arch beyond arch — and the decision stands on the dark, so the
+     seal keeps the contrast it has today while the frame finally shows a
+     destination instead of a void.
+
+     THE HALL IS DRAWN, NOT PHOTOGRAPHED. Every layer is a gradient; the one
+     runtime is the embers (assets/js/home/helios-hall.js). The composition is
+     the one assets/lib/hq.png is a still of and assets/js/twilight-sky.js
+     draws live for /tjc: pillars, arch beyond arch, a horizon of light, a
+     starry vault. A photograph here would have to be scrimmed at the seal to
+     hold 9.6:1 — which is this black again, painted over a picture.
+
+     COST, MEASURED. Everything below — the room, the rehearsal's switch and its
+     notes — is 7.6KB of the minified mode sheet and 1.45KB of its gzip, out of
+     56.0KB and 11.0KB, and it is scoped to .helios-hall, so a page that does
+     not place the hall pays it and nothing else. On promotion the mark-up moves
+     beside the colophon's, the switch is deleted (it is the three radios
+     marked below), and this heading stops saying rehearsal. ---------------- */
+
+  [data-look="helios"] .helios-hall {
+    /* The room's two numbers. Every layer below reads them, including the
+       runtime, which reads them back off this element rather than keeping a
+       second copy — so a moved horizon moves the embers with it. */
+    --hall-vanish: 50%;
+    --hall-eye: 64%;
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    align-content: end;
+    /* One viewport, with the colophon at its foot: the reader stands at the
+       mouth of the hall and the decision is at their feet, not in the middle
+       of the frame. */
+    min-height: 92svh;
+    overflow: clip;
+    background: var(--light-ground);
+  }
+
+  [data-look="helios"] .helios-hall__scene {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  /* The vault: violet overhead, ember at the horizon. The first layer is the
+     black the reader is already standing in, so the hallway OPENS out of the
+     flat ground instead of switching climate at a seam. */
+  [data-look="helios"] .helios-hall__vault {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, var(--light-ground) 0, rgb(5 0 9 / 0) 18%),
+      radial-gradient(ellipse 62% 44% at var(--hall-vanish) 8%, rgb(41 29 87 / 0.72), transparent 76%),
+      radial-gradient(ellipse 100% 58% at var(--hall-vanish) 34%, rgb(41 29 87 / 0.42), transparent 80%),
+      linear-gradient(180deg, rgb(20 9 16 / 0.85), transparent 62%);
+  }
+
+  /* The vault's stars, placed rather than tiled: percentages give the sky a
+     shape. Two layers on two clocks, the near one larger, so the room
+     shimmers without any single star having to be animated. */
+  [data-look="helios"] .helios-hall__stars {
+    position: absolute;
+    inset: 0;
+    opacity: 0.75;
+    -webkit-mask-image: linear-gradient(180deg, #000 0, #000 34%, transparent calc(var(--hall-eye) - 8%));
+    mask-image: linear-gradient(180deg, #000 0, #000 34%, transparent calc(var(--hall-eye) - 8%));
+    background-image:
+      radial-gradient(1.3px 1.3px at 12% 20%, rgb(255 240 214 / 0.9), transparent),
+      radial-gradient(1.1px 1.1px at 27% 9%, rgb(255 240 214 / 0.6), transparent),
+      radial-gradient(1.5px 1.5px at 38% 26%, rgb(255 236 200 / 0.75), transparent),
+      radial-gradient(1px 1px at 47% 13%, rgb(255 240 214 / 0.5), transparent),
+      radial-gradient(1.2px 1.2px at 58% 22%, rgb(255 236 200 / 0.7), transparent),
+      radial-gradient(1.6px 1.6px at 68% 7%, rgb(255 240 214 / 0.85), transparent),
+      radial-gradient(1px 1px at 79% 19%, rgb(255 240 214 / 0.5), transparent),
+      radial-gradient(1.3px 1.3px at 88% 11%, rgb(255 236 200 / 0.7), transparent),
+      radial-gradient(1.1px 1.1px at 22% 33%, rgb(255 240 214 / 0.45), transparent),
+      radial-gradient(1.4px 1.4px at 74% 31%, rgb(255 240 214 / 0.5), transparent);
+    animation: helios-hall-shimmer 13s var(--helios-ease) infinite alternate;
+    animation-delay: -4s;
+  }
+
+  [data-look="helios"] .helios-hall__stars--near {
+    opacity: 0.55;
+    background-image:
+      radial-gradient(1.9px 1.9px at 18% 15%, rgb(255 246 226 / 0.9), transparent),
+      radial-gradient(1.7px 1.7px at 43% 7%, rgb(255 246 226 / 0.7), transparent),
+      radial-gradient(2px 2px at 63% 17%, rgb(255 246 226 / 0.85), transparent),
+      radial-gradient(1.6px 1.6px at 82% 24%, rgb(255 246 226 / 0.6), transparent),
+      radial-gradient(1.8px 1.8px at 31% 29%, rgb(255 246 226 / 0.55), transparent),
+      radial-gradient(1.7px 1.7px at 92% 8%, rgb(255 246 226 / 0.65), transparent);
+    animation-duration: 8s;
+    animation-delay: -1.2s;
+  }
+
+  /* Arch beyond arch: concentric arcs struck on the vanishing point, the way a
+     nave looks from its mouth. One repeating gradient, and the radial mask
+     retires the near rings at the frame's edges — the room ends, it does not
+     leak. The floor paints over the rings' lower halves. */
+  [data-look="helios"] .helios-hall__nave {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    opacity: 0.9;
+    /* The ellipse is taller than it is wide, so the rings it draws are
+       arches seen down a nave rather than ripples on water. */
+    background-image: repeating-radial-gradient(ellipse 46% 60% at var(--hall-vanish) var(--hall-eye),
+      transparent 0 5.6%,
+      rgb(232 130 60 / 0.4) 5.6% 5.86%,
+      transparent 5.86% 11.2%);
+    /* ONE mask, and it is doing two jobs: its centre sits above the frame so
+       its lower edge lands ON the horizon (8% + 56% at this horizon), which
+       keeps the arches between the vault and the floor and lets the near ones
+       die at the frame's sides. A second, intersected mask would say the same
+       thing more precisely and measured as unreliable here: with
+       `mask-composite: intersect` the rings still ran below the horizon, so
+       this is the version whose geometry is checked by the probe. */
+    -webkit-mask-image: radial-gradient(ellipse 58% 56% at var(--hall-vanish) 8%, #000 22%, rgb(0 0 0 / 0.55) 62%, transparent 100%);
+    mask-image: radial-gradient(ellipse 58% 56% at var(--hall-vanish) 8%, #000 22%, rgb(0 0 0 / 0.55) 62%, transparent 100%);
+  }
+
+  /* The floor: one point perspective from the horizon toward the reader, the
+     lines and the darkening in one background stack (the topmost layer is the
+     paint, so the floor FADES into the ground the copy stands on). No mask
+     compositing, no second element, and the room's own numbers place it. */
+  [data-look="helios"] .helios-hall__floor {
+    position: absolute;
+    left: -35%;
+    right: -35%;
+    top: var(--hall-eye);
+    height: 130%;
+    z-index: 3;
+    transform-origin: 50% 0;
+    transform: perspective(42rem) rotateX(68deg);
+    background-image:
+      linear-gradient(180deg, rgb(5 0 9 / 0.82) 0 4%, rgb(5 0 9 / 0.92) 20%, var(--light-ground) 56%),
+      radial-gradient(ellipse 30% 20% at 50% 0%, rgb(255 153 51 / 0.24), transparent 74%),
+      repeating-linear-gradient(90deg, rgb(255 153 51 / 0.12) 0 1px, transparent 1px 3.4rem),
+      repeating-linear-gradient(0deg, rgb(255 153 51 / 0.08) 0 1px, transparent 1px 3.4rem);
+    -webkit-mask-image: linear-gradient(180deg, #000 0 8%, rgb(0 0 0 / 0.85) 26%, transparent 60%);
+    mask-image: linear-gradient(180deg, #000 0 8%, rgb(0 0 0 / 0.85) 26%, transparent 60%);
+  }
+
+  /* The room's air: one vignette, over the floor, under the light. Without it
+     the nave reads as a picture of arches; with it, the frame's edges are
+     wall and the only way out is the arch you are facing. */
+  [data-look="helios"] .helios-hall__air {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    /* Two lit piers in the near bay, as lozenges rather than bars: a bar has
+       four edges and this light is only strong enough to have none, so each
+       pier is a tall soft ellipse and the room gets its sides by glow. */
+    background:
+      radial-gradient(ellipse 3.6% 40% at 19% 54%, rgb(255 200 140 / 0.08), transparent 74%),
+      radial-gradient(ellipse 3.6% 40% at 81% 54%, rgb(255 200 140 / 0.08), transparent 74%),
+      radial-gradient(ellipse 74% 78% at var(--hall-vanish) 54%, transparent 34%, rgb(5 0 9 / 0.72) 100%);
+  }
+
+  /* The beacon: the great horizon of light the hall drives toward, sitting on
+     the vanishing point. It breathes, slowly, on the same ease as everything
+     else in the look. */
+  [data-look="helios"] .helios-hall__beacon {
+    position: absolute;
+    left: var(--hall-vanish);
+    top: var(--hall-eye);
+    z-index: 5;
+    /* Wide and flat on purpose: this is the far opening lit up, not a moon in
+       a cave. A disc here reads as an object and stops the eye; a band of
+       light at the horizon reads as somewhere to walk to. */
+    width: min(96vw, 58rem);
+    height: clamp(9rem, 22vh, 16rem);
+    transform: translate(-50%, -68%);
+    border-radius: 50%;
+    background: radial-gradient(ellipse 40% 44% at 50% 68%,
+      rgb(255 246 230 / 0.28) 0%,
+      rgb(255 226 168 / 0.22) 8%,
+      rgb(255 153 51 / 0.16) 18%,
+      rgb(232 160 32 / 0.09) 32%,
+      rgb(212 90 20 / 0.05) 50%,
+      transparent 78%);
+    animation: helios-hall-beacon 13s var(--helios-ease) infinite alternate;
+    animation-delay: -3s;
+  }
+
+  /* The embers. `screen` is the knockout — the canvas's black is nothing, so
+     the drawing can only ever ADD light to the room (the same reason the
+     clip's box is transparent over it). */
+  [data-look="helios"] .helios-hall__embers {
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    width: 100%;
+    height: 100%;
+    mix-blend-mode: screen;
+  }
+
+  /* The copy stands on the dark. The scene is z-index 0 and this is z-index 5;
+     its ground is a ramp, not a fill, so the floor's light runs UNDER the
+     words and never through them. That ramp is what a photograph would have
+     needed anyway. */
+  [data-look="helios"] .helios-hall .helios-colophon {
+    position: relative;
+    z-index: 7;
+    background: linear-gradient(180deg, rgb(5 0 9 / 0.45), var(--light-ground) 40%);
+  }
+
+  /* The rehearsal's switch. It does not ship: it exists so a candidate can be
+     put beside today's close without editing anything on <body>. State is read
+     with :has() off the checked radio, so the comparison needs no script. */
+  [data-look="helios"] .helios-hall__switch {
+    position: fixed;
+    left: var(--helios-gutter);
+    bottom: clamp(0.9rem, 3vh, 1.6rem);
+    z-index: 40;
+    display: flex;
+    min-width: 0;
+    gap: 0.2rem;
+    margin: 0;
+    padding: 0.28rem;
+    border: 1px solid rgb(139 46 12 / 0.7);
+    border-radius: 999px;
+    background: rgb(5 0 9 / 0.74);
+  }
+
+  [data-look="helios"] .helios-hall__switch input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  [data-look="helios"] .helios-hall__switch label {
+    padding: 0.32rem 0.78rem;
+    border-radius: 999px;
+    font-family: var(--font-display);
+    font-size: 0.56rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--light-mist) 58%, transparent);
+    cursor: pointer;
+    transition: color 0.25s var(--helios-ease), background 0.25s var(--helios-ease);
+  }
+
+  [data-look="helios"] .helios-hall__switch input:checked + label {
+    background: rgb(255 153 51 / 0.16);
+    color: var(--light-ink);
+  }
+
+  [data-look="helios"] .helios-hall__switch input:focus-visible + label {
+    outline: 1px solid var(--light-accent);
+    outline-offset: 2px;
+  }
+
+  /* `today` is the shipped close: the scene leaves AND the section gives its
+     extra height back, so the thing being compared against is the thing that
+     ships rather than a taller version of it. */
+  [data-look="helios"] [data-helios-hall]:has(#hall-mode-today:checked) { min-height: auto; }
+  [data-look="helios"] [data-helios-hall]:has(#hall-mode-today:checked) .helios-hall__scene { display: none; }
+  [data-look="helios"] [data-helios-hall]:has(#hall-mode-rest:checked) .helios-hall__beacon,
+  [data-look="helios"] [data-helios-hall]:has(#hall-mode-rest:checked) .helios-hall__stars { animation: none; }
+
+  /* The rehearsal's own document, styled as /helios-interval styles its
+     notes: this page's prose, on the look's roles, and nothing that ships. */
+  [data-look="helios"] .helios-hall__notes {
+    max-width: 46rem;
+    margin: 0 auto;
+    padding: clamp(3rem, 9vh, 6.5rem) var(--helios-gutter) clamp(3.5rem, 10vh, 7rem);
+  }
+
+  /* The head block is the same prose with no business at the foot of a page:
+     it opens the rehearsal rather than closing it. (The class needs a rule of
+     its own for the same reason it exists: design/probe/coverage.py counts a
+     rendered class with no rule as a failure.) */
+  [data-look="helios"] .helios-hall__notes--head { padding-bottom: 0; }
+
+  [data-look="helios"] .helios-hall__notes h2 {
+    margin: 0 0 0.6rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 2.6vw, 2.15rem);
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    color: var(--light-ink);
+  }
+
+  [data-look="helios"] .helios-hall__notes h3 {
+    margin: 2.4rem 0 0.7rem;
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--light-accent);
+  }
+
+  [data-look="helios"] .helios-hall__notes p,
+  [data-look="helios"] .helios-hall__notes li {
+    font-family: var(--font-serif);
+    font-size: 1.06rem;
+    font-style: italic;
+    line-height: 1.62;
+    color: color-mix(in srgb, var(--light-mist) 62%, var(--light-voice));
+  }
+
+  [data-look="helios"] .helios-hall__notes ul {
+    margin: 0.4rem 0 0;
+    padding-left: 1.15rem;
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  [data-look="helios"] .helios-hall__notes code {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.9em;
+    color: var(--light-ember);
+  }
+
+  [data-look="helios"] .helios-hall__notes a {
+    color: var(--light-accent);
+  }
+
+  @media (max-width: 640px) {
+    /* A phone's copy is taller against the same viewport, so the horizon rises
+       rather than the words sinking into the floor. */
+    [data-look="helios"] .helios-hall {
+      --hall-eye: 54%;
+      min-height: 88svh;
+    }
+
+    [data-look="helios"] .helios-hall__beacon { width: min(120vw, 26rem); }
+
+    /* The switch goes UP here: at the foot it would sit on the seal, and the
+       seal is the one thing on this page that must stay judgeable. */
+    [data-look="helios"] .helios-hall__switch {
+      top: clamp(4.2rem, 9vh, 5.2rem);
+      bottom: auto;
+    }
+  }
 }
 
 
@@ -1491,6 +2271,13 @@
     [data-look="helios"] .helios-air,
     [data-look="helios"] .helios-ticker__track,
     [data-look="helios"] .helios-see__object {
+      animation: none;
+    }
+
+    /* The hall's own two: the beacon's breath and the vault's shimmer. The
+       embers are the runtime's, and it draws one still frame instead. */
+    [data-look="helios"] .helios-hall__beacon,
+    [data-look="helios"] .helios-hall__stars {
       animation: none;
     }
 

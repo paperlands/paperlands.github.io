@@ -274,7 +274,69 @@ var ASTNode = class {
   }
 };
 
+// assets/js/turtling/mafs/operators.js
+var OPERATOR_ROWS = Object.freeze([
+  { lexeme: "||", fixity: "infix", assoc: "left", prec: 1 },
+  { lexeme: "&&", fixity: "infix", assoc: "left", prec: 2 },
+  { lexeme: "|", fixity: "infix", assoc: "left", prec: 3 },
+  { lexeme: "&", fixity: "infix", assoc: "left", prec: 4 },
+  { lexeme: "===", fixity: "infix", assoc: "left", prec: 5 },
+  { lexeme: "!==", fixity: "infix", assoc: "left", prec: 5 },
+  { lexeme: "==", fixity: "infix", assoc: "left", prec: 5 },
+  { lexeme: "!=", fixity: "infix", assoc: "left", prec: 5 },
+  { lexeme: ">=", fixity: "infix", assoc: "left", prec: 6 },
+  { lexeme: ">", fixity: "infix", assoc: "left", prec: 6 },
+  { lexeme: "<=", fixity: "infix", assoc: "left", prec: 6 },
+  { lexeme: "<", fixity: "infix", assoc: "left", prec: 6 },
+  { lexeme: "+", fixity: "infix", assoc: "left", prec: 7 },
+  { lexeme: "-", fixity: "infix", assoc: "left", prec: 7 },
+  { lexeme: "*", fixity: "infix", assoc: "left", prec: 8 },
+  { lexeme: "/", fixity: "infix", assoc: "left", prec: 8 },
+  { lexeme: "//", fixity: "infix", assoc: "left", prec: 8 },
+  { lexeme: "^", fixity: "infix", assoc: "right", prec: 9 },
+  { lexeme: "+", fixity: "prefix", assoc: "right", prec: 10 },
+  { lexeme: "-", fixity: "prefix", assoc: "right", prec: 10 },
+  { lexeme: "!", fixity: "prefix", assoc: "right", prec: 10 }
+].map(Object.freeze));
+var byFixity = { infix: /* @__PURE__ */ new Map(), prefix: /* @__PURE__ */ new Map() };
+var vocabulary = /* @__PURE__ */ new Map();
+for (const row2 of OPERATOR_ROWS) {
+  byFixity[row2.fixity].set(row2.lexeme, row2);
+  vocabulary.set(row2.lexeme, row2);
+}
+var getOperator = (lexeme, fixity) => byFixity[fixity]?.get(lexeme);
+var isOperatorLexeme = (lexeme) => vocabulary.has(lexeme);
+var OPERATOR_LEXEMES = Object.freeze(
+  [...vocabulary.keys()].sort((a2, b2) => b2.length - a2.length)
+);
+var escapeRegex = (s2) => s2.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+var OPERATOR_PATTERN = `(?:${OPERATOR_LEXEMES.map(escapeRegex).join("|")})`;
+
+// assets/js/turtling/mafs/delimiters.js
+var GLYPH = { LPAREN: "(", RPAREN: ")", LBRACKET: "[", RBRACKET: "]" };
+var TYPE_OF_GLYPH = { "(": "LPAREN", ")": "RPAREN", "[": "LBRACKET", "]": "RBRACKET" };
+var isOpenType = (t2) => t2 === "LPAREN" || t2 === "LBRACKET";
+var isCloseType = (t2) => t2 === "RPAREN" || t2 === "RBRACKET";
+var closerTypeFor = (openType) => openType === "LPAREN" ? "RPAREN" : "RBRACKET";
+var glyphOf = (type) => GLYPH[type];
+
+// assets/js/turtling/mafs/number.js
+var NUMBER_PATTERN = "\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?";
+var NUMERIC_VALUE_RE = new RegExp(`^-?${NUMBER_PATTERN}$`);
+var isNumericLiteral = (str) => typeof str === "string" && NUMERIC_VALUE_RE.test(str);
+
 // assets/js/turtling/mafs/lexer.js
+var TOKEN_PATTERN = [
+  NUMBER_PATTERN,
+  // Quoted strings — read as one token (its residual is the word's content), so a
+  // `fn` body like 'ping' is lossless instead of silently stripped. The executor's
+  // quote path handles whole quoted args; this covers the rest that reach a parser.
+  `'[^']*'|"[^"]*"`,
+  "[a-zA-Z][a-zA-Z0-9_]*(?:\\.[a-zA-Z][a-zA-Z0-9_]*)*",
+  OPERATOR_PATTERN,
+  "[\\[\\],\\(\\)\\.]",
+  "\\s+"
+].join("|");
 var Token = class {
   constructor(type, value, position2 = 0) {
     this.type = type;
@@ -282,56 +344,21 @@ var Token = class {
     this.position = position2;
   }
 };
-var OPERATORS = [
-  "===",
-  "!==",
-  "&&",
-  "||",
-  ">=",
-  "<=",
-  "==",
-  "!=",
-  "//",
-  "+",
-  "-",
-  "*",
-  "/",
-  "^",
-  ">",
-  "<",
-  "&",
-  "|",
-  "!"
-];
 var Lexer = class {
   constructor() {
-    this.operators = OPERATORS;
-    this.operatorRegex = new RegExp(
-      this.operators.map((op2) => this.escapeRegex(op2)).join("|")
-    );
-  }
-  escapeRegex(str) {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    this.pattern = new RegExp(TOKEN_PATTERN, "g");
   }
   tokenize(expression) {
     const tokens = [];
-    let position2 = 0;
-    const pattern = new RegExp([
-      // Numbers first — claims the dot in `1.5` and an optional exponent
-      // before operators can split them into identifiers and signs.
-      "\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?",
-      // Dotted identifiers before operators — atomically consumes `mice1.x` as one token
-      // This is the guarantee that prevents implicit mult from ever seeing it split
-      "[a-zA-Z][a-zA-Z0-9_]*(?:\\.[a-zA-Z][a-zA-Z0-9_]*)*",
-      // Operators grouped — inner | doesn't bleed into outer alternation
-      `(?:${this.operators.map((op2) => this.escapeRegex(op2)).join("|")})`,
-      // Brackets, parens, comma
-      "[\\[\\],\\(\\)]",
-      // Whitespace
-      "\\s+"
-    ].join("|"), "g");
+    const pattern = this.pattern;
+    pattern.lastIndex = 0;
+    let cursor = 0;
     let match;
     while ((match = pattern.exec(expression)) !== null) {
+      if (match.index !== cursor) {
+        throw new Error(`Unknown token: ${expression[cursor]} at position ${cursor}`);
+      }
+      cursor = match.index + match[0].length;
       const value = match[0];
       if (/^\s+$/.test(value)) {
         continue;
@@ -339,20 +366,28 @@ var Lexer = class {
       let type;
       if (/^\d/.test(value)) {
         type = "NUMBER";
-      } else if (this.operators.includes(value)) {
+      } else if (isOperatorLexeme(value)) {
         type = "OPERATOR";
       } else if (/^[a-zA-Z]/.test(value)) {
         type = "IDENTIFIER";
-      } else if (value === "[" || value === "(") {
-        type = "LPAREN";
-      } else if (value === "]" || value === ")") {
-        type = "RPAREN";
+      } else if (TYPE_OF_GLYPH[value]) {
+        type = TYPE_OF_GLYPH[value];
+      } else if (value === ".") {
+        if (tokens.at(-1)?.type !== "STRING") {
+          throw new Error(`Unknown token: ${value} at position ${match.index}`);
+        }
+        type = "DOT";
       } else if (value === ",") {
         type = "COMMA";
+      } else if (/^['"]/.test(value)) {
+        type = "STRING";
       } else {
         throw new Error(`Unknown token: ${value} at position ${match.index}`);
       }
-      tokens.push(new Token(type, value, match.index));
+      tokens.push(new Token(type, type === "STRING" ? value.slice(1, -1) : value, match.index));
+    }
+    if (cursor < expression.length) {
+      throw new Error(`Unknown token: ${expression[cursor]} at position ${cursor}`);
     }
     return this.insertImplicitMultiplication(tokens);
   }
@@ -365,13 +400,13 @@ var Lexer = class {
         const next = tokens[i2 + 1];
         const shouldInsertMult = (
           // number identifier: 2x, 2sin
-          current.type === "NUMBER" && next.type === "IDENTIFIER" || // number paren: 2(x)
-          current.type === "NUMBER" && next.type === "LPAREN" || // paren identifier: (x)y, (x)sin
-          current.type === "RPAREN" && next.type === "IDENTIFIER" || // paren paren: (x)(y)
-          current.type === "RPAREN" && next.type === "LPAREN" || // identifier identifier: xy (if not functions with explicit args)
+          current.type === "NUMBER" && next.type === "IDENTIFIER" || // number group: 2(x), 2[x]
+          current.type === "NUMBER" && isOpenType(next.type) || // group identifier: (x)y, (x)sin
+          isCloseType(current.type) && next.type === "IDENTIFIER" || // group group: (x)(y), (x)[y], [x](y)
+          isCloseType(current.type) && isOpenType(next.type) || // identifier identifier: xy (if not functions with explicit args)
           current.type === "IDENTIFIER" && next.type === "IDENTIFIER" || // identifier number: x2
-          current.type === "IDENTIFIER" && next.type === "NUMBER" || // identifier paren: x(y), sin(x) is handled separately
-          current.type === "IDENTIFIER" && next.type === "LPAREN" && !this.couldBeFunction(current, next, i2, tokens)
+          current.type === "IDENTIFIER" && next.type === "NUMBER" || // identifier call/group: x(y), sin(x) is handled separately
+          current.type === "IDENTIFIER" && isOpenType(next.type) && !this.couldBeFunction(current, next, i2, tokens)
         );
         if (shouldInsertMult) {
           result.push(new Token("OPERATOR", "*", current.position));
@@ -385,45 +420,257 @@ var Lexer = class {
   }
 };
 
+// assets/js/turtling/mafs/tower.js
+var toRadians = (degrees) => degrees * (Math.PI / 180);
+var toDegrees = (radians) => radians * (180 / Math.PI);
+function integerMod(a2, b2) {
+  if (Number.isSafeInteger(a2) && Number.isSafeInteger(b2) && b2 !== 0) {
+    const m2 = a2 % b2;
+    if (m2 !== 0 && m2 < 0 !== b2 < 0) return m2 + b2;
+    return m2 === 0 ? 0 : m2;
+  }
+  return (a2 % b2 + b2) % b2;
+}
+function integerDiv(a2, b2) {
+  if (Number.isSafeInteger(a2) && Number.isSafeInteger(b2) && b2 !== 0) {
+    const m2 = a2 % b2;
+    const qt2 = (a2 - m2) / b2;
+    const q2 = m2 !== 0 && m2 < 0 !== b2 < 0 ? qt2 - 1 : qt2;
+    return q2 === 0 ? 0 : q2;
+  }
+  return Math.floor(a2 / b2);
+}
+function baseTypeOf(value) {
+  if (typeof value === "number") return "number";
+  if (typeof value === "string") return "string";
+  if (typeof value === "boolean") return "boolean";
+  if (Array.isArray(value)) return "vector";
+  return "unknown";
+}
+var KIND = "kind";
+var asKind = (components, kind) => Object.defineProperty([...components], KIND, { value: kind, enumerable: false });
+var kindOf = (value) => Array.isArray(value) ? value[KIND] ?? "vector" : baseTypeOf(value);
+var TowerRefusal = class extends Error {
+  constructor(op2, types, detail) {
+    super(detail ?? `no meaning for ${op2} over ${types.join(" and ")}`);
+    this.name = "TowerRefusal";
+    this.op = op2;
+    this.types = types;
+  }
+};
+var DomainRefusal = class extends Error {
+  constructor(op2, wanted, got) {
+    super(`${op2} needs ${wanted}, got ${got}`);
+    this.name = "DomainRefusal";
+    this.op = op2;
+    this.wanted = wanted;
+    this.got = got;
+  }
+};
+var KindAmbiguity = class extends Error {
+  constructor(kinds) {
+    super(`value belongs to two kinds at once: ${kinds.join(" and ")}`);
+    this.name = "KindAmbiguity";
+    this.kinds = kinds;
+  }
+};
+var RegistrySealed = class extends Error {
+  constructor(what) {
+    super(`registry is sealed; ${what} after installation would reinterpret an existing computation`);
+    this.name = "RegistrySealed";
+  }
+};
+function createTower() {
+  const table = /* @__PURE__ */ new Map();
+  const names = /* @__PURE__ */ new Set();
+  const kinds = [];
+  let sealed = false;
+  const api = {
+    get sealed() {
+      return sealed;
+    },
+    // Installation ends here. Diagnosis and instrumentation may redefine while
+    // building; once sealed, the registry a run uses is stable.
+    seal() {
+      sealed = true;
+      return api;
+    },
+    // New mathematics enters through the values: describe a kind, register its
+    // meanings. A registered recognizer takes precedence over the built-in
+    // classifier, so a species can deliberately take over plain values.
+    kind(name, is2) {
+      if (sealed) throw new RegistrySealed("kind");
+      kinds.push([name, is2]);
+      return api;
+    },
+    // A value has one kind or it has none. Registered recognizers come before
+    // the built-ins; if two of them both claim the value, the center refuses
+    // rather than let registration order decide. (id:tower-center-boundaries)
+    typeOf(value) {
+      const claimed = kinds.filter(([, is2]) => is2(value)).map(([name]) => name);
+      if (claimed.length > 1) throw new KindAmbiguity(claimed);
+      return claimed[0] ?? baseTypeOf(value);
+    },
+    // The one write path. It refuses once sealed, so no later installation can
+    // reinterpret a computation already in flight. (id:tower-center-life)
+    define(op2, types, fn2) {
+      if (sealed) throw new RegistrySealed("define");
+      table.set(`${op2}:${types.join(":")}`, fn2);
+      names.add(op2);
+      return api;
+    },
+    // Does the center own this operation's name, whatever the operands? A
+    // resolved callable is identified before applicability is tested, so a
+    // known name never leaks to another resolver. (id:tower-center-identity)
+    known(op2) {
+      return names.has(op2);
+    },
+    // Read-only inspection for instrumentation: a snapshot is a copy, so a
+    // caller cannot mutate the registry by holding it.
+    keys() {
+      return [...table.keys()];
+    },
+    get(op2, types) {
+      return table.get(`${op2}:${types.join(":")}`);
+    },
+    // The one door: a direct meaning wins, otherwise the refusal names the
+    // kinds. No promotion fallback — an unearned convenience manufactures an
+    // answer, and grade embedding is a decision, not a hook. (id:tower-center-spike)
+    apply(op2, ...args) {
+      const types = args.map((arg) => api.typeOf(arg));
+      const handler = table.get(`${op2}:${types.join(":")}`);
+      if (handler) return handler(...args);
+      throw new TowerRefusal(op2, types);
+    }
+  };
+  return api;
+}
+var builtin = (name, arity, fn2, shadowable = false) => Object.freeze({
+  name,
+  arity: Array.isArray(arity) ? Object.freeze([...arity]) : arity,
+  fn: fn2,
+  shadowable
+});
+var SCALAR_BUILTINS = Object.freeze([
+  builtin("sin", 1, (x2) => Math.sin(toRadians(x2))),
+  builtin("cos", 1, (x2) => Math.cos(toRadians(x2))),
+  builtin("tan", 1, (x2) => Math.tan(toRadians(x2))),
+  builtin("asin", 1, (x2) => toDegrees(Math.asin(x2))),
+  builtin("acos", 1, (x2) => toDegrees(Math.acos(x2))),
+  builtin("atan", 1, (x2) => toDegrees(Math.atan(x2))),
+  builtin("sqrt", 1, (x2) => Math.sqrt(x2)),
+  builtin("log", 1, (x2) => Math.log(x2)),
+  builtin("exp", 1, (x2) => Math.exp(x2)),
+  builtin("abs", 1, (x2) => Math.abs(x2)),
+  builtin("atan2", 2, (y2, x2) => toDegrees(Math.atan2(y2, x2))),
+  builtin("round", [1, 2], (x2, to = 1) => Math.round(x2 / to) * to, true),
+  builtin("mod", 2, (a2, b2) => integerMod(a2, b2), true)
+]);
+var SHADOWABLE_BUILTINS = Object.freeze(
+  SCALAR_BUILTINS.filter((b2) => b2.shadowable).map((b2) => b2.name)
+);
+var SCALAR_KINDS = ["number", "boolean"];
+var VALUE_KINDS = ["number", "boolean", "string"];
+var TEXT_KINDS = ["string"];
+var asNum = (value) => typeof value === "boolean" ? value ? 1 : 0 : value;
+var plus = (a2, b2) => a2 + b2;
+var minus = (a2, b2) => a2 - b2;
+var tuplesOf = (kinds, arity) => {
+  let tuples = [[]];
+  for (let i2 = 0; i2 < arity; i2++) tuples = tuples.flatMap((prefix) => kinds.map((kind) => [...prefix, kind]));
+  return tuples;
+};
+var across = (tower, op2, kinds, fn2) => {
+  for (const types of tuplesOf(kinds, 2)) tower.define(op2, types, fn2);
+};
+var acrossUnary = (tower, op2, kinds, fn2) => {
+  for (const types of tuplesOf(kinds, 1)) tower.define(op2, types, fn2);
+};
+function installScalarFloor(tower) {
+  across(tower, "+", SCALAR_KINDS, (a2, b2) => plus(asNum(a2), asNum(b2)));
+  across(tower, "-", SCALAR_KINDS, (a2, b2) => minus(asNum(a2), asNum(b2)));
+  across(tower, "*", SCALAR_KINDS, (a2, b2) => asNum(a2) * asNum(b2));
+  across(tower, "/", SCALAR_KINDS, (a2, b2) => asNum(a2) / asNum(b2));
+  across(tower, "^", SCALAR_KINDS, (a2, b2) => Math.pow(asNum(a2), asNum(b2)));
+  across(tower, "//", SCALAR_KINDS, (a2, b2) => integerDiv(asNum(a2), asNum(b2)));
+  across(tower, "&&", VALUE_KINDS, (a2, b2) => a2 && b2);
+  across(tower, "||", VALUE_KINDS, (a2, b2) => a2 || b2);
+  across(tower, "&", SCALAR_KINDS, (a2, b2) => a2 & b2);
+  across(tower, "|", SCALAR_KINDS, (a2, b2) => a2 | b2);
+  across(tower, "===", VALUE_KINDS, (a2, b2) => a2 === b2 ? 1 : 0);
+  across(tower, "!==", VALUE_KINDS, (a2, b2) => a2 !== b2 ? 1 : 0);
+  across(tower, "==", VALUE_KINDS, (a2, b2) => a2 == b2 ? 1 : 0);
+  across(tower, "!=", VALUE_KINDS, (a2, b2) => a2 != b2 ? 1 : 0);
+  across(tower, ">=", SCALAR_KINDS, (a2, b2) => asNum(a2) >= asNum(b2) ? 1 : 0);
+  across(tower, ">", SCALAR_KINDS, (a2, b2) => asNum(a2) > asNum(b2) ? 1 : 0);
+  across(tower, "<=", SCALAR_KINDS, (a2, b2) => asNum(a2) <= asNum(b2) ? 1 : 0);
+  across(tower, "<", SCALAR_KINDS, (a2, b2) => asNum(a2) < asNum(b2) ? 1 : 0);
+  across(tower, ">=", TEXT_KINDS, (a2, b2) => a2 >= b2 ? 1 : 0);
+  across(tower, ">", TEXT_KINDS, (a2, b2) => a2 > b2 ? 1 : 0);
+  across(tower, "<=", TEXT_KINDS, (a2, b2) => a2 <= b2 ? 1 : 0);
+  across(tower, "<", TEXT_KINDS, (a2, b2) => a2 < b2 ? 1 : 0);
+  acrossUnary(tower, "+", SCALAR_KINDS, (x2) => +asNum(x2));
+  acrossUnary(tower, "-", SCALAR_KINDS, (x2) => -asNum(x2));
+  acrossUnary(tower, "!", VALUE_KINDS, (x2) => !x2);
+  for (const { name, arity, fn: fn2 } of SCALAR_BUILTINS) {
+    for (const n2 of Array.isArray(arity) ? arity : [arity]) {
+      for (const types of tuplesOf(SCALAR_KINDS, n2)) {
+        tower.define(name, types, (...args) => fn2(...args.map(asNum)));
+      }
+    }
+  }
+  return tower;
+}
+function installVectorFloor(tower) {
+  tower.kind("point", (value) => Array.isArray(value) && value[KIND] === "point");
+  const rankOne = (op2, v2) => {
+    if (!Array.isArray(v2)) throw new DomainRefusal(op2, "a vector", tower.typeOf(v2));
+    if (v2.length === 0) throw new DomainRefusal(op2, "a nonempty vector", "an empty vector");
+    if (v2.some(Array.isArray)) throw new DomainRefusal(op2, "rank-one vectors", "a vector element");
+  };
+  const pervade = (op2, args, kind = "vector") => {
+    for (const arg of args) if (Array.isArray(arg)) rankOne(op2, arg);
+    const shape = args.find(Array.isArray);
+    for (const arg of args) {
+      if (Array.isArray(arg) && arg.length !== shape.length) {
+        throw new DomainRefusal(op2, "equal lengths", `${shape.length} and ${arg.length}`);
+      }
+    }
+    const result = shape.map((_2, i2) => tower.apply(op2, ...args.map((arg) => Array.isArray(arg) ? arg[i2] : arg)));
+    return kind === "vector" ? result : asKind(result, kind);
+  };
+  tower.define("*", ["number", "vector"], (s2, v2) => pervade("*", [s2, v2]));
+  tower.define("*", ["vector", "number"], (v2, s2) => pervade("*", [v2, s2]));
+  tower.define("/", ["vector", "number"], (v2, s2) => pervade("/", [v2, s2]));
+  tower.define("+", ["vector", "vector"], (a2, b2) => pervade("+", [a2, b2]));
+  tower.define("+", ["point", "vector"], (p2, v2) => pervade("+", [p2, v2], "point"));
+  tower.define("+", ["vector", "point"], (v2, p2) => pervade("+", [v2, p2], "point"));
+  tower.define("-", ["vector", "vector"], (a2, b2) => pervade("-", [a2, b2]));
+  tower.define("-", ["point", "point"], (a2, b2) => pervade("-", [a2, b2]));
+  tower.define("-", ["point", "vector"], (p2, v2) => pervade("-", [p2, v2], "point"));
+  for (const { name, arity } of SCALAR_BUILTINS) {
+    for (const n2 of Array.isArray(arity) ? arity : [arity]) {
+      for (const types of tuplesOf([...SCALAR_KINDS, "vector"], n2)) {
+        if (!types.includes("vector")) continue;
+        tower.define(name, types, (...args) => pervade(name, args));
+      }
+    }
+  }
+  return tower;
+}
+
 // assets/js/turtling/mafs/parse.js
+function heldValue(value) {
+  if (Array.isArray(value)) return value.map(heldValue);
+  if (value && typeof value === "object" && Object.getPrototypeOf(value) === Object.prototype) {
+    return Object.fromEntries(Object.entries(value).map(([key, v2]) => [key, heldValue(v2)]));
+  }
+  return value;
+}
 var Parser = class {
   constructor() {
-    this.precedence = {
-      "||": 1,
-      "&&": 2,
-      "|": 3,
-      "&": 4,
-      "===": 5,
-      "!==": 5,
-      "==": 5,
-      "!=": 5,
-      ">=": 6,
-      ">": 6,
-      "<=": 6,
-      "<": 6,
-      "+": 7,
-      "-": 7,
-      "*": 8,
-      "/": 8,
-      "//": 8,
-      "^": 9
-    };
-    this.rightAssociative = /* @__PURE__ */ new Set(["^"]);
-    this.unaryOperators = /* @__PURE__ */ new Set(["+", "-", "!"]);
-    this.builtins = /* @__PURE__ */ new Map([
-      ["sin", 1],
-      ["cos", 1],
-      ["tan", 1],
-      ["asin", 1],
-      ["acos", 1],
-      ["atan", 1],
-      ["sqrt", 1],
-      ["log", 1],
-      ["exp", 1],
-      ["abs", 1],
-      ["floor", 1],
-      ["ceil", 1]
-    ]);
+    this.builtins = new Map(SCALAR_BUILTINS.map((builtin2) => [builtin2.name, builtin2.arity]));
+    this.shadowable = new Set(SHADOWABLE_BUILTINS);
     this.userspace = /* @__PURE__ */ new Map();
     this.epoch = 0;
     this.lexer = new Lexer();
@@ -447,17 +694,17 @@ var Parser = class {
     }
   }
   // Precedence climbing parser
-  parseExpression(minPrec, options = {}) {
+  parseExpression(minPrec, options = {}, includeEqual = true) {
     let left2 = this.parsePrimary(options);
     while (this.hasMoreTokens()) {
       const token = this.currentToken();
-      if (!this.isBinaryOperator(token)) break;
-      const prec = this.precedence[token.value];
-      if (prec < minPrec) break;
+      const row2 = token.type === "OPERATOR" && getOperator(token.value, "infix");
+      if (!row2) break;
+      const prec = row2.prec;
+      if (prec < minPrec || prec === minPrec && !includeEqual) break;
       const op2 = token.value;
       this.advance();
-      const nextMinPrec = this.rightAssociative.has(op2) ? prec : prec + 1;
-      const right2 = this.parseExpression(nextMinPrec, options);
+      const right2 = this.parseExpression(prec, options, row2.assoc === "right");
       left2 = new ASTNode("operator", op2, [left2, right2]);
     }
     return left2;
@@ -467,28 +714,43 @@ var Parser = class {
     if (!token) {
       throw new Error("Unexpected end of expression");
     }
-    if (this.isUnaryOperator(token)) {
+    const row2 = token.type === "OPERATOR" && getOperator(token.value, "prefix");
+    if (row2) {
       const op2 = token.value;
       this.advance();
-      const operand = this.parsePrimary(options);
+      const operand = this.parseExpression(row2.prec, options);
       return new ASTNode("unary_operator", op2, [operand]);
     }
     if (token.type === "NUMBER") {
       this.advance();
-      return new ASTNode("operand", parseFloat(token.value));
+      return new ASTNode("literal", parseFloat(token.value));
     }
     if (token.type === "IDENTIFIER") {
       return this.parseIdentifier(options);
     }
-    if (token.type === "LPAREN") {
-      return this.parseParentheses(options);
+    if (isOpenType(token.type)) {
+      return this.parseGroup(options);
+    }
+    if (token.type === "STRING") {
+      this.advance();
+      const name = new ASTNode("string", token.value);
+      if (this.currentToken()?.type !== "DOT") return name;
+      this.advance();
+      const path = this.currentToken();
+      if (path?.type !== "IDENTIFIER") throw new Error("Expected a property after quoted name");
+      this.advance();
+      if (isOpenType(this.currentToken()?.type)) {
+        const call = this.parseFunctionCall("." + path.value, options);
+        return new ASTNode("access_call", path.value, [name, ...call.children]);
+      }
+      return new ASTNode("access", path.value, [name]);
     }
     throw new Error(`Unexpected token: ${token.value}`);
   }
   parseIdentifier(options) {
     const name = this.currentToken().value;
     this.advance();
-    if (this.hasMoreTokens() && this.currentToken().type === "LPAREN") {
+    if (this.hasMoreTokens() && isOpenType(this.currentToken().type)) {
       return this.parseFunctionCall(name, options);
     }
     if (this.isConstant(name) && !options.skipValidation) {
@@ -497,10 +759,12 @@ var Parser = class {
     return new ASTNode("operand", name);
   }
   parseFunctionCall(name, options = {}) {
+    const openType = this.currentToken().type;
+    const closeType = closerTypeFor(openType);
     this.advance();
-    const args = this.parseArgumentList(options);
-    if (!this.currentToken() || this.currentToken().type !== "RPAREN") {
-      throw new Error("Missing closing parenthesis in function call");
+    const args = this.parseArgumentList(closeType, options);
+    if (!this.currentToken() || this.currentToken().type !== closeType) {
+      throw this.closingError(openType);
     }
     this.advance();
     if (!options.skipValidation && !name.includes(".")) {
@@ -510,9 +774,9 @@ var Parser = class {
     }
     return new ASTNode("function", name, args);
   }
-  parseArgumentList(options) {
+  parseArgumentList(closeType, options) {
     const args = [];
-    if (this.currentToken()?.type === "RPAREN") {
+    if (this.currentToken()?.type === closeType) {
       return args;
     }
     do {
@@ -525,27 +789,55 @@ var Parser = class {
     } while (this.hasMoreTokens());
     return args;
   }
-  parseParentheses(options) {
+  // A comma-list is a QUANTITY; the delimiter names its kind. `(a, b, c)` is a
+  // coordinate (a point — where), `[a, b, c]` a vector (a displacement — which
+  // way, how far). Without a comma `(e)` still groups and `[e]` is the singleton
+  // vector. A suffix `f[…]/f(…)` after a name is still application.
+  // (id:notation-coordinate-vector)
+  parseGroup(options = {}) {
+    const openType = this.currentToken().type;
+    const closeType = closerTypeFor(openType);
+    const isBracket = openType === "LBRACKET";
     this.advance();
-    const expr = this.parseExpression(0, options);
-    if (!this.currentToken() || this.currentToken().type !== "RPAREN") {
-      throw new Error("Missing closing brackets");
+    if (isBracket && this.currentToken()?.type === closeType) {
+      throw new Error("An empty vector literal has no components");
+    }
+    const elements = [this.parseExpression(0, options)];
+    let listed2 = isBracket;
+    while (this.currentToken()?.type === "COMMA") {
+      this.advance();
+      listed2 = true;
+      if (this.currentToken()?.type === closeType) break;
+      elements.push(this.parseExpression(0, options));
+    }
+    if (this.currentToken()?.type !== closeType) {
+      throw this.closingError(openType);
     }
     this.advance();
-    return expr;
+    if (!listed2) return elements[0];
+    return new ASTNode(isBracket ? "vector" : "point", null, elements);
+  }
+  // A close of the wrong kind is a mismatched pair; no close at all is missing.
+  closingError(openType) {
+    const found = this.currentToken();
+    const expected = closerTypeFor(openType);
+    if (found && isCloseType(found.type)) {
+      return new Error(`Mismatched delimiters: '${glyphOf(openType)}' must close with '${glyphOf(expected)}', not '${found.value}'`);
+    }
+    return new Error(`Missing closing '${glyphOf(expected)}'`);
   }
   // User-defined function management
   defineFunction(signature, expression, ctx = {}) {
     const signatureAST = this.parseSignature(signature);
     const { name, params } = this.extractSignature(signatureAST);
-    if (this.builtins.has(name)) {
+    if (this.builtins.has(name) && !this.shadowable.has(name)) {
       throw new Error(`Cannot override built-in function ${name}`);
     }
     const expressionAST = this.parse(expression);
     const substitutions = /* @__PURE__ */ new Map();
     for (const key2 of Object.keys(ctx)) {
       if (!params.includes(key2)) {
-        substitutions.set(key2, new ASTNode("operand", ctx[key2]));
+        substitutions.set(key2, new ASTNode("literal", heldValue(ctx[key2])));
       }
     }
     const subexpressionAST = this.substituteParameters(expressionAST, substitutions);
@@ -601,7 +893,8 @@ var Parser = class {
     return ast;
   }
   cloneAST(ast) {
-    const cloned = new ASTNode(ast.type, ast.value, [], { ...ast.meta });
+    const value = ast.type === "literal" ? heldValue(ast.value) : ast.value;
+    const cloned = new ASTNode(ast.type, value, [], { ...ast.meta });
     if (ast.children) {
       cloned.children = ast.children.map((child) => this.cloneAST(child));
     }
@@ -612,7 +905,11 @@ var Parser = class {
     return `${name}:${arity}`;
   }
   functionExists(name, arity) {
-    return this.builtins.has(name) && this.builtins.get(name) === arity || this.userspace.has(this.makeKey(name, arity));
+    if (this.builtins.has(name)) {
+      const arities = this.builtins.get(name);
+      if (Array.isArray(arities) ? arities.includes(arity) : arities === arity) return true;
+    }
+    return this.userspace.has(this.makeKey(name, arity));
   }
   getUserFunction(name, arity) {
     const key = this.makeKey(name, arity);
@@ -631,12 +928,6 @@ var Parser = class {
   hasMoreTokens() {
     return this.position < this.tokens.length;
   }
-  isBinaryOperator(token) {
-    return token?.type === "OPERATOR" && this.precedence.hasOwnProperty(token.value);
-  }
-  isUnaryOperator(token) {
-    return token?.type === "OPERATOR" && this.unaryOperators.has(token.value);
-  }
   isConstant(name) {
     return this.userspace.has(this.makeKey(name, 0));
   }
@@ -645,7 +936,7 @@ var Parser = class {
   }
   isNumeric(str) {
     if (typeof str !== "string") return false;
-    return /^-?\d+\.?\d*(?:[eE][+-]?\d+)?$/.test(str);
+    return isNumericLiteral(str);
   }
   reset() {
     this.userspace = /* @__PURE__ */ new Map();
@@ -712,6 +1003,101 @@ function measure(relation, target, observer, read) {
   }
 }
 
+// assets/js/turtling/report.js
+var report = ({ kind, message = null, span = null, expr = null }) => ({ kind, message, span, expr });
+var notice = (fields) => ({ type: "notice", ...report(fields) });
+
+// assets/js/turtling/numerics.js
+var NOTHING = "nothing";
+var FINITE = "finite";
+var INFINITE = "infinite";
+var NAN = "nan";
+var NOT_NUMBER = "not-a-number";
+var conditionOf = (value) => {
+  if (value === null || value === void 0) return NOTHING;
+  if (typeof value !== "number") return NOT_NUMBER;
+  if (Number.isFinite(value)) return FINITE;
+  return Number.isNaN(value) ? NAN : INFINITE;
+};
+var spellingOf = (v2) => typeof v2 === "string" ? `'${v2}'` : Array.isArray(v2) ? format(v2) : String(v2);
+var TAKE = Object.freeze({ verdict: "take" });
+var TAKE_DEFAULT = Object.freeze({ verdict: "take", identity: true });
+var refuse = (told, stops = false) => Object.freeze({ verdict: "refuse", told, stops });
+var BASE = Object.freeze({
+  what: "the value",
+  nothing: TAKE_DEFAULT,
+  finite: TAKE,
+  infinite: refuse(true),
+  nan: refuse(true),
+  [NOT_NUMBER]: refuse(true)
+});
+var POLICY = Object.freeze({
+  // A live walk: the base, unanswered.
+  walk: BASE,
+  // The headless pass that builds the vocabulary judges WORDS, so a word where a
+  // measure belongs stops it — and that pass is where a seat's diagnostics come
+  // from. A skipped step is quiet here: this pass publishes no ink to miss it.
+  vocabulary: Object.freeze({
+    ...BASE,
+    what: "the word",
+    infinite: refuse(false),
+    nan: refuse(false),
+    [NOT_NUMBER]: refuse(true, true)
+  }),
+  // A closed construction: a declaration that cannot mean what it says is not a figure.
+  construction: Object.freeze({
+    ...BASE,
+    what: "the build",
+    infinite: refuse(false),
+    nan: refuse(false),
+    [NOT_NUMBER]: refuse(true, true)
+  }),
+  // A condition and a count are DECISIONS: no brand is taken from no answer, and the
+  // author hears why when the answer was a number-shaped non-answer. A nothing is an
+  // answer, so it takes no branch quietly. (ruling: nothing-is-not-a-measure)
+  condition: Object.freeze({ ...BASE, what: "the branch", nothing: refuse(false) }),
+  count: Object.freeze({ ...BASE, what: "the loop", nothing: refuse(false) }),
+  // Display: the text a figure writes. It rounds for the eye, and a non-number is
+  // NAMED rather than printed as a numeral — the author is told. (ruling 5)
+  display: Object.freeze({ ...BASE, what: "the numeral", nothing: TAKE, [NOT_NUMBER]: TAKE })
+});
+var say = (condition, { what, expr, value }) => {
+  const where = expr || "the value";
+  if (condition === INFINITE) return `No measure: ${where} left the number line, so ${what} is not taken`;
+  if (condition === NAN) return `No measure: ${where} has no answer, so ${what} is not taken`;
+  if (condition === NOT_NUMBER) return `No measure: ${where} is ${spellingOf(value)}, and ${what} needs a number`;
+  return `No measure: ${where} is nothing`;
+};
+function demand(value, { as: as2 = "walk", span = null, expr = null } = {}) {
+  const policy = POLICY[as2] ?? POLICY.walk;
+  const condition = conditionOf(value);
+  const answer = policy[condition] ?? TAKE;
+  return {
+    condition,
+    verdict: answer.verdict,
+    value: answer.identity ? void 0 : value,
+    stops: answer.stops === true,
+    notice: answer.told === true ? notice({ kind: condition, message: say(condition, { what: policy.what, expr, value }), span, expr }) : null
+  };
+}
+function measure2(value, options) {
+  if (conditionOf(value) === FINITE) return value;
+  const answer = demand(value, options);
+  if (answer.verdict === "take") return answer.value;
+  const error = new Error(answer.notice?.message ?? `No measure: ${options?.expr ?? "the value"}`);
+  error.refusal = answer;
+  error.kind = answer.condition;
+  throw error;
+}
+var BUDGET = 12;
+function format(value) {
+  if (Array.isArray(value)) return `[${value.map(format).join(", ")}${value.length === 1 ? "," : ""}]`;
+  if (typeof value !== "number") return String(value);
+  if (!Number.isFinite(value)) return Number.isNaN(value) ? "not a number" : value < 0 ? "-infinity" : "infinity";
+  const text = String(value);
+  return text.length <= BUDGET ? text : String(Number(value.toPrecision(BUDGET)));
+}
+
 // assets/js/turtling/laws/vec3.js
 var EPS = 1e-12;
 var sub = (a2, b2) => [a2[0] - b2[0], a2[1] - b2[1], a2[2] - b2[2]];
@@ -720,11 +1106,33 @@ var scale = (v2, s2) => [v2[0] * s2, v2[1] * s2, v2[2] * s2];
 var dot = (a2, b2) => a2[0] * b2[0] + a2[1] * b2[1] + a2[2] * b2[2];
 var cross = (a2, b2) => [a2[1] * b2[2] - a2[2] * b2[1], a2[2] * b2[0] - a2[0] * b2[2], a2[0] * b2[1] - a2[1] * b2[0]];
 var len = (v2) => Math.hypot(v2[0], v2[1], v2[2]);
-var finite3 = (p2) => Array.isArray(p2) && p2.length === 3 && p2.every(Number.isFinite);
-var unit = (v2, eps = EPS) => {
-  if (!Array.isArray(v2)) return null;
-  const n2 = len(v2);
-  return n2 > eps ? scale(v2, 1 / n2) : null;
+var finite3 = (p2) => Array.isArray(p2) && p2.length === 3 && conditionOf(p2[0]) === FINITE && conditionOf(p2[1]) === FINITE && conditionOf(p2[2]) === FINITE;
+var normalized = (v2) => {
+  const m2 = Math.max(Math.abs(v2[0]), Math.abs(v2[1]), Math.abs(v2[2]));
+  if (!(m2 > 0) || conditionOf(m2) !== FINITE) return null;
+  const w2 = [v2[0] / m2, v2[1] / m2, v2[2] / m2];
+  return scale(w2, 1 / len(w2));
+};
+var unit = (v2, eps = EPS) => finite3(v2) && len(v2) > eps ? normalized(v2) : null;
+var INVALID = Symbol("invalid direction request");
+var directionBetween = (a2, b2) => {
+  if (!finite3(a2) || !finite3(b2)) return INVALID;
+  let d2 = sub(b2, a2);
+  if (!finite3(d2)) {
+    const m2 = Math.max(
+      Math.abs(a2[0]),
+      Math.abs(a2[1]),
+      Math.abs(a2[2]),
+      Math.abs(b2[0]),
+      Math.abs(b2[1]),
+      Math.abs(b2[2])
+    );
+    d2 = [0, 1, 2].map((i2) => {
+      const di3 = b2[i2] - a2[i2];
+      return conditionOf(di3) === FINITE ? di3 / m2 : b2[i2] / m2 - a2[i2] / m2;
+    });
+  }
+  return d2[0] === 0 && d2[1] === 0 && d2[2] === 0 ? null : normalized(d2);
 };
 
 // assets/js/turtling/laws/cone.js
@@ -769,23 +1177,36 @@ var ACCEPT_TOL = 1e-6;
 var DEFAULT_ARM = 100;
 var unit2 = (v2) => unit(v2, REALIZE_TOL);
 function realizeDistance(target, observer, want) {
-  if (!Array.isArray(observer) || !observer.every(Number.isFinite)) {
+  if (!finite3(observer)) {
     return { ok: false, reason: "observer position is unknown" };
+  }
+  if (!finite3(target)) {
+    return { ok: false, reason: "target position is unknown" };
   }
   if (!Number.isFinite(want) || want < 0) {
     return { ok: false, reason: "distance must be a non-negative finite number" };
   }
-  const d2 = finite3(target) ? len(sub(target, observer)) : NaN;
-  if (Math.abs(d2 - want) <= REALIZE_TOL) return { ok: true, pose: [...target], moved: false };
-  let ux = 1, uy = 0, uz = 0;
-  if (d2 > REALIZE_TOL) {
-    const [dx, dy, dz] = sub(target, observer);
-    ux = dx / d2;
-    uy = dy / d2;
-    uz = dz / d2;
-  }
-  const pose = [observer[0] + ux * want, observer[1] + uy * want, observer[2] + uz * want];
+  const d2 = len(sub(target, observer));
+  if (Number.isFinite(d2) && Math.abs(d2 - want) <= REALIZE_TOL) return { ok: true, pose: [...target], moved: false };
+  const dir = d2 > REALIZE_TOL ? directionBetween(observer, target) : null;
+  if (dir === INVALID) return { ok: false, reason: "distance direction is unknown" };
+  const u2 = dir ?? [1, 0, 0];
+  const pose = [observer[0] + u2[0] * want, observer[1] + u2[1] * want, observer[2] + u2[2] * want];
   return { ok: true, pose, moved: true };
+}
+function realizeFreeDistance(a2, b2, want, tie) {
+  if (!finite3(a2) || !finite3(b2) || !Number.isFinite(want) || want < 0) {
+    return { ok: false, reason: "free distance needs finite positions and a non-negative finite radius" };
+  }
+  if (validateDistance(a2, b2, want).ok) return { ok: true, positions: [[...a2], [...b2]] };
+  const direction = directionBetween(a2, b2);
+  if (direction === INVALID) return { ok: false, reason: "free distance has invalid seed geometry" };
+  const axis = direction ?? unit(tie, 0);
+  if (!axis) return { ok: false, reason: "coincident seeds need an explicit tie direction" };
+  const center = a2.map((x2, i2) => x2 / 2 + b2[i2] / 2);
+  const half = want / 2;
+  const positions = [center.map((x2, i2) => x2 - half * axis[i2]), center.map((x2, i2) => x2 + half * axis[i2])];
+  return positions.every(finite3) ? { ok: true, positions } : { ok: false, reason: "free distance candidate is outside finite geometry" };
 }
 function realizeTilt(apex, nose, up2, target, want, arm = DEFAULT_ARM) {
   if (!finite3(apex) || !finite3(nose) || !finite3(up2)) return { ok: false, reason: "observer pose is unknown" };
@@ -801,11 +1222,11 @@ function realizeTilt(apex, nose, up2, target, want, arm = DEFAULT_ARM) {
     const u2 = unit2(up2) ?? [0, 0, 1];
     lateral = sub(u2, scale(axis, dot(u2, axis)));
   }
-  const across = unit2(lateral);
-  if (!across) return { ok: false, reason: "the cone has no generator" };
+  const across2 = unit2(lateral);
+  if (!across2) return { ok: false, reason: "the cone has no generator" };
   const w2 = Math.min(Math.max(want, 0), 180);
   const rad = openAngle(w2) * RAD;
-  const dir = add(scale(axis, side * Math.cos(rad)), scale(across, Math.sin(rad)));
+  const dir = add(scale(axis, side * Math.cos(rad)), scale(across2, Math.sin(rad)));
   const pose = add(apex, scale(dir, apart ? r2 : arm));
   return { ok: true, pose, moved: !finite3(target) || len(sub(pose, target)) > REALIZE_TOL };
 }
@@ -869,13 +1290,72 @@ function meetPlaneSphere(plane2, center, radius, tol = ACCEPT_TOL2) {
   return { kind: "circle", center: foot, radius: rho, normal: [...n2], d: d2, gap };
 }
 
+// assets/js/turtling/laws/angle.js
+var unit3 = (v2) => unit(v2, REALIZE_TOL);
+var FALLBACK_GENERATORS = [[0, 0, 1], [0, 1, 0], [1, 0, 0]];
+var ANGLE_POLICY = Object.freeze({ generator: null, generators: FALLBACK_GENERATORS, arm: DEFAULT_ARM });
+var conservedAcross = (dir, axis) => {
+  if (!dir) return null;
+  const lat = sub(dir, scale(axis, dot(dir, axis)));
+  return len(lat) > REALIZE_TOL ? unit3(lat) : null;
+};
+var declaredAcross = (axis, policy) => {
+  for (const cand of [policy.generator, ...policy.generators ?? FALLBACK_GENERATORS]) {
+    const c2 = Array.isArray(cand) ? unit3(cand) : null;
+    if (!c2) continue;
+    const lat = sub(c2, scale(axis, dot(c2, axis)));
+    if (len(lat) > REALIZE_TOL) return unit3(lat);
+  }
+  return null;
+};
+function selectAngle(locus, request, policy = ANGLE_POLICY) {
+  const apex = locus?.apex, axis = locus?.axis, degrees = locus?.degrees;
+  if (!finite3(apex)) return { ok: false, reason: "an angle locus needs a finite apex" };
+  const along = finite3(axis) ? unit3(axis) : null;
+  if (!along) return { ok: false, reason: "an angle locus needs a nonzero, finite axis" };
+  if (!Number.isFinite(degrees) || degrees < 0 || degrees > 180) {
+    return { ok: false, reason: "the angle must be a finite number of degrees in [0, 180]" };
+  }
+  const rad = degrees * RAD;
+  const sin = Math.sin(rad), cos = Math.cos(rad);
+  const d2 = finite3(request) ? sub(request, apex) : null;
+  const r2 = d2 ? len(d2) : 0;
+  const apart = r2 > REALIZE_TOL;
+  const arm = apart ? r2 : policy.arm;
+  if (!Number.isFinite(arm) || arm <= REALIZE_TOL) {
+    return { ok: false, reason: "the arm must be a finite, positive length" };
+  }
+  const straight = Math.abs(sin) <= REALIZE_TOL;
+  const conserved = straight ? null : conservedAcross(apart ? unit3(d2) : null, along);
+  const across2 = straight ? null : conserved ?? declaredAcross(along, policy);
+  if (!straight && !across2) return { ok: false, reason: "the locus has no generator: the axis is not a direction" };
+  const skirt = straight ? scale(along, cos) : add(scale(along, cos), scale(across2, sin));
+  const at2 = add(apex, scale(skirt, arm));
+  if (!finite3(at2)) return { ok: false, reason: "the selected point is not finite geometry" };
+  if (len(sub(at2, apex)) <= REALIZE_TOL) return { ok: false, reason: "the apex is excluded from this locus" };
+  return {
+    ok: true,
+    at: at2,
+    azimuth: straight ? "ray" : conserved ? "conserved" : "declared",
+    arm: apart ? "kept" : "declared",
+    selection: Object.freeze({
+      policy: "angle-preserve-request-arm",
+      azimuth: straight ? "ray" : conserved ? "conserved" : "declared",
+      arm: apart ? "kept" : "declared",
+      length: arm,
+      generator: across2 ? Object.freeze([...across2]) : null
+    })
+  };
+}
+
 // assets/js/turtling/laws/meet.js
-var unit3 = (v2) => unit(v2, REL_TOL);
+var unit4 = (v2) => unit(v2, REL_TOL);
+var ACCEPT_TOL22 = ACCEPT_TOL2 * ACCEPT_TOL2;
 function basisOf(normal) {
-  const n2 = unit3(normal);
+  const n2 = unit4(normal);
   if (!n2) return null;
   const seed = Math.abs(n2[0]) < 0.9 ? [1, 0, 0] : [0, 1, 0];
-  const u2 = unit3(cross(n2, seed)) ?? [1, 0, 0];
+  const u2 = unit4(cross(n2, seed)) ?? [1, 0, 0];
   return { n: n2, u: u2, v: cross(n2, u2) };
 }
 function ringOf(center, normal, radius, segments = 72) {
@@ -895,13 +1375,13 @@ var UNCERTAIN = Object.freeze({ kind: "uncertain" });
 var UNRESOLVED = Object.freeze({ kind: "unresolved" });
 var point = (at2) => ({ kind: "point", at: [...at2] });
 var points = (at2) => ({ kind: "points", at: at2.map((p2) => [...p2]) });
-var line = (p2, dir) => ({ kind: "line", point: [...p2], dir: [...unit3(dir) ?? dir] });
-var ray = (p2, dir) => ({ kind: "ray", point: [...p2], dir: [...unit3(dir) ?? dir] });
-var circle = (center, normal, radius) => ({ kind: "circle", center: [...center], normal: [...unit3(normal) ?? normal], radius });
-var plane = (point2, normal) => ({ kind: "plane", point: [...point2], normal: [...unit3(normal) ?? normal] });
-var halfplane = (point2, normal, dir) => ({ kind: "halfplane", point: [...point2], normal: [...unit3(normal) ?? normal], dir: [...unit3(dir) ?? dir] });
+var line = (p2, dir) => ({ kind: "line", point: [...p2], dir: [...unit4(dir) ?? dir] });
+var ray = (p2, dir) => ({ kind: "ray", point: [...p2], dir: [...unit4(dir) ?? dir] });
+var circle = (center, normal, radius) => ({ kind: "circle", center: [...center], normal: [...unit4(normal) ?? normal], radius });
+var plane = (point2, normal) => ({ kind: "plane", point: [...point2], normal: [...unit4(normal) ?? normal] });
+var halfplane = (point2, normal, dir) => ({ kind: "halfplane", point: [...point2], normal: [...unit4(normal) ?? normal], dir: [...unit4(dir) ?? dir] });
 var sphere = (center, radius) => ({ kind: "sphere", center: [...center], radius });
-var cone = (apex, axis, halfAngle) => ({ kind: "cone", apex: [...apex], axis: [...unit3(axis) ?? axis], halfAngle });
+var cone = (apex, axis, halfAngle) => ({ kind: "cone", apex: [...apex], axis: [...unit4(axis) ?? axis], halfAngle });
 var conic = (shape, origin, u2, v2, normal, Q2) => ({ kind: "conic", shape, origin: [...origin], u: [...u2], v: [...v2], normal: [...normal], Q: [...Q2] });
 var samePoint = (a2, b2) => len(sub(a2, b2)) <= ACCEPT_TOL2;
 function meetPlanePlane(a2, b2) {
@@ -917,7 +1397,7 @@ function meetPlanePlane(a2, b2) {
   }
   const p2 = add(scale(a2.normal, (d1 - c2 * d2) / s2), scale(b2.normal, (d2 - c2 * d1) / s2));
   if (!finite3(p2)) return UNRESOLVED;
-  const dir = unit3(cr3);
+  const dir = unit4(cr3);
   return dir ? line(p2, dir) : UNRESOLVED;
 }
 function onHalf(hp2, p2) {
@@ -974,20 +1454,24 @@ function meetLineSphere(ln3, sp2) {
   const b2 = dot(m2, ln3.dir);
   const c2 = dot(m2, m2) - sp2.radius * sp2.radius;
   const disc = b2 * b2 - c2;
-  if (disc < -ACCEPT_TOL2) return EMPTY;
-  if (disc <= ACCEPT_TOL2) return point(add(ln3.point, scale(ln3.dir, -b2)));
-  const s2 = Math.sqrt(disc);
+  if (disc < -2 * sp2.radius * ACCEPT_TOL2) return EMPTY;
+  const s2 = Math.sqrt(Math.max(0, disc));
+  if (s2 <= ACCEPT_TOL2) return point(add(ln3.point, scale(ln3.dir, -b2)));
   return points([add(ln3.point, scale(ln3.dir, -b2 + s2)), add(ln3.point, scale(ln3.dir, -b2 - s2))]);
 }
 function meetSphereSphere(a2, b2) {
+  if (!finite3(a2.center) || !finite3(b2.center)) return UNRESOLVED;
   const d2 = len(sub(b2.center, a2.center));
+  if (!Number.isFinite(d2)) return UNRESOLVED;
   if (d2 <= REL_TOL) return Math.abs(a2.radius - b2.radius) <= ACCEPT_TOL2 ? a2 : EMPTY;
-  const u2 = unit3(sub(b2.center, a2.center));
+  if (d2 > a2.radius + b2.radius + ACCEPT_TOL2) return EMPTY;
+  if (d2 < Math.abs(a2.radius - b2.radius) - ACCEPT_TOL2) return EMPTY;
+  const u2 = directionBetween(a2.center, b2.center);
+  if (u2 === INVALID) return UNRESOLVED;
   const x2 = (a2.radius * a2.radius - b2.radius * b2.radius + d2 * d2) / (2 * d2);
   const h2 = a2.radius * a2.radius - x2 * x2;
-  if (h2 < -ACCEPT_TOL2) return EMPTY;
   const center = add(a2.center, scale(u2, x2));
-  return h2 <= ACCEPT_TOL2 ? point(center) : circle(center, u2, Math.sqrt(Math.max(0, h2)));
+  return h2 <= ACCEPT_TOL22 ? point(center) : circle(center, u2, Math.sqrt(Math.max(0, h2)));
 }
 function meetsPoint(pt2, set) {
   switch (set.kind) {
@@ -1003,8 +1487,12 @@ function meetsPoint(pt2, set) {
       return false;
   }
 }
-var ORDER = ["space", "empty", "uncertain", "unresolved", "point", "points", "ray", "line", "circle", "halfplane", "plane", "sphere", "cone", "conic"];
+var ORDER = ["space", "empty", "uncertain", "unresolved", "point", "points", "ray", "line", "circle", "halfplane", "plane", "sphere", "angle", "cone", "conic"];
 var rank = (k2) => ORDER.indexOf(k2);
+function copyLocus(set) {
+  if (!set || rank(set.kind) < 0 || [SPACE, EMPTY, UNCERTAIN, UNRESOLVED].some((result) => result.kind === set.kind)) return null;
+  return structuredClone(set);
+}
 function meet(a2, b2) {
   if (!a2) return b2 ?? UNRESOLVED;
   if (!b2) return a2;
@@ -1110,17 +1598,21 @@ function meetLineCircle(ln3, ci3) {
   return points([add(foot, scale(d2, s2)), add(foot, scale(d2, -s2))]);
 }
 function meetCircleCircle(a2, b2) {
+  if (!finite3(a2.center) || !finite3(b2.center)) return UNRESOLVED;
   if (len(cross(a2.normal, b2.normal)) > REL_TOL) return UNRESOLVED;
   if (Math.abs(dot(a2.normal, sub(b2.center, a2.center))) > ACCEPT_TOL2) return UNRESOLVED;
   const d2 = len(sub(b2.center, a2.center));
+  if (!Number.isFinite(d2)) return UNRESOLVED;
   if (d2 <= REL_TOL) return Math.abs(a2.radius - b2.radius) <= ACCEPT_TOL2 ? a2 : EMPTY;
   if (d2 > a2.radius + b2.radius + ACCEPT_TOL2) return EMPTY;
   if (d2 < Math.abs(a2.radius - b2.radius) - ACCEPT_TOL2) return EMPTY;
   const x2 = (a2.radius * a2.radius - b2.radius * b2.radius + d2 * d2) / (2 * d2);
   const h2 = a2.radius * a2.radius - x2 * x2;
-  const foot = add(a2.center, scale(unit3(sub(b2.center, a2.center)), x2));
-  if (h2 <= ACCEPT_TOL2) return point(foot);
-  const perp = unit3(cross(a2.normal, sub(b2.center, a2.center)));
+  const u2 = directionBetween(a2.center, b2.center);
+  if (u2 === INVALID) return UNRESOLVED;
+  const foot = add(a2.center, scale(u2 ?? [1, 0, 0], x2));
+  if (h2 <= ACCEPT_TOL22) return point(foot);
+  const perp = unit4(cross(a2.normal, sub(b2.center, a2.center)));
   const s2 = Math.sqrt(Math.max(0, h2));
   return perp ? points([add(foot, scale(perp, s2)), add(foot, scale(perp, -s2))]) : UNRESOLVED;
 }
@@ -1162,10 +1654,12 @@ function meetLineCone(ln3, c2) {
     return point(add(ln3.point, scale(ln3.dir, -qc2 / qb)));
   }
   const disc = qb * qb - 4 * qa2 * qc2;
-  if (disc < -ACCEPT_TOL2) return EMPTY;
-  if (disc <= ACCEPT_TOL2) return point(add(ln3.point, scale(ln3.dir, -qb / (2 * qa2))));
-  const s2 = Math.sqrt(disc);
-  return points([add(ln3.point, scale(ln3.dir, (-qb + s2) / (2 * qa2))), add(ln3.point, scale(ln3.dir, (-qb - s2) / (2 * qa2)))]);
+  const at2 = (t2) => add(ln3.point, scale(ln3.dir, t2));
+  const mid = -qb / (2 * qa2);
+  const apart = Math.sqrt(Math.abs(disc)) / (2 * Math.abs(qa2));
+  if (apart <= ACCEPT_TOL2) return point(at2(mid));
+  if (disc < 0) return EMPTY;
+  return points([at2(mid - apart), at2(mid + apart)]);
 }
 function meetPlaneCone(pl2, c2) {
   if (Math.abs(Math.abs(dot(pl2.normal, c2.axis)) - 1) <= 1e-9) {
@@ -1177,7 +1671,7 @@ function meetPlaneCone(pl2, c2) {
   return coneSection(pl2, c2);
 }
 function coneSection(pl2, c2) {
-  const n2 = unit3(pl2.normal);
+  const n2 = unit4(pl2.normal);
   const b2 = basisOf(n2);
   if (!b2) return UNRESOLVED;
   const e1 = b2.u, e2 = b2.v;
@@ -1224,10 +1718,11 @@ function meetLineConic(ln3, co2) {
     return point(world(-qc2 / qb));
   }
   const disc = qb * qb - 4 * qa2 * qc2;
-  if (disc < -ACCEPT_TOL2) return EMPTY;
-  if (disc <= ACCEPT_TOL2) return point(world(-qb / (2 * qa2)));
-  const s2 = Math.sqrt(disc);
-  return points([world((-qb + s2) / (2 * qa2)), world((-qb - s2) / (2 * qa2))]);
+  const mid = -qb / (2 * qa2);
+  const apart = Math.sqrt(Math.abs(disc)) / (2 * Math.abs(qa2));
+  if (apart <= ACCEPT_TOL2) return point(world(mid));
+  if (disc < 0) return EMPTY;
+  return points([world(mid - apart), world(mid + apart)]);
 }
 function meetConicPlane(co2, pl2) {
   if (Math.abs(Math.abs(dot(co2.normal, pl2.normal)) - 1) <= 1e-9) {
@@ -1284,6 +1779,9 @@ function dofOf(set) {
       return 2;
     case "cone":
       return set.halfAngle <= 1e-9 || set.halfAngle >= 180 - 1e-9 ? 1 : 2;
+    // A straight angle is a RAY; an interior one is a surface. Read verbatim.
+    case "angle":
+      return set.degrees <= 1e-9 || set.degrees >= 180 - 1e-9 ? 1 : 2;
     case "conic":
       return 1;
     case "line":
@@ -1302,7 +1800,7 @@ function dofOf(set) {
       return null;
   }
 }
-function nearest(set, target, { keep = null, margin = 0 } = {}) {
+function nearest(set, target, { keep = null, margin = 0, policy = null } = {}) {
   if (!set || !finite3(target)) return { ok: false, kind: "unresolved" };
   switch (set.kind) {
     case "space":
@@ -1344,18 +1842,19 @@ function nearest(set, target, { keep = null, margin = 0 } = {}) {
       return { ok: true, at: add(set.point, scale(set.dir, t2)) };
     }
     case "sphere": {
-      const u2 = unit3(sub(target, set.center)) ?? [1, 0, 0];
-      return { ok: true, at: add(set.center, scale(u2, set.radius)) };
+      const u2 = directionBetween(set.center, target);
+      if (u2 === INVALID) return { ok: false, kind: "unresolved" };
+      return { ok: true, at: add(set.center, scale(u2 ?? [1, 0, 0], set.radius)) };
     }
     case "circle": {
       const n2 = set.normal;
       const off = dot(sub(target, set.center), n2);
       let u2 = sub(target, set.center).map((x2, i2) => x2 - off * n2[i2]);
       if (len(u2) <= REL_TOL) u2 = basisOf(n2)?.u ?? [1, 0, 0];
-      let at2 = add(set.center, scale(unit3(u2) ?? [1, 0, 0], set.radius));
+      let at2 = add(set.center, scale(unit4(u2) ?? [1, 0, 0], set.radius));
       if (set.keep) {
         const k2 = sub(set.keep, scale(n2, dot(set.keep, n2)));
-        const ku2 = unit3(k2);
+        const ku2 = unit4(k2);
         const s2 = ku2 ? dot(sub(at2, set.center), ku2) : 0;
         if (s2 < -REL_TOL) at2 = sub(at2, scale(ku2, 2 * s2));
       }
@@ -1375,7 +1874,7 @@ function nearest(set, target, { keep = null, margin = 0 } = {}) {
         const kp = kd2 ? sub(kd2, scale(set.axis, dot(kd2, set.axis))) : null;
         dir = kp && len(kp) > REL_TOL ? kp : cross(set.axis, Math.abs(set.axis[0]) < 0.9 ? [1, 0, 0] : [0, 1, 0]);
       }
-      const p2 = unit3(dir) ?? [1, 0, 0];
+      const p2 = unit4(dir) ?? [1, 0, 0];
       if (held) {
         if (!(open < 90 - 1e-9)) return { ok: true, at: add(set.apex, perpRaw) };
         const lateral = coneLateral(h2, open);
@@ -1397,6 +1896,17 @@ function nearest(set, target, { keep = null, margin = 0 } = {}) {
         }
       }
       return best ? { ok: true, at: [...best], branch: "sampled" } : { ok: false, kind: "unresolved" };
+    }
+    case "angle": {
+      const picked = selectAngle(set, target, policy ?? void 0);
+      if (!picked.ok) return { ok: false, kind: "unresolved", reason: picked.reason };
+      const declared = picked.azimuth === "declared" || picked.arm === "declared";
+      return {
+        ok: true,
+        at: picked.at,
+        selection: picked.selection,
+        ...declared ? { branch: "declared" } : {}
+      };
     }
     case "empty":
       return { ok: false, kind: "contradiction" };
@@ -1444,7 +1954,7 @@ var Versor = class _Versor {
     return this;
   }
   // Fast constructor — skips normalization for known-unit inputs.
-  // Used by fromAxisAngle (sin²+cos²=1) and multiply (unit×unit=unit).
+  // Used by fromAxisAngle and products still inside the unit-norm error budget.
   static raw(w2, x2, y2, z2) {
     const v2 = Object.create(_Versor.prototype);
     v2.w = w2;
@@ -1456,21 +1966,31 @@ var Versor = class _Versor {
   static fromAxisAngle(axis, angle) {
     angle = angle % 360;
     const halfAngle = angle * Math.PI / 360;
-    if (Math.abs(angle) < _Versor.EPSILON) {
+    if (angle === 0) {
       return _Versor.raw(1, 0, 0, 0);
     }
     const sinHalfAngle = Math.sin(halfAngle);
     const cosHalfAngle = Math.cos(halfAngle);
-    const length = Math.sqrt(axis.x * axis.x + axis.y * axis.y + axis.z * axis.z);
-    if (length < _Versor.EPSILON) {
+    const lengthSq = axis.x * axis.x + axis.y * axis.y + axis.z * axis.z;
+    if (lengthSq === 1) {
+      return _Versor.raw(
+        cosHalfAngle,
+        axis.x * sinHalfAngle,
+        axis.y * sinHalfAngle,
+        axis.z * sinHalfAngle
+      );
+    }
+    const m2 = Math.max(Math.abs(axis.x), Math.abs(axis.y), Math.abs(axis.z));
+    if (m2 === 0) {
       return _Versor.raw(1, 0, 0, 0);
     }
-    const scale2 = sinHalfAngle / length;
+    const ux = axis.x / m2, uy = axis.y / m2, uz = axis.z / m2;
+    const length = Math.hypot(ux, uy, uz);
     return _Versor.raw(
       cosHalfAngle,
-      axis.x * scale2,
-      axis.y * scale2,
-      axis.z * scale2
+      ux / length * sinHalfAngle,
+      uy / length * sinHalfAngle,
+      uz / length * sinHalfAngle
     );
   }
   multiply(q2) {
@@ -1478,10 +1998,15 @@ var Versor = class _Versor {
     const x2 = this.w * q2.x + this.x * q2.w + this.y * q2.z - this.z * q2.y;
     const y2 = this.w * q2.y - this.x * q2.z + this.y * q2.w + this.z * q2.x;
     const z2 = this.w * q2.z + this.x * q2.y - this.y * q2.x + this.z * q2.w;
+    const normSq = w2 * w2 + x2 * x2 + y2 * y2 + z2 * z2;
+    if (Math.abs(normSq - 1) > 8 * Number.EPSILON) {
+      const norm = Math.sqrt(normSq);
+      return _Versor.raw(w2 / norm, x2 / norm, y2 / norm, z2 / norm);
+    }
     return _Versor.raw(w2, x2, y2, z2);
   }
   rotate(v2) {
-    if (Math.abs(this.w - 1) < _Versor.EPSILON && Math.abs(this.x) < _Versor.EPSILON && Math.abs(this.y) < _Versor.EPSILON && Math.abs(this.z) < _Versor.EPSILON) {
+    if (this.w === 1 && this.x === 0 && this.y === 0 && this.z === 0) {
       return {
         x: Number(v2.x),
         y: Number(v2.y),
@@ -1612,11 +2137,12 @@ var SE3 = {
     return [t2.position[0] + rx, t2.position[1] + ry, t2.position[2] + rz];
   },
   isValid(t2) {
-    const r2 = t2.rotation;
+    const r2 = t2?.rotation;
+    if (!r2 || ![r2.w, r2.x, r2.y, r2.z].every(Number.isFinite)) return false;
     const lenSq = r2.w * r2.w + r2.x * r2.x + r2.y * r2.y + r2.z * r2.z;
     if (Math.abs(lenSq - 1) > 1e-6) return false;
     const p2 = t2.position;
-    if (isNaN(p2[0]) || isNaN(p2[1]) || isNaN(p2[2])) return false;
+    if (!Array.isArray(p2) || p2.length !== 3 || !Number.isFinite(p2[0]) || !Number.isFinite(p2[1]) || !Number.isFinite(p2[2])) return false;
     return true;
   }
 };
@@ -1627,7 +2153,13 @@ var axisOk = (axis) => AXES.includes(axis);
 var missing = (law2, what) => ({ status: "cannot-measure", law: law2, reason: `the ${law2.feature} has a missing bound ${what}` });
 var unreadable = (law2) => ({ status: "cannot-measure", law: law2, reason: `cannot measure the ${law2.feature}` });
 var violation = (law2, residual) => ({ status: "violation", law: law2, residual });
-var pair = (endpoints) => [...endpoints];
+var verdict = (law2, residual) => !Number.isFinite(residual) ? unreadable(law2) : Math.abs(residual) > ACCEPT_TOL ? violation(law2, residual) : { status: "valid" };
+var residualOf = (row2, got, want) => row2.residual ? row2.residual(got, want) : got - want;
+var assess = (row2, law2, got, want) => got == null || want == null ? unreadable(law2) : verdict(law2, residualOf(row2, got, want));
+var payloadSlot = (field) => ({
+  payload: (term) => term[field],
+  replacePayload: (term, payload) => ({ ...term, [field]: payload })
+});
 var one = (endpoints) => [endpoints[0]];
 var oneAxis = (endpoints, law2) => [endpoints[0], law2.axis];
 var targetObserver = ({ target, observer }) => [target.id, observer.id];
@@ -1656,34 +2188,42 @@ function coneOf(pose, halfAngle) {
   return axis ? cone(pose.position, axis, halfAngle) : null;
 }
 function asLaw(row2, spec) {
-  return { feature: row2.name, endpoints: row2.endpoints(spec), frame: spec.observer.id, predicate: spec.value, axis: spec.axis };
+  const endpoints = row2.endpoints(spec);
+  const binding = { endpoints, frame: spec.observer.id, axis: spec.axis, predicate: spec.value, source: spec.expression ?? null };
+  return { feature: row2.name, ...binding, expression: normalizeExpression(row2.name, binding) };
 }
+var boundLaw = (row2, spec) => spec.law ?? asLaw(row2, spec);
 function defaults(row2) {
-  const residualOf = (got, want) => row2.residual ? row2.residual(got, want) : got - want;
   return {
     ...row2,
     measure: row2.measure ?? ((law2, ctx) => {
-      const at2 = ctx.worldOf(law2.endpoints[0]);
-      const got = at2 ? row2.read(law2, at2, ctx) : null;
-      if (got == null) return at2 ? unreadable(law2) : missing(law2, "reference");
-      const residual = residualOf(got, law2.predicate);
-      if (!Number.isFinite(residual)) return unreadable(law2);
-      return Math.abs(residual) > ACCEPT_TOL ? violation(law2, residual) : { status: "valid" };
+      const t2 = boundTerm(law2);
+      if (!t2) return { status: "cannot-measure", law: law2, reason: `the ${law2.feature} has no bound term` };
+      const at2 = ctx.worldOf(t2.references[0]);
+      if (!at2) return missing(law2, "reference");
+      return assess(row2, law2, row2.read(law2, at2, ctx), expectedOf(row2, law2, ctx));
     }),
     propose: row2.propose ?? ((spec) => {
-      if (row2.guard?.finite && !Number.isFinite(spec.value)) {
+      const bound = boundLaw(row2, spec);
+      const value = payloadOf(row2.name, boundTerm(bound)) ?? spec.value;
+      if (row2.guard?.finite && !Number.isFinite(value)) {
         return { ok: false, kind: "relation", reason: `a ${row2.name} needs a finite value` };
       }
-      const set = row2.set(asLaw(row2, spec), spec);
+      const set = row2.set(bound, spec);
       if (!set) return { ok: false, kind: "unresolved", reason: `no ${row2.name} locus` };
       const near = nearest(set, spec.worldOf(spec.target));
-      return near.ok ? { ok: true, world: near.at } : { ok: false, kind: "unresolved", reason: `no point on the ${row2.name}` };
+      return near.ok ? {
+        ok: true,
+        world: near.at,
+        ...near.selection ? { selection: near.selection } : {}
+      } : { ok: false, kind: "unresolved", reason: near.reason ?? `no point on the ${row2.name}` };
     }),
     validate: row2.validate ?? ((spec) => {
-      const got = row2.read(asLaw(row2, spec), spec.world, spec);
-      if (got == null) return { ok: false, reason: `cannot read the ${row2.name}` };
-      const residual = residualOf(got, spec.value);
-      return Math.abs(residual) <= ACCEPT_TOL ? { ok: true, residual } : { ok: false, reason: `the ${row2.name} is ${got}, not ${spec.value}` };
+      const law2 = boundLaw(row2, spec);
+      const got = row2.read(law2, spec.world, spec);
+      const want = expectedOf(row2, law2, spec);
+      const check = assess(row2, law2, got, want);
+      return check.status === "valid" ? { ok: true, residual: residualOf(row2, got, want) } : { ok: false, reason: got == null ? `cannot read the ${row2.name}` : `the ${row2.name} is ${got}, not ${want}` };
     })
   };
 }
@@ -1702,6 +2242,53 @@ function bearingHalf(pose, value) {
   const dir = [Math.sin(c2), Math.cos(c2), 0];
   return halfplane(pose.position, [-dir[1], dir[0], 0], dir);
 }
+var identityToken = (id2) => typeof id2 === "string" && id2.length > 0 || typeof id2 === "number" && Number.isFinite(id2);
+function isFramedInput(input) {
+  return input != null && typeof input === "object" && !Array.isArray(input) && identityToken(input.frame) && finite3(input.value);
+}
+var isLiveInput = (input) => identityToken(input);
+var hasTwoLiveInputs = (term) => term?.references?.length === 2 && term.references.every(isLiveInput);
+var distanceInputOk = (input) => identityToken(input) || isFramedInput(input);
+function inputPosition(input, ctx) {
+  if (identityToken(input)) return ctx.worldOf(input);
+  if (!isFramedInput(input)) return null;
+  const pose = input.relative ? ctx.livePoseOf(input.frame) : ctx.placementOf(input.frame);
+  return pose ? SE3.apply(pose, input.value) : null;
+}
+function inputFrames(law2) {
+  const refs = law2?.expression?.references;
+  return Array.isArray(refs) ? refs.filter(isFramedInput).map((r2) => r2.frame) : [];
+}
+function checkedDistanceTerm(law2) {
+  const term = law2?.expression;
+  return term?.type === "distance" && Array.isArray(term.references) && term.references.length === 2 && term.references.every(distanceInputOk) && Number.isFinite(term.radius) && term.radius >= 0 ? term : null;
+}
+function makeDistanceTerm(references, radius, source = null) {
+  return { type: "distance", references: Array.isArray(references) ? [...references] : [], radius, source };
+}
+function makeFramedTerm(type, { references, frame, axis = null, value, source = null }) {
+  return { type, references: Array.isArray(references) ? [...references] : [], frame, axis, value, source };
+}
+function checkedFramedTerm(law2, type, payloadOk) {
+  const t2 = law2?.expression;
+  if (t2?.type !== type || !Array.isArray(t2.references) || t2.references.length !== 1) return null;
+  if (!identityToken(t2.references[0]) || t2.frame == null) return null;
+  if (!payloadOk(t2.value)) return null;
+  return t2;
+}
+function normalizeExpression(feature, binding) {
+  return AUTHORED[feature]?.normalizeTerm?.(binding) ?? null;
+}
+function payloadOf(feature, term) {
+  if (term == null) return null;
+  return AUTHORED[feature]?.payload?.(term) ?? null;
+}
+function expectedOf(row2, law2, ctx) {
+  return row2.expected ? row2.expected(law2, ctx) : payloadOf(row2.name, boundTerm(law2));
+}
+function boundTerm(law2) {
+  return AUTHORED[law2?.feature]?.term?.(law2) ?? null;
+}
 var distance = {
   name: "distance",
   family: "relational",
@@ -1709,121 +2296,201 @@ var distance = {
   guard: { finite: true, nonNegative: true },
   bounds: { min: 0, max: Infinity },
   properties: ["distance"],
-  payload: "expr",
-  address: pair,
-  endpoints: targetObserver,
-  measure(law2, { worldOf }) {
-    const a2 = worldOf(law2.endpoints[0]), b2 = worldOf(law2.endpoints[1]);
+  reachPolicies: ["target-only", "balanced"],
+  reachPolicy: ({ participants }) => participants?.length === 2 ? "balanced" : "target-only",
+  // The declared symmetry: a distance is undirected, so a reversed pair is the SAME
+  // relationship. Coordinate's (target, axis) is role-ordered and is NOT. (D058)
+  symmetric: true,
+  address: (endpoints, law2) => checkedDistanceTerm(law2)?.references ?? endpoints,
+  endpoints: (spec) => spec.participants?.map((f2) => f2.id) ?? targetObserver(spec),
+  participants: (law2) => (checkedDistanceTerm(law2)?.references ?? []).filter(identityToken),
+  references: (law2) => (checkedDistanceTerm(law2)?.references ?? []).map((r2) => identityToken(r2) ? { id: r2, aspect: "position" } : { id: r2.frame, aspect: r2.relative ? "position" : "placement" }),
+  term: checkedDistanceTerm,
+  ...payloadSlot("radius"),
+  normalizeTerm: ({ endpoints, predicate, source }) => makeDistanceTerm(endpoints, predicate, source ?? null),
+  // Identity facts precede search and numerical tolerance. (id:laws-free-relations-f1)
+  staticVerdict(law2) {
+    const term = checkedDistanceTerm(law2);
+    const [a2, b2] = term?.references ?? [];
+    if (!term || !identityToken(a2) || !identityToken(b2) || a2 !== b2) return null;
+    return term.radius === 0 ? { status: "tautology" } : { status: "contradiction", reason: "self-distance is zero, not a positive radius" };
+  },
+  // A VERIFIED tautology constrains nothing, so it is a NEUTRAL contribution: it neither
+  // disables a meet nor invents a hold. Retained for ownership and lifetime; its own
+  // checking stands. (id:laws-freedom, D058)
+  tautology: (law2) => distance.staticVerdict(law2)?.status === "tautology",
+  measure(law2, ctx) {
+    const term = checkedDistanceTerm(law2);
+    if (!term) return { status: "cannot-measure", law: law2, reason: "the original distance expression is outside its domain" };
+    const a2 = inputPosition(term.references[0], ctx);
+    const b2 = inputPosition(term.references[1], ctx);
     if (!a2 || !b2) return missing(law2, "participant");
     const d2 = len(sub(a2, b2));
     if (!Number.isFinite(d2)) return unreadable(law2);
-    return Math.abs(d2 - law2.predicate) > ACCEPT_TOL ? violation(law2, d2 - law2.predicate) : { status: "valid" };
+    const residual = d2 - term.radius;
+    if (distance.staticVerdict(law2)?.status === "contradiction") return violation(law2, residual);
+    return verdict(law2, residual);
   },
-  propose({ target, observer, value, worldOf, pinWorld }) {
-    const o2 = worldOf(observer);
-    const pin = pinWorld?.(target);
-    if (pin) {
-      return validateDistance(pin, o2, value).ok ? { ok: true, world: pin } : { ok: false, reason: "the pinned position conflicts with the distance", kind: "obstructed" };
+  propose({ law: law2, reachPolicy, operation, pinWorld, tie, ...ctx }) {
+    const term = checkedDistanceTerm(law2);
+    if (!term) return { ok: false, kind: "unresolved", reason: "the distance has no bound term" };
+    const [first, second] = term.references;
+    if (reachPolicy === "balanced" && hasTwoLiveInputs(term)) {
+      const result = realizeFreeDistance(ctx.worldOf(first), ctx.worldOf(second), term.radius, tie);
+      return result.ok ? { ok: true, worlds: /* @__PURE__ */ new Map([[first, result.positions[0]], [second, result.positions[1]]]) } : result;
     }
-    const r2 = realizeDistance(worldOf(target), o2, value);
+    if (reachPolicy !== "target-only") return { ok: false, kind: "relation", reason: `unknown reach policy '${reachPolicy}'` };
+    const moving = operation?.movable[0] ?? (identityToken(first) ? first : second);
+    const centre = first === moving ? second : first;
+    if (!identityToken(moving) || moving === void 0) {
+      return { ok: false, kind: "unresolved", reason: "the distance has no live endpoint to move" };
+    }
+    const o2 = inputPosition(centre, ctx);
+    const pin = pinWorld?.(moving);
+    if (pin) {
+      return validateDistance(pin, o2, term.radius).ok ? { ok: true, world: pin } : { ok: false, reason: "the pinned position conflicts with the distance", kind: "obstructed" };
+    }
+    const r2 = realizeDistance(ctx.worldOf(moving), o2, term.radius);
     return r2.ok ? { ok: true, world: r2.pose } : { ok: false, reason: r2.reason };
   },
-  validate({ observer, value, world, worldOf }) {
-    return validateDistance(world, worldOf(observer), value);
+  validate({ law: law2, reachPolicy, operation, world, worlds, ...ctx }) {
+    const term = checkedDistanceTerm(law2);
+    if (!term) return { ok: false, reason: "the distance has no bound term" };
+    const [first, second] = term.references;
+    if (reachPolicy === "balanced") return validateDistance(worlds.get(first), worlds.get(second), term.radius);
+    if (reachPolicy !== "target-only") return { ok: false, reason: `unknown reach policy '${reachPolicy}'` };
+    const moving = operation?.movable[0] ?? (identityToken(first) ? first : second);
+    const centre = first === moving ? second : first;
+    return validateDistance(world, inputPosition(centre, ctx), term.radius);
   },
-  set(law2, { worldOf, writerId }) {
-    const otherId = law2.endpoints.find((id2) => id2 !== writerId);
-    const other = worldOf(otherId);
-    return finite3(other) && Number.isFinite(law2.predicate) ? sphere(other, law2.predicate) : null;
+  set(law2, { writerId, ...ctx }) {
+    const term = checkedDistanceTerm(law2);
+    if (!term) return null;
+    const other = term.references.find((r2) => r2 !== writerId);
+    const centre = inputPosition(other, ctx);
+    return finite3(centre) && Number.isFinite(term.radius) ? term.radius === 0 ? point(centre) : sphere(centre, term.radius) : null;
   },
-  constraint(law2, { worldOf, heldOf, writerId }) {
-    const otherId = law2.endpoints.find((id2) => id2 !== writerId);
-    const other = worldOf(otherId);
-    if (!finite3(other)) return null;
-    const c2 = { feature: "distance", other, radius: law2.predicate, otherHeld: heldOf?.(otherId) === true };
-    if (law2.predicate > 0) c2.set = sphere(other, law2.predicate);
+  constraint(law2, { writerId, heldOf, ...ctx }) {
+    const term = checkedDistanceTerm(law2);
+    if (!term) return null;
+    const other = term.references.find((r2) => r2 !== writerId);
+    const centre = inputPosition(other, ctx);
+    if (!finite3(centre)) return null;
+    const otherHeld = !identityToken(other) || heldOf?.(other) === true;
+    const c2 = { feature: "distance", otherHeld };
+    c2.set = term.radius > 0 ? sphere(centre, term.radius) : point(centre);
     return c2;
   },
-  touches: (law2, id2) => law2.endpoints.includes(id2)
+  touches: (law2, id2) => (checkedDistanceTerm(law2)?.references ?? []).some((r2) => identityToken(r2) && r2 === id2)
 };
-var position = {
+var position = defaults({
   name: "position",
   family: "spatial",
   kind: "point",
   guard: { finite3: true },
   bounds: null,
-  properties: [],
-  payload: "coords",
+  properties: ["position"],
+  // A position ADMITS a dependency-driven revision: a live RHS becomes a place driver.
+  // A capability is declared here; the scheduler enforces what it means.
+  // (id:laws-dependency-driven-place)
+  drive: true,
   address: one,
   endpoints: targetOnly,
-  measure(law2, { worldOf, poseOf }) {
-    const w2 = worldOf(law2.endpoints[0]);
-    const frame = poseOf(law2.frame);
-    if (!w2 || !frame) return missing(law2, "reference");
-    const p2 = SE3.apply(frame, law2.predicate);
-    if (!finite3(w2) || !finite3(p2)) return unreadable(law2);
-    const residual = Math.hypot(w2[0] - p2[0], w2[1] - p2[1], w2[2] - p2[2]);
-    return residual > ACCEPT_TOL ? violation(law2, residual) : { status: "valid" };
+  // A pin reads the point's live position and its frame's stable placement — the
+  // frame is a validity reference, never a solve participant. (D058)
+  participants: (law2) => [law2.endpoints[0]],
+  references: (law2) => [
+    { id: law2.endpoints[0], aspect: "position" },
+    { id: law2.frame, aspect: "placement" }
+  ],
+  term: (law2) => checkedFramedTerm(law2, "position", finite3),
+  ...payloadSlot("value"),
+  normalizeTerm: ({ endpoints, frame, predicate, source }) => makeFramedTerm("position", { references: endpoints, frame, value: predicate, source: source ?? null }),
+  // The reading IS the point's live position; the expectation is its declared world point,
+  // so a candidate is checked against the bound payload — not mere finiteness. (D058)
+  read(law2, at2) {
+    return finite3(at2) ? [...at2] : null;
   },
-  propose({ target, observer, value, poseOf, conflictAt: conflictAt2, ownerOf }) {
-    if (!Array.isArray(value) || value.length !== 3 || !value.every(Number.isFinite)) {
+  expected(law2, ctx) {
+    const t2 = boundTerm(law2);
+    const frame = t2 ? ctx.placementOf(t2.frame) : null;
+    return frame ? SE3.apply(frame, t2.value) : null;
+  },
+  residual: (got, want) => Math.hypot(got[0] - want[0], got[1] - want[1], got[2] - want[2]),
+  propose({ law: law2, target, placementOf, conflictAt: conflictAt2, ownerOf, value, observer }) {
+    const t2 = boundTerm(law2);
+    const payload = t2 ? t2.value : value;
+    if (!finite3(payload)) {
       return { ok: false, reason: "a position needs three finite coordinates" };
     }
-    const world = SE3.apply(poseOf(observer), value);
+    const frame = placementOf(t2 ? t2.frame : observer);
+    if (!frame) return { ok: false, reason: "the position's frame has no placement", kind: "unresolved" };
+    const world = SE3.apply(frame, payload);
     const conflict = conflictAt2?.(target, world);
     const at2 = conflict ? ownerOf?.(conflict.law) ?? "source" : null;
     return conflict ? conflict.domain ? { ok: false, reason: `cannot measure the pin against the ${conflict.law.feature} at ${at2}`, kind: "unresolved" } : { ok: false, reason: `the pin conflicts with the ${conflict.law.feature} at ${at2}`, kind: "obstructed", conflict: conflict.law, residual: conflict.residual, world } : { ok: true, world };
   },
-  validate({ world }) {
-    return finite3(world) ? { ok: true } : { ok: false, reason: "non-finite position" };
+  set(law2, { placementOf }) {
+    const t2 = boundTerm(law2);
+    if (!t2) return null;
+    const frame = placementOf(t2.frame);
+    return frame ? point(SE3.apply(frame, t2.value)) : null;
   },
-  set(law2, { poseOf }) {
-    const frame = poseOf(law2.frame);
-    return frame ? point(SE3.apply(frame, law2.predicate)) : null;
-  },
-  constraint() {
-    return { pinned: true };
+  // A pin's record carries its own set: no consumer reconstructs it. (D058)
+  constraint(law2, ctx) {
+    const set = position.set(law2, ctx);
+    return { pinned: true, ...set ? { set } : {} };
   },
   touches: (law2, id2) => law2.endpoints[0] === id2
-};
+});
 var coordinate = defaults({
   name: "coordinate",
   family: null,
   kind: "scalar",
+  drive: true,
   guard: { finite: true },
   bounds: null,
   properties: ["x", "y", "z"],
-  payload: "expr",
   form: (property) => ({ feature: "coordinate", axis: property }),
   address: oneAxis,
   endpoints: targetOnly,
+  // A coordinate reads the point's live position and its frame's stable placement.
+  participants: (law2) => [law2.endpoints[0]],
+  references: (law2) => [
+    { id: law2.endpoints[0], aspect: "position" },
+    { id: law2.frame, aspect: "placement" }
+  ],
+  term: (law2) => checkedFramedTerm(law2, "coordinate", Number.isFinite),
+  ...payloadSlot("value"),
+  normalizeTerm: ({ endpoints, frame, axis, predicate, source }) => makeFramedTerm("coordinate", { references: endpoints, frame, axis, value: predicate, source: source ?? null }),
   meet: true,
-  measure(law2, { worldOf, poseOf }) {
-    const w2 = worldOf(law2.endpoints[0]);
-    const frame = poseOf(law2.frame);
-    if (!w2 || !frame) return missing(law2, "reference");
-    if (!axisOk(law2.axis)) return { status: "cannot-measure", law: law2, reason: `the ${law2.feature} has an unknown axis '${law2.axis}'` };
-    const local = SE3.unapply(frame, w2);
-    if (!finite3(local)) return unreadable(law2);
-    const residual = local[AXIS_IDX[law2.axis]] - law2.predicate;
-    if (!Number.isFinite(residual)) return unreadable(law2);
-    return Math.abs(residual) > ACCEPT_TOL ? violation(law2, residual) : { status: "valid" };
+  measure(law2, { worldOf, placementOf }) {
+    const t2 = boundTerm(law2);
+    if (!t2) return { status: "cannot-measure", law: law2, reason: "the coordinate has no bound term" };
+    if (!axisOk(t2.axis)) return { status: "cannot-measure", law: law2, reason: `the ${law2.feature} has an unknown axis '${t2.axis}'` };
+    const at2 = worldOf(t2.references[0]);
+    if (!at2 || !placementOf(t2.frame)) return missing(law2, "reference");
+    return assess(coordinate, law2, coordinate.read(law2, at2, { placementOf }), t2.value);
   },
-  read(law2, at2, { poseOf }) {
-    if (!axisOk(law2.axis) || !finite3(at2)) return null;
-    const frame = poseOf(law2.frame);
+  read(law2, at2, { placementOf }) {
+    const t2 = boundTerm(law2);
+    if (!t2 || !axisOk(t2.axis) || !finite3(at2)) return null;
+    const frame = placementOf(t2.frame);
     if (!frame) return null;
     const local = SE3.unapply(frame, at2);
-    return finite3(local) ? local[AXIS_IDX[law2.axis]] : null;
+    return finite3(local) ? local[AXIS_IDX[t2.axis]] : null;
   },
-  set(law2, { poseOf }) {
-    if (!axisOk(law2.axis)) return null;
-    const pl2 = planeOfAxis(poseOf(law2.frame), law2.axis, law2.predicate);
+  set(law2, { placementOf }) {
+    const t2 = boundTerm(law2);
+    if (!t2 || !axisOk(t2.axis)) return null;
+    const pl2 = planeOfAxis(placementOf(t2.frame), t2.axis, t2.value);
     return pl2 ? plane(pl2.point, pl2.normal) : null;
   },
-  constraint(law2, { poseOf }) {
-    const pl2 = planeOfAxis(poseOf(law2.frame), law2.axis, law2.predicate);
-    return pl2 ? { feature: "coordinate", axis: law2.axis, value: law2.predicate, plane: pl2, set: plane(pl2.point, pl2.normal) } : null;
+  constraint(law2, { placementOf }) {
+    const t2 = boundTerm(law2);
+    if (!t2) return null;
+    const pl2 = planeOfAxis(placementOf(t2.frame), t2.axis, t2.value);
+    return pl2 ? { feature: "coordinate", axis: t2.axis, value: t2.value, set: plane(pl2.point, pl2.normal) } : null;
   },
   touches: (law2, id2) => law2.endpoints[0] === id2
 });
@@ -1834,23 +2501,34 @@ var tilt = defaults({
   guard: { finite: true },
   bounds: { min: 0, max: 180 },
   properties: ["tilt"],
-  payload: "expr",
   address: one,
   endpoints: targetOnly,
+  // A tilt reads the point's live position and its frame's placement.
+  participants: (law2) => [law2.endpoints[0]],
+  references: (law2) => [
+    { id: law2.endpoints[0], aspect: "position" },
+    { id: law2.frame, aspect: "placement" }
+  ],
+  term: (law2) => checkedFramedTerm(law2, "tilt", Number.isFinite),
+  ...payloadSlot("value"),
+  normalizeTerm: ({ endpoints, frame, predicate, source }) => makeFramedTerm("tilt", { references: endpoints, frame, value: predicate, source: source ?? null }),
   meet: true,
   residual: tiltResidual,
-  read(law2, at2, { poseOf }) {
-    const reading = tiltAngle(at2, poseOf(law2.frame));
+  read(law2, at2, { placementOf }) {
+    const t2 = boundTerm(law2);
+    if (!t2) return null;
+    const reading = tiltAngle(at2, placementOf(t2.frame));
     return reading.ok ? reading.angle : null;
   },
-  set(law2, { poseOf }) {
-    return coneOf(poseOf(law2.frame), normalizeTilt(law2.predicate));
+  set(law2, { placementOf }) {
+    const t2 = boundTerm(law2);
+    return t2 ? coneOf(placementOf(t2.frame), normalizeTilt(t2.value)) : null;
   },
   // A tilt from a frame. A point on the apex has no direction to read, so the
   // declaration realizes a generator from the frame's own up and the paper-scale
   // arm instead of failing to measure. (id:laws-freedom)
-  propose({ target, observer, value, worldOf, poseOf }) {
-    const pose = poseOf(observer);
+  propose({ target, observer, value, worldOf, placementOf }) {
+    const pose = placementOf(observer);
     if (!pose || !finite3(pose.position)) return { ok: false, kind: "unresolved", reason: "the declaring frame has no pose" };
     const nose = forwardOf(pose.rotation);
     const up2 = upOf(pose.rotation);
@@ -1859,13 +2537,15 @@ var tilt = defaults({
     const r2 = realizeTilt(pose.position, nose, up2, moving, normalizeTilt(value));
     return r2.ok ? { ok: true, world: r2.pose } : { ok: false, reason: r2.reason };
   },
-  constraint(law2, { poseOf }) {
-    const pose = poseOf(law2.frame);
+  constraint(law2, { placementOf }) {
+    const t2 = boundTerm(law2);
+    if (!t2) return null;
+    const pose = placementOf(t2.frame);
     if (!pose || !finite3(pose.position)) return null;
     const axis = forwardOf(pose.rotation);
     if (!axis) return null;
-    const halfAngle = normalizeTilt(law2.predicate);
-    return { feature: "tilt", apex: [...pose.position], axis: [...axis], halfAngle, set: cone(pose.position, axis, halfAngle) };
+    const halfAngle = normalizeTilt(t2.value);
+    return { feature: "tilt", set: cone(pose.position, axis, halfAngle) };
   },
   touches: (law2, id2) => law2.endpoints[0] === id2
 });
@@ -1876,21 +2556,31 @@ var bearing = defaults({
   guard: { finite: true },
   bounds: null,
   properties: ["bearing"],
-  payload: "expr",
   address: one,
   endpoints: targetOnly,
+  // A bearing reads the point's live position and its frame's placement.
+  participants: (law2) => [law2.endpoints[0]],
+  references: (law2) => [
+    { id: law2.endpoints[0], aspect: "position" },
+    { id: law2.frame, aspect: "placement" }
+  ],
+  term: (law2) => checkedFramedTerm(law2, "bearing", Number.isFinite),
+  ...payloadSlot("value"),
+  normalizeTerm: ({ endpoints, frame, predicate, source }) => makeFramedTerm("bearing", { references: endpoints, frame, value: predicate, source: source ?? null }),
   meet: true,
   residual: (got, want) => wrapDegrees(got - want),
-  read(law2, at2, { poseOf }) {
-    return bearingOf(at2, poseOf(law2.frame));
+  read(law2, at2, { placementOf }) {
+    const t2 = boundTerm(law2);
+    return t2 ? bearingOf(at2, placementOf(t2.frame)) : null;
   },
-  set(law2, { poseOf }) {
-    return bearingHalf(poseOf(law2.frame), law2.predicate);
+  set(law2, { placementOf }) {
+    const t2 = boundTerm(law2);
+    return t2 ? bearingHalf(placementOf(t2.frame), t2.value) : null;
   },
   // A bearing from a frame. A point on the vertex has no direction, so the
   // declaration realizes a paper-scale arm on the ray. (id:laws-freedom)
-  propose({ target, observer, value, worldOf, poseOf }) {
-    const pose = poseOf(observer);
+  propose({ target, observer, value, worldOf, placementOf }) {
+    const pose = placementOf(observer);
     if (!pose || !finite3(pose.position)) return { ok: false, kind: "unresolved", reason: "the declaring frame has no pose" };
     const heading = headingOf(pose.rotation);
     if (heading === null) return { ok: false, kind: "unresolved", reason: "the declaring frame has no heading" };
@@ -1899,13 +2589,20 @@ var bearing = defaults({
     const r2 = realizeBearing({ vertex: pose.position, moving }, heading + value);
     return r2.ok ? { ok: true, world: r2.pose } : { ok: false, reason: r2.reason };
   },
-  constraint(law2, { poseOf }) {
-    const pl2 = bearingHalf(poseOf(law2.frame), law2.predicate);
+  constraint(law2, { placementOf }) {
+    const t2 = boundTerm(law2);
+    if (!t2) return null;
+    const pl2 = bearingHalf(placementOf(t2.frame), t2.value);
     return pl2 ? { feature: "bearing", set: pl2 } : null;
   },
   touches: (law2, id2) => law2.endpoints[0] === id2
 });
 var AUTHORED = { distance, position, coordinate, tilt, bearing };
+var driveOf = (feature) => AUTHORED[feature]?.drive ?? null;
+function withPayload(term, payload) {
+  if (term == null) return null;
+  return AUTHORED[term.type]?.replacePayload?.(term, payload) ?? null;
+}
 function parseProperty(property) {
   for (const row2 of Object.values(AUTHORED)) {
     if (row2.properties?.includes(property)) return row2.form ? row2.form(property) : { feature: row2.name };
@@ -1918,38 +2615,59 @@ function parseSupport() {
   if (names.length === 1) return `a supported relation (${names[0]})`;
   return `a supported relation (${names.slice(0, -1).join(", ")} or ${names[names.length - 1]})`;
 }
-function payloadOf(feature) {
-  return AUTHORED[feature]?.payload ?? null;
-}
 function addressShape(feature) {
   return AUTHORED[feature]?.address ?? null;
 }
-function bindWorld(getFrame, { positionOf, poseOf, ...extras } = {}) {
+function symmetricOf(feature) {
+  return AUTHORED[feature]?.symmetric === true;
+}
+function bindWorld(getFrame, { live, placement, ...extras } = {}) {
+  if (typeof live !== "function" || typeof placement !== "function") {
+    throw new Error("bindWorld needs a live and a placement reader");
+  }
   const frameOf2 = (frameOrId) => {
-    if (!frameOrId) return null;
+    if (frameOrId == null) return null;
     return typeof frameOrId === "object" && frameOrId.id != null ? frameOrId : getFrame(frameOrId);
   };
+  const read = (reader, frameOrId) => {
+    const f2 = frameOf2(frameOrId);
+    return f2 ? reader(f2) : null;
+  };
   return {
-    worldOf: (frameOrId) => {
-      const f2 = frameOf2(frameOrId);
-      return f2 && positionOf ? positionOf(f2) : null;
-    },
-    poseOf: (frameOrId) => {
-      const f2 = frameOf2(frameOrId);
-      return f2 && poseOf ? poseOf(f2) : null;
-    },
+    livePoseOf: (frameOrId) => read(live, frameOrId),
+    // A live position is the live pose's projection, never a third reading.
+    worldOf: (frameOrId) => read(live, frameOrId)?.position ?? null,
+    placementOf: (frameOrId) => read(placement, frameOrId),
     ...extras
   };
 }
-function constraintsOn(id2, laws, ctx) {
-  const out = [];
+function pointQuery(id2, laws, ctx) {
+  const contributions = [];
   for (const law2 of laws) {
     const row2 = AUTHORED[law2.feature];
-    if (!row2?.constraint || !row2.touches?.(law2, id2)) continue;
-    const c2 = row2.constraint(law2, ctx);
-    if (c2) out.push(c2);
+    if (!row2?.touches?.(law2, id2)) continue;
+    const neutral = row2.tautology?.(law2) === true;
+    const constraint = row2.constraint ? row2.constraint(law2, ctx) : null;
+    const set = neutral || !row2.set ? null : row2.set(law2, ctx);
+    const missing2 = boundTerm(law2) == null ? "unreadable" : "unsupported";
+    const reason = neutral ? null : row2.set != null && set == null ? missing2 : constraint == null && row2.constraint ? missing2 : null;
+    contributions.push({ law: law2, feature: law2.feature, neutral, set, constraint, ...reason ? { reason } : {} });
   }
-  return out;
+  const setBearing = contributions.filter((c2) => AUTHORED[c2.feature]?.set && !c2.neutral);
+  return {
+    contributions,
+    laws: contributions.map((c2) => c2.law),
+    constraints: contributions.map((c2) => c2.constraint).filter(Boolean),
+    unavailable: contributions.filter((c2) => c2.reason),
+    meets: contributions.some((c2) => AUTHORED[c2.feature]?.meet === true),
+    setBearing,
+    sets: setBearing.map((c2) => c2.set),
+    complete: setBearing.every((c2) => c2.set != null)
+  };
+}
+function constraintsView(id2, laws, ctx) {
+  const q2 = pointQuery(id2, laws, ctx);
+  return { constraints: q2.constraints, unavailable: q2.unavailable, complete: q2.complete };
 }
 
 // assets/js/turtling/address.js
@@ -1963,7 +2681,6 @@ var isSeatOf = (address, seat) => {
 var rebase = (address, from, to) => to === from ? address : to + String(address).slice(String(from).length);
 
 // assets/js/turtling/parse.js
-var OPERATOR_SET = new Set(OPERATORS);
 var ParserState = class {
   constructor(lines) {
     this.lines = lines;
@@ -1982,18 +2699,19 @@ var ParserState = class {
 var END = "end";
 var DO = "do";
 var COMMENT = "#";
+var MEADOW_MARK = "###";
+var CELL_MARK = "```";
 var MEADOW_FENCE = /^[ \t]*###[ \t]*$/;
 var CELL_OPEN = /^[ \t]*```/;
 var CELL_CLOSE = /^[ \t]*```[ \t]*$/;
-var isMeadowFence = (s2) => MEADOW_FENCE.test(s2 ?? "");
-var isCellOpen = (s2) => CELL_OPEN.test(s2 ?? "");
-var isCellClose = (s2) => CELL_CLOSE.test(s2 ?? "");
+var isMeadowFence = (s2) => s2 != null && s2.includes(MEADOW_MARK) && MEADOW_FENCE.test(s2);
+var isCellOpen = (s2) => s2 != null && s2.includes(CELL_MARK) && CELL_OPEN.test(s2);
+var isCellClose = (s2) => s2 != null && s2.includes(CELL_MARK) && CELL_CLOSE.test(s2);
 var splitComment = (raw) => {
   const i2 = raw.indexOf(COMMENT);
   return i2 === -1 ? [raw, void 0] : [raw.slice(0, i2).trimEnd(), raw.slice(i2 + 1)];
 };
 var CLOSERS = { '"': '"', "'": "'", "[": "]", "(": ")" };
-var OPENS_BRACKET = { "[": 1, "(": 1 };
 var BLOCK_KW = { for: 1, loop: 1, def: 1, draw: 1, when: 1, as: 1 };
 function meadowNode(line2) {
   const node = stamp(new ASTNode("Empty", "").assign_meta("lit", line2.meadow).assign_meta("meadow", true).assign_meta("meadowOpen", line2.meadowOpen !== false).assign_meta("meadowClose", line2.meadowClose !== false), line2);
@@ -2054,7 +2772,8 @@ function parseProgram(program) {
   return ast;
 }
 var OVERLAY = /* @__PURE__ */ new Set(["span", "comment", "endComment", "lit"]);
-var contentKey = (node) => JSON.stringify(node, (k2, v2) => OVERLAY.has(k2) ? void 0 : v2);
+var stripOverlay = (k2, v2) => OVERLAY.has(k2) ? void 0 : v2;
+var contentKey = (node) => JSON.stringify(node, stripOverlay);
 function adoptOverlay(prev, next) {
   if (next.span) {
     if (prev.span) {
@@ -2099,7 +2818,7 @@ function tokenize(program) {
   let i2 = 0;
   const pushCode = (raw, out, line2) => {
     const [code, comment] = splitComment(raw);
-    const parts = code.replace(/\bend\b(?!$)/g, "end\n").split("\n").map((p2) => p2.trim()).filter(Boolean);
+    const parts = (code.includes("end") ? code.replace(/\bend\b(?!$)/g, "end\n") : code).split("\n").map((p2) => p2.trim()).filter(Boolean);
     const recs = (parts.length ? parts : [""]).map((text) => ({ text, line: line2 }));
     if (comment !== void 0) recs[recs.length - 1].comment = comment;
     for (const rec of recs) out.push(rec);
@@ -2177,11 +2896,10 @@ function tokenizeLine(code) {
   const len2 = code.length;
   let start = 0;
   let i2 = 0;
-  let inGroup = null;
-  let depth = 0;
+  const stack = [];
   while (i2 < len2) {
     const ch2 = code[i2];
-    if (!inGroup) {
+    if (stack.length === 0) {
       if (ch2 === " " || ch2 === "	") {
         if (i2 > start) tokens.push(code.slice(start, i2));
         start = i2 + 1;
@@ -2189,22 +2907,14 @@ function tokenizeLine(code) {
         continue;
       }
       const closer = CLOSERS[ch2];
-      if (closer) {
-        inGroup = closer;
-        if (OPENS_BRACKET[ch2]) depth = 1;
-      }
+      if (closer) stack.push(closer);
       i2++;
     } else {
-      if (OPENS_BRACKET[inGroup === "]" ? "[" : inGroup === ")" ? "(" : null]) {
-        const opener = inGroup === "]" ? "[" : "(";
-        if (ch2 === opener) {
-          depth++;
-        } else if (ch2 === inGroup) {
-          depth--;
-          if (depth === 0) inGroup = null;
-        }
-      } else if (ch2 === inGroup) {
-        inGroup = null;
+      const closer = stack[stack.length - 1];
+      if (ch2 === closer) {
+        stack.pop();
+      } else if (CLOSERS[ch2] && closer !== '"' && closer !== "'") {
+        stack.push(CLOSERS[ch2]);
       }
       i2++;
     }
@@ -2212,92 +2922,56 @@ function tokenizeLine(code) {
   if (i2 > start) tokens.push(code.slice(start, i2));
   return tokens;
 }
-function parseArguments(tokens) {
-  const len2 = tokens.length;
-  if (len2 === 0) return [];
-  const args = [];
-  let bufStart = -1;
-  let closer = null;
-  let depth = 0;
-  for (let i2 = 0; i2 < len2; i2++) {
-    const token = tokens[i2];
-    const firstCh = token[0];
-    if (bufStart === -1) {
-      const match = CLOSERS[firstCh];
-      if (!match) {
-        let joined = token;
-        let last = token;
-        while (i2 + 1 < len2 && (OPERATOR_SET.has(last) || OPERATOR_SET.has(tokens[i2 + 1]))) {
-          last = tokens[++i2];
-          joined += " " + last;
-        }
-        args.push(new ASTNode("Argument", joined));
-        continue;
-      }
-      closer = match;
-      const lastCh = token[token.length - 1];
-      if (OPENS_BRACKET[firstCh]) {
-        depth = 1;
-        const tLen = token.length;
-        for (let j2 = 1; j2 < tLen; j2++) {
-          const ch2 = token[j2];
-          if (ch2 === firstCh) depth++;
-          else if (ch2 === closer) depth--;
-        }
-        if (depth === 0) {
-          args.push(new ASTNode("Argument", token));
-          closer = null;
-        } else {
-          bufStart = i2;
-        }
-      } else {
-        const closeIdx = token.indexOf(closer, 1);
-        if (closeIdx !== -1) {
-          args.push(new ASTNode("Argument", token));
-          closer = null;
-        } else {
-          bufStart = i2;
-        }
-      }
-    } else {
-      if (OPENS_BRACKET[closer === "]" ? "[" : "("]) {
-        const opener = closer === "]" ? "[" : "(";
-        const tLen = token.length;
-        for (let j2 = 0; j2 < tLen; j2++) {
-          const ch2 = token[j2];
-          if (ch2 === opener) depth++;
-          else if (ch2 === closer) depth--;
-        }
-        if (depth === 0) {
-          let joined = tokens[bufStart];
-          for (let k2 = bufStart + 1; k2 <= i2; k2++) {
-            joined += " " + tokens[k2];
-          }
-          args.push(new ASTNode("Argument", joined));
-          bufStart = -1;
-          closer = null;
-        }
-      } else {
-        if (token[token.length - 1] === closer) {
-          let joined = tokens[bufStart];
-          for (let k2 = bufStart + 1; k2 <= i2; k2++) {
-            joined += " " + tokens[k2];
-          }
-          args.push(new ASTNode("Argument", joined));
-          bufStart = -1;
-          closer = null;
-        }
-      }
-    }
+var chunkLexer = new Lexer();
+function chunkTokens(chunk) {
+  try {
+    return chunkLexer.tokenize(chunk);
+  } catch {
+    return null;
   }
-  if (bufStart !== -1) {
-    let joined = tokens[bufStart];
-    for (let k2 = bufStart + 1; k2 < len2; k2++) {
-      joined += " " + tokens[k2];
+}
+function startsWithOperator(chunk) {
+  const toks = chunkTokens(chunk);
+  if (!toks || toks.length === 0 || toks[0].type !== "OPERATOR") return false;
+  if (toks.length > 1 && getOperator(toks[0].value, "prefix")) return false;
+  return true;
+}
+function endsWithOperator(chunk) {
+  const toks = chunkTokens(chunk);
+  if (!toks || toks.length === 0) return false;
+  return toks[toks.length - 1].type === "OPERATOR";
+}
+function bridgesAcross(left2, right2) {
+  return endsWithOperator(left2) || startsWithOperator(right2);
+}
+function parseArguments(chunks, source) {
+  const args = [];
+  let cursor = 0;
+  const locate = (text) => {
+    if (source == null) return -1;
+    const at2 = source.indexOf(text, cursor);
+    if (at2 >= 0) cursor = at2 + text.length;
+    return at2;
+  };
+  let i2 = 0;
+  while (i2 < chunks.length) {
+    const runStart = i2;
+    const startAt = locate(chunks[i2]);
+    let endAt = startAt < 0 ? -1 : startAt + chunks[i2].length;
+    while (i2 + 1 < chunks.length && bridgesAcross(chunks[i2], chunks[i2 + 1])) {
+      i2++;
+      const at2 = locate(chunks[i2]);
+      if (at2 >= 0) endAt = at2 + chunks[i2].length;
     }
-    args.push(new ASTNode("Argument", joined));
+    const value = startAt >= 0 ? source.slice(startAt, endAt) : chunks.slice(runStart, i2 + 1).join(" ");
+    const node = new ASTNode("Argument", value);
+    args.push(node);
+    i2++;
   }
   return args;
+}
+function readArguments(source) {
+  return parseArguments(tokenizeLine(source), source).map((node) => node.value);
 }
 function parseBlock(state, kind = null) {
   const prevKind = state.blockKind ?? null;
@@ -2337,56 +3011,101 @@ function parseBlockLines(state) {
   }
   return { block, terminated: false };
 }
-function parseCoords(expr) {
-  const m2 = /^\[\s*([^,\]\s]+)[,\s]+([^,\]\s]+)[,\s]+([^,\]\s]+)\s*\]$/.exec(expr);
-  if (!m2) return null;
-  const n2 = [m2[1], m2[2], m2[3]].map(Number);
-  return n2.every(Number.isFinite) ? n2 : null;
+var syntaxReader = new Parser();
+var parses = (expr) => {
+  try {
+    return syntaxReader.parse(expr, { skipValidation: true }) !== null;
+  } catch {
+    return false;
+  }
+};
+var listed = (expr) => expr[0] === "[" || expr[0] === "(";
+function declarationEquals(source) {
+  const stack = [];
+  for (let i2 = 0; i2 < source.length; i2++) {
+    const ch2 = source[i2], closer = stack.at(-1);
+    if (ch2 === "=" && stack.length === 0) return i2;
+    if (ch2 === closer) stack.pop();
+    else if (CLOSERS[ch2] && closer !== '"' && closer !== "'") stack.push(CLOSERS[ch2]);
+  }
+  return -1;
 }
 function parseStatement(tokens, state, rec) {
   const kw = tokens[0];
   const len2 = tokens.length;
   if (kw === "let") {
     if (len2 < 2) return errorNode(rec, "a name after 'let'", "end of statement");
-    const kind = state.blockKind ?? null;
-    const introduced = () => kind === "loop" || kind === "for" ? errorNode(rec, `a declaration cannot live inside '${kind}'`, kw) : null;
-    let lhs = tokens[1];
-    let rest = tokens.slice(2);
-    let expr = null;
-    const eqAt = lhs.indexOf("=");
-    if (eqAt > 0) {
-      expr = [lhs.slice(eqAt + 1), ...rest].join(" ").trim();
-      lhs = lhs.slice(0, eqAt);
-    } else if (rest[0] === "=") {
-      expr = rest.slice(1).join(" ").trim();
-    } else if (rest.length > 0) {
-      return errorNode(rec, "'=' after a name", rest[0]);
+    const source = tokens.slice(1).join(" ");
+    const eqAt = declarationEquals(source);
+    const lhs = (eqAt < 0 ? source : source.slice(0, eqAt)).trim();
+    let expr = eqAt < 0 ? null : source.slice(eqAt + 1).trim();
+    if (/^distance\s*\(/.test(lhs)) {
+      let head;
+      try {
+        head = syntaxReader.parse(lhs, { skipValidation: true });
+      } catch {
+      }
+      const coordOf = (c2) => {
+        if (c2.type === "literal" && Number.isFinite(c2.value)) return c2.value;
+        if (c2.type === "unary_operator" && (c2.value === "-" || c2.value === "+") && c2.children.length === 1 && c2.children[0].type === "literal" && Number.isFinite(c2.children[0].value)) {
+          const v2 = c2.value === "-" ? -c2.children[0].value : c2.children[0].value;
+          return v2 === 0 ? 0 : v2;
+        }
+        return null;
+      };
+      const tupleOf = (n2) => {
+        const coords = n2.children.map(coordOf);
+        if (coords.some((c2) => c2 === null)) return null;
+        if (coords.length === 2) return [coords[0], coords[1], 0];
+        return coords.length === 3 ? coords : null;
+      };
+      const subjectOf = (n2) => {
+        if (n2.type === "string") return JSON.stringify(n2.value);
+        if (n2.type === "operand") {
+          if (n2.value === "origin") return { framed: [0, 0, 0] };
+          return /^[A-Za-z_][\w-]*$/.test(n2.value) ? n2.value : null;
+        }
+        if (n2.type === "point") {
+          const t2 = tupleOf(n2);
+          return t2 ? { framed: t2 } : null;
+        }
+        if (n2.type === "vector") {
+          const t2 = tupleOf(n2);
+          return t2 ? { relative: t2 } : null;
+        }
+        return null;
+      };
+      const subjects = head?.type === "function" && head.value === "distance" && head.children.length === 2 ? head.children.map(subjectOf) : null;
+      if (!subjects || subjects.some((s2) => s2 == null)) {
+        return errorNode(rec, "distance(name, name) or a framed point", lhs);
+      }
+      if (!expr || !parses(expr)) return errorNode(rec, "a radius expression after =", expr ?? "end of statement");
+      return stamp(new ASTNode("Law", "distance", [], { subjects, expr }), rec);
     }
-    if (expr === null) return introduced() ?? stamp(new ASTNode("Existence", lhs), rec);
+    if (eqAt < 0 && tokens.length > 2) return errorNode(rec, "'=' after a name", tokens[2]);
+    if (expr === null) return stamp(new ASTNode("Existence", lhs), rec);
     if (!expr) return errorNode(rec, "a value after =", "end of statement");
+    if (expr === "origin") expr = "(0, 0, 0)";
     const dot2 = lhs.indexOf(".");
     if (dot2 > 0) {
       const target = lhs.slice(0, dot2);
       const property = lhs.slice(dot2 + 1);
       const parsed = parseProperty(property);
       if (parsed) {
-        return introduced() ?? stamp(new ASTNode("Law", parsed.feature, [], { target, expr, ...parsed }), rec);
+        return stamp(new ASTNode("Law", parsed.feature, [], { target, expr, ...parsed }), rec);
       }
       return errorNode(rec, parseSupport(), lhs);
-    }
-    if (expr === "origin") return introduced() ?? stamp(new ASTNode("Law", "position", [], { target: lhs, coords: [0, 0, 0] }), rec);
-    const coords = parseCoords(expr);
-    if (coords) return introduced() ?? stamp(new ASTNode("Law", "position", [], { target: lhs, coords }), rec);
-    if (/^\[/.test(expr)) {
-      return errorNode(rec, "a property (A.distance) or a position (origin or [x, y, z])", expr);
     }
     if (!/^[A-Za-z_][\w-]*$/.test(lhs)) {
       return errorNode(rec, "a name after 'let'", lhs);
     }
-    return stamp(new ASTNode("Scalar", lhs, [], { expr }), rec);
+    if (listed(expr) && !parses(expr)) {
+      return errorNode(rec, "a quantity \u2014 (\u2026) a coordinate or [\u2026] a vector", expr);
+    }
+    return stamp(new ASTNode("Declaration", lhs, [], { expr }), rec);
   }
   if (!BLOCK_KW[kw]) {
-    return stamp(new ASTNode("Call", kw, parseArguments(tokens.slice(1))), rec);
+    return stamp(new ASTNode("Call", kw, parseArguments(tokens.slice(1), rec.text)), rec);
   }
   const last = tokens[len2 - 1];
   if (last !== DO) {
@@ -2458,12 +3177,69 @@ function standingAilments({ frames = [], seats = [], rehearsals = [] } = {}) {
   }
   return out;
 }
+var KINDS = {
+  // A tree or a run that did not happen.
+  parse: { severity: "error" },
+  // the tree would not build
+  walk: { severity: "error" },
+  // it ran and died
+  rehearsal: { severity: "error" },
+  // a vocabulary ancestor broke
+  ink: { severity: "error" },
+  // a budget: the figure ran out of stock
+  // The world would not take the move.
+  motion: { severity: "error" },
+  // the world refused a proposed move
+  relation: { severity: "error" },
+  // a law could not hold
+  unsupported: { severity: "error" },
+  // that question has no answer yet
+  unresolved: { severity: "error" },
+  // the solve could not settle
+  contradiction: { severity: "error" },
+  // two laws cannot both hold
+  obstructed: { severity: "error" },
+  // a placement has nowhere to go
+  stale: { severity: "error" },
+  // the answer outlived its question
+  busy: { severity: "error" },
+  // a publication is in flight
+  // A value the figure could not use. The SOURCE is wrong when a word stands where a
+  // measure belongs — the figure then says something its text does not. Arithmetic
+  // that ran out of road is the DATA's fault: a step is not taken, and the figure
+  // still draws, so the document is well and only the author is owed the word.
+  "not-a-number": { severity: "error" },
+  nan: { severity: "warning" },
+  infinite: { severity: "warning" },
+  // Standing beside a healthy figure.
+  name: { severity: "warning" },
+  // two cells, one word (D024 rule 2)
+  dependent: { severity: "warning" }
+  // it stands on something that never ran
+};
+var severityOf = (w2) => KINDS[w2?.kind]?.severity ?? "error";
+var announcements = (found) => (found ?? []).filter((w2) => severityOf(w2) === "error");
+var primaryWound = (found, key) => {
+  const faults = announcements(found);
+  return faults.find((w2) => w2.address === key) ?? faults[0] ?? null;
+};
+function verdict2(found, key) {
+  const wound = primaryWound(found, key);
+  return { state: wound ? "error" : "success", wound };
+}
 
 // assets/js/turtling/commands.js
+var admitted = (v2) => conditionOf(v2) === FINITE;
+var resultMeasure = (ctx, value, expr) => admitted(value) ? value : measure2(value, { as: ctx.as, expr });
+var refuseBadPose = (ctx, pose, expr) => {
+  if (SE3.isValid({ rotation: ctx.transform.rotation, position: pose })) return;
+  resultMeasure(ctx, pose.find((v2) => !admitted(v2)), expr);
+};
 function fw(ctx, distance2 = 0) {
   const t2 = ctx.transform;
   const [wx, wy, wz] = t2.rotation.rotateVec(distance2, 0, 0);
   const newPos = [t2.position[0] + wx, t2.position[1] + wy, t2.position[2] + wz];
+  refuseBadPose(ctx, newPos, "fw position");
   const transform = { rotation: t2.rotation, position: newPos };
   if (ctx.style.down) {
     return { transform, stroke: "extend", point: newPos };
@@ -2472,6 +3248,7 @@ function fw(ctx, distance2 = 0) {
 }
 function goTo(ctx, x2 = 0, y2 = 0, z2 = null) {
   const pos = [x2, y2, z2 ?? ctx.transform.position[2]];
+  refuseBadPose(ctx, pos, "goto position");
   const transform = { rotation: ctx.transform.rotation, position: pos };
   if (ctx.style.down) {
     return { transform, stroke: "extend", point: pos };
@@ -2480,6 +3257,7 @@ function goTo(ctx, x2 = 0, y2 = 0, z2 = null) {
 }
 function jmpto(ctx, x2 = 0, y2 = 0, z2 = null) {
   const pos = [x2, y2, z2 ?? ctx.transform.position[2]];
+  refuseBadPose(ctx, pos, "jmpto position");
   return {
     transform: { rotation: ctx.transform.rotation, position: pos },
     stroke: "break"
@@ -2489,6 +3267,7 @@ function jmp(ctx, distance2 = 0) {
   const t2 = ctx.transform;
   const [wx, wy, wz] = t2.rotation.rotateVec(distance2, 0, 0);
   const newPos = [t2.position[0] + wx, t2.position[1] + wy, t2.position[2] + wz];
+  refuseBadPose(ctx, newPos, "jmp position");
   const transform = { rotation: t2.rotation, position: newPos };
   return { transform, stroke: "break" };
 }
@@ -2515,16 +3294,12 @@ function left(ctx, angle = 0) {
 }
 function faceto(ctx, x2 = 0, y2 = 0, z2 = null) {
   const pos = ctx.transform.position;
-  const dx = x2 - pos[0];
-  const dy = y2 - pos[1];
-  const dz = (z2 ?? pos[2]) - pos[2];
-  const distXY = Math.sqrt(dx * dx + dy * dy);
-  const distTotal = Math.sqrt(dx * dx + dy * dy + dz * dz);
-  if (distTotal < Versor.EPSILON) {
-    return {};
-  }
-  const yawAngle = Math.atan2(dy, dx) * (180 / Math.PI);
-  const pitchAngle = -Math.atan2(dz, distXY) * (180 / Math.PI);
+  const target = [x2, y2, z2 ?? pos[2]];
+  refuseBadPose(ctx, [target[0] - pos[0], target[1] - pos[1], target[2] - pos[2]], "faceto direction");
+  const dir = directionBetween(pos, target);
+  if (dir === null) return {};
+  const yawAngle = Math.atan2(dir[1], dir[0]) * (180 / Math.PI);
+  const pitchAngle = -Math.atan2(dir[2], Math.hypot(dir[0], dir[1])) * (180 / Math.PI);
   const yawRotation = Versor.fromAxisAngle(AXIS_Z, yawAngle);
   const pitchRotation = Versor.fromAxisAngle(AXIS_Y, pitchAngle);
   const rotation = yawRotation.multiply(pitchRotation);
@@ -2534,19 +3309,21 @@ function faceto(ctx, x2 = 0, y2 = 0, z2 = null) {
 }
 function label(ctx, text = ".", size = 1) {
   const pos = ctx.transform.position;
-  return {
-    effects: [{
-      type: "label",
-      position: [pos[0], pos[1], pos[2]],
-      color: ctx.style.color,
-      text: String(text),
-      textSize: size * 5,
-      rotation: ctx.transform.rotation
-    }]
+  const textSize = resultMeasure(ctx, size * (ctx.style.label ?? 5), "label size");
+  const shown = demand(text, { as: "display", expr: "label" });
+  const printing = {
+    type: "label",
+    position: [pos[0], pos[1], pos[2]],
+    color: ctx.style.color,
+    text: format(text),
+    textSize,
+    rotation: ctx.transform.rotation
   };
+  return { effects: shown.notice ? [shown.notice, printing] : [printing] };
 }
-function grid(ctx, divisions = 100, unit4 = 10) {
+function grid(ctx, divisions = 100, unit5 = 10) {
   const pos = ctx.transform.position;
+  const size = resultMeasure(ctx, unit5 * divisions, "grid size");
   const gridRotation = ctx.transform.rotation.multiply(
     Versor.fromAxisAngle(AXIS_X, 90)
   );
@@ -2555,7 +3332,7 @@ function grid(ctx, divisions = 100, unit4 = 10) {
       type: "grid",
       position: [pos[0], pos[1], pos[2]],
       color: ctx.style.color,
-      size: unit4 * divisions,
+      size,
       divisions,
       rotation: gridRotation
     }]
@@ -2571,12 +3348,13 @@ function fill(ctx) {
   return { stroke: "fill" };
 }
 function wait(ctx, duration = 1) {
+  const milliseconds = resultMeasure(ctx, duration * 1e3, "wait duration");
   return {
     // Flush current path before temporal boundary
     stroke: "break",
     effects: [{
       type: "wait",
-      duration: duration * 1e3,
+      duration: milliseconds,
       position: [ctx.transform.position[0], ctx.transform.position[1], ctx.transform.position[2]],
       color: ctx.style.color,
       rotation: ctx.transform.rotation,
@@ -2594,12 +3372,12 @@ function yieldCmd(ctx) {
   };
 }
 function bold(ctx, x2 = 1) {
-  return { style: { thickness: x2 * 2 } };
+  return { style: { thickness: resultMeasure(ctx, x2 * 2, "bold thickness") } };
 }
 function beColour(ctx, color = "silver") {
   let resolved = color;
   if (color === "invisible") resolved = "#00000000";
-  if (Number.isFinite(color)) resolved = `hsla(${~~(360 * color)}, 70%,  72%)`;
+  if (conditionOf(color) === FINITE) resolved = `hsla(${~~(360 * color)}, 70%,  72%)`;
   if (color === "random") resolved = `hsla(${~~(360 * (ctx.random ?? Math.random)())}, 70%,  72%)`;
   if (/^([0-9a-f]{3}){1,2}$/i.test(color)) resolved = "#" + color;
   return {
@@ -2608,7 +3386,7 @@ function beColour(ctx, color = "silver") {
   };
 }
 function show(ctx, size = 10) {
-  return { style: { showTurtle: size } };
+  return { style: { showTurtle: resultMeasure(ctx, size, "show size") } };
 }
 function hide(ctx) {
   return { style: { showTurtle: false } };
@@ -2630,45 +3408,50 @@ function limitMessage(ctx, limit = 8192) {
     effects: [{ type: "limitMailbox", limit }]
   };
 }
-var COMMANDS = /* @__PURE__ */ new Map([
-  ["fw", fw],
-  ["forward", fw],
-  ["fd", fw],
-  ["rt", right],
-  ["right", right],
-  ["lt", left],
-  ["left", left],
-  ["yaw", yaw],
-  ["pitch", pitch],
-  ["dive", pitch],
-  ["roll", roll],
-  ["show", show],
-  ["hide", hide],
-  ["hd", hide],
-  ["jmp", jmp],
-  ["jump", jmp],
-  ["bold", bold],
-  ["grid", grid],
-  ["goto", goTo],
-  ["faceto", faceto],
-  ["jmpto", jmpto],
-  ["jumpto", jmpto],
-  ["label", label],
-  ["erase", erase],
-  ["home", home],
-  ["fill", fill],
-  ["wait", wait],
-  ["yield", yieldCmd],
-  ["limitRecurse", limitRecurse],
-  ["limitCommand", limitCommand],
-  ["limitMessage", limitMessage],
-  ["beColour", beColour],
-  ["color", beColour],
-  ["colour", beColour]
-]);
+var def = (fn2, names, ...holes) => ({ fn: fn2, names, holes: Object.freeze(holes) });
+var SPECS = [
+  def(fw, ["fw", "forward", "fd"], "finite"),
+  def(right, ["rt", "right"], "finite"),
+  def(left, ["lt", "left"], "finite"),
+  def(yaw, ["yaw"], "finite"),
+  def(pitch, ["pitch", "dive"], "finite"),
+  def(roll, ["roll"], "finite"),
+  def(show, ["show"], "finite"),
+  def(hide, ["hide", "hd"]),
+  def(jmp, ["jmp", "jump"], "finite"),
+  def(bold, ["bold"], "finite"),
+  def(grid, ["grid"], "finite", "finite"),
+  def(goTo, ["goto"], "finite", "finite", "finite"),
+  def(faceto, ["faceto"], "finite", "finite", "finite"),
+  def(jmpto, ["jmpto", "jumpto"], "finite", "finite", "finite"),
+  def(label, ["label"], "word", "finite"),
+  def(erase, ["erase"]),
+  def(home, ["home"]),
+  def(fill, ["fill"]),
+  def(wait, ["wait"], "finite"),
+  def(yieldCmd, ["yield"]),
+  def(limitRecurse, ["limitRecurse"], "measure"),
+  def(limitCommand, ["limitCommand"], "measure"),
+  def(limitMessage, ["limitMessage"], "measure"),
+  def(beColour, ["beColour", "color", "colour"], "word"),
+  def(null, ["shout"], "word", "measure")
+  // a directive the executor answers itself
+];
+var COMMANDS = /* @__PURE__ */ new Map();
+var CONTRACTS = /* @__PURE__ */ new Map();
+for (const spec of SPECS) {
+  for (const name of spec.names) {
+    if (spec.fn) COMMANDS.set(name, spec.fn);
+    CONTRACTS.set(name, spec);
+  }
+}
+var contractOf = (name) => CONTRACTS.get(name);
 var DEFAULT_STYLE = Object.freeze({
   down: true,
   color: "silver",
+  // How big a NAME prints, in the head's own units. Display policy lives with the
+  // style, not with the walk that happens to want a label. (id:notation-coordinate-vector)
+  label: 5,
   thickness: 2,
   showTurtle: 10
 });
@@ -2759,15 +3542,94 @@ function matchPattern(pattern, eventName) {
   return ei3 === elen ? captures : null;
 }
 
-// assets/js/turtling/executor.js
-function demanded(value, expr, domain, state) {
-  if (domain === "reading") return value;
-  if (value === null && state.deps?.mathEvaluator?.resolveExternal) {
-    throw new Error(`No ${domain}: ${expr} is nothing`);
-  }
-  return value;
+// assets/js/turtling/space.js
+function toSpace(value) {
+  if (!Array.isArray(value) || value.length < 1) return null;
+  const n2 = [value[0], value.length > 1 ? value[1] : 0, value.length > 2 ? value[2] : 0];
+  return n2.every((x2) => conditionOf(x2) === FINITE) ? n2 : null;
 }
-var roundVec = (v2) => Math.abs(v2) < 1e-10 ? 0 : Math.round(v2 * 1e9) / 1e9;
+
+// assets/js/turtling/laws/reactive.js
+var snapshot = (value) => Array.isArray(value) ? asKind(value.map(snapshot), kindOf(value)) : value;
+function reactiveReading(initial, evaluate) {
+  let samples = snapshot(initial.reads.samples);
+  const context = /* @__PURE__ */ new Map();
+  const remember = (inputs) => {
+    for (const [origin, name, value] of inputs) {
+      if (origin !== "scope" && origin !== "constant") continue;
+      const key = `${origin}:${name}`;
+      if (!context.has(key)) context.set(key, snapshot(value));
+    }
+  };
+  remember(initial.reads.inputs);
+  const bind = (origin, name, provide) => {
+    const key = `${origin}:${name}`;
+    return context.has(key) ? context.get(key) : provide();
+  };
+  const questionOf = (reading) => {
+    const inputs = snapshot(reading.reads.inputs);
+    if (reading.error) inputs.push(["failure", reading.error.name, reading.error.message]);
+    return inputs;
+  };
+  const replay = () => {
+    let index = 0;
+    return (name) => {
+      const entry = samples[index++];
+      return entry?.[0] === name ? entry[1] : samples.find((s2) => s2[0] === name)?.[1] ?? 0;
+    };
+  };
+  return {
+    initial: { question: questionOf(initial), value: initial.value },
+    capture: () => {
+      const reading = evaluate(replay(), bind);
+      const absent = reading.reads.inputs.some((input) => input[0] === "external" && input[3] == null || (input[0] === "scope" || input[0] === "constant") && input[2] == null);
+      const domain = ["TowerRefusal", "DomainRefusal"].includes(reading.error?.name);
+      if (absent || reading.error && !domain) {
+        throw reading.error ?? new Error("a driven input has no current value");
+      }
+      return questionOf(reading);
+    },
+    compute: () => {
+      const reading = evaluate(null, bind);
+      remember(reading.reads.inputs);
+      samples = snapshot(reading.reads.samples);
+      return { question: questionOf(reading), value: reading.value, error: reading.error };
+    }
+  };
+}
+
+// assets/js/turtling/mafs/parse_memo.js
+var PARSE_MEMO = /* @__PURE__ */ new WeakMap();
+var MAX_MEMO = 512;
+function parseMemo(parser, expr) {
+  const epoch = parser.epoch ?? 0;
+  let entry = PARSE_MEMO.get(parser);
+  if (entry === void 0 || entry.epoch !== epoch) {
+    entry = { epoch, map: /* @__PURE__ */ new Map() };
+    PARSE_MEMO.set(parser, entry);
+  }
+  const hit = entry.map.get(expr);
+  if (hit !== void 0) return hit;
+  const tree = parser.parse(expr);
+  if (entry.map.size >= MAX_MEMO) entry.map.clear();
+  entry.map.set(expr, tree);
+  return tree;
+}
+
+// assets/js/turtling/executor.js
+var consumerOf = (state) => state.strict ? "construction" : state.rehearsal ? "vocabulary" : "walk";
+function admit(value, expr, domain, state) {
+  if (domain !== "finite") return value;
+  if (Array.isArray(value)) {
+    const lone = value.length === 1 && 0 in value && !Array.isArray(value[0]);
+    if (!lone || conditionOf(value[0]) !== FINITE) {
+      return measure2(value, { as: consumerOf(state), expr });
+    }
+    value = value[0];
+  }
+  if (conditionOf(value) === FINITE) return value;
+  return measure2(value, { as: consumerOf(state), expr });
+}
 var envNum = (name) => {
   if (typeof process === "undefined") return 0;
   return Number(process.env?.[name] ?? 0) || 0;
@@ -2782,18 +3644,14 @@ function chargeReductions(state) {
     throw error;
   }
 }
-var ARG_DOMAINS = {
-  beColour: ["word"],
-  color: ["word"],
-  colour: ["word"],
-  label: ["word", "measure"],
-  shout: ["word", "measure"]
-};
-var holeDomain = (domains, i2) => domains?.[i2] === "word" ? "word" : "measure";
-function* evalOrBlock(expr, scope, state, domain = "measure") {
+var holeDomain = (holes, i2) => holes?.[i2] ?? "measure";
+var IDENT_HEAD_RE = /^[a-zA-Z]/;
+function* evalOrBlock(expr, scope, state, domain = "measure", trackReads = false) {
   while (true) {
     try {
-      return demanded(evaluateExpr(expr, scope, state, domain), expr, domain, state);
+      const reading = trackReads ? readExpr(expr, scope, state, domain) : null;
+      if (reading?.error) throw reading.error;
+      return admit(reading ? reading.value : evaluateExpr(expr, scope, state, domain), expr, domain, state);
     } catch (e2) {
       if (e2.blocked) {
         yield { type: "blocked", target: e2.blockedFrame ?? null };
@@ -2813,6 +3671,9 @@ function createActorState(opts = {}) {
     // The actor's randomness capability. A construction installs a refusing
     // source so a command cannot reach the process RNG. (id:laws-living-figures-capability-review)
     random: opts.random || Math.random,
+    // A headless rehearsal publishes nothing, so a nothing pose there is not a
+    // wound; `drainNamespace` sets this. (phase 1: rehearsal behavior)
+    rehearsal: opts.rehearsal === true,
     commandCount: 0,
     recurseCount: 0,
     maxRecurseDepth: opts.maxRecurseDepth || 360,
@@ -2858,12 +3719,13 @@ function* execute(ast, deps, opts = {}) {
   state.deps = deps;
   if (opts.actorState) state.loopCounter = opts.loopCounter ?? state.loopCounter;
   deps.mathEvaluator.userFunctions = deps.mathParser.userspace;
+  deps.mathEvaluator.parser = deps.mathParser;
   const ec2 = deps.mathEvaluator.constants;
   ec2["time"] = () => state.elapsedTime / 1e3;
   ec2["birthtime"] = () => state.birthtime / 1e3;
-  ec2["x"] = () => roundVec(state.transform.position[0]);
-  ec2["y"] = () => roundVec(state.transform.position[1]);
-  ec2["z"] = () => roundVec(state.transform.position[2]);
+  ec2["x"] = () => state.transform.position[0];
+  ec2["y"] = () => state.transform.position[1];
+  ec2["z"] = () => state.transform.position[2];
   ec2["count"] = () => state.loopCounter;
   try {
     yield* walkBody(ast, opts.scope || {}, state, stroke);
@@ -2919,6 +3781,75 @@ function* readGotoArgs(nodes, scope, state) {
     yield { type: "blocked", target: blocked2.blockedFrame ?? null };
   }
 }
+function* emitPoint(name, expr, owner, scope, state, sampled) {
+  if (sampled !== void 0) {
+    yield {
+      type: "law",
+      feature: "position",
+      target: name,
+      value: toSpace(sampled) ?? sampled,
+      axis: null,
+      owner,
+      read: null
+    };
+    return;
+  }
+  const raw = yield* evalOrBlock(expr, scope, state, "measure", true);
+  const reads = state.deps.mathEvaluator.reads;
+  yield {
+    type: "law",
+    feature: "position",
+    target: name,
+    value: toSpace(raw) ?? raw,
+    axis: null,
+    owner,
+    // A coordinate that RESOLVED a reference tracks it; a literal owns no readout.
+    read: reads?.live ? reactiveReading(
+      { value: raw, reads },
+      (sample, bind) => readExpr(expr, scope, state, "measure", sample, bind)
+    ) : null
+  };
+}
+function vectorMeta(name, state) {
+  const t2 = state.transform;
+  return {
+    name,
+    from: [...t2.position],
+    rotation: t2.rotation,
+    color: state.style.color,
+    thickness: state.style.thickness,
+    textSize: state.style.label ?? 5
+  };
+}
+function* emitVector(name, expr, owner, scope, state, sampled) {
+  const v2 = sampled === void 0 ? yield* evalOrBlock(expr, scope, state) : sampled;
+  const d2 = toSpace(v2);
+  if (!d2) {
+    yield notice({
+      kind: "vector",
+      message: `a displacement needs at least one finite component, not ${spellingOf(v2)}`,
+      span: owner
+    });
+    return;
+  }
+  yield {
+    type: "scalar",
+    name,
+    owner,
+    initial: d2,
+    vector: vectorMeta(name, state),
+    read: sampled === void 0 ? (() => evaluateExpr(expr, scope, state, "measure")) : (() => sampled)
+  };
+}
+function* declareSampled(name, value, owner, state) {
+  const row2 = DECLARED[kindOf(value)];
+  if (row2) return yield* row2.emit(name, null, owner, null, state, value);
+  yield { type: "parameter", name, owner, value };
+}
+var DECLARED = {
+  point: { emit: emitPoint },
+  vector: { emit: emitVector }
+};
 function* walkBody(body, scope, state, stroke) {
   let matched = false;
   for (const node of body) {
@@ -2933,7 +3864,13 @@ function* walkBody(body, scope, state, stroke) {
     try {
       switch (node.type) {
         case "Loop": {
-          const times = yield* evalOrBlock(node.value, scope, state);
+          const asked = demand(
+            yield* evalOrBlock(node.value, scope, state),
+            { as: "count", expr: node.value, span: node.span ?? null }
+          );
+          if (asked.notice) yield asked.notice;
+          if (asked.verdict !== "take") continue;
+          const times = asked.value;
           const prevCount = state.loopCounter;
           for (let i2 = 0; i2 < times; i2++) {
             if (i2 > 0 && state.deps.mathEvaluator._observedSibling) {
@@ -2957,6 +3894,9 @@ function* walkBody(body, scope, state, stroke) {
         case "Call": {
           if (node.value === "fn" || node.value === "func") {
             const rawArgs = node.children.map((arg) => arg.value);
+            if (rawArgs.length > 2) {
+              throw new Error(`fn takes a signature and a body, but ${rawArgs.length} arguments were given`);
+            }
             const signature = rawArgs[0];
             let expression = rawArgs[1] || 0;
             const fnScope = { ...scope };
@@ -2973,7 +3913,7 @@ function* walkBody(body, scope, state, stroke) {
                 const tree = parseMemo(parser, String(expression));
                 if (!readsDeferred(tree, deferred ?? /* @__PURE__ */ new Set())) {
                   const value = yield* evalOrBlock(String(expression), scope, state);
-                  if (typeof value === "number" && Number.isFinite(value)) {
+                  if (conditionOf(value) === FINITE) {
                     expression = String(value);
                   }
                 }
@@ -2995,16 +3935,24 @@ function* walkBody(body, scope, state, stroke) {
             if (!settled) yield { type: "motionUnresolved", reason: "stale motion base" };
             break;
           }
-          const domains = ARG_DOMAINS[node.value];
+          const userFn = state.functions[scope[node.value] || node.value];
+          const holes = userFn ? userFn.parameters.map(() => "measure") : contractOf(node.value)?.holes ?? [];
+          if (node.children.length > holes.length) {
+            throw new Error(`${node.value} takes ${holes.length} argument${holes.length === 1 ? "" : "s"}, but ${node.children.length} were given`);
+          }
           const args = [];
           for (let i2 = 0; i2 < node.children.length; i2++) {
-            args.push(yield* evalOrBlock(node.children[i2].value, scope, state, holeDomain(domains, i2)));
+            const child = node.children[i2];
+            if (child.type === "Value") {
+              args.push(admit(child.value, spellingOf(child.value), holeDomain(holes, i2), state));
+              continue;
+            }
+            args.push(yield* evalOrBlock(child.value, scope, state, holeDomain(holes, i2)));
           }
-          if (node.value === "shout") {
+          if (node.value === "shout" && !userFn) {
             yield { type: "shout", name: args[0], payload: args[1] };
             break;
           }
-          const userFn = state.functions[scope[node.value] || node.value];
           if (userFn) {
             const currDepth = scope["__depth__"] || 0;
             if (currDepth > 1) state.recurseCount++;
@@ -3059,9 +4007,16 @@ function* walkBody(body, scope, state, stroke) {
               }
             }
           } else {
-            if (!matched && (yield* evalOrBlock(node.value, scope, state)) !== 0) {
-              matched = true;
-              yield* walkBody(node.children, scope, state, stroke);
+            if (!matched) {
+              const asked = demand(
+                yield* evalOrBlock(node.value, scope, state),
+                { as: "condition", expr: node.value, span: node.span ?? null }
+              );
+              if (asked.notice) yield asked.notice;
+              if (asked.verdict === "take" && asked.value !== 0) {
+                matched = true;
+                yield* walkBody(node.children, scope, state, stroke);
+              }
             }
           }
           break;
@@ -3082,11 +4037,52 @@ function* walkBody(body, scope, state, stroke) {
         }
         case "Law": {
           const feature = node.value;
-          const value = payloadOf(feature) === "expr" ? yield* evalOrBlock(node.meta.expr, scope, state) : node.meta.coords;
-          yield { type: "law", feature, target: node.meta.target, value, axis: node.meta.axis ?? null, owner: node.span ?? null };
+          const selectors = node.meta.subjects ?? [node.meta.target];
+          const subjects = [];
+          for (const selector of selectors) {
+            if (selector != null && typeof selector === "object") {
+              subjects.push(selector);
+              continue;
+            }
+            const subject = selector.startsWith('"') ? yield* evalOrBlock(selector, scope, state, "word") : Object.hasOwn(scope, selector) ? scope[selector] : selector;
+            if (typeof subject !== "string" || !subject) throw new Error("a law subject must name a thing");
+            subjects.push(subject);
+          }
+          if (node.meta.movers != null && !Array.isArray(node.meta.movers)) throw new Error("law movers must be selectors");
+          const movers = node.meta.movers?.map((selector) => {
+            const index = selectors.indexOf(selector);
+            if (index < 0 || typeof subjects[index] !== "string") throw new Error("a law mover must name a live subject");
+            return subjects[index];
+          });
+          const target = subjects.find((s2) => typeof s2 === "string") ?? subjects[0];
+          if (feature === "position") {
+            yield* emitPoint(target, node.meta.expr, node.span ?? null, scope, state);
+            break;
+          }
+          const drive = driveOf(feature);
+          const raw = yield* evalOrBlock(node.meta.expr, scope, state, "measure", !!drive);
+          const reads = state.deps.mathEvaluator.reads;
+          yield {
+            type: "law",
+            feature,
+            target,
+            value: raw,
+            ...node.meta.subjects ? { subjects } : {},
+            ...movers ? { movers } : {},
+            ...node.meta.reachPolicy !== void 0 ? { reachPolicy: node.meta.reachPolicy } : {},
+            // Dotted reaches carry RHS provenance too, so both spellings bind the
+            // same typed term. (id:laws-distance-term-normalization)
+            expression: node.meta.expr,
+            axis: node.meta.axis ?? null,
+            owner: node.span ?? null,
+            read: drive && reads?.live ? reactiveReading(
+              { value: raw, reads },
+              (sample, bind) => readExpr(node.meta.expr, scope, state, "measure", sample, bind)
+            ) : null
+          };
           break;
         }
-        case "Scalar": {
+        case "Declaration": {
           const expr = node.meta.expr;
           const figureCall = figureCallOf(expr, state);
           if (figureCall) {
@@ -3099,11 +4095,23 @@ function* walkBody(body, scope, state, stroke) {
             const call = new ASTNode(
               "Call",
               figureCall.recipe,
-              inputs.map((input) => new ASTNode("Argument", String(input)))
+              inputs.map((input) => new ASTNode("Value", input))
             );
             call.span = node.span ?? null;
-            yield { type: "birth", name: node.value, origin: SE3.clone(state.transform), owner: node.span ?? null };
-            yield spawnEvent(state, scope, node.value, [call], state.functions, { profile: "derived", question: inputs, recipe: figureCall.recipe, argExprs: figureCall.args });
+            yield {
+              type: "birth",
+              name: node.value,
+              origin: SE3.clone(state.transform),
+              profile: "derived",
+              owner: node.span ?? null
+            };
+            yield spawnEvent(state, scope, node.value, [call], state.functions, {
+              profile: "derived",
+              question: inputs,
+              recipe: figureCall.recipe,
+              argExprs: figureCall.args,
+              owner: node.span ?? null
+            });
             break;
           }
           const deferred = state.deps?.mathEvaluator?.deferred;
@@ -3116,12 +4124,17 @@ function* walkBody(body, scope, state, stroke) {
             }
           }
           if (stochastic) {
-            yield {
-              type: "parameter",
-              name: node.value,
-              owner: node.span ?? null,
-              value: evaluateExpr(expr, scope, state, "measure")
-            };
+            yield* declareSampled(
+              node.value,
+              evaluateExpr(expr, scope, state, "measure"),
+              node.span ?? null,
+              state
+            );
+            break;
+          }
+          const row2 = DECLARED[shapedKind(expr, scope, state)];
+          if (row2) {
+            yield* row2.emit(node.value, expr, node.span ?? null, scope, state);
             break;
           }
           yield {
@@ -3134,9 +4147,10 @@ function* walkBody(body, scope, state, stroke) {
         }
         case "Empty":
           break;
-        // A malformed statement is inert at the walk — the healthy siblings still
-        // run (D020) — but inert is not silent: the incompleteness is reported where
-        // it is located. A construction is strict: there it refuses instead.
+        // A malformed statement is inert at the walk — the healthy siblings still run
+        // (D020) — but inert is not silent: the incompleteness rides the SAME notice shape
+        // as a refused measure, so the author reads one kind of report. A construction is
+        // strict: there it refuses instead.
         // (id:cmp-resilient, id:laws-figures-phase34-capabilities)
         case "Error":
           if (state.strict) {
@@ -3145,12 +4159,12 @@ function* walkBody(body, scope, state, stroke) {
             strict.span = node.span;
             throw strict;
           }
-          yield {
-            type: "incomplete",
-            expected: node.meta?.expected ?? null,
-            found: node.meta?.found ?? null,
+          yield notice({
+            kind: "parse",
+            // the house's own kind for a tree that would not build
+            message: `this line did not parse \u2014 expected ${node.meta?.expected ?? "a statement"}, found ${node.meta?.found ?? `'${node.value}'`}`,
             span: node.span ?? null
-          };
+          });
           break;
       }
     } catch (error) {
@@ -3158,12 +4172,21 @@ function* walkBody(body, scope, state, stroke) {
         error.span = node.span;
         if (!error.kind) error.kind = "walk";
       }
+      if (error.refusal) {
+        if (error.refusal.stops) throw error;
+        if (error.refusal.notice) {
+          error.refusal.notice.span ??= error.span ?? null;
+          yield error.refusal.notice;
+        }
+        continue;
+      }
       throw error;
     }
   }
 }
 function drainNamespace(ast, deps, opts = {}) {
   const actorState = opts.actorState ?? createActorState({ maxCommands: 2e5, ...opts });
+  actorState.rehearsal = true;
   try {
     const gen = execute(ast, deps, { maxCommands: 2e5, ...opts, actorState });
     while (!gen.next().done) {
@@ -3185,10 +4208,18 @@ function* callCommand(name, args, state, stroke, baseRevision) {
   const ctx = {
     transform: state.transform,
     style: state.style,
-    random: state.random
+    random: state.random,
+    as: consumerOf(state)
   };
   stroke.lastPos = [...state.transform.position];
   const result = cmd(ctx, ...args);
+  if (result.effects) {
+    for (const event of result.effects) {
+      if (event.type === "wait") {
+        measure2(state.elapsedTime + event.duration, { as: consumerOf(state), expr: "elapsed time" });
+      }
+    }
+  }
   if (result.transform && state.motionProtocol) {
     const admission = yield {
       type: "motion",
@@ -3256,22 +4287,6 @@ function* callCommand(name, args, state, stroke, baseRevision) {
     }
   }
 }
-var PARSE_MEMO = /* @__PURE__ */ new WeakMap();
-var MAX_MEMO = 512;
-function parseMemo(mathParser, expr) {
-  const epoch = mathParser.epoch ?? 0;
-  let entry = PARSE_MEMO.get(mathParser);
-  if (entry === void 0 || entry.epoch !== epoch) {
-    entry = { epoch, map: /* @__PURE__ */ new Map() };
-    PARSE_MEMO.set(mathParser, entry);
-  }
-  const hit = entry.map.get(expr);
-  if (hit !== void 0) return hit;
-  const tree = mathParser.parse(expr);
-  if (entry.map.size >= MAX_MEMO) entry.map.clear();
-  entry.map.set(expr, tree);
-  return tree;
-}
 function splitTopLevel(s2) {
   const out = [];
   let depth = 0, start = 0;
@@ -3286,22 +4301,6 @@ function splitTopLevel(s2) {
   }
   out.push(s2.slice(start));
   return out;
-}
-function splitCommandArgs(rest) {
-  if (rest === "") return [];
-  const out = [];
-  let depth = 0, start = 0;
-  for (let i2 = 0; i2 < rest.length; i2++) {
-    const c2 = rest[i2];
-    if (c2 === "[" || c2 === "(") depth++;
-    else if (c2 === "]" || c2 === ")") depth--;
-    else if ((c2 === " " || c2 === "	") && depth === 0) {
-      if (i2 > start) out.push(rest.slice(start, i2));
-      start = i2 + 1;
-    }
-  }
-  if (start < rest.length) out.push(rest.slice(start));
-  return out.filter(Boolean);
 }
 function spawnEvent(state, scope, name, body, functions, extra = {}) {
   return {
@@ -3334,21 +4333,11 @@ function figureCallOf(expr, state) {
   const cmd = signature ? null : COMMANDS.get(name);
   if (!signature && !cmd) return null;
   const rest = expr.slice(head[0].length).trim();
-  if (signature) {
-    return { recipe: name, args: splitFigureArgs(rest, signature.parameters?.length ?? 0) };
-  }
-  return { recipe: name, args: splitCommandArgs(rest) };
-}
-function splitFigureArgs(rest, arity) {
-  if (rest === "") return [];
   if (rest.startsWith("[") && rest.endsWith("]")) {
     const inner = rest.slice(1, -1).trim();
-    return inner === "" ? [] : splitTopLevel(inner).map((a2) => a2.trim());
+    return { recipe: name, args: inner === "" ? [] : splitTopLevel(inner).map((a2) => a2.trim()) };
   }
-  const groups = splitTopLevel(rest).map((a2) => a2.trim());
-  if (groups.length === arity) return groups;
-  const spaced = rest.split(/\s+/).filter(Boolean);
-  return spaced.length === arity ? spaced : [rest];
+  return { recipe: name, args: readArguments(rest) };
 }
 function readsDeferred(tree, names) {
   if (!tree) return false;
@@ -3356,43 +4345,54 @@ function readsDeferred(tree, names) {
   for (const child of tree.children ?? []) if (readsDeferred(child, names)) return true;
   return false;
 }
+function shapedKind(expr, scope, state) {
+  parseMemo(state.deps.mathParser, expr);
+  try {
+    return kindOf(evaluateExpr(expr, scope, state, "measure"));
+  } catch (error) {
+    if (error?.name === "TowerRefusal" || error?.name === "DomainRefusal") throw error;
+    return null;
+  }
+}
+function readExpr(expr, scope, state, domain = "measure", sample = null, bind = null) {
+  const evaluator = state.deps.mathEvaluator, parent = evaluator.reads;
+  const reads = evaluator.beginReads();
+  reads.active = true;
+  reads.sample = sample;
+  reads.bind = bind;
+  try {
+    return { value: evaluateExprBody(expr, scope, state, domain), reads };
+  } catch (error) {
+    return { value: void 0, reads, error };
+  } finally {
+    reads.active = false;
+    reads.sample = null;
+    reads.bind = null;
+    evaluator.reads = parent?.active ? parent : reads;
+  }
+}
 function evaluateExpr(expr, scope, state, domain = "measure") {
+  const evaluator = state.deps.mathEvaluator, parent = evaluator.reads;
+  evaluator.reads = null;
+  try {
+    return evaluateExprBody(expr, scope, state, domain);
+  } finally {
+    evaluator.reads = parent;
+  }
+}
+function evaluateExprBody(expr, scope, state, domain = "measure") {
   const { mathParser, mathEvaluator } = state.deps;
-  const quoteRegex = /^(['"])(.*?)\1$/;
-  const quoteMatch = expr.match(quoteRegex);
-  if (quoteMatch) {
-    const stringContent = quoteMatch[2];
-    let processed = stringContent;
-    let previous;
-    do {
-      previous = processed;
-      processed = processed.replace(
-        /\[([^[\]](?:[^[\]]|\[(?:\\.|[^[\]])*\])*)\]/g,
-        (match, innerExpr) => {
-          if (innerExpr.trim().match(/^`.*`$/)) {
-            return match;
-          }
-          const value = evaluateExpr(innerExpr.trim(), scope, state, "measure");
-          return value !== void 0 ? String(value) : match;
-        }
-      );
-    } while (processed !== previous);
-    return processed;
-  }
-  const computedDot = expr.match(/^(['"])(.*?)\1\.(.+)$/);
-  if (computedDot) {
-    const name = evaluateExpr(computedDot[1] + computedDot[2] + computedDot[1], scope, state, domain);
-    return evaluateExpr(name + "." + computedDot[3], scope, state, domain);
-  }
-  if (mathParser.isNumeric(expr)) return parseFloat(expr);
-  if (scope[expr] !== void 0) return scope[expr];
+  if (isNumericLiteral(expr)) return parseFloat(expr);
+  if (scope[expr] !== void 0) return mathEvaluator.readContext ? mathEvaluator.readContext(expr, scope) : scope[expr];
   const tree = parseMemo(mathParser, expr);
+  if (tree.type === "string") return mathEvaluator.run(tree, scope);
+  if (tree.type === "literal") return tree.value;
   if (tree.children.length > 0 || mathEvaluator.namespace_check(tree.value)) {
     return mathEvaluator.run(tree, scope);
   }
-  if (typeof tree.value === "string" && /^[a-zA-Z]/.test(tree.value)) {
+  if (typeof tree.value === "string" && IDENT_HEAD_RE.test(tree.value)) {
     if (mathEvaluator.resolveExternal) {
-      const resolved = mathEvaluator.resolveExternal(tree.value);
+      const resolved = mathEvaluator.readExternal ? mathEvaluator.readExternal(tree.value) : mathEvaluator.resolveExternal(tree.value);
       if (resolved !== void 0) return resolved;
     }
     if (domain === "word") return tree.value;
@@ -3403,6 +4403,7 @@ function evaluateExpr(expr, scope, state, domain = "measure") {
 }
 
 // assets/js/turtling/mafs/evaluate.js
+var DEFAULT_TOWER = Object.freeze(installVectorFloor(installScalarFloor(createTower())).seal());
 function hasNothing(...values) {
   return values.some((value) => value === null || value === void 0);
 }
@@ -3413,36 +4414,60 @@ var Evaluator = class {
       "e": () => Math.E,
       "random": () => Math.random()
     };
-    this.functions = {
-      "sin": (x2) => Math.sin(this.toRadians(x2)),
-      "cos": (x2) => Math.cos(this.toRadians(x2)),
-      "tan": (x2) => Math.tan(this.toRadians(x2)),
-      "asin": (x2) => this.toDegrees(Math.asin(x2)),
-      "acos": (x2) => this.toDegrees(Math.acos(x2)),
-      "atan": (x2) => this.toDegrees(Math.atan(x2)),
-      "sqrt": Math.sqrt,
-      "log": Math.log,
-      "exp": Math.exp,
-      "abs": Math.abs
-    };
+    this.tower = DEFAULT_TOWER;
     this.deferred = /* @__PURE__ */ new Set(["random"]);
     this.userFunctions = null;
+    this.shadowable = new Set(SHADOWABLE_BUILTINS);
+    this.reads = null;
+  }
+  // Start a fresh dependency record for one evaluation. The resolver fills it as it
+  // reaches values; the caller reads `reads` after the evaluation succeeds.
+  beginReads() {
+    this.reads = { live: false, frames: /* @__PURE__ */ new Set(), inputs: [], samples: [], locals: /* @__PURE__ */ new Set() };
+    return this.reads;
   }
   namespace_check(val) {
     if (val in this.constants) return true;
     if (typeof val === "string" && val.includes(".") && this.resolveExternal) return true;
     return false;
   }
+  // Every source string has the same interpolation; held literals never enter.
+  // Interpolated names resolve as data, never as newly minted expression ink.
+  interpolate(text, context) {
+    let processed = text;
+    let previous;
+    do {
+      previous = processed;
+      processed = processed.replace(/\[([^[\]](?:[^[\]]|\[(?:\\.|[^[\]])*\])*)\]/g, (match, expr) => {
+        if (expr.trim().match(/^`.*`$/)) return match;
+        const parser = this.parser ?? (this.parser = new Parser());
+        const value = this.run(parseMemo(parser, expr.trim()), context);
+        return value !== void 0 ? String(value) : match;
+      });
+    } while (processed !== previous);
+    return processed;
+  }
   run(ast, context) {
     if (!ast) return 0;
+    if (ast.type === "literal") return ast.value;
+    if (ast.type === "string") return this.interpolate(ast.value, context);
+    if (ast.type === "access" || ast.type === "access_call") {
+      const name = this.run(ast.children[0], context) + "." + ast.value;
+      if (ast.type === "access_call") {
+        return this.applyFunction(name, ast.children.slice(1).map((child) => this.run(child, context)), context);
+      }
+      if (context && name in context) return this.readContext(name, context);
+      if (!this.resolveExternal) return null;
+      return this.resolveContext(name, context);
+    }
+    if (ast.type === "vector" || ast.type === "point") {
+      return asKind(ast.children.map((element) => this.run(element, context)), ast.type);
+    }
     if (ast.type === "operand") {
-      if (typeof ast.value === "number") return ast.value;
-      if (/^-?\d+\.?\d*(?:[eE][+-]?\d+)?$/.test(ast.value)) {
-        return parseFloat(ast.value);
-      } else if (context && ast.value in context) {
-        return context[ast.value];
+      if (context && ast.value in context) {
+        return this.readContext(ast.value, context);
       } else if (ast.value in this.constants) {
-        return this.constants[ast.value]();
+        return this.readConstant(ast.value);
       } else {
         return this.resolveContext(ast.value, context);
       }
@@ -3458,128 +4483,78 @@ var Evaluator = class {
       return this.applyUnaryOperator(ast.value, operand);
     }
   }
-  toRadians(degrees) {
-    return degrees * (Math.PI / 180);
-  }
-  toDegrees(radians) {
-    return radians * (180 / Math.PI);
-  }
   applyFunction(func, args, context) {
     if (hasNothing(...args)) return null;
-    if (func in this.functions) {
-      const evals = this.functions[func](args[0]);
-      if (Number.isSafeInteger(evals)) return evals;
-      const precision = 1e14;
-      return Math.round(evals * precision) / precision;
-    }
     if (this.userFunctions) {
       const key = `${func}:${args.length}`;
       const entry = this.userFunctions.get(key);
-      if (entry) {
+      if (entry && (this.shadowable.has(func) || !this.tower.known(func))) {
         const [body, params] = entry;
         const childContext = { ...context };
         params.forEach((p2, i2) => {
           childContext[p2] = args[i2];
         });
-        return this.run(body, childContext);
+        const reads = this.reads, locals = reads?.locals;
+        if (reads) {
+          reads.inputs?.push(["function", func, body, params]);
+          reads.locals = /* @__PURE__ */ new Set([...locals ?? [], ...params]);
+        }
+        try {
+          return this.run(body, childContext);
+        } finally {
+          if (reads) reads.locals = locals;
+        }
       }
     }
+    if (this.tower.known(func)) return this.tower.apply(func, ...args);
     if (this.resolveExternal) {
-      const result = this.resolveExternal(func, args);
+      const result = this.readExternal(func, args);
       if (result !== void 0) return result;
     }
     throw new Error(`Undefined function: ${func}`);
   }
+  // Observe resolved values, not names guessed from syntax. (id:laws-dependency-driven-place)
+  readExternal(name, args) {
+    const value = this.resolveExternal(name, args);
+    this.reads?.inputs?.push(["external", name, args ?? null, value]);
+    return value;
+  }
+  readContext(name, context) {
+    const local = this.reads?.locals?.has(name);
+    const value = !local && this.reads?.bind ? this.reads.bind("scope", name, () => context[name]) : context[name];
+    if (!this.reads?.locals?.has(name)) this.reads?.inputs?.push(["scope", name, value]);
+    return value;
+  }
+  readConstant(name) {
+    if (!this.reads) return this.constants[name]();
+    const deferred = this.deferred.has(name);
+    const provide = () => this.constants[name]();
+    const value = deferred ? this.reads?.sample ? this.reads.sample(name) : provide() : this.reads?.bind ? this.reads.bind("constant", name, provide) : provide();
+    if (deferred) this.reads?.samples?.push([name, value]);
+    else this.reads?.inputs?.push(["constant", name, value]);
+    return value;
+  }
   resolveContext(variable, context) {
     if (variable in context) {
-      return context[variable];
+      return this.readContext(variable, context);
     }
     if (this.resolveExternal) {
-      const resolved = this.resolveExternal(variable);
+      const resolved = this.readExternal(variable);
       if (resolved !== void 0) return resolved;
     }
     throw new Error(`Undefined variable: ${variable}`);
   }
   applyUnaryOperator(operator, operand) {
     if (hasNothing(operand)) return null;
-    switch (operator) {
-      case "!":
-        return !operand;
-      case "+":
-        return +operand;
-      case "-":
-        return -operand;
-      default:
-        throw new Error("Unsupported operator");
-    }
+    const row2 = getOperator(operator, "prefix");
+    if (!row2) throw new Error("Unsupported operator");
+    return this.tower.apply(row2.lexeme, operand);
   }
   applyOperator(operator, left2, right2) {
     if (hasNothing(left2, right2)) return null;
-    if (!Number.isSafeInteger(left2) || !Number.isSafeInteger(right2)) {
-      const precision = 1e14;
-      switch (operator) {
-        // Arithmetic operators
-        case "+":
-          return Math.round((left2 + right2) * precision) / precision;
-        case "--":
-          return Math.round((left2 + right2) * precision) / precision;
-        case "+-":
-          return Math.round((left2 - right2) * precision) / precision;
-        case "-":
-          return Math.round((left2 - right2) * precision) / precision;
-        default:
-          break;
-      }
-    }
-    if (operator == "-") return left2 - right2;
-    if (operator[operator.length - 1] == "-") {
-      right2 = -right2;
-      operator = operator.slice(0, -1);
-    }
-    switch (operator) {
-      // Logical operators
-      case "&&":
-        return left2 && right2;
-      case "||":
-        return left2 || right2;
-      case "&":
-        return left2 & right2;
-      // Bitwise AND
-      case "|":
-        return left2 | right2;
-      // Bitwise OR
-      // Comparison operators
-      case "===":
-        return left2 === right2 ? 1 : 0;
-      case "!==":
-        return left2 !== right2 ? 1 : 0;
-      case "==":
-        return left2 == right2 ? 1 : 0;
-      case "!=":
-        return left2 != right2 ? 1 : 0;
-      case ">=":
-        return left2 >= right2 ? 1 : 0;
-      case ">":
-        return left2 > right2 ? 1 : 0;
-      case "<=":
-        return left2 <= right2 ? 1 : 0;
-      case "<":
-        return left2 < right2 ? 1 : 0;
-      case "^":
-        return Math.pow(left2, right2);
-      case "//":
-        return left2 % right2;
-      case "*":
-        return left2 * right2;
-      case "/":
-        return left2 / right2;
-      case "+":
-        return left2 + right2;
-      case "-":
-        return left2 - right2;
-      default:
-        throw new Error(`Unknown operator: ${operator}`);
-    }
+    const row2 = getOperator(operator, "infix");
+    if (!row2) throw new Error(`Unknown operator: ${operator}`);
+    return this.tower.apply(row2.lexeme, left2, right2);
   }
 };
 
@@ -14220,12 +15195,7 @@ var Pa2 = class {
 
 // assets/js/turtling/render/shape.js
 var import_earcut = __toESM(require_earcut());
-var TEMP_VEC3_A = new Ti();
-var TEMP_VEC3_B = new Ti();
-var TEMP_VEC3_C = new Ti();
-var TEMP_PLANE = new lo();
 var GeometryUtils = class {
-  static EPSILON = 1e-10;
   static MIN_AREA_THRESHOLD = 1e-10;
   /**
    * Fast planarity test using cached temporaries
@@ -14252,32 +15222,11 @@ var GeometryUtils = class {
     return true;
   }
   /**
-   * Ensure polygon is properly closed
-   */
-  static ensureClosed(vertices) {
-    if (vertices.length < 3) return vertices;
-    const first = vertices[0];
-    const last = vertices[vertices.length - 1];
-    const distance2 = first.distanceTo(last);
-    if (distance2 > this.EPSILON) {
-      return [...vertices, first.clone()];
-    }
-    return vertices;
-  }
-  /**
    * Project 3D polygon to 2D for triangulation
    */
   static projectTo2D(vertices) {
     if (vertices.length < 3) return { coords: [], indices: [] };
-    const normal = new Ti();
-    for (let i2 = 0; i2 < vertices.length; i2++) {
-      const current = vertices[i2];
-      const next = vertices[(i2 + 1) % vertices.length];
-      normal.x += (current.y - next.y) * (current.z + next.z);
-      normal.y += (current.z - next.z) * (current.x + next.x);
-      normal.z += (current.x - next.x) * (current.y + next.y);
-    }
-    normal.normalize();
+    const normal = this.calculatePolygonNormal(vertices);
     const absNormal = new Ti(Math.abs(normal.x), Math.abs(normal.y), Math.abs(normal.z));
     let coords = [];
     if (absNormal.z >= absNormal.x && absNormal.z >= absNormal.y) {
@@ -14295,15 +15244,12 @@ var GeometryUtils = class {
   static triangulatePolygon(vertices) {
     if (vertices.length < 3) return [];
     if (vertices.length === 3) return [0, 1, 2];
-    const closedVertices = this.ensureClosed(vertices);
-    const triangulationVertices = closedVertices.slice(0, -1);
-    if (triangulationVertices.length < 3) return [];
     try {
-      const { coords } = this.projectTo2D(triangulationVertices);
+      const { coords } = this.projectTo2D(vertices);
       return (0, import_earcut.default)(coords);
     } catch (error) {
-      console.warn("Triangulation failed, using fallback:", error);
-      return this.improvedFanTriangulation(triangulationVertices);
+      console.warn("Triangulation failed:", error);
+      return [];
     }
   }
   /**
@@ -14364,25 +15310,19 @@ var GeometryBuilder = class {
     this.indexBuffer.length = 0;
     this.normalBuffer.length = 0;
   }
-  addPolygon(vertices, options = {}) {
+  addPolygon(vertices) {
     if (vertices.length < 3) return;
-    const {
-      autoClose = true,
-      forceTriangulation = false
-    } = options;
     const startIndex = this.vertexBuffer.length / 3;
-    const processedVertices = autoClose ? GeometryUtils.ensureClosed(vertices) : vertices;
-    let indices;
-    indices = GeometryUtils.triangulatePolygon(processedVertices);
+    const indices = GeometryUtils.triangulatePolygon(vertices);
     if (indices.length === 0) {
       console.warn("Triangulation produced no indices");
       return;
     }
-    for (const vertex of processedVertices) {
+    for (const vertex of vertices) {
       this.vertexBuffer.push(vertex.x, vertex.y, vertex.z);
     }
-    const normal = GeometryUtils.calculatePolygonNormal(processedVertices);
-    for (let i2 = 0; i2 < processedVertices.length; i2++) {
+    const normal = GeometryUtils.calculatePolygonNormal(vertices);
+    for (let i2 = 0; i2 < vertices.length; i2++) {
       this.normalBuffer.push(normal.x, normal.y, normal.z);
     }
     for (const index of indices) {
@@ -14466,6 +15406,9 @@ var Shape = class {
   addPolygon(vertices, options = {}) {
     if (!vertices || vertices.length < 3) {
       console.warn("Invalid polygon: need at least 3 vertices");
+      return null;
+    }
+    if (vertices.some((v2) => !v2 || ![v2.x, v2.y, v2.z].every((c2) => Number.isFinite(c2) && Number.isFinite(Math.fround(c2))))) {
       return null;
     }
     const processedVertices = vertices.map(
@@ -19953,8 +20896,8 @@ var OUTCOME_OF = {
   stale: OUTCOME.obsolete,
   fault: OUTCOME.fault
 };
-function outcomeOf(verdict) {
-  return OUTCOME_OF[verdict?.kind] ?? "unknown";
+function outcomeOf(verdict3) {
+  return OUTCOME_OF[verdict3?.kind] ?? "unknown";
 }
 function readout({ point: point2, accepted, requested, outcome }) {
   return {
@@ -19997,8 +20940,7 @@ function requestedPose(accepted, localPoint) {
 }
 function knownPose(accepted) {
   const position2 = accepted?.position;
-  if (!Array.isArray(position2) || position2.length !== 3) return false;
-  return position2.every(Number.isFinite);
+  return finite3(position2);
 }
 function eligibility({ frame, registered, accepted }) {
   if (!frame || !registered) return { ok: false, reason: OUTCOME.obsolete };
@@ -20201,7 +21143,7 @@ function createStage(canvas, bridge, instruments = {}) {
     }
     return hatchP;
   }
-  function settle2(path) {
+  function settle3(path) {
     const r2 = resolveHatch;
     hatchP = null;
     resolveHatch = null;
@@ -20306,7 +21248,7 @@ function createStage(canvas, bridge, instruments = {}) {
     hatch(bridge2) {
       const p2 = picture();
       if (hatchInFlight || disposed) {
-        if (disposed) settle2(null);
+        if (disposed) settle3(null);
         return p2;
       }
       hatchInFlight = true;
@@ -20330,12 +21272,12 @@ function createStage(canvas, bridge, instruments = {}) {
               const path = result.trimmed ?? result.full ?? null;
               stage.renderstate.meta.path = path;
               bridge2.pub(["hatchTurtle", { ...stage.renderstate.meta }]);
-              settle2(path);
+              settle3(path);
               return;
             }
           } catch {
           }
-          settle2(null);
+          settle3(null);
         });
       };
       if (typeof ctx.fenceSync !== "function") {
@@ -20357,7 +21299,7 @@ function createStage(canvas, bridge, instruments = {}) {
             ctx.deleteSync(sync);
             ctx.deleteBuffer(buf);
           }
-          settle2(null);
+          settle3(null);
           return;
         }
         const status = ctx.clientWaitSync(sync, 0, 0);
@@ -20368,7 +21310,7 @@ function createStage(canvas, bridge, instruments = {}) {
         ctx.deleteSync(sync);
         if (status === ctx.WAIT_FAILED) {
           ctx.deleteBuffer(buf);
-          settle2(null);
+          settle3(null);
           return;
         }
         const pixels = new Uint8Array(width * height * 4);
@@ -20384,7 +21326,7 @@ function createStage(canvas, bridge, instruments = {}) {
     // Cleanup
     dispose() {
       disposed = true;
-      settle2(null);
+      settle3(null);
       try {
         if (recorderResolved) recorder?.destroy?.();
       } catch (err) {
@@ -20521,7 +21463,7 @@ function resetInk(frame, stock) {
 function woundInk(ctx, message, span = null) {
   ctx.done = true;
   ctx.generator = null;
-  ctx.error = { message, span: span ?? null, kind: "ink" };
+  ctx.error = report({ kind: "ink", message, span });
   ctx.channel.put({ type: "error", ...ctx.error, ambientId: ctx.id });
 }
 function chargeInk(ctx, value, stock) {
@@ -20568,6 +21510,8 @@ function createFrame(name, generator, opts = {}) {
     id: ++_nextId,
     name,
     parent: opts.parent || null,
+    _root: null,
+    // lazy cache: top of this frame's tree (frames never reparent)
     children: /* @__PURE__ */ new Map(),
     origin: opts.origin || null,
     // parent's SE3 at birth (immutable)
@@ -20595,34 +21539,33 @@ function createFrame(name, generator, opts = {}) {
     channel: createRingBuffer(opts.channelCapacity || 4096, { lossless: opts.lossless !== false }),
     sync: {},
     // conflating head/view slot — last-write-wins, no credit (D027 R2.5)
+    // What the author is owed about a walk that still DRAWS: a step not taken, a
+    // measure that had no answer. Cleared with the run, like `error`. (id:cmp-resilient)
+    notices: [],
     mailbox: []
     // actor inbox (Hewitt/Erlang); see listensFor
   };
 }
 
 // assets/js/turtling/laws/expression.js
-var KIND = { length: "length", angle: "angle", duration: "duration", scalar: "scalar", point: "point" };
+var KIND2 = { length: "length", angle: "angle", duration: "duration", scalar: "scalar", point: "point" };
 var familyOf = (name) => RELATIONAL_NAMES.includes(name) ? "relational" : SPATIAL_NAMES.includes(name) ? "spatial" : null;
 var row = (name, kind, guard, bounds) => ({ family: familyOf(name), kind, guard, bounds });
-var RELATION = {
-  distance: AUTHORED.distance,
-  bearing: AUTHORED.bearing,
-  sync: row("sync", KIND.duration, { finite: true }, null),
-  x: row("x", KIND.scalar, { finite: true }, null),
-  y: row("y", KIND.scalar, { finite: true }, null),
-  z: row("z", KIND.scalar, { finite: true }, null),
-  heading: row("heading", KIND.angle, { finite: true }, null),
+var READS = {
+  sync: row("sync", KIND2.duration, { finite: true }, null),
+  x: row("x", KIND2.scalar, { finite: true }, null),
+  y: row("y", KIND2.scalar, { finite: true }, null),
+  z: row("z", KIND2.scalar, { finite: true }, null),
+  heading: row("heading", KIND2.angle, { finite: true }, null),
   // Elevation is bounded by its meaning, not by policy: ±90 IS the paper's normal.
-  elevation: row("elevation", KIND.angle, { finite: true }, { min: -90, max: 90 }),
-  position: AUTHORED.position,
-  coordinate: AUTHORED.coordinate,
-  tilt: AUTHORED.tilt
+  elevation: row("elevation", KIND2.angle, { finite: true }, { min: -90, max: 90 })
 };
+var RELATION = { ...AUTHORED, ...READS };
 function relationOf(feature) {
   return RELATION[feature] ?? null;
 }
-function kindOf(feature) {
-  return relationOf(feature)?.kind ?? KIND.scalar;
+function kindOf2(feature) {
+  return relationOf(feature)?.kind ?? KIND2.scalar;
 }
 function guardsOf(feature) {
   const row2 = relationOf(feature);
@@ -20635,7 +21578,7 @@ function boundsOf(feature) {
 function predicateOk(feature, value) {
   const guard = relationOf(feature)?.guard;
   if (!guard) return true;
-  if (guard.finite3) return Array.isArray(value) && value.length === 3 && value.every(Number.isFinite);
+  if (guard.finite3) return finite3(value);
   if (guard.finite && !Number.isFinite(value)) return false;
   if (guard.nonNegative && value < 0) return false;
   return true;
@@ -20644,30 +21587,51 @@ function predicateOk(feature, value) {
 // assets/js/turtling/laws/replacement.js
 var FEATURES = {
   // coincidence is not an authored runtime law; its address is still an unordered pair.
-  coincidence: (endpoints) => [...endpoints]
+  coincidence: { address: (endpoints) => [...endpoints], symmetric: true }
+};
+var tagged = (x2) => {
+  if (x2 === null || x2 === void 0) return ["nil"];
+  if (typeof x2 === "number") return ["num", Object.is(x2, -0) ? 0 : x2];
+  if (typeof x2 === "string") return ["str", x2];
+  if (x2.frame !== void 0) return [x2.relative ? "relative" : "framed", tagged(x2.frame), (x2.value ?? []).map((c2) => Object.is(c2, -0) ? 0 : c2)];
+  return ["json", JSON.stringify(x2)];
 };
 function addressOf(law2) {
   if (law2?.address) return law2.address;
   const { feature, endpoints = [], scope = null, frame = null } = law2;
-  const shape = addressShape(feature) ?? FEATURES[feature];
+  const shape = addressShape(feature) ?? FEATURES[feature]?.address;
   if (!shape) throw new Error(`Unknown law feature: ${feature}`);
-  const ids = shape(endpoints, law2).map(String).sort();
-  return [feature, ...ids, String(scope), frame == null ? "-" : String(frame)].join("|");
+  const parts = shape(endpoints, law2).map(tagged);
+  const canonical = symmetricOf(feature) || FEATURES[feature]?.symmetric === true ? [...parts].sort((a2, b2) => JSON.stringify(a2) < JSON.stringify(b2) ? -1 : 1) : parts;
+  return JSON.stringify([feature, canonical, tagged(scope), tagged(frame)]);
 }
-function bindLaw({ feature, endpoints, scope, frame, predicate, owner = null, axis = null, guards = null, bounds = null, sourceIds = [] }) {
+function bindLaw({ feature, endpoints, scope, frame, predicate, owner = null, axis = null, guards = null, bounds = null, sourceIds = [], source = null, expression = null }) {
+  const raw = expression ?? normalizeExpression(feature, { endpoints, frame, axis, predicate, source });
+  const freezeRef = (r2) => r2 != null && typeof r2 === "object" && !Array.isArray(r2) ? Object.freeze({ ...r2, ...Array.isArray(r2.value) ? { value: Object.freeze([...r2.value]) } : {} }) : r2;
+  const term = raw == null ? null : Object.freeze({
+    ...raw,
+    ...Array.isArray(raw.references) ? { references: Object.freeze(raw.references.map(freezeRef)) } : {},
+    ...Array.isArray(raw.value) ? { value: Object.freeze([...raw.value]) } : {}
+  });
+  const references = Array.isArray(term?.references) ? term.references : endpoints;
+  const liveEnds = references.filter(isLiveInput);
+  const boundFrame = term?.frame ?? frame;
+  const boundAxis = term?.axis ?? axis;
+  const boundPredicate = term == null ? predicate : payloadOf(feature, term) ?? predicate;
   const law2 = {
     feature,
     relation: feature,
-    endpoints: [...endpoints],
+    endpoints: Object.freeze([...liveEnds]),
     scope,
-    frame,
-    predicate,
+    frame: boundFrame,
+    predicate: boundPredicate,
     owner,
-    ...axis == null ? {} : { axis },
-    kind: kindOf(feature),
+    ...boundAxis == null ? {} : { axis: boundAxis },
+    ...term == null ? {} : { expression: term },
+    kind: kindOf2(feature),
     guards: guards ?? guardsOf(feature),
     bounds: bounds ?? boundsOf(feature),
-    sourceIds: [.../* @__PURE__ */ new Set([...endpoints, ...sourceIds])]
+    sourceIds: [.../* @__PURE__ */ new Set([...liveEnds, ...inputFrames({ expression: term }), ...sourceIds])]
   };
   law2.address = addressOf(law2);
   return law2;
@@ -20729,7 +21693,7 @@ function createLawStore() {
     retractIdentity(frameId) {
       let hit = false;
       for (const [key, law2] of byAddress) {
-        if (law2.frame === frameId || law2.endpoints?.includes(frameId)) {
+        if (law2.frame === frameId || law2.endpoints?.includes(frameId) || inputFrames(law2).includes(frameId)) {
           byAddress.delete(key);
           hit = true;
         }
@@ -20808,7 +21772,9 @@ function realizeDistanceTree(laws, anchorId, world, radiusOf) {
       const from = positions.get(parent);
       const parentOrigin = origins.get(parent);
       const childOrigin = world(other);
-      const dir = (finite3(childOrigin) ? unit(sub(childOrigin, parentOrigin)) : null) ?? [1, 0, 0];
+      const ask = directionBetween(parentOrigin, childOrigin);
+      if (ask === INVALID) return null;
+      const dir = ask ?? [1, 0, 0];
       const r2 = radiusOf(law2);
       if (!Number.isFinite(r2) || r2 < 0) return null;
       positions.set(other, [from[0] + dir[0] * r2, from[1] + dir[1] * r2, from[2] + dir[2] * r2]);
@@ -20819,28 +21785,784 @@ function realizeDistanceTree(laws, anchorId, world, radiusOf) {
   return positions;
 }
 
+// assets/js/turtling/laws/constraints.js
+function rankOf(normals) {
+  const basis = [];
+  for (const n2 of normals) {
+    let v2 = [...n2];
+    for (const b2 of basis) {
+      const d2 = dot(v2, b2);
+      v2 = [v2[0] - d2 * b2[0], v2[1] - d2 * b2[1], v2[2] - d2 * b2[2]];
+    }
+    const u2 = unit(v2, 1e-9);
+    if (u2) basis.push(u2);
+  }
+  return basis.length;
+}
+function stateOf({
+  at: at2 = null,
+  headed = false,
+  exposed: exposed2 = true,
+  isPlace = true,
+  error = null,
+  unresolved = null,
+  unavailable = [],
+  constraints = []
+} = {}) {
+  const known = finite3(at2);
+  const role = headed ? "headed" : "point";
+  const refusal = unavailable.length > 0 ? {
+    kind: unavailable.every((u2) => u2.reason === "unreadable") ? "unreadable" : "unsupported",
+    unavailable: unavailable.map((u2) => ({ feature: u2.feature, reason: u2.reason }))
+  } : null;
+  const status = !known || error ? "unresolved" : unresolved || refusal || !exposed2 || !isPlace ? "previous" : "accepted";
+  const distanceFrom = (c2) => c2.set?.kind === "sphere" ? { other: [...c2.set.center], radius: c2.set.radius, held: c2.otherHeld === true } : c2.set?.kind === "point" ? { other: [...c2.set.at], radius: 0, held: c2.otherHeld === true } : null;
+  const distances = constraints.filter((c2) => c2.feature === "distance").map(distanceFrom).filter(Boolean);
+  const pinned = constraints.some((c2) => c2.pinned) || distances.some((d2) => d2.radius === 0 && d2.held);
+  const coincident = distances.some((d2) => d2.radius === 0 && !d2.held);
+  const coordinates = constraints.filter((c2) => c2.feature === "coordinate" && c2.set?.kind === "plane").map((c2) => ({ axis: c2.axis, value: c2.value, plane: { point: [...c2.set.point], normal: [...c2.set.normal] } }));
+  const cones = constraints.filter((c2) => c2.feature === "tilt" && c2.set?.kind === "cone").map((c2) => ({ apex: [...c2.set.apex], axis: [...c2.set.axis], halfAngle: c2.set.halfAngle }));
+  const truth = { pinned, coincident, distances, coordinates, cones };
+  const resolved = pinned || status !== "accepted" || role === "headed" ? [] : distances.filter((d2) => d2.radius > 0).map((d2) => ({
+    normal: directionBetween(d2.other, at2) ?? [1, 0, 0],
+    // coincident: a stated direction
+    locus: { kind: "sphere", center: [...d2.other], radius: d2.radius }
+  }));
+  const normals = resolved.map((r2) => r2.normal);
+  const coupled = coincident && !pinned;
+  let dof = !known || role === "headed" || status !== "accepted" ? 0 : pinned ? 0 : coupled ? 0 : Math.max(0, 3 - rankOf(normals));
+  const pointLocus = !known ? null : pinned ? constraints.some((c2) => c2.pinned) ? { kind: "point", at: [...at2] } : { kind: "point", at: [...distances.find((d2) => d2.radius === 0 && d2.held).other] } : resolved.length === 1 ? resolved[0].locus : null;
+  const sets = constraints.map((c2) => c2.set).filter(Boolean);
+  let locus = pointLocus;
+  if (status === "accepted" && role === "point" && !pinned && sets.length > 0) {
+    const met = meetAll(sets);
+    locus = copyLocus(met);
+    dof = dofOf(met);
+  }
+  const offered = status === "accepted" && role === "point" && !pinned;
+  const interaction = {
+    offered,
+    movable: !offered ? "none" : dof ? "point" : "none",
+    partners: coupled ? distances.filter((d2) => d2.radius === 0 && !d2.held).map((d2) => [...d2.other]) : [],
+    normals,
+    dof,
+    locus
+  };
+  const tag = status !== "accepted" ? "unresolved" : role === "headed" ? "headed" : pinned ? "pinned" : "free";
+  return {
+    role,
+    truth,
+    status,
+    interaction,
+    tag,
+    refusal,
+    at: known ? [...at2] : null,
+    headed,
+    pinned,
+    normals,
+    dof,
+    locus
+  };
+}
+var lawList = (laws) => Array.isArray(laws) ? laws : laws.active();
+function directlyFixed(frame, laws) {
+  if (!frame) return true;
+  if (frame.generator != null || frame.actorState != null) return true;
+  return lawList(laws).some((law2) => law2.feature === "position" && law2.endpoints[0] === frame.id);
+}
+var heldFrame = (frame) => (frame?.heldAttempts?.size ?? 0) > 0;
+function coincidentPartners(frame, laws) {
+  const partners = [];
+  for (const law2 of lawList(laws)) {
+    if (law2.feature !== "distance") continue;
+    const term = boundTerm(law2);
+    if (!term || term.radius !== 0 || term.references[0] === term.references[1]) continue;
+    if (!term.references.some((r2) => r2 === frame?.id)) continue;
+    partners.push(term.references.find((r2) => r2 !== frame.id));
+  }
+  return partners;
+}
+function heldIdentity(candidate, laws, registry, seen = /* @__PURE__ */ new Set()) {
+  if (!candidate) return true;
+  if (seen.has(candidate.id)) return false;
+  seen.add(candidate.id);
+  if (directlyFixed(candidate, laws)) return true;
+  for (const other of coincidentPartners(candidate, laws)) {
+    if (other == null || typeof other === "object") return true;
+    if (heldIdentity(registry.get(other), laws, registry, seen)) return true;
+  }
+  return false;
+}
+function silhouette(locus, viewDir, segments = 48, eye = null) {
+  if (!locus || locus.kind !== "sphere") return null;
+  const { center, radius } = locus;
+  if (!(radius > 0)) return null;
+  if (finite3(eye)) {
+    const oc2 = sub(center, eye);
+    const d2 = len(oc2);
+    if (d2 > radius) {
+      const axis = unit(oc2);
+      const shift = radius * radius / d2;
+      const rim = radius * Math.sqrt(1 - radius * radius / (d2 * d2));
+      const mid = [center[0] - axis[0] * shift, center[1] - axis[1] * shift, center[2] - axis[2] * shift];
+      return ringOf(mid, axis, rim, segments);
+    }
+  }
+  return ringOf(center, unit(viewDir) ?? [0, 0, 1], radius, segments);
+}
+function axesOf(state) {
+  if (!state || state.tag !== "free" || state.normals.length === 0) return null;
+  const b2 = basisOf(state.normals[0]);
+  return b2 ? { normal: b2.n, tangent: [b2.u, b2.v] } : null;
+}
+function sphereCurves(locus, at2, segments = 48) {
+  if (!locus || locus.kind !== "sphere" || !finite3(at2)) return null;
+  const { center, radius } = locus;
+  if (!(radius > 0)) return null;
+  const d2 = sub(at2, center);
+  const r2 = len(d2);
+  if (r2 < 1e-12) return null;
+  const el2 = Math.asin(Math.max(-1, Math.min(1, d2[2] / r2)));
+  const az = Math.atan2(d2[1], d2[0]);
+  const pt2 = (a2, e2) => [
+    center[0] + radius * Math.cos(e2) * Math.cos(a2),
+    center[1] + radius * Math.cos(e2) * Math.sin(a2),
+    center[2] + radius * Math.sin(e2)
+  ];
+  const parallel = [];
+  for (let i2 = 0; i2 <= segments; i2++) parallel.push(pt2(az + i2 / segments * Math.PI * 2, el2));
+  const meridian = [];
+  for (let i2 = 0; i2 <= segments; i2++) meridian.push(pt2(az, -Math.PI / 2 + i2 / segments * Math.PI));
+  return { parallel, meridian };
+}
+function circleCurve(locus, segments = 72) {
+  if (!locus || locus.kind !== "circle") return null;
+  return ringOf(locus.center, locus.normal, locus.radius, segments);
+}
+function coneCurve(cone2, at2, segments = 48) {
+  const axis = unit(cone2.axis);
+  if (!axis || !finite3(cone2.apex) || !finite3(at2)) return null;
+  const h2 = dot(sub(at2, cone2.apex), axis);
+  const open = openAngle(cone2.halfAngle);
+  if (open <= 1e-9) {
+    const reach = Math.abs(h2) > 1e-9 ? h2 : 1;
+    const tip = [0, 1, 2].map((k2) => cone2.apex[k2] + axis[k2] * reach);
+    return { ring: null, generators: [[[...cone2.apex], tip]] };
+  }
+  if (!(open < 90) || Math.abs(h2) <= 1e-9) return null;
+  const radius = coneLateral(h2, open);
+  const centre = [0, 1, 2].map((k2) => cone2.apex[k2] + axis[k2] * h2);
+  const ring = circleCurve({ kind: "circle", center: centre, normal: axis, radius }, segments);
+  if (!ring) return null;
+  const pick = (i2) => ring[Math.round(i2 / 4 * segments)];
+  return { ring, generators: [pick(0), pick(1), pick(2), pick(3)].map((p2) => [[...cone2.apex], p2]) };
+}
+function planePatch(locus, at2, size = 3.5) {
+  if (!locus || locus.kind !== "plane" || !finite3(at2)) return null;
+  const b2 = basisOf(locus.normal);
+  if (!b2) return null;
+  const r2 = Number.isFinite(size) ? size : 3.5;
+  const corner = (s2, t2) => [0, 1, 2].map((k2) => at2[k2] + r2 * (s2 * b2.u[k2] + t2 * b2.v[k2]));
+  const along = (d2) => [
+    [0, 1, 2].map((k2) => at2[k2] - r2 * d2[k2]),
+    [0, 1, 2].map((k2) => at2[k2] + r2 * d2[k2])
+  ];
+  return {
+    corners: [corner(-1, -1), corner(1, -1), corner(1, 1), corner(-1, 1), corner(-1, -1)],
+    axes: [{ from: along(b2.u)[0], to: along(b2.u)[1] }, { from: along(b2.v)[0], to: along(b2.v)[1] }]
+  };
+}
+var RIM_AXIS_COS = Math.cos(25 * Math.PI / 180);
+var POLE = [0, 0, 1];
+function rimReads(locus, viewDir, eye) {
+  if (locus?.kind !== "sphere" || !finite3(eye)) return true;
+  const sight = Array.isArray(viewDir) ? unit(viewDir) : null;
+  return !sight || Math.abs(dot(sight, POLE)) < RIM_AXIS_COS;
+}
+function marksOf(locus, { at: at2 = null, size = 3.5, viewDir = null, eye = null, segments } = {}) {
+  const empty = { curves: [], traces: [], axes: [], ghosts: [], rings: [], spokes: [] };
+  if (!locus) return empty;
+  switch (locus.kind) {
+    case "conic":
+      return { ...empty, traces: conicSamples(locus) };
+    case "circle": {
+      let c2 = circleCurve(locus, segments ?? 72);
+      if (c2 && locus.keep) c2 = c2.filter((p2) => {
+        const d2 = p2.map((x2, i2) => x2 - locus.center[i2]);
+        return d2[0] * locus.keep[0] + d2[1] * locus.keep[1] + d2[2] * locus.keep[2] >= -1e-9;
+      });
+      const spokes = at2 && finite3(locus.center) ? [[[...locus.center], [...at2]]] : [];
+      return c2 && c2.length > 1 ? { ...empty, curves: [c2], spokes } : { ...empty, spokes };
+    }
+    case "angle": {
+      const r2 = finite3(at2) ? len(sub(at2, locus.apex)) : size;
+      const rad = locus.degrees * Math.PI / 180;
+      const band = r2 * Math.sin(rad);
+      const ring = Math.abs(band) > 1e-9 ? ringOf(locus.apex.map((c2, i2) => c2 + locus.axis[i2] * r2 * Math.cos(rad)), locus.axis, band, segments ?? 72) : null;
+      const spokes = finite3(at2) ? [[[...locus.apex], [...at2]]] : [];
+      return ring ? { ...empty, curves: [ring], spokes } : { ...empty, spokes };
+    }
+    case "cone": {
+      const open = openAngle(locus.halfAngle);
+      if (open >= 90 - 1e-9) {
+        const patch = planePatch({ kind: "plane", point: locus.apex, normal: locus.axis }, at2, size);
+        return patch ? { ...empty, curves: [patch.corners], axes: patch.axes.map((ax) => [ax.from, ax.to]) } : empty;
+      }
+      const cc = coneCurve(locus, at2, segments ?? 48);
+      return cc ? { ...empty, curves: cc.ring ? [cc.ring] : [], axes: cc.generators } : empty;
+    }
+    case "plane":
+    case "halfplane": {
+      const patch = planePatch({ kind: "plane", point: locus.point, normal: locus.normal }, at2, size);
+      return patch ? { ...empty, curves: [patch.corners], axes: patch.axes.map((ax) => [ax.from, ax.to]) } : empty;
+    }
+    case "line": {
+      if (!finite3(at2) || !locus.dir) return empty;
+      const half = Number.isFinite(size) ? size : 3.5;
+      const a2 = [0, 1, 2].map((k2) => at2[k2] - locus.dir[k2] * half);
+      const b2 = [0, 1, 2].map((k2) => at2[k2] + locus.dir[k2] * half);
+      return { ...empty, axes: [[a2, b2]] };
+    }
+    case "ray": {
+      if (!finite3(at2) || !locus.dir) return empty;
+      const half = Number.isFinite(size) ? size : 3.5;
+      const b2 = [0, 1, 2].map((k2) => at2[k2] + locus.dir[k2] * half);
+      return { ...empty, axes: [[at2, b2]] };
+    }
+    case "points":
+      return { ...empty, ghosts: locus.at ?? [] };
+    case "sphere": {
+      const ring = (eye || viewDir) && rimReads(locus, viewDir, eye) ? silhouette(locus, viewDir, segments ?? 48, eye) : null;
+      const curves = at2 ? sphereCurves(locus, at2, segments ?? 48) : null;
+      return {
+        ...empty,
+        // Parallel and meridian through the point — the axes made real. (id:laws-freedom)
+        curves: [curves?.parallel, curves?.meridian].filter(Boolean),
+        rings: ring ? [ring] : [],
+        spokes: at2 && finite3(locus.center) ? [[[...locus.center], [...at2]]] : []
+      };
+    }
+    default:
+      return empty;
+  }
+}
+function boundsOf2(locus, at2 = null) {
+  if (!locus) return null;
+  switch (locus.kind) {
+    case "point":
+      return finite3(locus.at) ? { center: [...locus.at], radius: 0 } : null;
+    case "points":
+      return unionBounds((locus.at ?? []).map((p2) => ({ center: [...p2], radius: 0 })));
+    case "line":
+    case "ray":
+    case "plane":
+    case "halfplane":
+      return finite3(locus.point) ? { center: [...locus.point], radius: 0 } : null;
+    case "circle":
+    case "sphere":
+      return finite3(locus.center) ? { center: [...locus.center], radius: Math.abs(locus.radius) } : null;
+    case "cone": {
+      const axis = unit(locus.axis);
+      if (!axis || !finite3(locus.apex) || !(locus.halfAngle > 0 && locus.halfAngle < 90)) {
+        return finite3(locus.apex) ? { center: [...locus.apex], radius: 0 } : null;
+      }
+      const h2 = at2 ? dot(sub(at2, locus.apex), axis) : 0;
+      const radius = coneLateral(h2, locus.halfAngle);
+      return { center: locus.apex.map((a2, k2) => a2 + axis[k2] * h2), radius };
+    }
+    case "conic": {
+      const pts = conicSamples(locus).flat();
+      return pts.length ? unionBounds(pts.map((p2) => ({ center: [...p2], radius: 0 }))) : null;
+    }
+    default:
+      return null;
+  }
+}
+
+// assets/js/turtling/laws/verdict.js
+var LAWFUL = Object.freeze({ status: "valid" });
+var cannotMeasure = (law2, reason) => ({ status: "cannot-measure", law: law2, reason });
+function lawCtx(registry, overrides, world, extras = {}) {
+  return bindWorld((id2) => registry.get(id2), {
+    live: (f2) => world.read(f2, overrides),
+    placement: (f2) => world.transform(f2),
+    ...extras
+  });
+}
+function lawViolation(activeLaws, overrides, registry, world) {
+  if (!activeLaws || activeLaws.length === 0) return LAWFUL;
+  const ctx = lawCtx(registry, overrides, world);
+  for (const law2 of activeLaws) {
+    const row2 = AUTHORED[law2.feature];
+    if (!row2?.measure) return cannotMeasure(law2, `the whole-law gate does not recognize '${law2.feature}'`);
+    const check = row2.measure(law2, ctx);
+    if (check.status === "cannot-measure") return cannotMeasure(law2, check.reason);
+    if (check.status === "violation") return { status: "violation", law: law2, residual: check.residual };
+  }
+  return LAWFUL;
+}
+function brokenLaw(overrides, registry, laws, world) {
+  return lawViolation(laws?.active(), overrides, registry, world);
+}
+var ownerLabel = (law2) => law2?.owner?.line != null ? `line ${law2.owner.line}` : "source";
+function conflictMessage(violation2, candidate) {
+  return `the ${violation2.feature} at ${ownerLabel(violation2)} conflicts with the ${candidate.feature} at ${ownerLabel(candidate)}`;
+}
+var plainPoses = (x2) => Array.isArray(x2) ? x2.map((p2) => ({ frame: p2.frame?.id ?? p2.frame, pose: p2.pose })) : x2 ?? null;
+function pinnedLaw(laws, frameId) {
+  for (const law2 of Array.isArray(laws) ? laws : laws.active()) {
+    if (law2.feature === "position" && law2.endpoints[0] === frameId) return law2;
+  }
+  return null;
+}
+function positionTarget(pin) {
+  const t2 = boundTerm(pin);
+  return { frame: t2?.frame ?? pin.frame, value: t2?.value ?? pin.predicate };
+}
+function eligibilityOf(frame, laws, registry = null) {
+  return {
+    exposed: exposed(frame),
+    seated: frame?.isPlace === true,
+    settled: frame?.done === true,
+    owned: frame?.generator != null || frame?.actorState != null,
+    broken: frame?.error != null || frame?.unresolved != null,
+    pinned: pinnedLaw(laws, frame?.id) != null,
+    held: heldFrame(frame),
+    // Membership and propagated fixation are different facts: a coincident partner that
+    // is itself held fixes this point; mere coincidence does not. (id:laws-freedom)
+    coincident: coincidentPartners(frame, laws).length > 0,
+    coupled: registry != null && coincidentPartners(frame, laws).some((other) => other == null || typeof other === "object" || heldIdentity(registry.get(other), laws, registry))
+  };
+}
+var canMove = (frame, laws) => {
+  const e2 = eligibilityOf(frame, laws);
+  return e2.exposed && e2.seated && e2.settled && !e2.owned && !e2.broken && !e2.pinned && !e2.held;
+};
+function conflictAt(target, worldPos, laws, registry, world) {
+  const ctx = lawCtx(registry, null, world);
+  for (const law2 of laws.active()) {
+    if (law2.feature !== "distance") continue;
+    const term = boundTerm(law2);
+    if (!term) continue;
+    const [r0, r1] = term.references;
+    const targetRef = isLiveInput(r0) && registry.get(r0) === target ? r0 : isLiveInput(r1) && registry.get(r1) === target ? r1 : null;
+    if (targetRef == null) continue;
+    const otherRef = targetRef === r0 ? r1 : r0;
+    if (isLiveInput(otherRef)) {
+      const other = registry.get(otherRef);
+      if (!other) continue;
+      if (canMove(other, laws)) continue;
+      const d2 = measure("distance", target, other, (f2) => f2 === target ? { position: worldPos } : { position: world.read(f2, null).position });
+      if (conditionOf(d2) !== FINITE) return { law: law2, domain: true };
+      if (Math.abs(d2 - term.radius) > ACCEPT_TOL) return { law: law2, residual: d2 - term.radius };
+    } else {
+      const other = inputPosition(otherRef, ctx);
+      if (!other) return { law: law2, domain: true };
+      const d2 = Math.hypot(worldPos[0] - other[0], worldPos[1] - other[1], worldPos[2] - other[2]);
+      if (!Number.isFinite(d2)) return { law: law2, domain: true };
+      if (Math.abs(d2 - term.radius) > ACCEPT_TOL) return { law: law2, residual: d2 - term.radius };
+    }
+  }
+  return null;
+}
+function affectedMembers(registry, laws, seeds, extra = []) {
+  const ids = new Set(componentOf(laws, seeds).frames);
+  for (const frame of extra) if (frame?.id !== void 0) ids.add(frame.id);
+  const frames = [];
+  for (const id2 of ids) {
+    const frame = registry.get(id2);
+    if (frame) frames.push(frame);
+  }
+  return frames;
+}
+var unsupported = (spec, reason) => ({ kind: "unresolved", message: reason, span: spec.owner });
+var INAPPLICABLE = Object.freeze({ kind: "inapplicable" });
+var STALE_OUTCOME = (spec) => ({ kind: "stale", message: "a proposed participant left the world", span: spec.owner });
+function settle(spec, candidate, worlds, pump, scope, world, { permitted, fail = null, stale = STALE_OUTCOME(spec), heads = null } = {}) {
+  if (!Array.isArray(permitted)) throw new Error("settle needs the operation's permitted edit ids");
+  const poses = [];
+  for (const [id2, target] of worlds) {
+    if (!permitted.includes(id2) || spec.operation?.explicit && !spec.operation.movable.includes(id2)) {
+      return { kind: "rejected", message: `this operation may not move '${pump.registry.get(id2)?.name ?? id2}'`, span: spec.owner };
+    }
+    const frame = pump.registry.get(id2);
+    if (!frame) return stale;
+    if (!finite3(target)) return unsupported(spec, `a proposed position for '${frame.name}' is not a finite point`);
+    const pose = { rotation: frame.transform.deref().rotation, position: SE3.unapply(world.transform(frame), target) };
+    if (!SE3.isValid(pose)) return unsupported(spec, `the prepared pose for '${frame.name}' is invalid`);
+    poses.push({ frame, pose });
+  }
+  const check = lawViolation(scope, new Map(poses.map(({ frame, pose }) => [frame, pose])), pump.registry, world);
+  if (check.status === "cannot-measure") return { kind: "unresolved", message: check.reason, span: spec.owner };
+  if (check.status !== "valid") {
+    return fail ? fail(check, poses) : { kind: "rejected", message: "the candidate fails its original truths", span: spec.owner };
+  }
+  return { kind: "commit", poses, address: candidate.address, law: candidate, heads: heads ?? poses, span: spec.owner };
+}
+function continueLaws(verdict3, writer, registry, laws, world) {
+  if (!laws || verdict3.kind !== "accept") return verdict3;
+  const poses = new Map([[writer, verdict3.pose], ...verdict3.component.map((m2) => [m2.frame, m2.pose])]);
+  const ctx = lawCtx(registry, poses, world, { writerId: writer.id });
+  const comp = componentOf(laws.active(), [writer.id]).laws;
+  const query = pointQuery(writer.id, comp, ctx);
+  if (query.meets) {
+    if (query.complete) {
+      const wish = world.read(writer, poses).position;
+      const accepted = world.read(writer, null).position;
+      const near = nearest(meetAll(query.sets), wish, { keep: accepted });
+      if (near.ok) {
+        poses.set(writer, { rotation: verdict3.pose.rotation, position: SE3.unapply(world.transform(writer), near.at) });
+        verdict3.pose = poses.get(writer);
+        return verdict3;
+      }
+    }
+  }
+  const active = laws.active().filter((law2) => law2.feature === "distance");
+  if (active.length === 0) return verdict3;
+  let changed = true;
+  for (let sweep = 0; changed && sweep <= active.length; sweep++) {
+    changed = false;
+    for (const law2 of active) {
+      const term = boundTerm(law2);
+      if (!term) continue;
+      const [r0, r1] = term.references;
+      const frameOf2 = (ref) => isLiveInput(ref) ? registry.get(ref) : null;
+      const a2 = frameOf2(r0), b2 = frameOf2(r1);
+      const aMoved = a2 != null && poses.has(a2);
+      const bMoved = b2 != null && poses.has(b2);
+      if (!aMoved && !bMoved) continue;
+      if (aMoved && bMoved) continue;
+      const moved = aMoved ? a2 : b2;
+      const otherRef = aMoved ? r1 : r0;
+      const proposed = poses.get(moved);
+      const otherPos = inputPosition(otherRef, ctx);
+      if (!otherPos) continue;
+      const r2 = realizeDistance(world.read(moved, poses).position, otherPos, term.radius);
+      if (!r2.ok || !r2.moved) continue;
+      poses.set(moved, { rotation: proposed.rotation, position: SE3.unapply(world.transform(moved), r2.pose) });
+      changed = true;
+    }
+  }
+  verdict3.pose = poses.get(writer);
+  for (const member of verdict3.component) member.pose = poses.get(member.frame);
+  return verdict3;
+}
+function componentMeetCandidate(spec, candidate, comp, pump, scope, world) {
+  const meeters = comp.laws.filter((law2) => AUTHORED[law2.feature]?.meet);
+  if (meeters.length === 0) return INAPPLICABLE;
+  const p2 = meeters[0].endpoints[0];
+  if (!meeters.every((law2) => law2.endpoints[0] === p2)) return unsupported(spec, "a relation names another point");
+  const point2 = pump.registry.get(p2);
+  if (!point2) return unsupported(spec, "the point is not seated");
+  const ctx = lawCtx(pump.registry, null, world, { writerId: p2 });
+  const query = pointQuery(p2, comp.laws, ctx);
+  const failed = query.setBearing.find((c2) => c2.set == null);
+  if (failed) return unsupported(spec, `cannot form the ${failed.feature}`);
+  const met = meetAll(query.sets);
+  if (met.kind === "empty") {
+    const movers = /* @__PURE__ */ new Map();
+    for (const { law: law2 } of query.setBearing) {
+      if (law2.feature !== "distance") continue;
+      const other = law2.endpoints.find((id2) => id2 !== p2);
+      const frame = other != null ? pump.registry.get(other) : null;
+      if (frame && !pinnedLaw(pump.laws, frame.id)) movers.set(frame.id, frame);
+    }
+    if (movers.size > 0) {
+      const held = [...movers.values()];
+      return {
+        kind: "obstructed",
+        message: `the truths have no point in common while ${held.map((f2) => `'${f2.name}'`).join(", ")} hold their places`,
+        span: spec.owner,
+        members: affectedMembers(pump.registry, comp.laws, [p2, ...held.map((f2) => f2.id)])
+      };
+    }
+    return {
+      kind: "contradiction",
+      message: "the truths have no point in common",
+      span: spec.owner,
+      members: affectedMembers(pump.registry, comp.laws, [p2])
+    };
+  }
+  if (met.kind === "uncertain" || met.kind === "unresolved") return unsupported(spec, "the meet is not a named set");
+  const near = nearest(met, world.read(point2, null).position);
+  if (!near.ok) return unsupported(spec, "the meet has no nearest point");
+  return settle(spec, candidate, /* @__PURE__ */ new Map([[point2.id, near.at]]), pump, scope, world, { permitted: [point2.id] });
+}
+function componentCandidate(spec, candidate, pump, scope, world, anchorHint = null) {
+  const active = [...pump.laws.active().filter((law2) => addressOf(law2) !== addressOf(candidate)), candidate];
+  const comp = componentOf(active, candidate.endpoints);
+  if (comp.laws.length < 2) return INAPPLICABLE;
+  if (comp.laws.some((law2) => AUTHORED[law2.feature]?.meet)) {
+    return componentMeetCandidate(spec, candidate, comp, pump, scope, world);
+  }
+  return treeCandidate(spec, candidate, comp, pump, scope, world, anchorHint);
+}
+function treeCandidate(spec, candidate, comp, pump, scope, world, anchorHint) {
+  const anchorId = anchorHint ?? (comp.frames.has(spec.observer.id) ? spec.observer.id : spec.target?.id);
+  if (anchorId == null || !comp.frames.has(anchorId)) return unsupported(spec, "a component outside the declaring frame");
+  const anchorPin = comp.laws.find((law2) => law2.feature === "position" && law2.endpoints[0] === anchorId);
+  if (comp.laws.some((law2) => law2.feature !== "distance" && law2 !== anchorPin)) {
+    return unsupported(spec, "a non-distance member is outside the analytic tree");
+  }
+  for (const id2 of comp.frames) {
+    if (id2 === anchorId) continue;
+    const frame = pump.registry.get(id2);
+    if (!frame || !frame.done) return unsupported(spec, "a component member is not settled");
+    if (heldFrame(frame)) return INAPPLICABLE;
+    if (pinnedLaw(pump.laws, id2)) return unsupported(spec, "a pinned component member cannot be reconfigured yet");
+  }
+  const anchorFrame = pump.registry.get(anchorId);
+  const anchorTarget = anchorPin ? positionTarget(anchorPin) : null;
+  const pinFrame = anchorTarget ? pump.registry.get(anchorTarget.frame) : null;
+  const anchorWorld = anchorTarget ? pinFrame ? SE3.apply(world.transform(pinFrame), anchorTarget.value) : null : anchorFrame ? world.read(anchorFrame, null).position : null;
+  if (!anchorWorld) return unsupported(spec, "the held anchor has no world");
+  const worldAt = (id2) => {
+    if (id2 === anchorId) return anchorWorld;
+    const frame = pump.registry.get(id2);
+    return frame ? world.read(frame, null).position : null;
+  };
+  const distances = comp.laws.filter((law2) => law2.feature === "distance");
+  const positions = realizeDistanceTree(distances, anchorId, worldAt, (law2) => boundTerm(law2)?.radius);
+  if (!positions) return unsupported(spec, "a cyclic or unanchored component");
+  const move = /* @__PURE__ */ new Map();
+  for (const id2 of comp.frames) {
+    if (id2 === spec.observer.id) continue;
+    const target = positions.get(id2);
+    if (target == null || !pump.registry.get(id2)) return unsupported(spec, "a component member left the registry");
+    move.set(id2, target);
+  }
+  const permitted = [...comp.frames].filter((id2) => id2 !== spec.observer.id);
+  return settle(spec, candidate, move, pump, scope, world, { permitted });
+}
+function reachOperation(spec, row2, candidate) {
+  const requested = spec.operation;
+  if (requested != null && (typeof requested !== "object" || Array.isArray(requested))) {
+    return { kind: "relation", message: "a reach operation must be a question object", span: spec.owner };
+  }
+  const policy = requested && Object.hasOwn(requested, "policy") ? requested.policy : row2.reachPolicy?.(spec) ?? "target-only";
+  if (!(row2.reachPolicies ?? ["target-only"]).includes(policy)) {
+    return { kind: "relation", message: `unknown reach policy '${policy}'`, span: spec.owner };
+  }
+  const references = candidate.expression?.references ?? candidate.endpoints;
+  const live = references.filter(isLiveInput);
+  const movable = requested && Object.hasOwn(requested, "movable") ? requested.movable : policy === "balanced" ? live : [spec.target?.id ?? live[0]];
+  if (!Array.isArray(movable) || movable.some((id2) => !live.includes(id2))) {
+    return { kind: "relation", message: "a reach mover must be a bound live input", span: spec.owner };
+  }
+  return Object.freeze({
+    policy,
+    movable: Object.freeze([...new Set(movable)]),
+    held: Object.freeze(references.filter((r2) => !isLiveInput(r2) || !movable.includes(r2))),
+    request: payloadOf(row2.name, boundTerm(candidate)),
+    explicit: requested != null
+  });
+}
+function reachEnvelope(spec, candidate, scope, ctx, operation, registry) {
+  const copyPose = (pose) => {
+    if (!pose) return null;
+    const copy = SE3.clone(pose);
+    return Object.freeze({
+      ...pose,
+      rotation: Object.freeze(copy.rotation),
+      position: Object.freeze(copy.position)
+    });
+  };
+  const ids = /* @__PURE__ */ new Set([spec.observer.id, ...scope.flatMap((law2) => [...law2.sourceIds ?? law2.endpoints ?? [], boundTerm(law2)?.frame ?? law2.frame])]);
+  const snapshot2 = Object.freeze([...ids].filter((id2) => id2 != null).map((id2) => Object.freeze({ id: id2, live: copyPose(ctx.livePoseOf(id2)), placement: copyPose(ctx.placementOf(id2)) })));
+  const byId = new Map(snapshot2.map((entry) => [entry.id, entry]));
+  const readers = bindWorld((id2) => registry.get(id2), {
+    live: (frame) => byId.get(frame.id)?.live ?? null,
+    placement: (frame) => byId.get(frame.id)?.placement ?? null
+  });
+  return {
+    ...spec,
+    ...ctx,
+    ...readers,
+    law: candidate,
+    retained: scope,
+    operation: Object.freeze({ ...operation, snapshot: snapshot2 }),
+    reachPolicy: operation.policy,
+    reachRequest: operation.request,
+    measurementContext: spec.observer ?? null
+  };
+}
+function applyLaw(spec, pump, world) {
+  const row2 = AUTHORED[spec.feature];
+  if (!row2?.propose || !row2?.validate) return { kind: "unsupported", message: `Unsupported law: ${spec.feature}`, span: spec.owner };
+  const references = spec.term?.references ?? spec.references ?? row2.endpoints(spec);
+  const admitted2 = references.filter(isLiveInput);
+  if (spec.target != null && admitted2.length > 0 && !admitted2.includes(spec.target.id)) {
+    return { kind: "relation", message: `the operation's target is not among the law's bound participants`, span: spec.owner };
+  }
+  const candidate = bindLaw({
+    feature: spec.feature,
+    endpoints: references,
+    scope: spec.observer.id,
+    frame: spec.observer.id,
+    // A proposal derives its inputs from the BOUND CANDIDATE: a supplied term is the
+    // authority, carrying its own frame, references and payload. The loose fields are
+    // only the road a declaration takes to BUILD one. (id:laws-payload-boundary, D058)
+    predicate: spec.term ? payloadOf(spec.feature, spec.term) ?? spec.value : spec.value,
+    owner: spec.owner,
+    source: spec.source ?? spec.expression ?? null,
+    ...spec.term ? { expression: spec.term } : {},
+    axis: spec.axis
+  });
+  if (!predicateOk(candidate.feature, boundTerm(candidate)?.radius ?? candidate.predicate)) {
+    return {
+      kind: "relation",
+      span: spec.owner,
+      message: `a ${candidate.feature} payload must be finite${candidate.guards?.nonNegative ? " and non-negative" : ""}`
+    };
+  }
+  const surviving = pump.laws.active().filter((law2) => addressOf(law2) !== addressOf(candidate));
+  const scope = [...surviving, candidate];
+  const operation = reachOperation(spec, row2, candidate);
+  if (operation.kind) return operation;
+  const policy = operation.policy;
+  spec = { ...spec, operation };
+  const fact = row2.staticVerdict?.(candidate);
+  if (fact?.status === "contradiction") {
+    return {
+      kind: "contradiction",
+      message: fact.reason,
+      span: spec.owner,
+      members: affectedMembers(pump.registry, scope, references)
+    };
+  }
+  if (policy === "balanced") {
+    const current = lawViolation(scope, /* @__PURE__ */ new Map(), pump.registry, world);
+    if (current.status === "valid") {
+      return {
+        kind: "commit",
+        poses: [],
+        address: candidate.address,
+        law: candidate,
+        span: spec.owner
+      };
+    }
+    if (current.status === "cannot-measure" && current.law !== candidate) return unsupported(spec, current.reason);
+    const comp = componentOf(scope, references);
+    const geometric = comp.laws.filter((law2) => AUTHORED[law2.feature]?.staticVerdict?.(law2)?.status !== "tautology");
+    if (geometric.length > 1) {
+      const anchors = [...comp.frames].filter((id2) => {
+        const frame = pump.registry.get(id2);
+        const e2 = frame && eligibilityOf(frame, scope, pump.registry);
+        return !!e2 && (!(e2.exposed && e2.seated && e2.settled && !e2.owned && !e2.broken) || e2.held || e2.pinned);
+      });
+      if (anchors.length === 1) {
+        const joint = componentCandidate(spec, candidate, pump, scope, world, anchors[0]);
+        if (joint !== INAPPLICABLE) return joint;
+      }
+      return unsupported(spec, "free-pair initialization cannot reconfigure coupled obligations yet");
+    }
+  }
+  const ctx = lawCtx(pump.registry, null, world, {
+    pinWorld: (id2) => {
+      const pin = pinnedLaw(pump.laws, id2);
+      const target = pin ? positionTarget(pin) : null;
+      const pose = target ? envelope.placementOf(target.frame) : null;
+      return pose ? SE3.apply(pose, target.value) : null;
+    },
+    conflictAt: (target, worldPos) => conflictAt(target, worldPos, pump.laws, pump.registry, world),
+    ownerOf: ownerLabel,
+    tie: world.transform(spec.observer).rotation.rotateVec(policy === "balanced" && references[0] > references[1] ? -1 : 1, 0, 0)
+  });
+  const envelope = reachEnvelope(spec, candidate, scope, ctx, operation, pump.registry);
+  const placed = row2.propose(envelope);
+  if (!placed.ok) {
+    if (placed.kind === "obstructed" || placed.kind === "contradiction") {
+      return {
+        kind: placed.kind,
+        message: placed.reason,
+        span: spec.owner,
+        candidate: placed.world ? { frame: spec.target.id, world: placed.world } : null,
+        residual: placed.residual ?? null,
+        members: affectedMembers(
+          pump.registry,
+          [...pump.laws.active().filter((law2) => addressOf(law2) !== addressOf(candidate)), candidate],
+          candidate.endpoints,
+          [spec.target, spec.observer]
+        )
+      };
+    }
+    return { kind: placed.kind ?? "relation", message: placed.reason, span: spec.owner };
+  }
+  const check = row2.validate({ ...envelope, world: placed.world, worlds: placed.worlds });
+  if (!check.ok) return { kind: check.kind ?? "relation", message: check.reason, span: spec.owner };
+  const worlds = placed.worlds ?? /* @__PURE__ */ new Map([[operation.movable[0], placed.world]]);
+  if (policy === "balanced" && (worlds.size !== new Set(references).size || [...worlds.keys()].some((id2) => !references.includes(id2)))) {
+    return { kind: "relation", message: "a free-pair proposal must name only its bound participants", span: spec.owner };
+  }
+  const outcome = settle(spec, candidate, worlds, pump, scope, world, {
+    // Method-specific: a balanced pair admits its participants; a target-only reach admits
+    // the one point it moves. (id:laws-activation-order)
+    permitted: operation.movable,
+    fail: (gate, poses) => {
+      if (policy === "balanced") return { kind: "relation", message: "the free-pair proposal failed its original predicates", span: spec.owner };
+      const joint = componentCandidate(spec, candidate, pump, scope, world);
+      if (joint !== INAPPLICABLE) return joint;
+      return {
+        kind: "obstructed",
+        message: conflictMessage(gate.law, candidate),
+        span: spec.owner,
+        candidate: plainPoses(poses),
+        residual: gate.residual,
+        members: affectedMembers(
+          pump.registry,
+          [...surviving, candidate],
+          candidate.endpoints,
+          [spec.target, spec.observer]
+        )
+      };
+    }
+  });
+  return {
+    ...outcome,
+    operation: envelope.operation,
+    ...placed.selection ? { selection: placed.selection } : {}
+  };
+}
+
 // assets/js/turtling/laws/readout.js
 var same = (a2, b2) => {
   if (Array.isArray(a2) && Array.isArray(b2)) {
-    return a2.length === b2.length && a2.every((v2, i2) => same(v2, b2[i2]));
+    return kindOf(a2) === kindOf(b2) && a2.length === b2.length && a2.every((v2, i2) => same(v2, b2[i2]));
   }
   return Object.is(a2, b2);
 };
 var isKeyed = (spec) => typeof spec === "function" ? false : spec != null && typeof spec === "object" && typeof spec.capture === "function" && typeof spec.build === "function";
+var isCaptured = (spec) => typeof spec === "object" && spec != null && typeof spec.capture === "function" && typeof spec.compute === "function";
+var cycleError = () => {
+  const error = new Error("a definition stands on itself \u2014 its answer depends on its own value");
+  error.cycle = true;
+  return error;
+};
 function createReadouts() {
   const nodes = /* @__PURE__ */ new Map();
   const bySource = /* @__PURE__ */ new Map();
   const watchers = /* @__PURE__ */ new Set();
   const releaseWatchers = /* @__PURE__ */ new Set();
+  const producers = /* @__PURE__ */ new Map();
   let seq = 0;
   let recomputes = 0;
   let drains = 0;
   let builds = 0;
+  let epoch = 0;
+  let active = null;
+  let anyRefused = false;
+  let structureGen = 0;
+  let prevStructureGen = -1;
+  let prevSize = -1;
+  let cachedCycle = null;
+  let cachedInvalid = null;
   const announce = (change) => {
+    const drives = nodes.get(change.id)?.drives;
+    const event = drives ? { ...change, drives } : change;
     const failures = [];
     for (const fn2 of [...watchers]) {
       try {
-        fn2(change);
+        fn2(event);
       } catch (error) {
         failures.push(error);
       }
@@ -20851,11 +22573,263 @@ function createReadouts() {
     if (failures.length === 1) throw failures[0];
     if (failures.length > 1) throw new AggregateError(failures, "readout subscribers failed");
   };
+  const reading = () => active && (active.path.length ? nodes.get(active.path[active.path.length - 1]) : active.probe);
+  const evaluation = () => ({ snapshot: void 0, changed: [], path: [], stack: /* @__PURE__ */ new Set(), cycle: /* @__PURE__ */ new Set(), collect: false });
+  const ensureScalar = (node) => {
+    if (node.computedEpoch === epoch) return;
+    if (active.saved && !active.saved.has(node)) {
+      active.saved.set(node, {
+        value: node.value,
+        computedEpoch: node.computedEpoch,
+        deps: node.deps,
+        frames: node.frames,
+        answer: node.answer,
+        requested: node.requested,
+        hasRequested: node.hasRequested
+      });
+    }
+    node.deps = /* @__PURE__ */ new Set();
+    node.frames = /* @__PURE__ */ new Set();
+    active.path.push(node.id);
+    active.stack.add(node.id);
+    let value;
+    try {
+      if (node.capture) {
+        const question = node.capture(active.snapshot);
+        if (active.saved || node.hasRequested && same(node.requested, question)) {
+          value = node.answer;
+        } else {
+          node.deps = /* @__PURE__ */ new Set();
+          node.frames = /* @__PURE__ */ new Set();
+          const answer = node.compute(active.snapshot);
+          if (answer.error && !active.collect) throw answer.error;
+          node.requested = answer.question;
+          node.hasRequested = true;
+          node.answer = answer.value;
+          value = node.answer;
+        }
+      } else {
+        value = (active.saved ? node.compute.capture ?? node.compute : node.compute)(active.snapshot);
+      }
+    } catch (error) {
+      if (!active.collect) throw error;
+    } finally {
+      active.path.pop();
+      active.stack.delete(node.id);
+    }
+    const previous = node.value;
+    node.computedEpoch = epoch;
+    node.value = value;
+    if (!same(previous, value)) active.changed.push({ id: node.id, source: node.source, value });
+  };
+  const empty = /* @__PURE__ */ new Set();
+  const done = { done: true, value: void 0 };
+  const nextEdge = (frame) => {
+    while (true) {
+      if (frame.it === null) {
+        if (frame.phase === 0) {
+          frame.it = frame.s0.values();
+          frame.phase = 1;
+        } else if (frame.phase === 1 && frame.s1 !== null) {
+          frame.it = frame.s1.values();
+          frame.phase = 2;
+        } else return done;
+      }
+      const step = frame.it.next();
+      if (!step.done) return step;
+      frame.it = null;
+    }
+  };
+  const findCycles = (ctx) => {
+    const index = /* @__PURE__ */ new Map(), low = /* @__PURE__ */ new Map(), onStack = /* @__PURE__ */ new Set(), scc = [];
+    let counter = 0;
+    const open = (v2, call) => {
+      index.set(v2, counter);
+      low.set(v2, counter);
+      counter++;
+      scc.push(v2);
+      onStack.add(v2);
+      const node = nodes.get(v2);
+      call.push({
+        v: v2,
+        self: false,
+        phase: 0,
+        it: null,
+        s0: node ? node.deps : producers.get(v2) ?? empty,
+        s1: node ? node.frames : null
+      });
+    };
+    for (const id2 of nodes.keys()) {
+      if (index.has(id2)) continue;
+      const call = [];
+      open(id2, call);
+      while (call.length) {
+        const frame = call[call.length - 1];
+        const { value: w2, done: done2 } = nextEdge(frame);
+        if (!done2) {
+          if (w2 === frame.v) frame.self = true;
+          if (!index.has(w2)) open(w2, call);
+          else if (onStack.has(w2)) low.set(frame.v, Math.min(low.get(frame.v), index.get(w2)));
+          continue;
+        }
+        call.pop();
+        if (low.get(frame.v) === index.get(frame.v)) {
+          const component = [];
+          let x2;
+          do {
+            x2 = scc.pop();
+            onStack.delete(x2);
+            component.push(x2);
+          } while (x2 !== frame.v);
+          if (component.length > 1 || frame.self) {
+            for (const entity of component) ctx.cycle.add(entity);
+          }
+        }
+        if (call.length) {
+          const parent = call[call.length - 1];
+          low.set(parent.v, Math.min(low.get(parent.v), low.get(frame.v)));
+        }
+      }
+    }
+  };
+  const closureOf = (ctx) => {
+    const invalid = /* @__PURE__ */ new Set();
+    if (ctx.cycle.size === 0) return invalid;
+    const readers = /* @__PURE__ */ new Map();
+    for (const node of nodes.values()) {
+      for (const dep of node.deps ?? []) {
+        let set = readers.get(dep);
+        if (!set) {
+          set = /* @__PURE__ */ new Set();
+          readers.set(dep, set);
+        }
+        set.add(node.id);
+      }
+    }
+    const queue = [];
+    for (const entity of ctx.cycle) if (typeof entity === "number") {
+      invalid.add(entity);
+      queue.push(entity);
+    }
+    while (queue.length) {
+      for (const reader of readers.get(queue.pop()) ?? []) {
+        if (!invalid.has(reader)) {
+          invalid.add(reader);
+          queue.push(reader);
+        }
+      }
+    }
+    return invalid;
+  };
+  const topologyMoved = () => {
+    if (nodes.size !== prevSize || structureGen !== prevStructureGen) return true;
+    for (const node of nodes.values()) {
+      const pd2 = node.prevDeps, pf = node.prevFrames;
+      if (pd2 === null || pd2.size !== node.deps.size || pf.size !== node.frames.size) return true;
+      for (const dep of node.deps) if (!pd2.has(dep)) return true;
+      for (const dep of node.frames) if (!pf.has(dep)) return true;
+    }
+    return false;
+  };
+  const recover = (node) => {
+    if (node.cycled) node.cycled = false;
+    if (!node.invalid) return;
+    node.invalid = false;
+    if (node.build && node.hasRequested && !node.pending && node.value === void 0) node.pending = true;
+  };
+  const settleValidity = (ctx, invalid) => {
+    if (ctx.cycle.size === 0) {
+      if (anyRefused) {
+        for (const node of nodes.values()) recover(node);
+        anyRefused = false;
+      }
+      return;
+    }
+    ctx.changed = ctx.changed.filter((change) => !invalid.has(change.id));
+    for (const node of nodes.values()) {
+      if (!invalid.has(node.id)) {
+        recover(node);
+        continue;
+      }
+      node.invalid = true;
+      anyRefused = true;
+      const had = node.value !== void 0;
+      node.value = void 0;
+      if (node.build) node.pending = false;
+      const cyclic = ctx.cycle.has(node.id);
+      if (cyclic && !node.cycled) {
+        ctx.changed.push({ id: node.id, source: node.source, value: void 0, cycle: true });
+      } else if (!cyclic && had) {
+        ctx.changed.push({ id: node.id, source: node.source, value: void 0 });
+      }
+      node.cycled = cyclic;
+    }
+  };
+  const clearProduces = (node) => {
+    if (node.produces?.size) structureGen++;
+    for (const frame of node.produces ?? []) {
+      const set = producers.get(frame);
+      if (set) {
+        set.delete(node.id);
+        if (set.size === 0) producers.delete(frame);
+      }
+    }
+    node.produces = /* @__PURE__ */ new Set();
+  };
+  const dropNode = (id2) => {
+    const node = nodes.get(id2);
+    if (node) clearProduces(node);
+    nodes.delete(id2);
+  };
+  const dependsOnFrame = (compute, frame) => {
+    const probe = {
+      snapshot: void 0,
+      changed: [],
+      path: [],
+      stack: /* @__PURE__ */ new Set(),
+      cycle: /* @__PURE__ */ new Set(),
+      collect: true,
+      probe: { deps: /* @__PURE__ */ new Set(), frames: /* @__PURE__ */ new Set() },
+      saved: /* @__PURE__ */ new Map()
+    };
+    const outer = active;
+    active = probe;
+    try {
+      try {
+        const capture = typeof compute === "function" ? compute.capture ?? compute : compute.capture;
+        capture();
+      } catch {
+      }
+      const seen = /* @__PURE__ */ new Set();
+      const reachable = (start) => {
+        const work = [start];
+        while (work.length) {
+          const entity = work.pop();
+          if (entity === frame) return true;
+          if (seen.has(entity)) continue;
+          seen.add(entity);
+          const node = nodes.get(entity);
+          if (node) {
+            for (const dep of node.deps) work.push(dep);
+            for (const dep of node.frames) work.push(dep);
+          } else {
+            const set = producers.get(entity);
+            if (set) for (const dep of set) work.push(dep);
+          }
+        }
+        return false;
+      };
+      return [...probe.probe.deps, ...probe.probe.frames].some(reachable);
+    } finally {
+      active = outer;
+      for (const [node, state] of probe.saved) Object.assign(node, state);
+    }
+  };
   return {
-    // One derived value per (source, site). A loop re-reaching the same
-    // statement updates the node; it does not multiply subscriptions.
-    // `spec` is either a pure function (scalar kind) or { capture, build }.
-    register(source, key, spec) {
+    // One derived value per (source, site); replacement retires old publication rights.
+    // Functions, synchronous {capture, compute, initial}, or deferred {capture, build}.
+    // The registrant's drives datum rides announcements. (id:laws-reactive-randomness)
+    register(source, key, spec, drives = null) {
       let keys = bySource.get(source);
       if (!keys) {
         keys = /* @__PURE__ */ new Map();
@@ -20864,19 +22838,47 @@ function createReadouts() {
       const owned = keys.get(key);
       if (owned !== void 0) {
         const node = nodes.get(owned);
-        if (node) resetNode(node, spec);
+        if (node) {
+          clearProduces(node);
+          nodes.set(owned, makeNode(owned, source, key, spec, drives));
+        }
         return owned;
       }
       const id2 = ++seq;
-      nodes.set(id2, makeNode(id2, source, key, spec));
+      nodes.set(id2, makeNode(id2, source, key, spec, drives));
       keys.set(key, id2);
       return id2;
     },
+    // The resolver reports a frame it RESOLVED while a node computes: a derived
+    // value's frame dependency is a reference, never a spelling. A no-op outside
+    // a compute; at a probe root it is the probe's own edge.
+    // (id:laws-dependency-driven-place)
+    readsink(frame) {
+      reading()?.frames.add(frame);
+    },
+    // A node PRODUCES a frame (a derived place's output): the frame depends on it.
+    // The scheduler states the fact; the store only closes the graph with it.
+    produces(id2, frame) {
+      const node = nodes.get(id2);
+      if (!node) return;
+      node.produces.add(frame);
+      let set = producers.get(frame);
+      if (!set) {
+        set = /* @__PURE__ */ new Set();
+        producers.set(frame, set);
+      }
+      set.add(id2);
+      structureGen++;
+    },
+    // Would replacing a definition with `compute` make it stand on `frame`? The
+    // scheduler asks before it commits, so a refusal preserves what came before.
+    // (id:laws-dependency-driven-place)
+    dependsOnFrame,
     // The source is gone (rewire, removal, fresh play): every node it owned goes.
     release(source) {
       const keys = bySource.get(source);
       if (!keys) return false;
-      for (const id2 of keys.values()) nodes.delete(id2);
+      for (const id2 of keys.values()) dropNode(id2);
       bySource.delete(source);
       for (const fn2 of [...releaseWatchers]) {
         try {
@@ -20886,11 +22888,63 @@ function createReadouts() {
       }
       return true;
     },
+    // One node retires when its site replaces a live law with a fixed one: the
+    // retired driver loses the right to publish. A refused replacement never
+    // reaches here, so it keeps the old accepted driver. (id:laws-ordered-replacement)
+    retire(source, key) {
+      const keys = bySource.get(source);
+      if (!keys) return false;
+      const id2 = keys.get(key);
+      if (id2 === void 0) return false;
+      keys.delete(key);
+      dropNode(id2);
+      return true;
+    },
+    // The opaque datum a site registered under, read back so an OWNER can compare
+    // its own meaning across a replacement. The store hands it back uninterpreted.
+    // (id:laws-ordered-replacement)
+    drivesOf(source, key) {
+      const id2 = bySource.get(source)?.get(key);
+      return id2 === void 0 ? void 0 : nodes.get(id2)?.drives;
+    },
+    // A frame leaving the play takes the derived values that PRODUCE it. A driven
+    // target's driver is owned by a declaring scope that may well survive the target,
+    // so a source release alone leaves it as an orphan. (id:laws-dependency-driven-place)
+    releaseProducing(frameId) {
+      const doomed = [];
+      for (const [id2, node] of nodes) {
+        for (const frame of node.produces ?? []) {
+          if (frame != null && frame.id === frameId) {
+            doomed.push(id2);
+            break;
+          }
+        }
+      }
+      for (const id2 of doomed) {
+        const node = nodes.get(id2);
+        if (!node) continue;
+        const keys = bySource.get(node.source);
+        if (keys) keys.delete(node.key);
+        dropNode(id2);
+      }
+      return doomed.length > 0;
+    },
+    drivesForSource(source) {
+      const keys = bySource.get(source);
+      if (!keys) return [];
+      const out = [];
+      for (const id2 of keys.values()) {
+        const drives = nodes.get(id2)?.drives;
+        if (drives) out.push(drives);
+      }
+      return out;
+    },
     // Bulk release carries the same per-source lifetime meaning as release:
     // capture the sources before clearing, then notify once each.
     releaseAll() {
       const sources = [...bySource.keys()];
       nodes.clear();
+      producers.clear();
       bySource.clear();
       for (const source of sources) {
         for (const fn2 of [...releaseWatchers]) {
@@ -20901,33 +22955,65 @@ function createReadouts() {
         }
       }
     },
-    // Capture every scalar value and every keyed *question* from the accepted
-    // snapshot. A scalar recomputes its value here; a keyed node only records
-    // the question and marks work pending — construction is not a commit.
-    recompute(snapshot) {
+    // One publication. Every keyed question is captured FIRST, so a scalar that
+    // reads a keyed answer sees the new question's state; then every scalar is
+    // computed in dependency order (a read of a node is answered by its fresh
+    // value); then the graph is checked for a definition standing on itself.
+    // (id:tower-laws-cycle-contracts)
+    recompute(snapshot2) {
       recomputes++;
-      const changed = [];
-      for (const node of nodes.values()) {
-        if (node.build) {
-          captureQuestion(node, snapshot, changed);
-          continue;
+      epoch++;
+      const ctx = { snapshot: snapshot2, changed: [], path: [], stack: /* @__PURE__ */ new Set(), cycle: /* @__PURE__ */ new Set(), collect: true };
+      const outer = active;
+      active = ctx;
+      try {
+        for (const node of nodes.values()) {
+          if (!node.build) continue;
+          node.deps = /* @__PURE__ */ new Set();
+          node.frames = /* @__PURE__ */ new Set();
+          ctx.path.push(node.id);
+          ctx.stack.add(node.id);
+          captureQuestion(node, snapshot2, ctx.changed);
+          ctx.path.pop();
+          ctx.stack.delete(node.id);
         }
-        recomputeScalar(node, snapshot, changed);
+        for (const node of nodes.values()) {
+          if (node.build) continue;
+          ensureScalar(node);
+        }
+        let invalid;
+        if (topologyMoved()) {
+          findCycles(ctx);
+          invalid = closureOf(ctx);
+          cachedCycle = ctx.cycle;
+          cachedInvalid = invalid;
+        } else {
+          ctx.cycle = cachedCycle;
+          invalid = cachedInvalid;
+        }
+        settleValidity(ctx, invalid);
+        prevSize = nodes.size;
+        prevStructureGen = structureGen;
+        for (const node of nodes.values()) {
+          node.prevDeps = node.deps;
+          node.prevFrames = node.frames;
+        }
+      } finally {
+        active = outer;
       }
       const failures = [];
-      for (const change of changed) failures.push(...announce(change));
+      for (const change of ctx.changed) failures.push(...announce(change));
       raise(failures);
-      return changed;
+      return ctx.changed;
     },
     // Build every pending answer outside the publication boundary, then settle
-    // it only while its owner and its question remain current. An obsolete
-    // answer is discarded; a refused question is settled as a refusal, never
-    // wearing the previous value as current. (id:laws-figure-composition)
+    // it only while its owner and its question remain current. A refused node
+    // never builds. (id:laws-figure-composition)
     drain() {
       drains++;
       const changed = [];
       for (const node of [...nodes.values()]) {
-        if (!node.build || !node.pending) continue;
+        if (!node.build || !node.pending || node.cycled) continue;
         const question = node.requested;
         let value, refused = false;
         try {
@@ -20940,7 +23026,7 @@ function createReadouts() {
           node.failure = error;
         }
         if (nodes.get(node.id) !== node || !node.pending || !same(node.requested, question)) continue;
-        settle(node, question, value, refused, changed);
+        settle2(node, question, value, refused, changed);
       }
       const failures = [];
       for (const change of changed) failures.push(...announce(change));
@@ -20948,31 +23034,45 @@ function createReadouts() {
       return changed;
     },
     // A read between commits computes on demand, so `let s = A.x` is usable
-    // the moment it is declared. A keyed node answers only with a settled,
-    // current value; a pending or refused question is NOTHING.
+    // the moment it is declared. Inside a publication it computes in dependency
+    // order. A keyed node answers only with a settled, current value.
     value(id2) {
       const node = nodes.get(id2);
       if (!node) return void 0;
+      reading()?.deps.add(node.id);
+      if (active && active.stack.has(node.id)) {
+        active.cycle.add(node.id);
+        if (!active.collect) throw cycleError();
+        return void 0;
+      }
       if (node.build) {
-        if (node.pending || node.refused || !node.hasValue) return void 0;
+        if (node.pending) return void 0;
         return node.value;
       }
-      if (!node.hasValue) {
-        const value = node.compute();
-        if (value === void 0) return void 0;
-        node.value = value;
-        node.hasValue = true;
+      if (node.computedEpoch !== epoch) {
+        const outer = active;
+        if (!outer) active = evaluation();
+        try {
+          ensureScalar(node);
+        } finally {
+          if (!outer) active = null;
+        }
       }
       return node.value;
     },
     stats() {
       return { size: nodes.size, recomputes, drains, builds };
     },
+    // Existing state, not a second queue: is any keyed answer waiting to build?
+    hasPending() {
+      for (const node of nodes.values()) if (node.pending) return true;
+      return false;
+    },
     list() {
       return [...nodes.values()].map((n2) => ({
         id: n2.id,
         keyed: !!n2.build,
-        hasValue: !!n2.hasValue,
+        hasValue: n2.value !== void 0,
         pending: !!n2.pending,
         hasRequested: !!n2.hasRequested,
         question: n2.requested ?? null,
@@ -20993,9 +23093,8 @@ function createReadouts() {
     }
   };
 }
-function makeNode(id2, source, key, spec) {
-  const base = { id: id2, source, key, value: void 0, hasValue: false };
-  return resetNode(base, spec);
+function makeNode(id2, source, key, spec, drives = null) {
+  return resetNode({ id: id2, source, key, drives, produces: /* @__PURE__ */ new Set() }, spec);
 }
 function resetNode(node, spec) {
   if (isKeyed(spec)) {
@@ -21010,45 +23109,30 @@ function resetNode(node, spec) {
     }
     node.pending = false;
     node.refused = false;
-    node.answered = false;
-    node.hasAnnounced = false;
-    node.announcedValue = void 0;
-    node.announcedRefused = void 0;
     node.failure = void 0;
   } else {
-    node.compute = spec;
-    node.capture = void 0;
+    node.compute = isCaptured(spec) ? spec.compute : spec;
+    node.capture = isCaptured(spec) ? spec.capture : void 0;
+    node.hasRequested = isCaptured(spec) && spec.initial !== void 0;
+    node.requested = node.hasRequested ? spec.initial.question : void 0;
+    node.answer = node.hasRequested ? spec.initial.value : void 0;
     node.build = void 0;
     node.pending = false;
   }
-  node.value = void 0;
-  node.hasValue = false;
+  node.value = node.answer;
+  node.deps = /* @__PURE__ */ new Set();
+  node.frames = /* @__PURE__ */ new Set();
+  node.prevDeps = null;
+  node.prevFrames = null;
+  node.computedEpoch = -1;
+  node.cycled = false;
+  node.invalid = false;
   return node;
 }
-function recomputeScalar(node, snapshot, changed) {
-  let value, answered = true;
-  try {
-    value = node.compute(snapshot);
-  } catch {
-    answered = false;
-  }
-  if (!answered || value === void 0) {
-    if (node.hasValue) {
-      node.value = void 0;
-      node.hasValue = false;
-      changed.push({ id: node.id, source: node.source, value: void 0 });
-    }
-    return;
-  }
-  const fresh = !node.hasValue || !same(node.value, value);
-  node.value = value;
-  node.hasValue = true;
-  if (fresh) changed.push({ id: node.id, source: node.source, value });
-}
-function captureQuestion(node, snapshot, changed) {
+function captureQuestion(node, snapshot2, changed) {
   let question, captured = true;
   try {
-    question = node.capture(snapshot);
+    question = node.capture(snapshot2);
   } catch {
     captured = false;
   }
@@ -21056,7 +23140,6 @@ function captureQuestion(node, snapshot, changed) {
   node.hasRequested = true;
   node.requested = captured ? question : void 0;
   node.pending = true;
-  node.answered = false;
   changed.push({
     id: node.id,
     source: node.source,
@@ -21067,22 +23150,13 @@ function captureQuestion(node, snapshot, changed) {
     previous: node.value
   });
 }
-function settle(node, question, value, refused, changed) {
+function settle2(node, question, value, refused, changed) {
   const previous = node.value;
   const wasRefused = node.refused;
   node.pending = false;
-  node.settledQuestion = question;
-  node.answered = !refused;
   node.refused = refused;
-  if (!refused) {
-    node.value = value;
-    node.hasValue = true;
-  }
-  const fresh = !node.hasAnnounced || node.announcedRefused !== refused || !refused && !same(node.announcedValue, value);
-  node.hasAnnounced = true;
-  node.announcedRefused = refused;
-  node.announcedValue = refused ? void 0 : value;
-  if (!fresh) return;
+  node.value = refused ? void 0 : value;
+  if (wasRefused === refused && same(previous, value)) return;
   changed.push({
     id: node.id,
     source: node.source,
@@ -21220,8 +23294,8 @@ function transformEvent(event, t2, sourceId) {
   }
 }
 var _samePt = (a2, b2) => a2 && b2 && Math.abs(a2[0] - b2[0]) < 1e-6 && Math.abs(a2[1] - b2[1]) < 1e-6 && Math.abs(a2[2] - b2[2]) < 1e-6;
-var _sameRot = (a2, b2) => a2 && b2 && Math.abs(a2.w - b2.w) < 1e-6 && Math.abs(a2.x - b2.x) < 1e-6 && Math.abs(a2.y - b2.y) < 1e-6 && Math.abs(a2.z - b2.z) < 1e-6;
-var samePose = (a2, b2) => a2 && b2 && _samePt(a2.position, b2.position) && _sameRot(a2.rotation, b2.rotation);
+var identicalPose = (a2, b2) => a2 && b2 && a2.position[0] === b2.position[0] && a2.position[1] === b2.position[1] && a2.position[2] === b2.position[2] && a2.rotation.w === b2.rotation.w && a2.rotation.x === b2.rotation.x && a2.rotation.y === b2.rotation.y && a2.rotation.z === b2.rotation.z;
+var liveIn = (registry, frame) => registry.get(frame?.id) === frame;
 function tagRun(ctx, value) {
   if (value.type !== "path" || !value.points || !value.points.length) return;
   const style = `${value.thickness}`;
@@ -21239,8 +23313,8 @@ function projectHead(headEvent, frameTarget, frameTransform) {
     rotation: frameTransform.rotation.multiply(headEvent.rotation)
   };
 }
-function putSync(ctx, event) {
-  ctx.sync[event.type] = event;
+function putSync(ctx, event, key = event.type) {
+  ctx.sync[key] = event;
 }
 function takeSync(frame) {
   const slot = frame.sync;
@@ -21311,9 +23385,15 @@ function clearSpentPark(ctx) {
   if (ctx.suspension?.kind === "breath") clearSuspension(ctx);
 }
 function metaRootFrame(frame) {
-  let node = frame;
-  while (node.parent) node = node.parent;
-  return node;
+  const cached = frame._root;
+  if (cached) return cached;
+  let root = frame;
+  while (root.parent) root = root.parent;
+  for (let node = frame; node; node = node.parent) {
+    node._root = root;
+    if (node === root) break;
+  }
+  return root;
 }
 function topLevelFrame(frame) {
   const root = metaRootFrame(frame);
@@ -21383,6 +23463,27 @@ function findReferenceFrame(ctx, name) {
 }
 function ownsInstant(frame) {
   return frame.midInstant === true || SUSPENSIONS[frame.suspension?.kind]?.owns === true;
+}
+function atCut(frame) {
+  if (!frame.done) {
+    if (frame.midInstant) return false;
+    if (frame.suspension) return false;
+  }
+  for (const child of frame.children.values()) {
+    if (!atCut(child)) return false;
+  }
+  return true;
+}
+function settledThrough(registry, root, H2) {
+  if (root._derivedMoves.length > 0) return false;
+  if (root._readouts?.hasPending?.()) return false;
+  for (const frame of registry.values()) {
+    if (frame === root || frame.done) continue;
+    if (frame.suspension) return false;
+    if (frame.midInstant) return false;
+    if (frame.resumeAt <= H2) return false;
+  }
+  return true;
 }
 function subtreeUnsettled(frame) {
   if (ownsInstant(frame)) return true;
@@ -21464,8 +23565,6 @@ function resolveBinding(frame, name, args) {
     return void 0;
   }
 }
-var roundVec2 = (v2) => Math.abs(v2) < 1e-10 ? 0 : Math.round(v2 * 1e9) / 1e9;
-var roundOrNothing = (v2) => v2 === null ? null : roundVec2(v2);
 var headingFromQuaternion = headingOf;
 function frameWorldTransform(frame) {
   const world = worldTransform(frame);
@@ -21524,29 +23623,31 @@ function poseInObserverBirth(target, observer) {
   return SE3.compose(SE3.invert(birth2), world);
 }
 var SPATIAL = {
-  x: (t2) => roundVec2(t2.position[0]),
-  y: (t2) => roundVec2(t2.position[1]),
-  z: (t2) => roundVec2(t2.position[2]),
-  heading: (t2) => roundOrNothing(headingFromQuaternion(t2.rotation)),
-  elevation: (t2) => roundVec2(elevationOf(t2.rotation))
+  x: (t2) => t2.position[0],
+  y: (t2) => t2.position[1],
+  z: (t2) => t2.position[2],
+  position: (t2) => t2.position,
+  heading: (t2) => headingFromQuaternion(t2.rotation),
+  elevation: (t2) => elevationOf(t2.rotation)
 };
 var TEMPORAL = {
-  time: (frame) => roundVec2(frame.elapsedTime || 0),
-  birthtime: (frame) => roundVec2(frame.birthtime || 0),
+  time: (frame) => frame.elapsedTime || 0,
+  birthtime: (frame) => frame.birthtime || 0,
   done: (frame) => frame.done ? 1 : 0,
   commands: (frame) => frame.commandCount
 };
 var RELATIONAL = {
-  distance: (target, observer) => roundVec2(measure("distance", target, observer, (f2) => worldReading(f2, observer, null))),
-  bearing: (target, observer) => roundOrNothing(measure("bearing", target, observer, (f2) => worldReading(f2, observer, null))),
-  sync: (target, observer) => roundVec2(measure("sync", target, observer, (f2) => worldReading(f2, observer, null)))
+  distance: (target, observer) => measure("distance", target, observer, (f2) => worldReading(f2, observer, null)),
+  bearing: (target, observer) => measure("bearing", target, observer, (f2) => worldReading(f2, observer, null)),
+  sync: (target, observer) => measure("sync", target, observer, (f2) => worldReading(f2, observer, null))
 };
 function readable(property, value, target) {
-  if (value === null) return null;
+  if (value == null) return null;
   if (predicateOk(property, value)) return value;
   throw new Error(`No ${property}: ${target.name} answers outside its domain`);
 }
 function resolveProperty(target, property, args, observer, ground = false) {
+  metaRootFrame(observer ?? target)._readouts?.readsink?.(target);
   if (!args && (property === "heading" || property === "elevation") && freePoint(target)) {
     throw new Error(`No ${property}: ${target.name} is a free point`);
   }
@@ -21554,7 +23655,7 @@ function resolveProperty(target, property, args, observer, ground = false) {
     return readable(property, SPATIAL[property](ground ? poseInObserverBirth(target, observer) : readWorldTransform(target, observer)), target);
   }
   if (!args && TEMPORAL[property]) {
-    return TEMPORAL[property](target);
+    return readable(property, TEMPORAL[property](target), target);
   }
   if (!args && observer && RELATIONAL[property]) {
     return readable(property, RELATIONAL[property](target, observer), target);
@@ -21594,18 +23695,13 @@ function pushMailbox(frame, msg) {
 var addrOf = (frame) => frame.address ?? frame.id;
 function woundMissingReference(ctx) {
   if (ctx.error) return;
-  ctx.error = {
-    message: `there is no '${ctx.targetFrame}' to draw in \u2014 this one drew in its own frame`,
-    span: null,
-    kind: "walk"
-  };
+  ctx.error = report({
+    kind: "walk",
+    message: `there is no '${ctx.targetFrame}' to draw in \u2014 this one drew in its own frame`
+  });
   ctx.channel.put({ type: "error", ...ctx.error, ambientId: ctx.id });
 }
-var errorRecord = (error) => ({
-  message: error.message,
-  span: error.span ?? null,
-  kind: error.kind ?? "walk"
-});
+var errorRecord = (error) => report({ kind: error.kind ?? "walk", message: error.message, span: error.span ?? null });
 function deliverShout(shout2, target) {
   const addr = addrOf(target);
   const fromAddr = shout2.from ? addrOf(shout2.from) : null;
@@ -21667,6 +23763,7 @@ function captureEnvironment(frame) {
 }
 function declaredInputs(value) {
   const bound = /* @__PURE__ */ new Map();
+  bound.set("count", value.env?.loopCounter ?? 0);
   for (const [name, held] of Object.entries(value.env?.scope ?? {})) {
     if (name.startsWith("__")) continue;
     bound.set(name, held);
@@ -21691,31 +23788,12 @@ function evaluateArgs(frame, exprs, declared) {
   if (!exprs?.length) return [];
   const { mathParser, mathEvaluator } = frame.deps ?? {};
   if (!mathParser || !mathEvaluator) return exprs.map(() => void 0);
-  const outer = mathEvaluator.resolveExternal;
-  if (declared?.size) {
-    mathEvaluator.resolveExternal = (name, args) => declared.has(name) ? declared.get(name) : outer?.(name, args);
-  }
-  try {
-    const parses = frame._argParses ?? (frame._argParses = /* @__PURE__ */ new Map());
-    return exprs.map((expr) => {
-      try {
-        let tree = parses.get(expr);
-        if (tree === void 0) {
-          tree = mathParser.parse(expr);
-          parses.set(expr, tree);
-        }
-        return mathEvaluator.run(tree, {});
-      } catch {
-        return void 0;
-      }
-    });
-  } finally {
-    mathEvaluator.resolveExternal = outer;
-  }
+  mathEvaluator.parser = mathParser;
+  const scope = Object.fromEntries(declared ?? []);
+  return exprs.map((expr) => mathEvaluator.run(parseMemo(mathParser, expr), scope));
 }
-function ownsRead(frame, targetName) {
+function ownsFrame(frame, target) {
   const root = regionRoot(frame);
-  const target = findFrame(frame, targetName);
   if (!target) return false;
   for (let node = target; node; node = node.parent) if (node === root) return true;
   return false;
@@ -21723,8 +23801,9 @@ function ownsRead(frame, targetName) {
 function closeDerivedDeps(deps, frame) {
   frame.capture = deps.capture ?? captureEnvironment(frame.parent ?? frame);
   deps.mathEvaluator.resolveExternal = (name) => {
+    recordRead(deps.mathEvaluator, frame, name);
     if (typeof name === "string" && name.includes(".")) {
-      if (ownsRead(frame, name.slice(0, name.indexOf(".")))) return resolveBinding(frame, name);
+      if (ownsFrame(frame, findFrame(frame, name.slice(0, name.indexOf("."))))) return resolveBinding(frame, name);
       throw new Error(`closed region has no world read: ${name}`);
     }
     return resolveScopeValue(frame, name);
@@ -21735,6 +23814,15 @@ function closeDerivedDeps(deps, frame) {
   deps.mathEvaluator.beginObservation = () => metaRootFrame(frame)._configurationRevision ?? 0;
   deps.mathEvaluator.endObservation = () => {
   };
+}
+function recordRead(evaluator, frame, name) {
+  const reads = evaluator.reads;
+  if (!reads) return;
+  reads.live = true;
+  if (typeof name === "string" && name.includes(".")) {
+    const target = findFrame(frame, name.slice(0, name.indexOf(".")));
+    if (target) reads.frames.add(target);
+  }
 }
 function bindResolve(deps, frame) {
   deps.mathEvaluator.beginObservation = () => {
@@ -21752,6 +23840,7 @@ function bindResolve(deps, frame) {
   };
   deps.mathEvaluator.resolveExternal = (v2, a2) => {
     const result = resolveBinding(frame, v2, a2);
+    recordRead(deps.mathEvaluator, frame, v2);
     if (typeof v2 === "string" && v2.includes(".")) deps.mathEvaluator._observedSibling = true;
     return result;
   };
@@ -21854,16 +23943,30 @@ function setListensFor(child, code) {
   child.listensFor = listenPatterns(code?.ast, code?.functions);
 }
 var RUNS = 0;
+var RUN_SEED = {
+  observation: null,
+  // this run's frozen reads
+  error: null,
+  // the wound that ended it, if any
+  notices: () => [],
+  // what the author is owed of a figure that still draws
+  unresolved: null,
+  // a question the world could not answer
+  sync: () => ({}),
+  // the conflating head slot
+  midInstant: false,
+  // a delayed admission reply belongs to the run that asked
+  _strokeEnd: null,
+  // BOTH halves of the join test must go, or the next run's
+  _strokeStyle: null
+  // first path could continue the last one's (id:ft-d7-deposit-runid)
+};
 function resetRunState(frame, stock) {
   clearSuspension(frame);
-  frame.observation = null;
-  frame.error = null;
-  frame.unresolved = null;
-  frame.sync = {};
+  for (const [field, seed] of Object.entries(RUN_SEED)) {
+    frame[field] = typeof seed === "function" ? seed() : seed;
+  }
   frame.run = ++RUNS;
-  frame.midInstant = false;
-  frame._strokeEnd = null;
-  frame._strokeStyle = null;
   resetInk(frame, stock);
 }
 function attachMeta(frame, targetFrame, stock) {
@@ -21886,11 +23989,24 @@ function seedOf(spec) {
     ast: [...spec.code?.ast ?? []],
     functions: spec.code?.functions ?? null,
     userspace: spec.env?.userspace ?? null,
-    color: spec.style?.color ?? null
+    color: spec.style?.color ?? null,
+    recipe: spec.recipe ?? null,
+    question: spec.question?.slice() ?? null,
+    style: { ...spec.style },
+    bindings: new Map(Object.entries(spec.env?.scope ?? {}).filter(([name]) => !name.startsWith("__")))
   };
+}
+function sameBindings(a2, b2) {
+  const left2 = a2 instanceof Map ? a2 : new Map(Object.entries(a2 ?? {}));
+  const right2 = b2 instanceof Map ? b2 : new Map(Object.entries(b2 ?? {}));
+  return left2.size === right2.size && [...left2].every(([key, value]) => right2.has(key) && same(value, right2.get(key)));
 }
 function sameSeed(seed, spec) {
   if (!seed) return false;
+  if (spec.profile === "derived") {
+    const next2 = seedOf(spec);
+    return seed.recipe === next2.recipe && same(seed.question, next2.question) && sameBindings(seed.functions, next2.functions) && sameBindings(seed.userspace, next2.userspace) && sameBindings(seed.style, next2.style) && sameBindings(seed.bindings, next2.bindings);
+  }
   const next = spec.code?.ast ?? [];
   if (seed.ast.length !== next.length) return false;
   for (let i2 = 0; i2 < next.length; i2++) {
@@ -21998,6 +24114,7 @@ function rewireChild(child, value, pump) {
   child.generator = re2.generator;
   child.done = false;
   wireRun(child, re2.deps, re2.mailbox, re2.batch, value.code, re2.relationshipBatch, pump);
+  child.seed = seedOf(value);
   resetRunState(child, pump.stock);
   child.resumeAt = 0;
   child.logicalBirth = child.parent ? child.parent.resumeAt > 0 ? child.parent.resumeAt : child.parent.logicalBirth : null;
@@ -22101,15 +24218,20 @@ function woundMotion(ctx, message) {
   ctx.generator = null;
   closeInstant(ctx);
   clearSuspension(ctx);
-  ctx.error = { message, span: null, kind: "motion" };
+  ctx.error = report({ kind: "motion", message });
   ctx.channel.put({ type: "error", ...ctx.error, ambientId: ctx.id });
   return { verdict: "ended", produced: true };
 }
+var installOf = (outcome, pump) => outcome.install ?? (outcome.law ? () => pump.laws.apply(outcome.law) : null);
 function publish(writer, entries, registry, install = null, project = null) {
   const seen = /* @__PURE__ */ new Set();
   const settledOnly = metaRootFrame(writer)._settledOnly !== false;
-  for (const { frame, pose } of entries) {
-    if (!frame || seen.has(frame) || registry.get(frame.id) !== frame) {
+  const prepared = [];
+  for (const { frame, pose, stated, ref } of entries) {
+    if (writer.closed && !ownsFrame(writer, frame)) {
+      return { kind: "conflict", message: "a closed construction cannot publish outside its region" };
+    }
+    if (!frame || seen.has(frame) || !liveIn(registry, frame)) {
       return { kind: "conflict", message: "a publication target is duplicated or no longer in this world" };
     }
     seen.add(frame);
@@ -22117,31 +24239,42 @@ function publish(writer, entries, registry, install = null, project = null) {
       if (ownsInstant(frame)) {
         return { kind: "conflict", message: `publication target '${frame.name}' is mid-instant; the transaction cannot be atomic` };
       }
-      if (settledOnly) {
+      const ownedValue = stated && frame.closed && frame.profile === "derived" && frame.parent === writer;
+      if (settledOnly && !ownedValue) {
         return { kind: "unsupported", message: `publication target '${frame.name}' is a running member; settled configurations only` };
       }
     }
     if (!pose || !Array.isArray(pose.position)) return { kind: "conflict", message: "a publication entry needs a pose" };
-  }
-  const write = ({ frame, pose, stated, ref }) => {
     if (!stated) {
-      if (samePose(frame.transform.deref(), pose)) return null;
-      return frame.transform.swapDeferred(() => pose);
+      const world2 = expressPose(frame, "own", pose);
+      if (!SE3.isValid(world2)) return { kind: "unsupported", message: `'${frame.name}' would hold an invalid pose` };
+      prepared.push({ frame, pose });
+      continue;
     }
     const world = expressPose(frame, ref ?? "own", pose);
+    if (!SE3.isValid(world)) return { kind: "unsupported", message: `'${frame.name}' states a pose its frame cannot hold` };
     const motion2 = frame.transform.deref();
     const chainTarget = SE3.compose(world, SE3.invert(motion2));
     const base = frame.parent ? worldTransform(frame.parent) : SE3.identity();
     const origin = SE3.compose(SE3.invert(base), chainTarget);
-    if (samePose(frame.origin, origin)) return null;
-    frame.origin = origin;
+    if (!SE3.isValid(origin)) return { kind: "unsupported", message: `'${frame.name}' states a pose whose origin is invalid` };
+    prepared.push({ frame, stated: true, motion: motion2, origin });
+  }
+  const write = (entry) => {
+    const { frame } = entry;
+    if (!entry.stated) {
+      if (identicalPose(frame.transform.deref(), entry.pose)) return null;
+      return frame.transform.swapDeferred(() => entry.pose);
+    }
+    if (identicalPose(frame.origin, entry.origin)) return null;
+    frame.origin = entry.origin;
     dirtyWorldSubtree(frame);
-    return frame.transform.swapDeferred(() => motion2);
+    return frame.transform.swapDeferred(() => entry.motion);
   };
-  const notify = entries.map(write);
+  const notify = prepared.map(write);
   const changed = notify.some(Boolean);
   if (changed) {
-    for (const { frame, pose } of entries) if (!frame.done && frame.batch) frame.batch.rebase = pose;
+    for (const { frame } of entries) if (!frame.done && frame.batch) frame.batch.rebase = frame.transform.deref();
   }
   if (install) install();
   if (!changed && !install) return null;
@@ -22180,24 +24313,24 @@ function publish(writer, entries, registry, install = null, project = null) {
   if (failures.length > 1) throw new AggregateError(failures, "publication subscribers failed");
   return null;
 }
-var verdictEntries = (writer, verdict) => (
+var verdictEntries = (writer, verdict3) => (
   // Poses arrive normalized to the frame's own chain (the hand's door converts), so the
   // entries carry only WHICH FIELD the accepted pose belongs in and whether it was stated.
   [
-    { frame: writer, pose: verdict.pose, stated: verdict.stated === true },
-    ...verdict.component.map((m2) => ({ frame: m2.frame, pose: m2.pose, stated: verdict.stated === true }))
+    { frame: writer, pose: verdict3.pose, stated: verdict3.stated === true },
+    ...verdict3.component.map((m2) => ({ frame: m2.frame, pose: m2.pose, stated: verdict3.stated === true }))
   ]
 );
-function commitTransaction(verdict, writer, registry, project = null) {
-  return publish(writer, verdictEntries(writer, verdict), registry, null, project);
+function commitTransaction(verdict3, writer, registry, project = null) {
+  return publish(writer, verdictEntries(writer, verdict3), registry, null, project);
 }
-function checkMotion(verdict, writer, registry, validate, request) {
-  if (verdict.kind !== "accept") return verdict;
-  const entries = [{ frame: writer, pose: verdict.pose }, ...verdict.component];
+function checkMotion(verdict3, writer, registry, validate, request) {
+  if (verdict3.kind !== "accept") return verdict3;
+  const entries = [{ frame: writer, pose: verdict3.pose }, ...verdict3.component];
   const seen = /* @__PURE__ */ new Set();
   for (const { frame, pose } of entries) {
-    if (seen.has(frame) || registry.get(frame?.id) !== frame || !Array.isArray(pose.position) || pose.position.length !== 3 || !pose.position.every(Number.isFinite) || !["x", "y", "z", "w"].every((key) => Number.isFinite(pose.rotation?.[key]))) {
-      return { kind: "fault", message: "accepted motion has a duplicate, stale or non-finite pose" };
+    if (seen.has(frame) || !liveIn(registry, frame) || !SE3.isValid(pose)) {
+      return { kind: "fault", message: "accepted motion has a duplicate, stale or invalid pose" };
     }
     seen.add(frame);
   }
@@ -22210,23 +24343,26 @@ function checkMotion(verdict, writer, registry, validate, request) {
       return { kind: "fault", message: `motion validation failed: ${error.message}` };
     }
   }
-  verdict.ref = request?.ref ?? null;
-  verdict.stated = verdict.ref !== null;
-  if (verdict.stated && verdict.ref !== "own") {
+  verdict3.ref = request?.ref ?? null;
+  verdict3.stated = verdict3.ref !== null;
+  if (verdict3.stated && verdict3.ref !== "own") {
     let toOwn = null;
     try {
       toOwn = (frame, pose) => {
-        const world = expressPose(frame, verdict.ref, pose);
-        if (!world) throw new Error(`no frame named '${verdict.ref}' to state a position against`);
+        const world = expressPose(frame, verdict3.ref, pose);
+        if (!world) throw new Error(`no frame named '${verdict3.ref}' to state a position against`);
         return SE3.compose(SE3.invert(worldTransform(frame)), world);
       };
-      verdict.pose = toOwn(writer, verdict.pose);
-      verdict.component = verdict.component.map((m2) => ({ ...m2, pose: toOwn(m2.frame, m2.pose) }));
+      verdict3.pose = toOwn(writer, verdict3.pose);
+      verdict3.component = verdict3.component.map((m2) => ({ ...m2, pose: toOwn(m2.frame, m2.pose) }));
     } catch (error) {
       return { kind: "unresolved", message: error.message };
     }
   }
-  return verdict;
+  if (!SE3.isValid(verdict3.pose) || verdict3.component.some((m2) => !SE3.isValid(m2.pose))) {
+    return { kind: "fault", message: "accepted motion normalizes to an invalid pose" };
+  }
+  return verdict3;
 }
 var motionBaseChanged = (ctx, request) => request.baseRevision !== void 0 && request.baseRevision !== metaRootFrame(ctx)._configurationRevision;
 function worldReading(frame, observer, overrides) {
@@ -22238,6 +24374,10 @@ function worldReading(frame, observer, overrides) {
   const world = readWorldTransform(frame, observer);
   return { position: world.position, rotation: world.rotation, time };
 }
+var lawWorld = {
+  read: (frame, overrides) => worldReading(frame, null, overrides),
+  transform: (frame) => worldTransform(frame)
+};
 function committedSnapshot() {
   const read = (frame) => worldReading(frame, null, null);
   return {
@@ -22249,7 +24389,13 @@ function committedSnapshot() {
 function releaseReadouts(root, ids) {
   if (!root?._readouts) return;
   const released = new Set(ids);
-  for (const id2 of released) root._readouts.release(id2);
+  for (const id2 of released) {
+    for (const drives of root._readouts.drivesForSource(id2)) {
+      if (drives.kind === "vector") retractVector(drives.spec.frame, drives.spec.name);
+    }
+    root._readouts.releaseProducing(id2);
+    root._readouts.release(id2);
+  }
 }
 function releaseRegion(frame, pump) {
   if (frame.children.size === 0) return;
@@ -22267,40 +24413,10 @@ function releaseRegion(frame, pump) {
   });
   frame.children.clear();
 }
-var LAWFUL = Object.freeze({ status: "valid" });
-var cannotMeasure = (law2, reason) => ({ status: "cannot-measure", law: law2, reason });
-function lawCtx(registry, overrides, extras = {}) {
-  return bindWorld((id2) => registry.get(id2), {
-    positionOf: (f2) => worldReading(f2, null, overrides).position,
-    poseOf: (f2) => worldTransform(f2),
-    ...extras
-  });
-}
 function recordAttempt(root, entry) {
   if (!root) return;
   root._lastAttempt = { ...entry, revision: root._motionRevision ?? 0 };
 }
-var plainPoses = (x2) => Array.isArray(x2) ? x2.map((p2) => ({ frame: p2.frame?.id ?? p2.frame, pose: p2.pose })) : x2 ?? null;
-function lawViolation(activeLaws, overrides, registry) {
-  if (!activeLaws || activeLaws.length === 0) return LAWFUL;
-  const ctx = lawCtx(registry, overrides);
-  for (const law2 of activeLaws) {
-    const row2 = AUTHORED[law2.feature];
-    if (!row2?.measure) return cannotMeasure(law2, `the whole-law gate does not recognize '${law2.feature}'`);
-    const check = row2.measure(law2, ctx);
-    if (check.status === "cannot-measure") return cannotMeasure(law2, check.reason);
-    if (check.status === "violation") return { status: "violation", law: law2, residual: check.residual };
-  }
-  return LAWFUL;
-}
-function brokenLaw(overrides, registry, laws) {
-  return lawViolation(laws?.active(), overrides, registry);
-}
-var ownerLabel = (law2) => law2?.owner?.line != null ? `line ${law2.owner.line}` : "source";
-function conflictMessage(violation2, candidate) {
-  return `the ${violation2.feature} at ${ownerLabel(violation2)} conflicts with the ${candidate.feature} at ${ownerLabel(candidate)}`;
-}
-var heldFrame = (frame) => (frame?.heldAttempts?.size ?? 0) > 0;
 function subtreeIds(frame) {
   const ids = /* @__PURE__ */ new Set();
   visitPostOrder(frame, (c2) => ids.add(c2.id));
@@ -22367,16 +24483,6 @@ function releaseAttemptsFor(root, ids) {
     if (set.has(attempt.source) || attempt.members.some((f2) => set.has(f2.id))) releaseAttempt(root, id2);
   }
 }
-function affectedMembers(registry, laws, seeds, extra = []) {
-  const ids = new Set(componentOf(laws, seeds).frames);
-  for (const frame of extra) if (frame?.id !== void 0) ids.add(frame.id);
-  const frames = [];
-  for (const id2 of ids) {
-    const frame = registry.get(id2);
-    if (frame) frames.push(frame);
-  }
-  return frames;
-}
 function settleAttempt(ctx, pump, outcome) {
   const record = (kind, message = outcome.message ?? null) => recordAttempt(metaRootFrame(ctx), {
     path: "reach",
@@ -22388,7 +24494,7 @@ function settleAttempt(ctx, pump, outcome) {
     residual: outcome.residual ?? null
   });
   if (outcome.kind === "commit") {
-    const conflict = publish(ctx, outcome.poses, pump.registry, outcome.install ?? null, () => {
+    const conflict = publish(ctx, outcome.poses, pump.registry, installOf(outcome, pump), () => {
       if (outcome.head) emitHead(outcome.head.frame, outcome.head.pose);
       for (const h2 of outcome.heads ?? []) emitHead(h2.frame, h2.pose);
     });
@@ -22402,7 +24508,7 @@ function settleAttempt(ctx, pump, outcome) {
   }
   record(outcome.kind);
   if (outcome.kind === "contradiction" || outcome.kind === "obstructed") {
-    if (pump.registry.get(ctx.id) !== ctx || ctx.done) return { verdict: "continue", produced: true };
+    if (!liveIn(pump.registry, ctx) || ctx.done) return { verdict: "continue", produced: true };
     registerAttempt(metaRootFrame(ctx), {
       source: ctx.id,
       kind: outcome.kind,
@@ -22417,88 +24523,18 @@ function settleAttempt(ctx, pump, outcome) {
   }
   return woundRelation(ctx, outcome.message, outcome.kind ?? "relation", outcome.span ?? null);
 }
-function proposedOverrides(writer, verdict) {
-  return new Map([[writer, verdict.pose], ...verdict.component.map((m2) => [m2.frame, m2.pose])]);
+function proposedOverrides(writer, verdict3) {
+  return new Map([[writer, verdict3.pose], ...verdict3.component.map((m2) => [m2.frame, m2.pose])]);
 }
-function continueLaws(verdict, writer, registry, laws) {
-  if (!laws || verdict.kind !== "accept") return verdict;
-  const poses = new Map([[writer, verdict.pose], ...verdict.component.map((m2) => [m2.frame, m2.pose])]);
-  const comp = componentOf(laws.active(), [writer.id]).laws;
-  const meeters = comp.filter((law2) => AUTHORED[law2.feature]?.meet && AUTHORED[law2.feature].touches(law2, writer.id));
-  if (meeters.length >= 1) {
-    const ctx = lawCtx(registry, poses, { writerId: writer.id });
-    const parts = comp.filter((law2) => AUTHORED[law2.feature]?.set && AUTHORED[law2.feature].touches(law2, writer.id));
-    const sets = parts.map((law2) => AUTHORED[law2.feature].set(law2, ctx));
-    if (sets.every(Boolean)) {
-      const wish = worldReading(writer, null, poses).position;
-      const accepted = worldReading(writer, null, null).position;
-      const near = nearest(meetAll(sets), wish, { keep: accepted });
-      if (near.ok) {
-        poses.set(writer, { rotation: verdict.pose.rotation, position: SE3.unapply(worldTransform(writer), near.at) });
-        verdict.pose = poses.get(writer);
-        return verdict;
-      }
-    }
-  }
-  const active = laws.active().filter((law2) => law2.feature === "distance");
-  if (active.length === 0) return verdict;
-  let changed = true;
-  for (let sweep = 0; changed && sweep <= active.length; sweep++) {
-    changed = false;
-    for (const law2 of active) {
-      const a2 = registry.get(law2.endpoints[0]);
-      const b2 = registry.get(law2.endpoints[1]);
-      if (!a2 || !b2) continue;
-      const aMoved = poses.has(a2);
-      const bMoved = poses.has(b2);
-      if (!aMoved && !bMoved) continue;
-      if (aMoved && bMoved) continue;
-      const moved = aMoved ? a2 : b2;
-      const other = aMoved ? b2 : a2;
-      const proposed = poses.get(moved);
-      const r2 = realizeDistance(
-        worldReading(moved, null, poses).position,
-        worldReading(other, null, poses).position,
-        law2.predicate
-      );
-      if (!r2.ok || !r2.moved) continue;
-      poses.set(moved, { rotation: proposed.rotation, position: SE3.unapply(worldTransform(moved), r2.pose) });
-      changed = true;
-    }
-  }
-  verdict.pose = poses.get(writer);
-  for (const member of verdict.component) member.pose = poses.get(member.frame);
-  return verdict;
-}
-function conflictAt(target, worldPos, laws, registry) {
-  for (const law2 of laws.active()) {
-    if (law2.feature !== "distance") continue;
-    const a2 = registry.get(law2.endpoints[0]);
-    const b2 = registry.get(law2.endpoints[1]);
-    if (!a2 || !b2) continue;
-    const other = a2 === target ? b2 : b2 === target ? a2 : null;
-    if (!other) continue;
-    const d2 = measure("distance", target, other, (f2) => f2 === target ? { position: worldPos } : { position: worldReading(f2, null, null).position });
-    if (!Number.isFinite(d2)) return { law: law2, domain: true };
-    if (Math.abs(d2 - law2.predicate) > ACCEPT_TOL) return { law: law2, residual: d2 - law2.predicate };
-  }
-  return null;
-}
-function pinnedLaw(laws, frameId) {
-  for (const law2 of laws.active()) {
-    if (law2.feature === "position" && law2.endpoints[0] === frameId) return law2;
-  }
-  return null;
-}
-function parkOnVerdict(ctx, verdict, pump, request) {
-  if (motionBaseChanged(ctx, request)) verdict = { kind: "stale" };
-  else verdict = checkMotion(verdict, ctx, pump.registry, pump.motionValidate, request);
+function parkOnVerdict(ctx, verdict3, pump, request) {
+  if (motionBaseChanged(ctx, request)) verdict3 = { kind: "stale" };
+  else verdict3 = checkMotion(verdict3, ctx, pump.registry, pump.motionValidate, request);
   let gate = null;
-  if (verdict.kind === "accept") {
-    gate = brokenLaw(proposedOverrides(ctx, verdict), pump.registry, pump.laws);
-    if (gate.status === "cannot-measure") verdict = { kind: "unresolved", message: gate.reason };
+  if (verdict3.kind === "accept") {
+    gate = brokenLaw(proposedOverrides(ctx, verdict3), pump.registry, pump.laws, lawWorld);
+    if (gate.status === "cannot-measure") verdict3 = { kind: "unresolved", message: gate.reason };
     else if (heldFrame(ctx) || gate.status === "violation") {
-      verdict = { kind: "refuse", ink: pump.execOpts.refusalStroke === "continue" ? "continue" : "break" };
+      verdict3 = { kind: "refuse", ink: pump.execOpts.refusalStroke === "continue" ? "continue" : "break" };
     }
   }
   recordAttempt(metaRootFrame(ctx), {
@@ -22506,18 +24542,19 @@ function parkOnVerdict(ctx, verdict, pump, request) {
     owner: ctx.id,
     from: request?.from?.position ?? null,
     requested: request?.requested?.position ?? null,
-    candidate: verdict.pose?.position ?? null,
-    verdict: verdict.kind,
+    candidate: verdict3.pose?.position ?? null,
+    verdict: verdict3.kind,
     gate: gate ? { status: gate.status, law: gate.law?.address ?? null, residual: gate.residual ?? null, reason: gate.reason ?? null } : null,
     baseRevision: request?.baseRevision ?? null
   });
-  if (verdict.kind === "fault") return woundMotion(ctx, verdict.message);
-  if (verdict.kind === "accept" && verdict.component.length > 0) {
-    const conflict = commitTransaction(verdict, ctx, pump.registry);
+  if (verdict3.kind === "fault") return woundMotion(ctx, verdict3.message);
+  if (verdict3.kind === "accept" && verdict3.component.length > 0) {
+    const conflict = commitTransaction(verdict3, ctx, pump.registry);
     if (conflict) return woundMotion(ctx, conflict.message);
   }
   openInstant(ctx);
-  suspend(ctx, "admission", { seq: ++ctx.motionSeq, verdict });
+  suspend(ctx, "admission", { seq: ++ctx.motionSeq, verdict: verdict3 });
+  if (ctx.closed) return { verdict: "continue", produced: true };
   return { verdict: "parked", produced: true };
 }
 function motion(ctx, value, _route, pump) {
@@ -22571,7 +24608,7 @@ function delayedMotion(ctx, value, pump) {
       request
     );
     let ruling = checked;
-    const check = ruling.kind === "accept" ? brokenLaw(proposedOverrides(ctx, ruling), pump.registry, pump.laws) : null;
+    const check = ruling.kind === "accept" ? brokenLaw(proposedOverrides(ctx, ruling), pump.registry, pump.laws, lawWorld) : null;
     if (check?.status === "cannot-measure") ruling = { kind: "unresolved", message: check.reason };
     else if (check?.status === "violation") ruling = { kind: "refuse", ink: pump.execOpts.refusalStroke === "continue" ? "continue" : "break" };
     if (ruling.kind === "fault") return void woundMotion(ctx, ruling.message);
@@ -22592,10 +24629,12 @@ function shout(ctx, value, route, pump) {
 function birth(ctx, value, _route, pump) {
   const existing = ctx.children.get(value.name);
   if (existing) {
-    const here = SE3.compose(worldTransform(ctx), value.origin);
+    const placesFigure = value.profile === "derived" && existing.profile === "derived";
+    const motion2 = existing.transform.deref();
+    const base = SE3.compose(worldTransform(ctx), value.origin);
+    const here = placesFigure ? SE3.compose(base, motion2) : base;
     const next = SE3.compose(SE3.invert(worldTransform(existing)), here);
-    existing.birthPose = SE3.clone(next);
-    const check = lawViolation(pump.laws.active(), /* @__PURE__ */ new Map([[existing, next]]), pump.registry);
+    const check = lawViolation(pump.laws.active(), /* @__PURE__ */ new Map([[existing, next]]), pump.registry, lawWorld);
     const outcome = check.status === "cannot-measure" ? { kind: "unresolved", message: check.reason, span: value.owner } : check.status === "violation" ? {
       kind: "obstructed",
       span: value.owner,
@@ -22603,8 +24642,11 @@ function birth(ctx, value, _route, pump) {
       members: affectedMembers(pump.registry, pump.laws.active(), check.law.endpoints, [existing, ctx])
     } : {
       kind: "commit",
-      poses: [{ frame: existing, pose: next }],
-      heads: [{ frame: existing, pose: next }],
+      poses: [{ frame: existing, pose: next, stated: placesFigure }],
+      install: () => {
+        existing.birthPose = SE3.clone(placesFigure ? value.origin : next);
+      },
+      heads: [{ frame: existing, pose: placesFigure ? motion2 : next }],
       span: value.owner
     };
     const settled = settleAttempt(ctx, pump, outcome);
@@ -22629,201 +24671,83 @@ function emitHead(member, pose) {
   const target = member.targetFrame ? findReferenceFrame(member, member.targetFrame) : null;
   putSync(member, target ? projectHead(head, target, relativeTransform(member, target)) : head);
 }
-var unsupported = (spec, reason) => ({ kind: "unresolved", message: reason, span: spec.owner });
-function componentMeetCandidate(spec, candidate, comp, pump, scope) {
-  const meeters = comp.laws.filter((law2) => AUTHORED[law2.feature]?.meet);
-  if (meeters.length === 0) return null;
-  const p2 = meeters[0].endpoints[0];
-  if (!meeters.every((law2) => law2.endpoints[0] === p2)) return unsupported(spec, "a relation names another point");
-  const point2 = pump.registry.get(p2);
-  if (!point2) return unsupported(spec, "the point is not seated");
-  const ctx = lawCtx(pump.registry, null, { writerId: p2 });
-  const parts = comp.laws.filter((law2) => AUTHORED[law2.feature]?.set && AUTHORED[law2.feature].touches(law2, p2));
-  const sets = [];
-  for (const law2 of parts) {
-    const s2 = AUTHORED[law2.feature].set(law2, ctx);
-    if (!s2) return unsupported(spec, `cannot form the ${law2.feature}`);
-    sets.push(s2);
-  }
-  const met = meetAll(sets);
-  if (met.kind === "empty") {
-    const movers = /* @__PURE__ */ new Map();
-    for (const law2 of parts) {
-      if (law2.feature !== "distance") continue;
-      const other = law2.endpoints.find((id2) => id2 !== p2);
-      const frame = other != null ? pump.registry.get(other) : null;
-      if (frame && !pinnedLaw(pump.laws, frame.id)) movers.set(frame.id, frame);
-    }
-    if (movers.size > 0) {
-      const held = [...movers.values()];
-      return {
-        kind: "obstructed",
-        message: `the truths have no point in common while ${held.map((f2) => `'${f2.name}'`).join(", ")} hold their places`,
-        span: spec.owner,
-        members: affectedMembers(pump.registry, comp.laws, [p2, ...held.map((f2) => f2.id)])
-      };
-    }
-    return {
-      kind: "contradiction",
-      message: "the truths have no point in common",
-      span: spec.owner,
-      members: affectedMembers(pump.registry, comp.laws, [p2])
-    };
-  }
-  if (met.kind === "uncertain" || met.kind === "unresolved") return unsupported(spec, "the meet is not a named set");
-  const near = nearest(met, worldReading(point2, null, null).position);
-  if (!near.ok) return unsupported(spec, "the meet has no nearest point");
-  const pose = { rotation: point2.transform.deref().rotation, position: SE3.unapply(worldTransform(point2), near.at) };
-  const overrides = /* @__PURE__ */ new Map([[point2, pose]]);
-  const check = lawViolation(scope, overrides, pump.registry);
-  if (check.status === "cannot-measure") return unsupported(spec, check.reason);
-  if (check.status !== "valid") return null;
-  return {
-    kind: "commit",
-    poses: [{ frame: point2, pose }],
-    install: () => pump.laws.apply(candidate),
-    heads: [{ frame: point2, pose }],
-    span: spec.owner
-  };
+var REDRAWN = { vector: redrawVector, place: queueDerived };
+function queueDerived(spec, raw, node) {
+  metaRootFrame(spec.observer)._derivedMoves.push({ spec, raw, node });
 }
-function componentCandidate(spec, candidate, pump, scope) {
-  const active = [...pump.laws.active().filter((law2) => addressOf(law2) !== addressOf(candidate)), candidate];
-  const comp = componentOf(active, candidate.endpoints);
-  if (comp.laws.length < 2) return null;
-  if (comp.laws.some((law2) => AUTHORED[law2.feature]?.meet)) {
-    return componentMeetCandidate(spec, candidate, comp, pump, scope);
-  }
-  if (comp.laws.some((law2) => law2.feature !== "distance")) return unsupported(spec, "a component with a pin or a non-distance relation");
-  if (!comp.frames.has(spec.observer.id)) return unsupported(spec, "a component outside the declaring frame");
-  for (const id2 of comp.frames) {
-    if (id2 === spec.observer.id) continue;
-    const frame = pump.registry.get(id2);
-    if (!frame || !frame.done) return unsupported(spec, "a component member is not settled");
-    if (heldFrame(frame)) return null;
-    if (pinnedLaw(pump.laws, id2)) return unsupported(spec, "a pinned component member cannot be reconfigured yet");
-  }
-  const world = (id2) => {
-    const frame = pump.registry.get(id2);
-    return frame ? worldReading(frame, null, null).position : null;
-  };
-  const positions = realizeDistanceTree(comp.laws, spec.observer.id, world, (law2) => law2.predicate);
-  if (!positions) return unsupported(spec, "a cyclic or unanchored component");
-  const poses = [];
-  const heads = [];
-  for (const id2 of comp.frames) {
-    if (id2 === spec.observer.id) continue;
-    const frame = pump.registry.get(id2);
-    const target = positions.get(id2);
-    if (!frame || !target) return unsupported(spec, "a component member left the registry");
-    const pose = { rotation: frame.transform.deref().rotation, position: SE3.unapply(worldTransform(frame), target) };
-    poses.push({ frame, pose });
-    heads.push({ frame, pose });
-  }
-  const overrides = new Map(poses.map(({ frame, pose }) => [frame, pose]));
-  const check = lawViolation(scope, overrides, pump.registry);
-  if (check.status === "cannot-measure") return { kind: "unresolved", message: check.reason, span: spec.owner };
-  if (check.status === "violation") return null;
-  return { kind: "commit", poses, install: () => pump.laws.apply(candidate), heads, span: spec.owner };
+function projectPayload(feature, raw) {
+  return kindOf2(feature) === "point" ? toSpace(raw) ?? raw : raw;
 }
-function applyLaw(spec, pump) {
-  const row2 = AUTHORED[spec.feature];
-  if (!row2?.propose || !row2?.validate) return { kind: "unsupported", message: `Unsupported law: ${spec.feature}`, span: spec.owner };
-  const candidate = bindLaw({
-    feature: spec.feature,
-    endpoints: row2.endpoints(spec),
-    scope: spec.observer.id,
-    frame: spec.observer.id,
-    predicate: spec.value,
-    owner: spec.owner,
-    axis: spec.axis
-  });
-  if (!predicateOk(candidate.feature, candidate.predicate)) {
-    return {
-      kind: "relation",
-      span: spec.owner,
-      message: `a ${candidate.feature} payload must be finite${candidate.guards?.nonNegative ? " and non-negative" : ""}`
-    };
-  }
-  const ctx = lawCtx(pump.registry, null, {
-    pinWorld: (target) => {
-      const pin = pinnedLaw(pump.laws, target.id);
-      const pinFrame = pin ? pump.registry.get(pin.frame) : null;
-      return pinFrame ? SE3.apply(worldTransform(pinFrame), pin.predicate) : null;
-    },
-    conflictAt: (target, world) => conflictAt(target, world, pump.laws, pump.registry),
-    ownerOf: ownerLabel
-  });
-  const placed = row2.propose({ ...spec, ...ctx });
-  if (!placed.ok) {
-    if (placed.kind === "obstructed" || placed.kind === "contradiction") {
-      return {
-        kind: placed.kind,
-        message: placed.reason,
-        span: spec.owner,
-        candidate: placed.world ? { frame: spec.target.id, world: placed.world } : null,
-        residual: placed.residual ?? null,
-        members: affectedMembers(
-          pump.registry,
-          [...pump.laws.active().filter((law2) => addressOf(law2) !== addressOf(candidate)), candidate],
-          candidate.endpoints,
-          [spec.target, spec.observer]
-        )
-      };
-    }
-    return { kind: placed.kind ?? "relation", message: placed.reason, span: spec.owner };
-  }
-  const check = row2.validate({ ...spec, world: placed.world, ...ctx });
-  if (!check.ok) return { kind: check.kind ?? "relation", message: check.reason, span: spec.owner };
-  const local = SE3.unapply(worldTransform(spec.target), placed.world);
-  const pose = { rotation: spec.target.transform.deref().rotation, position: local };
-  const surviving = pump.laws.active().filter((law2) => addressOf(law2) !== addressOf(candidate));
-  const scope = [...surviving, candidate];
-  const gate = lawViolation(scope, /* @__PURE__ */ new Map([[spec.target, pose]]), pump.registry);
-  if (gate.status === "cannot-measure") {
-    return { kind: "unresolved", message: gate.reason, span: spec.owner };
-  }
-  if (gate.status === "violation") {
-    const joint = componentCandidate(spec, candidate, pump, scope);
-    if (joint) return joint;
-    return {
-      kind: "obstructed",
-      message: conflictMessage(gate.law, candidate),
-      span: spec.owner,
-      candidate: [{ frame: spec.target.id, pose }],
-      residual: gate.residual,
-      members: affectedMembers(
-        pump.registry,
-        [...surviving, candidate],
-        candidate.endpoints,
-        [spec.target, spec.observer]
-      )
-    };
-  }
-  return {
-    kind: "commit",
-    poses: [{ frame: spec.target, pose }],
-    install: () => pump.laws.apply(candidate),
-    heads: [{ frame: spec.target, pose }],
-    span: spec.owner
+function redrawVector(spec, raw) {
+  const d2 = toSpace(raw);
+  if (!d2) return;
+  const frame = spec.frame;
+  if (!frame?.sync) return;
+  const [dx, dy, dz] = spec.rotation.rotateVec(d2[0], d2[1], d2[2]);
+  const to = [spec.from[0] + dx, spec.from[1] + dy, spec.from[2] + dz];
+  const event = {
+    type: "vector",
+    name: spec.name,
+    from: spec.from,
+    rotation: spec.rotation,
+    color: spec.color,
+    thickness: spec.thickness,
+    textSize: spec.textSize,
+    to
   };
+  putSync(frame, event, `vector:${spec.name}`);
+}
+function retractVector(frame, name) {
+  if (!frame?.sync || !name) return;
+  putSync(frame, { type: "vector", name, removed: true }, `vector:${name}`);
+}
+function retractIfVector(ctx, name, pump) {
+  const prior = pump.readouts?.drivesOf(ctx.id, name);
+  if (prior?.kind !== "vector") return;
+  retractVector(prior.spec.frame, prior.spec.name);
+  pump.readouts.retire(ctx.id, name);
 }
 function scalarReadout(ctx, value, _route, pump) {
-  const id2 = pump.readouts.register(ctx.id, value.owner ?? value.name, value.read);
+  const drives = value.vector ? { kind: "vector", source: ctx.id, spec: { frame: ctx, ...value.vector } } : null;
+  const before = pump.readouts.drivesOf(ctx.id, value.name);
+  if (before?.kind === "vector" && drives == null) retractVector(before.spec.frame, before.spec.name);
+  const id2 = pump.readouts.register(ctx.id, value.name, value.read, drives);
+  if (drives) redrawVector(drives.spec, value.initial);
   if (!ctx.scalars) ctx.scalars = /* @__PURE__ */ new Map();
   ctx.scalars.set(value.name, id2);
   return { verdict: "continue", produced: true };
 }
-function parameterReadout(ctx, value, _route, _pump) {
+function redrawDerivedLaw(move, pump) {
+  const { spec, raw, node } = move;
+  const { feature, observer, target, owner } = spec;
+  if (!target || target.error || !target.done) return;
+  if (!liveIn(pump.registry, observer)) return;
+  if (spec.key == null || pump.readouts.drivesOf(spec.source, spec.key)?.spec !== spec) return;
+  if (node == null || !same(pump.readouts.value(node), raw)) return;
+  const accepted = pump.laws.lawAt(spec.address);
+  const term = withPayload(accepted?.expression, projectPayload(feature, raw));
+  if (term == null) return;
+  const outcome = applyLaw({ feature, target, observer, owner, term }, pump, lawWorld);
+  if (outcome.kind !== "commit") return;
+  publish(observer, outcome.poses, pump.registry, installOf(outcome, pump), () => {
+    for (const h2 of outcome.heads ?? []) emitHead(h2.frame, h2.pose);
+  });
+}
+function parameterReadout(ctx, value, _route, pump) {
+  retractIfVector(ctx, value.name, pump);
   if (!ctx.params) ctx.params = /* @__PURE__ */ new Map();
   ctx.params.set(value.name, value.value);
   return { verdict: "continue", produced: true };
 }
 function law(ctx, value, _route, pump) {
   const targetName = value.target;
+  const driven = driveOf(value.feature);
   const visible = findFrame(ctx, targetName, "world");
   const declaredHere = ctx.declared?.has(targetName) === true;
-  if (value.feature !== "position" && declaredHere && !ctx.children.has(targetName)) {
-    return woundRelation(ctx, `Use before introduction: ${targetName}`, "relation", value.owner);
+  for (const name of value.subjects ?? [targetName]) {
+    if (value.feature !== "position" && ctx.declared?.has(name) && !ctx.children.has(name)) {
+      return woundRelation(ctx, `Use before introduction: ${name}`, "relation", value.owner);
+    }
   }
   const introduces = value.feature === "position" && !ctx.children.has(targetName) && (declaredHere || !visible);
   const born = introduces ? seatPlace(ctx, targetName, pump, SE3.clone(ctx.transform.deref())) : null;
@@ -22832,19 +24756,84 @@ function law(ctx, value, _route, pump) {
     if (born) withdrawPlace(ctx, born, pump);
     return woundRelation(ctx, `Unknown target: ${targetName}`, "relation", value.owner);
   }
+  const subjects = value.subjects ?? null;
+  const participants = subjects ? subjects.filter((s2) => typeof s2 === "string").map((name) => findFrame(ctx, name, "world")) : null;
+  const references = subjects ? subjects.map((s2) => typeof s2 === "string" ? findFrame(ctx, s2, "world")?.id ?? null : { frame: ctx.id, value: [...s2.framed ?? s2.relative], ...s2.relative ? { relative: true } : {} }) : null;
+  if (participants?.some((f2) => !f2 || f2 === ctx)) {
+    return woundRelation(ctx, "a distance subject must name an introduced spatial point", "relation", value.owner);
+  }
+  const outside = ctx.closed && (participants ?? [target]).find((f2) => !ownsFrame(ctx, f2));
+  if (outside) {
+    return woundRelation(ctx, `closed region has no outside law target: ${outside.name}`, "relation", value.owner);
+  }
+  const movable = value.movers?.map((name) => findFrame(ctx, name, "world")?.id) ?? null;
+  if (movable?.some((id2) => id2 == null || !(references ?? [target.id]).includes(id2))) {
+    if (born) withdrawPlace(ctx, born, pump);
+    return woundRelation(ctx, "a law mover must name a bound live subject", "relation", value.owner);
+  }
+  const moves = (f2) => !movable || movable.includes(f2.id);
+  if (participants?.some((f2) => moves(f2) && (f2.parent !== ctx || !freePoint(f2) || heldFrame(f2)))) {
+    return endUnresolved(ctx, "explicit distance currently requires settled bodyless children of its declaring scope");
+  }
+  if (participants?.some((f2) => !moves(f2) && !ownsFrame(ctx, f2))) {
+    return endUnresolved(ctx, "a read-only subject must belong to the declaring scope");
+  }
+  if (driven && value.read && pump.readouts.dependsOnFrame?.(value.read, target)) {
+    if (born) withdrawPlace(ctx, born, pump);
+    return woundRelation(
+      ctx,
+      `'${targetName}' cannot be defined by itself \u2014 a dependent place must stand on another`,
+      "relation",
+      value.owner
+    );
+  }
   const outcome = applyLaw({
     feature: value.feature,
     target,
+    participants,
     observer: ctx,
     value: value.value,
+    expression: value.expression,
     axis: value.axis ?? null,
-    owner: value.owner
-  }, pump);
-  if (born && outcome.kind === "commit") {
-    const install = outcome.install;
+    owner: value.owner,
+    references: references ?? void 0,
+    ...movable || value.reachPolicy !== void 0 ? { operation: {
+      policy: value.reachPolicy ?? "target-only",
+      ...movable ? { movable } : {}
+    } } : {}
+  }, pump, lawWorld);
+  if (outcome.kind === "commit") {
+    const install = installOf(outcome, pump);
     outcome.install = () => {
       if (install) install();
-      ctx.reached?.add(targetName);
+      if (value.feature === "position") retractIfVector(ctx, targetName, pump);
+      if (driven) {
+        const key = outcome.address;
+        if (value.read) {
+          const node = pump.readouts.register(
+            ctx.id,
+            key,
+            value.read,
+            {
+              kind: "place",
+              source: ctx.id,
+              spec: {
+                feature: value.feature,
+                source: ctx.id,
+                key,
+                observer: ctx,
+                target,
+                owner: value.owner,
+                address: outcome.address
+              }
+            }
+          );
+          pump.readouts.produces(node, target);
+        } else {
+          pump.readouts.retire(ctx.id, key);
+        }
+      }
+      if (born) ctx.reached?.add(targetName);
     };
   }
   const settled = settleAttempt(ctx, pump, outcome);
@@ -22860,18 +24849,19 @@ function woundRelation(ctx, message, kind = "relation", span = null) {
   ctx.generator = null;
   closeInstant(ctx);
   clearSuspension(ctx);
-  ctx.error = { message, span, kind };
+  ctx.error = report({ kind, message, span });
   ctx.channel.put({ type: "error", ...ctx.error, ambientId: ctx.id });
   return { verdict: "ended", produced: true };
 }
 function registerFigureCell(ctx, value, pump) {
   if (!pump.readouts) return;
+  retractIfVector(ctx, value.name, pump);
   const question = () => evaluateArgs(ctx, value.argExprs, declaredInputs(value));
   pump.readouts.register(ctx.id, value.name, {
     capture: question,
-    // The spawn already ran the child with this question; seed it so the first
-    // commit compares instead of always looking new.
-    seed: question(),
+    // The body is attached with this question; seed only that actual attachment.
+    // (id:laws-generative-experiments)
+    seed: value.question?.slice(0, value.argExprs?.length ?? 0),
     // This record is an invalidation subscription, NOT an answer: its build
     // requests a restart, and the run's outcome lives on the frame, where a wound
     // already carries provenance. Returning the name made a restart read as
@@ -22887,10 +24877,16 @@ function supersedeFigure(ctx, value, pump) {
   if (!child) return;
   value.capture = captureFor(ctx, value);
   if (value.argExprs) {
-    value.question = evaluateArgs(ctx, value.argExprs, declaredInputs(value));
+    try {
+      value.question = evaluateArgs(ctx, value.argExprs, declaredInputs(value));
+    } catch (error) {
+      if (error.blocked) throw error;
+      woundRelation(child, error.message, "evaluation", value.owner);
+      return;
+    }
     const args = value.code?.ast?.[0]?.children ?? [];
     value.question.forEach((input, i2) => {
-      if (args[i2]) args[i2].value = String(input);
+      if (args[i2]) args[i2].value = input;
     });
   }
   rewireChild(child, value, pump);
@@ -22901,16 +24897,22 @@ function spawn(ctx, value, route, pump) {
   const closed = value.profile === "derived" || ctx.closed === true;
   value.closed = closed;
   if (closed) value.capture = captureFor(ctx, value);
-  if (value.profile === "derived") registerFigureCell(ctx, value, pump);
   const existing = ctx.children.get(value.name);
   const deferredShouts = route.deferredShouts;
   if (existing) {
     if (existing.isPlace !== true) existing.origin = value.origin;
     existing._worldDirty = true;
     metaRootFrame(existing)._configurationRevision++;
+    if (value.profile === "derived") {
+      const reuse = sameSeed(existing.seed, value);
+      if (!reuse) rewireChild(existing, value, pump);
+      registerFigureCell(ctx, value, pump);
+      if (reuse) return { verdict: "continue" };
+      if (deferredShouts) deliverDeferredToFrame(deferredShouts, existing);
+      return { verdict: "spawned", spawned: existing, produced: true };
+    }
     if (existing.done && pump.createDeps) {
-      const derived = existing.profile === "derived" || value.profile === "derived";
-      if (derived && existing.runIncarnation) return { verdict: "continue" };
+      if (existing.profile === "derived" && existing.runIncarnation) return { verdict: "continue" };
       rewireChild(existing, value, pump);
       if (deferredShouts) deliverDeferredToFrame(deferredShouts, existing);
       return { verdict: "spawned", spawned: existing, produced: true };
@@ -22919,6 +24921,7 @@ function spawn(ctx, value, route, pump) {
   }
   if (pump.createDeps) {
     const child = seatChild(ctx, value, pump, route, deferredShouts);
+    if (value.profile === "derived") registerFigureCell(ctx, value, pump);
     return { verdict: "spawned", spawned: child, produced: true };
   }
   return { verdict: "continue", produced: true };
@@ -22947,6 +24950,7 @@ function seatChild(ctx, value, pump, route, deferredShouts) {
   ctx.children.set(value.name, child);
   bumpTree(ctx);
   wireChild(child, deps, mailbox, pump.registry, value.code, batch, relationshipBatch, pump);
+  child.seed = seedOf(value);
   if (deferredShouts) deliverDeferredToFrame(deferredShouts, child);
   return child;
 }
@@ -22977,14 +24981,13 @@ function endUnresolved(ctx, reason) {
 function motionUnresolved(ctx, value) {
   return endUnresolved(ctx, value.reason);
 }
-function incomplete(ctx, value) {
-  ctx.channel.put({
-    type: "incomplete",
-    expected: value.expected,
-    found: value.found,
-    span: value.span,
-    ambientId: ctx.id
-  });
+function noticeEffect(ctx, value) {
+  const said = notice({ kind: value.kind ?? "walk", message: value.message, span: value.span, expr: value.expr });
+  ctx.channel.put({ ...said, ambientId: ctx.id });
+  const standing = ctx.notices ??= [];
+  if (!standing.some((n2) => n2.message === said.message && (n2.span?.line ?? null) === (said.span?.line ?? null))) {
+    standing.push(said);
+  }
   return { verdict: "continue", produced: true };
 }
 var EFFECTS = {
@@ -22997,7 +25000,7 @@ var EFFECTS = {
   limitMailbox,
   motion,
   motionUnresolved,
-  incomplete,
+  notice: noticeEffect,
   birth,
   law,
   scalar: scalarReadout,
@@ -23107,6 +25110,7 @@ function createScheduler(generator, opts = {}) {
   root._attempts = /* @__PURE__ */ new Map();
   root._attemptSeq = 0;
   root._readouts = readouts;
+  root._derivedMoves = [];
   root._configurationRevision = 0;
   root.transform.watch("configurationRevision", () => {
     root._configurationRevision++;
@@ -23136,6 +25140,25 @@ function createScheduler(generator, opts = {}) {
   pump.wake = () => {
     root._done = false;
   };
+  readouts.watch((change) => {
+    if (change.cycle) {
+      const frame = registry.get(change.source);
+      const spec = change.drives?.spec;
+      const name = spec?.target?.name;
+      if (frame && !frame.error) {
+        frame.error = report({
+          kind: "relation",
+          span: spec?.owner ?? null,
+          message: name ? `'${name}' cannot be defined by itself \u2014 a dependent value stands on it` : "a derived value cannot be defined by itself \u2014 it stands on its own answer"
+        });
+        frame.channel.put({ type: "error", ...frame.error, ambientId: frame.id });
+      }
+      return;
+    }
+    const redraw = change.drives;
+    if (change.pending || change.refused) return;
+    if (redraw) REDRAWN[redraw.kind](redraw.spec, change.value, change.id);
+  });
   return {
     root,
     channel: root.channel,
@@ -23150,7 +25173,7 @@ function createScheduler(generator, opts = {}) {
     },
     // Backed by the root so a drain-time re-seat can wake the scheduler.
     get done() {
-      return root._done === true;
+      return root._done === true && root._derivedMoves.length === 0;
     },
     set done(v2) {
       root._done = v2;
@@ -23169,7 +25192,7 @@ function createScheduler(generator, opts = {}) {
     withSlice(ms2, drive) {
       deadline = ms2 == null ? null : clock() + ms2;
       try {
-        return drive();
+        return drive(pump.outOfTime);
       } finally {
         deadline = null;
       }
@@ -23177,6 +25200,17 @@ function createScheduler(generator, opts = {}) {
     // Mid-build: last tick let go with work left.
     get building() {
       return this._building === true;
+    },
+    // Is the world at a logical display cut? The display driver's one boundary
+    // question. Where a `wait` is a cut, a breath, a debt or a block is not.
+    get atCut() {
+      return atCut(root);
+    },
+    // Settlement through H is a fact, not a retry or publication instruction.
+    // It does not certify complete display geometry or ready visual resources.
+    // (id:live-rendering-reveal)
+    isSettledThrough(H2) {
+      return settledThrough(registry, root, H2);
     },
     // A finished drawing may accept a settled, pen-up hand request without
     // reviving its coroutine. The same responder, check and component commit
@@ -23196,7 +25230,7 @@ function createScheduler(generator, opts = {}) {
     // frame. Naming one makes this a STATEMENT (a position); naming none is a motion.
     // (id:laws-figures-phase34-hand-frame)
     requestMotion(frame, requested, revision, ref = null) {
-      if (registry.get(frame?.id) !== frame || frame === root) return { kind: "stale" };
+      if (!liveIn(registry, frame) || frame === root) return { kind: "stale" };
       if (root.notifyingCommit) return { kind: "busy", message: "publication in flight" };
       if (!frame.done || subtreeUnsettled(frame)) return { kind: "busy" };
       if (!frame.parent || frame.isLens || frame.error) return { kind: "unresolved" };
@@ -23220,30 +25254,30 @@ function createScheduler(generator, opts = {}) {
       } else {
         return { kind: "unresolved" };
       }
-      const verdict = checkMotion(
+      const verdict3 = checkMotion(
         interpretReply(raw, execOpts.refusalStroke),
         frame,
         registry,
         pump.motionValidate,
         request
       );
-      if (verdict.kind !== "accept") return verdict;
+      if (verdict3.kind !== "accept") return verdict3;
       if (!pump.motionAdmission && !pump.motionAdmissionAsync) {
-        continueLaws(verdict, frame, registry, laws);
+        continueLaws(verdict3, frame, registry, laws, lawWorld);
       }
-      const check = brokenLaw(proposedOverrides(frame, verdict), registry, laws);
+      const check = brokenLaw(proposedOverrides(frame, verdict3), registry, laws, lawWorld);
       recordAttempt(root, {
         path: "hand-settled",
         owner: frame.id,
         from: frame.transform.deref().position,
-        requested: verdict.pose?.position ?? null,
-        candidate: verdict.pose?.position ?? null,
+        requested: verdict3.pose?.position ?? null,
+        candidate: verdict3.pose?.position ?? null,
         gate: { status: check.status, law: check.law?.address ?? null, residual: check.residual ?? null, reason: check.reason ?? null },
         baseRevision: revision
       });
       if (check.status === "cannot-measure") return { kind: "unresolved", message: check.reason };
       if (check.status === "violation") return { kind: "refuse", ink: execOpts.refusalStroke === "continue" ? "continue" : "break" };
-      const members = [{ frame, pose: verdict.pose }, ...verdict.component];
+      const members = [{ frame, pose: verdict3.pose }, ...verdict3.component];
       const targets = /* @__PURE__ */ new Map();
       for (const { frame: member } of members) {
         if (member.parent !== frame.parent || member.isLens || member.error)
@@ -23253,7 +25287,7 @@ function createScheduler(generator, opts = {}) {
           return { kind: "unresolved" };
         targets.set(member, target);
       }
-      const conflict = commitTransaction(verdict, frame, registry, () => {
+      const conflict = commitTransaction(verdict3, frame, registry, () => {
         for (const { frame: member, pose } of members) {
           if (!member.done) continue;
           const head = {
@@ -23268,7 +25302,7 @@ function createScheduler(generator, opts = {}) {
         }
       });
       if (conflict) return { kind: conflict.kind === "unsupported" ? "unresolved" : "busy", message: conflict.message };
-      return verdict;
+      return verdict3;
     },
     // Same seed → skip; name may update in place. (id:cmp-become-seed)
     // Caller sees hold by identity: returned frame === the one already seated.
@@ -23341,12 +25375,25 @@ function createScheduler(generator, opts = {}) {
       const errs = [];
       for (const [id2, ctx] of registry) {
         if (ctx.error) errs.push({ ambientId: id2, name: ctx.name, address: addrOf(ctx), ...ctx.error });
+        for (const said of ctx.notices ?? []) {
+          errs.push({ ambientId: id2, name: ctx.name, address: addrOf(ctx), ...said });
+        }
       }
       return errs;
     },
     // Earliest resumeAt only; post-order within an instant. (D011 #3)
     tick(now) {
       this.lastTickTime = now;
+      if (root._derivedMoves.length > 0) {
+        const moves = root._derivedMoves;
+        root._derivedMoves = [];
+        for (const move of moves) {
+          try {
+            redrawDerivedLaw(move, pump);
+          } catch {
+          }
+        }
+      }
       if (this.done) {
         this.done = allDone(root);
         if (this.done) return false;
@@ -23411,6 +25458,34 @@ function createScheduler(generator, opts = {}) {
 }
 function* metaRoot() {
   return 0;
+}
+
+// assets/js/turtling/laws/point_state.js
+function pointStateOf(frame, scheduler, active = null) {
+  const laws = active ?? scheduler.laws.active();
+  const ctx = bindWorld((id2) => scheduler.registry.get(id2), {
+    writerId: frame.id,
+    // The display reads the committed live head and the stable placement — the same two
+    // readings the solver wires, from its own sources. (id:laws-decl-interface)
+    live: (f2) => frameWorldTransform(f2),
+    placement: (f2) => worldTransform(f2),
+    heldOf: (id2) => heldIdentity(scheduler.registry.get(id2), laws, scheduler.registry)
+  });
+  const view = constraintsView(frame.id, laws, ctx);
+  return stateOf({
+    at: frameWorldTransform(frame).position,
+    headed: frame.generator != null || frame.actorState != null,
+    exposed: exposed(frame),
+    isPlace: frame.isPlace === true,
+    error: frame.error ?? null,
+    // A failed attempt's hold is not an offer. The pin still draws (its previous state),
+    // but it is not touchable until an edit releases it. (id:laws-activation-verdicts)
+    unresolved: frame.unresolved ?? frame.held ?? null,
+    // The query's UNAVAILABLE contributions travel to the view with their reasons: the
+    // affordance never advertises freedom it has not established. (D058)
+    unavailable: view.unavailable,
+    constraints: view.constraints
+  });
 }
 
 // assets/js/turtling/render/label-pool.js
@@ -24108,26 +26183,20 @@ function createLabels(group, opts = {}) {
   }
   return createLabelPool(group, { createText: opts.createText, font: opts.font ?? LABEL_FONT });
 }
-function materialize(event, groups, ctx) {
-  switch (event.type) {
-    case "path":
-      materializePath(event, groups.pathGroup, ctx.shapist, void 0, ctx.materials);
-      break;
-    case "head":
-      materializeHead(event, ctx);
-      break;
-    case "view":
-      materializeView(event, ctx);
-      break;
-    case "label":
-      materializeLabel(event, ctx);
-      break;
-    case "grid":
-      materializeGrid(event, groups.gridGroup);
-      break;
-    case "wait":
-      break;
+var MATERIALIZERS = {
+  path: (event, groups, ctx) => materializePath(event, groups.pathGroup, ctx.shapist, void 0, ctx.materials),
+  head: (event, _groups, ctx) => materializeHead(event, ctx),
+  vector: (event, _groups, ctx) => materializeVector(event, _groups, ctx),
+  view: (event, _groups, ctx) => materializeView(event, ctx),
+  label: (event, _groups, ctx) => materializeLabel(event, ctx),
+  grid: (event, groups) => materializeGrid(event, groups.gridGroup),
+  // A temporal marker: the scheduler advances the clock and the compositor takes the
+  // beat. Drawing nothing is the row's whole content.
+  wait: () => {
   }
+};
+function materialize(event, groups, ctx, frame = null) {
+  MATERIALIZERS[event.type]?.(event, groups, ctx, frame);
 }
 function materializePath(event, pathGroup, shapist, sourceId, materials) {
   try {
@@ -24190,17 +26259,18 @@ function flushTrail(layer) {
 }
 function materializeHead(event, ctx) {
   const pos = event.position;
-  if (ctx.camera) {
+  const eye = ctx.camera?.position ?? null;
+  const target = ctx.controls?.target ?? null;
+  if (ctx.camera && eye && target) {
     switch (ctx.camera.desire) {
       case "track": {
-        const c2 = ctx.camera.position, t2 = ctx.controls.target;
-        const next = followPosition([c2.x, c2.y, c2.z], [t2.x, t2.y, t2.z], pos);
-        c2.set(next[0], next[1], next[2]);
-        t2.set(pos[0], pos[1], pos[2]);
+        const next = followPosition([eye.x, eye.y, eye.z], [target.x, target.y, target.z], pos);
+        eye.set(next[0], next[1], next[2]);
+        target.set(pos[0], pos[1], pos[2]);
         break;
       }
       case "pan":
-        ctx.controls.target.set(pos[0], pos[1], pos[2]);
+        target.set(pos[0], pos[1], pos[2]);
         break;
     }
   }
@@ -24210,6 +26280,67 @@ function materializeHead(event, ctx) {
   } else {
     ctx.head?.hide?.();
   }
+}
+var ARROW_SEGMENTS = 12;
+var ARROW_RADIUS = 0.45;
+var _up = new Ti(0, 1, 0);
+var _dir = new Ti();
+function arrowGeometry() {
+  const positions = [];
+  for (let i2 = 0; i2 < ARROW_SEGMENTS; i2++) {
+    const a2 = i2 / ARROW_SEGMENTS * Math.PI * 2;
+    const b2 = (i2 + 1) / ARROW_SEGMENTS * Math.PI * 2;
+    positions.push(
+      0,
+      0.5,
+      0,
+      ARROW_RADIUS * Math.cos(a2),
+      -0.5,
+      ARROW_RADIUS * Math.sin(a2),
+      ARROW_RADIUS * Math.cos(b2),
+      -0.5,
+      ARROW_RADIUS * Math.sin(b2)
+    );
+  }
+  const geometry = new Wn();
+  geometry.setAttribute("position", new kn(positions, 3));
+  return geometry;
+}
+function placeArrow(head, from, to) {
+  if (!head) return;
+  const dx = to[0] - from[0], dy = to[1] - from[1], dz = to[2] - from[2];
+  const len2 = Math.hypot(dx, dy, dz);
+  head.visible = len2 > 1e-9;
+  if (!head.visible) return;
+  head.position.set(to[0], to[1], to[2]);
+  head.quaternion.setFromUnitVectors(_up, _dir.set(dx / len2, dy / len2, dz / len2));
+}
+function materializeVector(event, groups, ctx) {
+  const store = ctx.vectors;
+  if (!store || !event.from || !event.to) return;
+  const geometry = new LineGeometry();
+  geometry.setPositions(new Float32Array([...event.from, ...event.to]));
+  let entry = store.get(event.name);
+  if (!entry) {
+    const line2 = new Line2(geometry, ctx.materials?.get(event.color, event.thickness));
+    line2.computeLineDistances();
+    groups.pathGroup?.add?.(line2);
+    const head = new Tr();
+    const cone2 = new Ra(arrowGeometry(), new Ma({ color: event.color }));
+    cone2.position.y = -0.5;
+    head.add(cone2);
+    groups.pathGroup?.add?.(head);
+    entry = { line: line2, head, event };
+    store.set(event.name, entry);
+  } else {
+    const stale = entry.line.geometry;
+    entry.line.geometry = geometry;
+    entry.line.computeLineDistances();
+    stale?.dispose?.();
+    entry.event = event;
+  }
+  placeArrow(entry.head, event.from, event.to);
+  ctx.requestRender?.();
 }
 function materializeView(event, ctx) {
   ctx.head?.hide?.();
@@ -24339,6 +26470,8 @@ function createCompositor(scheduler, stage, opts = {}) {
   }
   let epoch = null;
   let lastWallT = null;
+  let lastNow = null;
+  let H2 = 0;
   const focus = opts.focus;
   if (!focus) {
     throw new TypeError("compositor: opts.focus is required (turtle-owned register)");
@@ -24363,7 +26496,7 @@ function createCompositor(scheduler, stage, opts = {}) {
     stage.scene.add(group);
     const head = createHead && makeHead ? createHead(group) : null;
     const shapist = createShapist ? createShapist(group) : null;
-    const layer = { group, head, shapist, labels, trails: /* @__PURE__ */ new Map() };
+    const layer = { group, head, shapist, labels, trails: /* @__PURE__ */ new Map(), vectors: /* @__PURE__ */ new Map() };
     ambientLayers.set(id2, layer);
     return layer;
   }
@@ -24381,6 +26514,17 @@ function createCompositor(scheduler, stage, opts = {}) {
     if (keepLabels) layer.labels.rewrite();
     else layer.labels.hide();
     layer.trails.clear();
+    layer.vectors.clear();
+  }
+  function removeVector(layer, name) {
+    const entry = layer.vectors?.get(name);
+    if (!entry) return;
+    for (const obj of [entry.line, entry.head]) {
+      if (!obj) continue;
+      obj.traverse?.(disposeMesh);
+      obj.parent?.remove?.(obj);
+    }
+    layer.vectors.delete(name);
   }
   function disposeLayer(id2, layer) {
     if (layer.head) layer.head.hide();
@@ -24407,6 +26551,7 @@ function createCompositor(scheduler, stage, opts = {}) {
         shapist: layer.shapist,
         labels: layer.labels,
         head: layer.head,
+        vectors: layer.vectors,
         camera: camOn ? stage.camera : null,
         controls: camOn ? controls : null,
         frame: ambient,
@@ -24415,7 +26560,6 @@ function createCompositor(scheduler, stage, opts = {}) {
       };
       const childGroups = { pathGroup: layer.group, gridGroup: layer.group };
       const willPrint = events.some((e2) => e2.type === "label");
-      let printing = false;
       for (const event of events) {
         if (event.type === "error") continue;
         if (event.type === "beat") {
@@ -24425,8 +26569,6 @@ function createCompositor(scheduler, stage, opts = {}) {
         if (event.type === "clear") {
           clearChildLayer(layer, { keepLabels: willPrint });
         } else if (event.type === "label") {
-          if (!printing && !events.some((e2) => e2.type === "clear")) layer.labels.rewrite();
-          printing = true;
           materialize(event, childGroups, childCtx);
         } else if (event.type === "path") {
           accumulateTrail(event, layer, stage.materials);
@@ -24434,8 +26576,14 @@ function createCompositor(scheduler, stage, opts = {}) {
           materialize(event, childGroups, childCtx);
         }
       }
-      if (printing || willPrint) layer.labels.trim();
-      for (const pose of poses) materialize(pose, childGroups, childCtx);
+      if (willPrint) layer.labels.trim();
+      for (const pose of poses) {
+        if (pose.type === "vector" && pose.removed) {
+          removeVector(layer, pose.name);
+          continue;
+        }
+        materialize(pose, childGroups, childCtx);
+      }
       flushTrail(layer);
       produced = true;
     }
@@ -24490,16 +26638,20 @@ function createCompositor(scheduler, stage, opts = {}) {
     const offsetInv = SE3.invert(offset);
     return eyeInv ? SE3.compose(offsetInv, eyeInv) : offsetInv;
   }
+  function seatedWorld(ambient) {
+    let wt2 = worldTransform(ambient);
+    if (ambient.targetFrame) {
+      const target = findReferenceFrame(ambient, ambient.targetFrame);
+      if (target) wt2 = worldTransform(target);
+    }
+    return wt2;
+  }
   function updateGroupPositions() {
     const eyeInv = viewReframe();
     for (const [id2, ambient] of scheduler.registry) {
       const layer = ambientLayers.get(id2);
       if (!layer) continue;
-      let wt2 = worldTransform(ambient);
-      if (ambient.targetFrame) {
-        const target = findReferenceFrame(ambient, ambient.targetFrame);
-        if (target) wt2 = worldTransform(target);
-      }
+      let wt2 = seatedWorld(ambient);
       if (eyeInv && !ambient.isLens) wt2 = SE3.compose(eyeInv, wt2);
       const p2 = layer.group.position, q2 = layer.group.quaternion;
       const pos = wt2.position, r2 = wt2.rotation;
@@ -24538,36 +26690,35 @@ function createCompositor(scheduler, stage, opts = {}) {
       reclaimDeposits(layer, deadIds);
     }
   }
+  const ARROW_ON_SCREEN = 8;
   const _scratchHeadPos = new Ti();
   function scaleChildHeads() {
     for (const [id2, layer] of ambientLayers) {
       const gp = layer.group.position;
-      if (!layer.head) continue;
-      const headPos = layer.head.position();
+      const headPos = layer.head?.position?.() ?? gp;
       _scratchHeadPos.set(gp.x + headPos.x, gp.y + headPos.y, gp.z + headPos.z);
       const dist = stage.camera.position.distanceTo(_scratchHeadPos);
+      for (const entry of layer.vectors?.values?.() ?? []) {
+        entry.head?.scale?.setScalar(dist / 250 * ARROW_ON_SCREEN);
+      }
+      if (!layer.head) continue;
       layer.head.scale(dist / 250);
     }
   }
-  function driveToRest() {
-    const flushTime = scheduler.lastTickTime || 0;
-    let maxTicks = 1e4;
-    while (maxTicks-- > 0) {
-      const progress = scheduler.tick(flushTime);
+  const MAX_OVERRUN_TICKS = 64;
+  function driveToRest(outOfTime, now = scheduler.lastTickTime || 0) {
+    let left2 = MAX_OVERRUN_TICKS;
+    for (; ; ) {
+      const progress = scheduler.tick(now);
       if (scheduler.done) break;
-      if (scheduler.building) {
-        drainAndMaterialize();
-        break;
+      if (outOfTime() && !scheduler.atCut) {
+        if (--left2 <= 0) break;
+        if (!progress && !drainAndMaterialize()) break;
+        continue;
       }
+      if (outOfTime()) break;
       if (!progress && !drainAndMaterialize()) break;
     }
-  }
-  function driveOneFrame(now) {
-    let budget = 64;
-    let progress;
-    do {
-      progress = scheduler.tick(now);
-    } while (progress && !scheduler.done && --budget > 0);
   }
   return {
     scheduler,
@@ -24582,6 +26733,29 @@ function createCompositor(scheduler, stage, opts = {}) {
     // An empty place keeps its bead; once A walks, the ring leaves its centre open.
     visibleHeadFor(id2) {
       return !!ambientLayers.get(id2)?.head?.turtleGroup?.visible;
+    },
+    // Vector marks for the invariant overlay: a declared object's world segment, so
+    // the overlay can place its NAME beyond the tip on screen while the arrow stays
+    // world geometry. (id:notation-coordinate-vector, id:laws-decl-interface)
+    vectorNames() {
+      const out = [];
+      for (const [id2, layer] of ambientLayers) {
+        if (!layer.vectors || layer.vectors.size === 0) continue;
+        const ambient = scheduler.registry.get(id2);
+        if (!ambient) continue;
+        const wt2 = seatedWorld(ambient);
+        for (const entry of layer.vectors.values()) {
+          const e2 = entry.event;
+          if (!e2?.from || !e2?.to) continue;
+          out.push({
+            name: e2.name,
+            color: e2.color,
+            from: SE3.apply(wt2, e2.from),
+            to: SE3.apply(wt2, e2.to)
+          });
+        }
+      }
+      return out;
     },
     // The one world→scene mapping: eye and hand compose here, and the camera
     // draws the result. Markers and gestures both read it, so a drawn point
@@ -24681,6 +26855,8 @@ function createCompositor(scheduler, stage, opts = {}) {
     beginPlay() {
       epoch = null;
       lastWallT = null;
+      H2 = 0;
+      lastNow = null;
       scheduler.lastTickTime = 0;
     },
     // Own timeslice: never inherit a spent deadline (would park on first breath).
@@ -24702,14 +26878,17 @@ function createCompositor(scheduler, stage, opts = {}) {
       lastWallT = t2;
       if (epoch === null) epoch = t2;
       const now = t2 - epoch;
-      scheduler.lastTickTime = now;
+      const allowance = lastNow === null ? 0 : Math.max(0, now - lastNow);
+      lastNow = now;
+      scheduler.readouts.drain();
+      if (scheduler.isSettledThrough(H2)) H2 += allowance;
+      scheduler.lastTickTime = H2;
       if (frameStart !== null) {
         if (idledOut) pacer.skip();
         else pacer.observe(t2 - frameStart);
       }
       frameStart = t2;
-      scheduler.readouts.drain();
-      scheduler.withSlice(pacer.budgetMs, () => driveOneFrame(now));
+      scheduler.withSlice(pacer.budgetMs, (outOfTime) => driveToRest(outOfTime, H2));
       drainAndMaterialize();
       updateGroupPositions();
       cleanupOrphanedLayers();
@@ -24819,10 +26998,10 @@ var BEAT = {
   // Still canvas: quiet from the CHANGE (not from last hatch). Keys postpone.
   settled: 500
 };
-var NOTHING = { owed: false, reason: null };
+var NOTHING2 = { owed: false, reason: null };
 function hatchVerdict({ now, present, mine, walking, changedAt, lastHatchAt, firstDrawAt }) {
-  if (!present || mine === false) return NOTHING;
-  if (changedAt <= lastHatchAt) return NOTHING;
+  if (!present || mine === false) return NOTHING2;
+  if (changedAt <= lastHatchAt) return NOTHING2;
   const beat = !lastHatchAt ? "first-light" : walking ? "alive" : "settled";
   const since = beat === "settled" ? Math.max(firstDrawAt, changedAt) : Math.max(lastHatchAt, firstDrawAt, walking ? changedAt : 0);
   return { owed: true, reason: now - since >= BEAT[beat] ? beat : null };
@@ -24830,10 +27009,7 @@ function hatchVerdict({ now, present, mine, walking, changedAt, lastHatchAt, fir
 
 // assets/js/turtling/laws/hand.js
 var wrapPi = (t2) => Math.atan2(Math.sin(t2), Math.cos(t2));
-var unit32 = (v2) => {
-  const n2 = Math.hypot(v2[0], v2[1], v2[2]) || 1;
-  return [v2[0] / n2, v2[1] / n2, v2[2] / n2];
-};
+var unit32 = (v2) => unit(v2, 0) ?? v2;
 function coneRig(cone2, anchor, x2, y2, project) {
   const frame = cone2 && typeof project === "function" && Array.isArray(cone2.apex) && Array.isArray(cone2.axis) ? coneFrame(cone2.apex, cone2.axis, cone2.halfAngle) : null;
   if (!frame || !anchor) return null;
@@ -24924,6 +27100,108 @@ var sphereHand = {
     return detents ? magnet(center, radius, point2, detents) : point2;
   }
 };
+var RING = 96;
+var GRAZE_PX = 2;
+function circleRig(locus, anchor, project) {
+  const center = locus?.center, r2 = locus?.radius;
+  const b2 = basisOf(locus?.normal);
+  if (!b2 || !finite3(center) || !(r2 > 0) || !finite3(anchor)) return null;
+  const phaseOf = (p2) => {
+    const d2 = sub(p2, center);
+    return Math.atan2(dot(d2, b2.v), dot(d2, b2.u));
+  };
+  const point2 = (phi) => add(center, add(scale(b2.u, r2 * Math.cos(phi)), scale(b2.v, r2 * Math.sin(phi))));
+  const index = (i2) => (i2 % RING + RING) % RING;
+  const keep = Array.isArray(locus.keep) ? locus.keep : null;
+  const samples = [];
+  for (let i2 = 0; i2 < RING; i2++) {
+    const phi = i2 / RING * Math.PI * 2;
+    const p2 = point2(phi);
+    const on3 = !keep || dot(sub(p2, center), keep) >= -1e-9;
+    samples.push({ phi, screen: on3 && typeof project === "function" ? project(p2) : null });
+  }
+  const seen = samples.filter((s2) => s2.screen && Number.isFinite(s2.screen.x) && Number.isFinite(s2.screen.y));
+  if (seen.length < RING / 2) return null;
+  let mx = 0, my = 0;
+  for (const s2 of seen) {
+    mx += s2.screen.x;
+    my += s2.screen.y;
+  }
+  mx /= seen.length;
+  my /= seen.length;
+  let sxx = 0, sxy = 0, syy = 0;
+  for (const s2 of seen) {
+    const dx = s2.screen.x - mx, dy = s2.screen.y - my;
+    sxx += dx * dx;
+    sxy += dx * dy;
+    syy += dy * dy;
+  }
+  sxx /= seen.length;
+  sxy /= seen.length;
+  syy /= seen.length;
+  const half = Math.sqrt(Math.max(0, ((sxx - syy) / 2) ** 2 + sxy * sxy));
+  const minorEig = Math.max(0, (sxx + syy) / 2 - half);
+  return {
+    point: point2,
+    phaseOf,
+    samples,
+    index,
+    observable: Math.sqrt(2 * minorEig) >= GRAZE_PX,
+    phase: phaseOf(anchor)
+  };
+}
+function circleTurn(rig, pointer, anchor, project) {
+  const seed = rig.phaseOf(finite3(anchor) ? anchor : rig.point(rig.phase));
+  const held = () => finite3(anchor) ? [...anchor] : rig.point(rig.phase);
+  if (!rig.observable) return held();
+  const i0 = rig.index(Math.round(seed / (Math.PI * 2) * RING));
+  if (!rig.samples[i0].screen) return held();
+  const dist = (i2) => {
+    const s2 = rig.samples[i2].screen;
+    return s2 ? Math.hypot(pointer.x - s2.x, pointer.y - s2.y) : Infinity;
+  };
+  let best = i0;
+  let bestD = dist(i0);
+  for (const dir of [1, -1]) {
+    let at2 = i0;
+    for (let n2 = 1; n2 < RING; n2++) {
+      const j2 = rig.index(at2 + dir);
+      const d2 = dist(j2);
+      if (d2 >= bestD) break;
+      bestD = d2;
+      best = j2;
+      at2 = j2;
+    }
+  }
+  const arc = Math.PI * 2 / RING;
+  const live = (phi2) => {
+    const s2 = typeof project === "function" ? project(rig.point(phi2)) : null;
+    return s2 && Number.isFinite(s2.x) ? Math.hypot(pointer.x - s2.x, pointer.y - s2.y) : Infinity;
+  };
+  let lo2 = rig.samples[best].phi - arc;
+  let hi3 = rig.samples[best].phi + arc;
+  if (typeof project === "function") {
+    for (let n2 = 0; n2 < 14 && hi3 - lo2 > 1e-4; n2++) {
+      const m1 = lo2 + (hi3 - lo2) / 3;
+      const m2 = hi3 - (hi3 - lo2) / 3;
+      if (live(m1) < live(m2)) hi3 = m2;
+      else lo2 = m1;
+    }
+  }
+  const phi = (lo2 + hi3) / 2;
+  rig.phase = phi;
+  return rig.point(phi);
+}
+var circleHand = {
+  rejects: false,
+  freeze({ anchor, project, locus }) {
+    const rig = circleRig(locus, anchor, project);
+    return rig ? { rig } : null;
+  },
+  place(state, { pointer, anchor, project }) {
+    return circleTurn(state.rig, pointer, anchor, project);
+  }
+};
 var coneHand = {
   rejects: false,
   freeze({ anchor, project, pointer, locus }) {
@@ -24937,6 +27215,7 @@ var coneHand = {
 function handFor(locus) {
   if (locus?.kind === "sphere" && locus.radius > 0 && Array.isArray(locus.center)) return sphereHand;
   if (locus?.kind === "cone" && Array.isArray(locus.apex) && isOpenCone(locus.halfAngle)) return coneHand;
+  if (locus?.kind === "circle" && locus.radius > 0 && Array.isArray(locus.center) && Array.isArray(locus.normal)) return circleHand;
   return null;
 }
 var smoothstep = (t2) => t2 <= 0 ? 0 : t2 >= 1 ? 1 : t2 * t2 * (3 - 2 * t2);
@@ -24953,9 +27232,8 @@ function magnet(center, radius, point2, opts = {}) {
   const { paper = false, poles = false, band = DETENT_BAND, hold = DETENT_HOLD } = opts ?? {};
   if (!point2 || !(radius > 0) || !(band > 0) || !paper && !poles) return point2;
   const d2 = [point2[0] - center[0], point2[1] - center[1], point2[2] - center[2]];
-  const r2 = Math.hypot(d2[0], d2[1], d2[2]);
-  if (!(r2 > 1e-12)) return point2;
-  const u2 = [d2[0] / r2, d2[1] / r2, d2[2] / r2];
+  const u2 = unit(d2);
+  if (!u2) return point2;
   let best = null;
   let bestAng = band;
   const arming = (target) => {
@@ -25133,7 +27411,7 @@ function createGesture(deps) {
       const birth2 = birthOf(grab.frame);
       const ray2 = rayAt(x2, y2);
       if (!ray2) return { moved: false };
-      const placed = grab.hand ? grab.hand.place(grab.handState, { ray: ray2, pointer: { x: x2, y: y2 }, project, detents }) : null;
+      const placed = grab.hand ? grab.hand.place(grab.handState, { ray: ray2, pointer: { x: x2, y: y2 }, project, detents, anchor: accepted.position }) : null;
       let request = placed;
       if (!request) {
         const hit = touchPlane(ray2, grab.plane);
@@ -25141,10 +27419,10 @@ function createGesture(deps) {
         request = [hit[0] + grab.offset[0], hit[1] + grab.offset[1], hit[2] + grab.offset[2]];
       }
       const requested = requestedPose(accepted, birthLocal(request, birth2));
-      const verdict = requestMotion(grab.frame, requested, revision());
-      const outcome = verdict.kind === "accept" ? OUTCOME.accepted : outcomeOf(verdict);
-      if (verdict.kind === "accept" && onAccepted) {
-        onAccepted({ frame: grab.frame, from: accepted.position, to: verdict.pose.position });
+      const verdict3 = requestMotion(grab.frame, requested, revision());
+      const outcome = verdict3.kind === "accept" ? OUTCOME.accepted : outcomeOf(verdict3);
+      if (verdict3.kind === "accept" && onAccepted) {
+        onAccepted({ frame: grab.frame, from: accepted.position, to: verdict3.pose.position });
       }
       onReadout(readout({
         point: grab.name,
@@ -25152,7 +27430,7 @@ function createGesture(deps) {
         requested: requested.position,
         outcome
       }));
-      if (verdict.kind === "accept") wake();
+      if (verdict3.kind === "accept") wake();
       return { moved: true, outcome };
     },
     // Release keeps every accepted move and asks for nothing further.
@@ -25256,6 +27534,24 @@ function drawPin(ctx, {
   });
   ctx.textAlign = "left";
 }
+function nameAnchor(from, to, pad = 12) {
+  if (!to) return null;
+  if (!from) return { x: to.x + pad, y: to.y };
+  const dx = to.x - from.x, dy = to.y - from.y;
+  const len2 = Math.hypot(dx, dy);
+  if (len2 < 1e-6) return { x: to.x + pad, y: to.y };
+  return { x: to.x + dx / len2 * pad, y: to.y + dy / len2 * pad };
+}
+function drawVectorName(ctx, { cx, cy, width = 0, name = "", ink = null }) {
+  if (!name) return;
+  ctx.font = "11px ui-monospace, SFMono-Regular, Menlo, monospace";
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+  const w2 = ctx.measureText(name).width;
+  const flip = cx + w2 > width;
+  ctx.fillStyle = ink || `rgba(${PAPER},0.52)`;
+  ctx.fillText(name, flip ? cx - w2 : cx, cy);
+}
 var GHOST_DASH = [4, 5];
 function strokeDashed(ctx, screenPoints, alpha) {
   if (!screenPoints || screenPoints.length < 2) return;
@@ -25310,36 +27606,26 @@ function drawGhostMark(ctx, x2, y2, r2 = 3.5) {
   ctx.stroke();
   ctx.restore();
 }
-var WISH_DASH = [1, 3];
-function drawWish(ctx, from, to) {
+var SPAN_DASH = [1, 3];
+function drawSpan(ctx, from, to, { alpha, mark = false } = {}) {
   if (!from || !to) return;
+  if (!Number.isFinite(alpha)) return;
   if (Math.hypot(from.x - to.x, from.y - to.y) < 1) return;
   ctx.save();
   ctx.beginPath();
   ctx.moveTo(from.x, from.y);
   ctx.lineTo(to.x, to.y);
-  ctx.setLineDash(WISH_DASH);
-  ctx.strokeStyle = `rgba(${PAPER},0.32)`;
+  ctx.setLineDash(SPAN_DASH);
+  ctx.strokeStyle = `rgba(${PAPER},${alpha})`;
   ctx.lineWidth = 1;
   ctx.stroke();
-  ctx.setLineDash([]);
-  ctx.beginPath();
-  ctx.arc(to.x, to.y, 3, 0, TAU);
-  ctx.strokeStyle = `rgba(${PAPER},0.5)`;
-  ctx.stroke();
-  ctx.restore();
-}
-var SPOKE_DASH = [1, 3];
-function drawSpoke(ctx, from, to) {
-  if (!from || !to) return;
-  ctx.save();
-  ctx.beginPath();
-  ctx.moveTo(from.x, from.y);
-  ctx.lineTo(to.x, to.y);
-  ctx.setLineDash(SPOKE_DASH);
-  ctx.strokeStyle = `rgba(${PAPER},0.34)`;
-  ctx.lineWidth = 1;
-  ctx.stroke();
+  if (mark) {
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.arc(to.x, to.y, 3, 0, TAU);
+    ctx.strokeStyle = `rgba(${PAPER},0.5)`;
+    ctx.stroke();
+  }
   ctx.restore();
 }
 function drawAxis(ctx, a2, b2, { strong = false } = {}) {
@@ -25369,294 +27655,6 @@ function drawCurve(ctx, points2, { near = 0.5, far = 0.14 } = {}) {
     ctx.stroke();
   }
   ctx.restore();
-}
-
-// assets/js/turtling/laws/constraints.js
-function rankOf(normals) {
-  const basis = [];
-  for (const n2 of normals) {
-    let v2 = [...n2];
-    for (const b2 of basis) {
-      const d2 = dot(v2, b2);
-      v2 = [v2[0] - d2 * b2[0], v2[1] - d2 * b2[1], v2[2] - d2 * b2[2]];
-    }
-    const m2 = len(v2);
-    if (m2 > 1e-9) basis.push(v2.map((x2) => x2 / m2));
-  }
-  return basis.length;
-}
-function stateOf({
-  at: at2 = null,
-  headed = false,
-  exposed: exposed2 = true,
-  isPlace = true,
-  error = null,
-  unresolved = null,
-  constraints = []
-} = {}) {
-  const known = finite3(at2);
-  const role = headed ? "headed" : "point";
-  const status = !known || error ? "unresolved" : unresolved || !exposed2 || !isPlace ? "previous" : "accepted";
-  const distances = constraints.filter((c2) => c2.feature === "distance" && Number.isFinite(c2.radius) && finite3(c2.other)).map((c2) => ({ other: [...c2.other], radius: c2.radius, held: c2.otherHeld === true }));
-  const pinned = constraints.some((c2) => c2.pinned) || distances.some((c2) => c2.radius === 0 && c2.held);
-  const coincident = distances.some((c2) => c2.radius === 0 && !c2.held);
-  const coordinates = constraints.filter((c2) => c2.feature === "coordinate" && c2.plane && finite3(c2.plane.point) && c2.plane.normal).map((c2) => ({ axis: c2.axis, value: c2.value, plane: { point: [...c2.plane.point], normal: [...c2.plane.normal] } }));
-  const cones = constraints.filter((c2) => c2.feature === "tilt" && finite3(c2.apex) && finite3(c2.axis) && Number.isFinite(c2.halfAngle)).map((c2) => ({ apex: [...c2.apex], axis: [...c2.axis], halfAngle: c2.halfAngle }));
-  const truth = { pinned, coincident, distances, coordinates, cones };
-  const resolved = pinned || status !== "accepted" || role === "headed" ? [] : distances.filter((c2) => c2.radius > 0).map((c2) => ({
-    normal: unit(sub(at2, c2.other)) ?? [1, 0, 0],
-    // coincident: a stated direction
-    locus: { kind: "sphere", center: [...c2.other], radius: c2.radius }
-  }));
-  const normals = resolved.map((r2) => r2.normal);
-  const coupled = coincident && !pinned;
-  let dof = !known || role === "headed" || status !== "accepted" ? 0 : pinned ? 0 : coupled ? 0 : Math.max(0, 3 - rankOf(normals));
-  const pointLocus = !known ? null : pinned ? constraints.some((c2) => c2.pinned) ? { kind: "point", at: [...at2] } : { kind: "point", at: [...distances.find((c2) => c2.radius === 0 && c2.held).other] } : resolved.length === 1 ? resolved[0].locus : null;
-  const setOf = (c2) => {
-    if (c2.set) return c2.set;
-    if (c2.feature === "coordinate" && c2.plane) return plane(c2.plane.point, c2.plane.normal);
-    if (c2.feature === "tilt" && finite3(c2.apex) && finite3(c2.axis) && Number.isFinite(c2.halfAngle)) {
-      return cone(c2.apex, c2.axis, c2.halfAngle);
-    }
-    if (c2.feature === "distance" && Number.isFinite(c2.radius) && finite3(c2.other)) {
-      if (c2.radius > 0) return sphere(c2.other, c2.radius);
-      if (c2.radius === 0) return point(c2.other);
-      return null;
-    }
-    return null;
-  };
-  const sets = constraints.map(setOf).filter(Boolean);
-  let locus = pointLocus;
-  if (status === "accepted" && role === "point" && !pinned && sets.length > 0) {
-    const met = meetAll(sets);
-    const named = (kind, extra = {}) => ({ kind, ...extra });
-    if (met.kind === "plane") locus = named("plane", { point: [...met.point], normal: [...met.normal] });
-    else if (met.kind === "halfplane") locus = named("halfplane", { point: [...met.point], normal: [...met.normal], dir: [...met.dir] });
-    else if (met.kind === "line") locus = named("line", { point: [...met.point], dir: [...met.dir] });
-    else if (met.kind === "ray") locus = named("ray", { point: [...met.point], dir: [...met.dir] });
-    else if (met.kind === "circle") locus = named("circle", { center: [...met.center], normal: [...met.normal], radius: met.radius, ...met.keep ? { keep: [...met.keep] } : {} });
-    else if (met.kind === "sphere") locus = named("sphere", { center: [...met.center], radius: met.radius });
-    else if (met.kind === "cone") locus = named("cone", { apex: [...met.apex], axis: [...met.axis], halfAngle: met.halfAngle });
-    else if (met.kind === "point") locus = named("point", { at: [...met.at] });
-    else if (met.kind === "conic") locus = named("conic", { shape: met.shape, origin: [...met.origin], u: [...met.u], v: [...met.v], normal: [...met.normal], Q: [...met.Q] });
-    else if (met.kind === "points") locus = named("points", { at: met.at.map((p2) => [...p2]) });
-    else locus = null;
-    dof = dofOf(met);
-  }
-  const offered = status === "accepted" && role === "point" && !pinned;
-  const interaction = {
-    offered,
-    movable: !offered ? "none" : dof ? "point" : "none",
-    partners: coupled ? distances.filter((c2) => c2.radius === 0 && !c2.held).map((c2) => [...c2.other]) : [],
-    normals,
-    dof,
-    locus
-  };
-  const tag = status !== "accepted" ? "unresolved" : role === "headed" ? "headed" : pinned ? "pinned" : "free";
-  return {
-    role,
-    truth,
-    status,
-    interaction,
-    tag,
-    at: known ? [...at2] : null,
-    headed,
-    pinned,
-    normals,
-    dof,
-    locus
-  };
-}
-function heldIdentity(candidate, laws, registry, seen = /* @__PURE__ */ new Set()) {
-  if (!candidate) return true;
-  if (seen.has(candidate.id)) return false;
-  if (candidate.generator != null || candidate.actorState != null) return true;
-  seen.add(candidate.id);
-  for (const law2 of laws) {
-    if (law2.feature === "position" && law2.endpoints[0] === candidate.id) return true;
-    if (law2.feature === "distance" && law2.predicate === 0 && (law2.endpoints[0] === candidate.id || law2.endpoints[1] === candidate.id)) {
-      const otherId = law2.endpoints[0] === candidate.id ? law2.endpoints[1] : law2.endpoints[0];
-      if (heldIdentity(registry.get(otherId), laws, registry, seen)) return true;
-    }
-  }
-  return false;
-}
-function silhouette(locus, viewDir, segments = 48, eye = null) {
-  if (!locus || locus.kind !== "sphere") return null;
-  const { center, radius } = locus;
-  if (!(radius > 0)) return null;
-  if (finite3(eye)) {
-    const oc2 = sub(center, eye);
-    const d2 = len(oc2);
-    if (d2 > radius) {
-      const axis = unit(oc2);
-      const shift = radius * radius / d2;
-      const rim = radius * Math.sqrt(1 - radius * radius / (d2 * d2));
-      const mid = [center[0] - axis[0] * shift, center[1] - axis[1] * shift, center[2] - axis[2] * shift];
-      return ringOf(mid, axis, rim, segments);
-    }
-  }
-  return ringOf(center, unit(viewDir) ?? [0, 0, 1], radius, segments);
-}
-function axesOf(state) {
-  if (!state || state.tag !== "free" || state.normals.length === 0) return null;
-  const b2 = basisOf(state.normals[0]);
-  return b2 ? { normal: b2.n, tangent: [b2.u, b2.v] } : null;
-}
-function sphereCurves(locus, at2, segments = 48) {
-  if (!locus || locus.kind !== "sphere" || !finite3(at2)) return null;
-  const { center, radius } = locus;
-  if (!(radius > 0)) return null;
-  const d2 = sub(at2, center);
-  const r2 = len(d2);
-  if (r2 < 1e-12) return null;
-  const el2 = Math.asin(Math.max(-1, Math.min(1, d2[2] / r2)));
-  const az = Math.atan2(d2[1], d2[0]);
-  const pt2 = (a2, e2) => [
-    center[0] + radius * Math.cos(e2) * Math.cos(a2),
-    center[1] + radius * Math.cos(e2) * Math.sin(a2),
-    center[2] + radius * Math.sin(e2)
-  ];
-  const parallel = [];
-  for (let i2 = 0; i2 <= segments; i2++) parallel.push(pt2(az + i2 / segments * Math.PI * 2, el2));
-  const meridian = [];
-  for (let i2 = 0; i2 <= segments; i2++) meridian.push(pt2(az, -Math.PI / 2 + i2 / segments * Math.PI));
-  return { parallel, meridian };
-}
-function circleCurve(locus, segments = 72) {
-  if (!locus || locus.kind !== "circle") return null;
-  return ringOf(locus.center, locus.normal, locus.radius, segments);
-}
-function coneCurve(cone2, at2, segments = 48) {
-  const axis = unit(cone2.axis);
-  if (!axis || !finite3(cone2.apex) || !finite3(at2)) return null;
-  const h2 = dot(sub(at2, cone2.apex), axis);
-  const open = openAngle(cone2.halfAngle);
-  if (open <= 1e-9) {
-    const reach = Math.abs(h2) > 1e-9 ? h2 : 1;
-    const tip = [0, 1, 2].map((k2) => cone2.apex[k2] + axis[k2] * reach);
-    return { ring: null, generators: [[[...cone2.apex], tip]] };
-  }
-  if (!(open < 90) || Math.abs(h2) <= 1e-9) return null;
-  const radius = coneLateral(h2, open);
-  const centre = [0, 1, 2].map((k2) => cone2.apex[k2] + axis[k2] * h2);
-  const ring = circleCurve({ kind: "circle", center: centre, normal: axis, radius }, segments);
-  if (!ring) return null;
-  const pick = (i2) => ring[Math.round(i2 / 4 * segments)];
-  return { ring, generators: [pick(0), pick(1), pick(2), pick(3)].map((p2) => [[...cone2.apex], p2]) };
-}
-function planePatch(locus, at2, size = 3.5) {
-  if (!locus || locus.kind !== "plane" || !finite3(at2)) return null;
-  const b2 = basisOf(locus.normal);
-  if (!b2) return null;
-  const r2 = Number.isFinite(size) ? size : 3.5;
-  const corner = (s2, t2) => [0, 1, 2].map((k2) => at2[k2] + r2 * (s2 * b2.u[k2] + t2 * b2.v[k2]));
-  const along = (d2) => [
-    [0, 1, 2].map((k2) => at2[k2] - r2 * d2[k2]),
-    [0, 1, 2].map((k2) => at2[k2] + r2 * d2[k2])
-  ];
-  return {
-    corners: [corner(-1, -1), corner(1, -1), corner(1, 1), corner(-1, 1), corner(-1, -1)],
-    axes: [{ from: along(b2.u)[0], to: along(b2.u)[1] }, { from: along(b2.v)[0], to: along(b2.v)[1] }]
-  };
-}
-var RIM_AXIS_COS = Math.cos(25 * Math.PI / 180);
-var POLE = [0, 0, 1];
-function rimReads(locus, viewDir, eye) {
-  if (locus?.kind !== "sphere" || !finite3(eye)) return true;
-  const sight = Array.isArray(viewDir) ? unit(viewDir) : null;
-  return !sight || Math.abs(dot(sight, POLE)) < RIM_AXIS_COS;
-}
-function marksOf(locus, { at: at2 = null, size = 3.5, viewDir = null, eye = null, segments } = {}) {
-  const empty = { curves: [], traces: [], axes: [], ghosts: [], rings: [], spokes: [] };
-  if (!locus) return empty;
-  switch (locus.kind) {
-    case "conic":
-      return { ...empty, traces: conicSamples(locus) };
-    case "circle": {
-      let c2 = circleCurve(locus, segments ?? 72);
-      if (c2 && locus.keep) c2 = c2.filter((p2) => {
-        const d2 = p2.map((x2, i2) => x2 - locus.center[i2]);
-        return d2[0] * locus.keep[0] + d2[1] * locus.keep[1] + d2[2] * locus.keep[2] >= -1e-9;
-      });
-      const spokes = at2 && finite3(locus.center) ? [[[...locus.center], [...at2]]] : [];
-      return c2 && c2.length > 1 ? { ...empty, curves: [c2], spokes } : { ...empty, spokes };
-    }
-    case "cone": {
-      const open = openAngle(locus.halfAngle);
-      if (open >= 90 - 1e-9) {
-        const patch = planePatch({ kind: "plane", point: locus.apex, normal: locus.axis }, at2, size);
-        return patch ? { ...empty, curves: [patch.corners], axes: patch.axes.map((ax) => [ax.from, ax.to]) } : empty;
-      }
-      const cc = coneCurve(locus, at2, segments ?? 48);
-      return cc ? { ...empty, curves: cc.ring ? [cc.ring] : [], axes: cc.generators } : empty;
-    }
-    case "plane":
-    case "halfplane": {
-      const patch = planePatch({ kind: "plane", point: locus.point, normal: locus.normal }, at2, size);
-      return patch ? { ...empty, curves: [patch.corners], axes: patch.axes.map((ax) => [ax.from, ax.to]) } : empty;
-    }
-    case "line": {
-      if (!finite3(at2) || !locus.dir) return empty;
-      const half = Number.isFinite(size) ? size : 3.5;
-      const a2 = [0, 1, 2].map((k2) => at2[k2] - locus.dir[k2] * half);
-      const b2 = [0, 1, 2].map((k2) => at2[k2] + locus.dir[k2] * half);
-      return { ...empty, axes: [[a2, b2]] };
-    }
-    case "ray": {
-      if (!finite3(at2) || !locus.dir) return empty;
-      const half = Number.isFinite(size) ? size : 3.5;
-      const b2 = [0, 1, 2].map((k2) => at2[k2] + locus.dir[k2] * half);
-      return { ...empty, axes: [[at2, b2]] };
-    }
-    case "points":
-      return { ...empty, ghosts: locus.at ?? [] };
-    case "sphere": {
-      const ring = (eye || viewDir) && rimReads(locus, viewDir, eye) ? silhouette(locus, viewDir, segments ?? 48, eye) : null;
-      const curves = at2 ? sphereCurves(locus, at2, segments ?? 48) : null;
-      return {
-        ...empty,
-        // Parallel and meridian through the point — the axes made real. (id:laws-freedom)
-        curves: [curves?.parallel, curves?.meridian].filter(Boolean),
-        rings: ring ? [ring] : [],
-        spokes: at2 && finite3(locus.center) ? [[[...locus.center], [...at2]]] : []
-      };
-    }
-    default:
-      return empty;
-  }
-}
-function boundsOf2(locus, at2 = null) {
-  if (!locus) return null;
-  switch (locus.kind) {
-    case "point":
-      return finite3(locus.at) ? { center: [...locus.at], radius: 0 } : null;
-    case "points":
-      return unionBounds((locus.at ?? []).map((p2) => ({ center: [...p2], radius: 0 })));
-    case "line":
-    case "ray":
-    case "plane":
-    case "halfplane":
-      return finite3(locus.point) ? { center: [...locus.point], radius: 0 } : null;
-    case "circle":
-    case "sphere":
-      return finite3(locus.center) ? { center: [...locus.center], radius: Math.abs(locus.radius) } : null;
-    case "cone": {
-      const axis = unit(locus.axis);
-      if (!axis || !finite3(locus.apex) || !(locus.halfAngle > 0 && locus.halfAngle < 90)) {
-        return finite3(locus.apex) ? { center: [...locus.apex], radius: 0 } : null;
-      }
-      const h2 = at2 ? dot(sub(at2, locus.apex), axis) : 0;
-      const radius = coneLateral(h2, locus.halfAngle);
-      return { center: locus.apex.map((a2, k2) => a2 + axis[k2] * h2), radius };
-    }
-    case "conic": {
-      const pts = conicSamples(locus).flat();
-      return pts.length ? unionBounds(pts.map((p2) => ({ center: [...p2], radius: 0 }))) : null;
-    }
-    default:
-      return null;
-  }
 }
 
 // assets/js/turtling/laws/reveal.js
@@ -25863,30 +27861,11 @@ var Turtle = class {
   _view() {
     return viewMapping(this.compositor?.viewReframe?.() ?? null, this.stage);
   }
-  // The one description of a point: free / headed / pinned / unresolved, with
-  // its normals, degrees of freedom and the exact locus. (id:laws-decl-point-agent)
+  // The one description of a point: free / headed / pinned / unresolved, with its normals,
+  // degrees of freedom and the exact locus. Delegated, so the display and a behavioural
+  // witness read the same story from the same code. (id:laws-decl-point-agent, D058)
   _stateOf(frame) {
-    const scheduler = this.scheduler;
-    const headed = frame.generator != null || frame.actorState != null;
-    const laws = scheduler.laws.active();
-    const ctx = bindWorld((id2) => scheduler.registry.get(id2), {
-      writerId: frame.id,
-      positionOf: (f2) => frameWorldTransform(f2).position,
-      poseOf: (f2) => worldTransform(f2),
-      heldOf: (id2) => heldIdentity(scheduler.registry.get(id2), laws, scheduler.registry)
-    });
-    return stateOf({
-      at: frameWorldTransform(frame).position,
-      headed,
-      exposed: exposed(frame),
-      isPlace: frame.isPlace === true,
-      error: frame.error ?? null,
-      // A failed attempt's hold is not an offer. The pin still draws (its
-      // previous state), but it is not touchable until an edit releases it.
-      // (id:laws-activation-verdicts)
-      unresolved: frame.unresolved ?? frame.held ?? null,
-      constraints: constraintsOn(frame.id, laws, ctx)
-    });
+    return pointStateOf(frame, this.scheduler);
   }
   // Frame the figure: every exposed place, plus the true radius of each
   // bounded locus it names. A bounded mark is framed by the eye, never
@@ -25970,7 +27949,7 @@ var Turtle = class {
         if (s2) drawGhostMark(overlay.ctx, s2.x, s2.y);
       }
       for (const ring of marks.rings) drawRim(overlay.ctx, ring.map((p2) => view.project(p2)));
-      for (const [a2, b2] of marks.spokes) drawSpoke(overlay.ctx, view.project(a2), view.project(b2));
+      for (const [a2, b2] of marks.spokes) drawSpan(overlay.ctx, view.project(a2), view.project(b2), { alpha: 0.34 });
       const axes = axesOf(state);
       if (axes && marks.spokes.length === 0) {
         const scale2 = perPixel * 60;
@@ -25998,6 +27977,11 @@ var Turtle = class {
       const held = touchable && this._heldFrame === frame;
       const readout2 = held && this.lastReadout?.point === frame.name ? this.lastReadout : null;
       const ghost = this._ghost?.point === frame.name ? { text: this._ghost.text, fade: verdictFade(now - this._ghost.at) } : null;
+      if (held) {
+        const partners = this._stateOf(frame).truth.distances.map((d2) => d2.other);
+        const targets = partners.length ? partners : [worldTransform(frame.parent).position];
+        for (const target of targets) drawSpan(overlay.ctx, view.project(target), at2, { alpha: 0.45 });
+      }
       drawPin(overlay.ctx, {
         cx: at2.x,
         cy: at2.y,
@@ -26014,8 +27998,20 @@ var Turtle = class {
       });
       if (held && readout2 && readout2.requested && readout2.outcome === OUTCOME.accepted) {
         const wish = view.project(SE3.apply(worldTransform(frame), readout2.requested));
-        if (wish) drawWish(overlay.ctx, at2, wish);
+        if (wish) drawSpan(overlay.ctx, at2, wish, { alpha: 0.32, mark: true });
       }
+    }
+    for (const mark of this.compositor?.vectorNames?.() ?? []) {
+      const tip = view.project(mark.to);
+      if (!tip) continue;
+      const anchor = nameAnchor(view.project(mark.from), tip);
+      drawVectorName(overlay.ctx, {
+        cx: anchor.x,
+        cy: anchor.y,
+        width: overlay.width,
+        name: mark.name,
+        ink: this.color
+      });
     }
   }
   _ensureHandle() {
@@ -26204,7 +28200,7 @@ var Turtle = class {
     } catch (error) {
       console.error("overlay draw error:", error);
     }
-    const verdict = hatchVerdict({
+    const verdict3 = hatchVerdict({
       now,
       present: !!this.compositor,
       mine: this._hatchMine,
@@ -26216,12 +28212,12 @@ var Turtle = class {
     if (this._snapOwed) {
       this._snapOwed = false;
       this.hatch();
-    } else if (verdict.reason) {
+    } else if (verdict3.reason) {
       this.hatch();
     }
     const recording = !!this.stage.recorder?.isRecording;
     const controlsSettling = now < this._controlsActiveUntil;
-    this._keepRendering = walking || recording || controlsChanged || controlsSettling || verdict.owed || this._snapOwed || this.stage.hatching || !!this._ghost;
+    this._keepRendering = walking || recording || controlsChanged || controlsSettling || verdict3.owed || this._snapOwed || this.stage.hatching || !!this._ghost;
     this._sayProgress(now);
   }
   // Clock not payload — reader pulls the world. Phase/run edges always speak
@@ -26327,13 +28323,10 @@ var Turtle = class {
       this.compositor.flush();
       this._lastReflectChange = performance.now();
       const wounds = ailmentsFor(this.scheduler.errors, key);
-      if (wounds.length > 0) {
-        this.renderstate.meta = { state: "error", message: null, diagnostics: wounds };
-        this.requestRender();
-        return { success: false, wounds };
-      }
-      this.renderstate.meta = { state: "success", message: null, diagnostics: [] };
+      const health = verdict2(wounds, key);
+      this.renderstate.meta = { state: health.state, message: null, diagnostics: wounds };
       this.requestRender();
+      if (health.wound) return { success: false, wounds };
       return { success: true, commandCount: seat ? sumCounts(seat) : 0 };
     } catch (error) {
       console.error(error);
@@ -26503,7 +28496,7 @@ function createHatch(canvas, { caps, law: law2 } = {}) {
     finishReject = null;
     reject?.(new Error("superseded"));
   }
-  function refuse(wound) {
+  function refuse2(wound) {
     const line2 = wound?.span?.line;
     const message = wound ? line2 ? `${wound.message} (line ${line2})` : wound.message : "program failed";
     const err = new Error(message);
@@ -26519,7 +28512,7 @@ function createHatch(canvas, { caps, law: law2 } = {}) {
       if (disposed || generation !== gen) throw new Error("hatch disposed");
       if (!result || result.success !== true) {
         const wound = result && result.wounds && result.wounds[0];
-        throw refuse(wound);
+        throw refuse2(wound);
       }
       let resolve;
       let reject;
@@ -26528,7 +28521,7 @@ function createHatch(canvas, { caps, law: law2 } = {}) {
         reject = rej;
       });
       finishReject = reject;
-      const settle2 = () => {
+      const settle3 = () => {
         if (disposed || generation !== gen) return;
         if (!turtle.scheduler?.done) return;
         finishReject = null;
@@ -26537,9 +28530,9 @@ function createHatch(canvas, { caps, law: law2 } = {}) {
       const prev = turtle.onProgress;
       turtle.onProgress = (p2) => {
         prev?.(p2);
-        if (p2?.phase === "settled") settle2();
+        if (p2?.phase === "settled") settle3();
       };
-      settle2();
+      settle3();
       return { finished, commandCount: result.commandCount };
     },
     // The beat is a second milestone, never a constructor option (D030).

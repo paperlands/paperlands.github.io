@@ -1,3 +1,6 @@
 {%- comment -%}Helios decoration and the three-card who reel. Playback stays in media/boot.html.{%- endcomment -%}
 <script src="{{ '/assets/js/home/helios.js' | relative_url }}" defer></script>
 <script src="{{ '/assets/js/home/helios-who.js' | relative_url }}" defer></script>
+{%- if page.possibilities -%}
+<script type="module" src="{{ '/assets/js/home/helios-possibilities.js' | relative_url }}"></script>
+{%- endif -%}

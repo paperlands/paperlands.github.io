@@ -1,0 +1,93 @@
+{%- comment -%}
+  Becoming, expressed. Native details are the baseline; scroll and identity
+  links enhance the same controls. One lazy hatch drawing lives in the thought
+  plane, behind the students. No runtime is required to read or open a scene.
+  A scene that declares `grows` in _data/helios_possibilities.yml hands the
+  runtime the one line the reader moves; without it the program is drawn as
+  written, once.
+
+  Copy is the page's, and it is split on purpose: the scene catalog
+  (_data/helios_possibilities.yml) names art and program for an id, the page's
+  `possibilities.items` names the words, and the two meet here. The plate's
+  spine and its figcaption are copy like any other — they are read from the
+  item, not the scene.
+{%- endcomment -%}
+{%- assign possibilities = include.possibilities | default: page.possibilities -%}
+<section class="helios-possibilities" data-possibilities data-hatch="{{ site.data.hatch.artifact_path | relative_url }}" aria-labelledby="possibilities-title">
+  <header class="helios-possibilities__seam" data-experience-seam>
+    <h2 id="possibilities-title">
+      <span class="helios-possibilities__feeling">{{ possibilities.transition.lead }}
+        <em class="helios-possibilities__electric">{{ possibilities.transition.experience }}
+          <svg viewBox="0 0 240 24" aria-hidden="true" focusable="false"><path pathLength="1" d="M3 18 L66 15 L81 10 L89 16 L150 11 L163 15 L176 6 L185 11 L237 5"/></svg>
+        </em>
+      </span>
+      <span class="helios-possibilities__sharing">{{ possibilities.transition.fellowship }}
+        <em>{{ possibilities.transition.shared }}
+          <svg viewBox="0 0 180 20" aria-hidden="true" focusable="false"><path d="M6 5 C35 16 132 17 174 4"/></svg>
+        </em>
+      </span>
+    </h2>
+  </header>
+  <div class="helios-possibilities__journey" data-fold-journey>
+  <div class="helios-possibilities__chapters">
+    {%- for item in possibilities.items -%}
+    {%- assign scene = site.data.helios_possibilities[item.id] -%}
+    <details class="helios-possibility" name="parallel-lives" id="become-{{ item.id }}" data-chapter="{{ item.id }}"{% if scene.grows %} data-grows="{{ scene.grows.line | escape }}" data-grows-from="{{ scene.grows.from }}" data-grows-to="{{ scene.grows.to }}"{% if scene.grows.wide %} data-grows-wide{% endif %}{% endif %}{% if scene.flat %} data-flat{% endif %}{% if scene.near_motion %} data-near-motion="{{ scene.near_motion }}"{% endif %}{% if forloop.first %} open{% endif %}>
+      <summary>
+        <span class="helios-possibility__number" aria-hidden="true">0{{ forloop.index }}</span>
+        <span class="helios-possibility__identity">{{ item.identity }}</span>
+        <span class="helios-possibility__invitation">{{ item.invitation }}</span>
+        <span class="helios-possibility__event">{{ item.event }}</span>
+        {%- if scene.mark -%}
+        <span class="helios-possibility__mark" aria-hidden="true"><img src="{{ scene.mark | relative_url }}" alt="" width="1200" height="240" loading="lazy" decoding="async"></span>
+        {%- endif -%}
+        <span class="helios-possibility__toggle" aria-hidden="true"></span>
+      </summary>
+      <div class="helios-possibility__passage">
+        <div class="helios-possibility__stage" data-life="{{ item.id }}">
+          <figure class="helios-possibility__art"{% if item.caption %} aria-label="{{ item.caption | escape }}"{% endif %}>
+            <div class="helios-possibility__plane helios-possibility__echo" data-plane="far">
+              <img src="{{ scene.echo | relative_url }}" alt="" width="{{ scene.echo_width }}" height="{{ scene.echo_height }}" loading="lazy" decoding="async">
+            </div>
+            {%- if scene.memory -%}
+            <div class="helios-possibility__plane helios-possibility__memory" data-plane="memory" aria-hidden="true">
+              <img src="{{ scene.memory | relative_url }}" alt="" width="{{ scene.memory_width }}" height="{{ scene.memory_height }}" loading="lazy" decoding="async">
+            </div>
+            {%- endif -%}
+            <div class="helios-possibility__plane helios-possibility__pool" data-plane="pool" aria-hidden="true"></div>
+            <div class="helios-possibility__plane helios-possibility__thought" data-plane="thought" aria-hidden="true">
+            </div>
+            <div class="helios-possibility__plane helios-possibility__body" data-plane="body">
+              <img src="{{ scene.body | relative_url }}" alt="{{ scene.body_alt | escape }}" width="{{ scene.body_width }}" height="{{ scene.body_height }}" loading="lazy" decoding="async">
+            </div>
+            <div class="helios-possibility__plane helios-possibility__light" data-plane="thought" aria-hidden="true"></div>
+            {%- if scene.near -%}
+            <div class="helios-possibility__plane helios-possibility__near" data-plane="near" aria-hidden="true">
+              <img src="{{ scene.near | relative_url }}" alt="" width="{{ scene.near_width }}" height="{{ scene.near_height }}" loading="lazy" decoding="async">
+            </div>
+            {%- endif -%}
+            <p class="helios-possibility__spine" aria-hidden="true">{{ item.spine }}</p>
+            <figcaption>{{ item.caption }}</figcaption>
+          </figure>
+          <div class="helios-possibility__copy">
+            <p class="helios-possibility__eyebrow">{{ item.event }}</p>
+            <h3>{{ item.title }}</h3>
+            <p class="helios-possibility__description">{{ item.description }}</p>
+            <p class="helios-possibility__outcome">{{ item.outcome }}</p>
+            <a class="helios-possibility__more" href="{{ item.href | relative_url }}">{{ item.more }} <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </div>
+      <template data-possibility-program>{{ scene.program | escape }}</template>
+    </details>
+    {%- endfor -%}
+  </div>
+  </div>
+  <div class="helios-possibilities__opening">
+    <span class="helios-possibilities__thread" aria-hidden="true"></span>
+    <h2>{{ possibilities.close.title }}</h2>
+    <p class="helios-possibilities__verse">{{ possibilities.close.verse }}</p>
+    <p>{{ possibilities.close.possibility }}<br>{{ possibilities.close.community }}</p>
+    <a class="helios-possibilities__call" href="{{ site.data.contact.route | relative_url }}">{{ possibilities.close.action }} <span aria-hidden="true">↗</span></a>
+  </div>
+</section>

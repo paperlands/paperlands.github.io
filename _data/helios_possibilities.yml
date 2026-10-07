@@ -1,0 +1,131 @@
+# Parallel lives. The living student is the foreground; the remembered life
+# and the mathematics occupy separate planes. This file is the scene catalog —
+# art and program only. Copy (the spine and the caption) is the page's: one
+# entry per id in _pages/helios.md's `possibilities.items`, read back by
+# _includes/home/possibilities.html.
+#
+# Each scene's `program` is settled Paperlang: the hatch runtime plays it as
+# written, and that is what a still fold gets. A scene that also declares `grows`
+# names one line of that program and the two ends of its ink. The reader's depth
+# in the fold (2..6, see assets/js/home/helios-possibilities.js) replaces the last
+# number on that line, running from `from` at the first ink to `to` at the last.
+# `wide: true` keeps the growth for the pinned wide reading only.
+#
+# Every program opens with beColour and inks itself with the deep tone of its own
+# fold's light — components/helios.css gives that chapter's --fold-accent, the
+# pale end of the same hue. The fold names the light; the drawing is that light
+# at full chroma, and it has to be: the ink is screened onto the plate, so
+# screen(pale ink, warm room) sums and a pale line becomes part of the room's
+# haze instead of its own. Measured in design/probe/helios-ink-contrast.mjs —
+# explorers' pale apricot landed 11 degrees from the hues the people carry, and
+# a line of that nearness is read as the room's light, not as mathematics.
+creators:
+  mark: /assets/lib/helios/parallel/creators-tapestry.svg
+  echo: /assets/lib/helios/parallel/feynman-echo.webp
+  echo_width: 914
+  echo_height: 955
+  body: /assets/lib/helios/parallel/creators.webp
+  body_width: 420
+  body_height: 530
+  body_alt: Two students sharing a mathematical creation with their class
+  memory: /assets/lib/helios/parallel/code-memory.webp
+  memory_width: 314
+  memory_height: 650
+  program: |
+    hd
+    beColour "d6a8ee"
+    def circle size do
+      loop 360 do
+        fw 1*size
+        rt 1
+      end
+    end
+    loop 100 do
+      circle 1
+      rt 90
+      jmp 54
+      dive 90
+      jmp 25
+      rt 90
+      rt 90
+      jmp 25
+      dive 90
+      jmp 54
+      dive 90
+      rt 90
+      dive 40
+    end
+inquiry:
+  # Flat: the planes hold, so the drawing is the only motion — except the near
+  # prop, which keeps a direction of its own: Newton's apple drops as the reader
+  # deepens the fold. Declared here, not by the scene's name in the script.
+  flat: true
+  near_motion: fall
+  mark: /assets/lib/helios/parallel/inquiry-tapestry.svg
+  echo: /assets/lib/helios/parallel/newton-echo.webp
+  echo_width: 611
+  echo_height: 723
+  body: /assets/lib/helios/parallel/inquiry.webp
+  body_width: 684
+  body_height: 588
+  body_alt: A student reaching upward with a questioning hand
+  near: /assets/lib/helios/parallel/apple.png
+  near_width: 121
+  near_height: 136
+  # No wait inside recursion: scroll supplies the changes, not thousands of
+  # beats. `tri 500 4` is the settled recursion; the reader's depth moves the
+  # last argument, and 4 — the middle of the range — is what it already says, so
+  # reduced motion is handed back the programme it is reading here.
+  program: |
+    hd
+    beColour "e0663a"
+    jmp -250
+    rt 90
+    jmp 216.5
+    lt 90
+    def tri len n do
+      when n>0 do
+        loop 3 do
+          fw len
+          lt 120
+          tri len/2 n-1
+        end
+      end
+    end
+    tri 500 4
+  grows:
+    line: tri 500 4
+    from: 2
+    to: 6
+leaders:
+  mark: /assets/lib/helios/parallel/leaders-tapestry.svg
+  # Passage adds whole turns around this same origin: the outer loop count runs
+  # from `from` to `to` across the fold. Small screens and reduced motion keep
+  # the settled programme below, at the count it already names.
+  echo: /assets/lib/helios/parallel/keating-echo.webp
+  echo_width: 1000
+  echo_height: 538
+  body: /assets/lib/helios/parallel/leaders-group.webp
+  body_width: 1400
+  body_height: 830
+  body_alt: A student leader leaning into a circle of classmates as they learn together
+  near: /assets/lib/helios/parallel/near-shoulder.webp
+  near_width: 468
+  near_height: 212
+  program: |
+    fn x 0.5
+    hd
+    beColour "dd6f9d"
+    loop 150 do
+      loop 15 do
+        fw x
+        rt 2
+      end
+      wait 1/24
+      fn x x+0.2
+    end
+  grows:
+    # line: loop 150 do
+    # from: 72
+    # to: 168
+    wide: true

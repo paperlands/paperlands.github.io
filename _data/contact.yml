@@ -81,3 +81,25 @@ address: Or write to [info@paperland.sg](mailto:info@paperland.sg)
 sent_title: <span class="font-paperlang not-italic">From <span class="text-primary">PaperLand</span></span>
 sent_message: Thank you! Your message was sent to the desks <span class="font-paperlang not-italic">[@PaperLand](/about)</span>
 error_message: If you are human, please try again.
+
+# =============================================================================
+# form — the form's own words
+# =============================================================================
+#
+# _includes/contact_form.html is a COMPONENT, not a letter: /lesson-plans places
+# the same form in its paper skin, under its own labels, with its own receipt.
+# So the include invents none of the words — every string it draws is a param,
+# and a page that places it must say what it says. This block is what THE
+# LETTER passes; `message_placeholder` and `button_text` above are the same
+# rule one line up, which is why they are not repeated here.
+#
+# The letter carries its receipt in the panel's own line (sent_message /
+# error_message above) and passes toasts=false, so it declares no toast copy.
+# The paper form at /lesson-plans does — see that page's `contact_form:` block.
+form:
+  name_label: Name*
+  name_placeholder: Alan Kay
+  email_label: Email*
+  email_placeholder: alan@paperland.sg
+  message_label: Message*
+  close_label: Close

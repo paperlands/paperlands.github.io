@@ -7,19 +7,23 @@
   renditions rather than one shrinking layout: a horizontal constellation on
   wide screens, a vertical thread below 960px.
 
+  The two lines of the section's own copy — the eyebrow and `You are here.` — are
+  _data/notes.yml's, like the rest of the edition's chrome.
+
   Params:
     note  the note document (required)
     graph the notes graph JSON (required), from site.data.notes_graph
 {%- endcomment -%}
+{%- assign edition = site.data.notes -%}
 {%- assign current_note_url = include.note.url | relative_url -%}
 <section class="connections evening-field" id="notesgraph" aria-labelledby="graph-title">
   {% include notes/spirits.html %}
   <div class="connections-heading">
     <div>
-      <p class="eyebrow" id="graph-title">from the desks at <span class="font-paperlang">PaperLand</span></p>
+      <p class="eyebrow" id="graph-title">{{ edition.graph_eyebrow | markup }}</p>
     </div>
   </div>
   {{ include.graph | note_graph: current_note_url }}
   {{ include.graph | note_graph: current_note_url, true }}
-  <p class="graph-caption"><span class="graph-key" aria-hidden="true"></span> You are here.</p>
+  <p class="graph-caption"><span class="graph-key" aria-hidden="true"></span> {{ edition.graph_here }}</p>
 </section>

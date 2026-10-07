@@ -9,12 +9,13 @@
 
   role is the placement: force, mass, echo, fragment. One of each.
 
-  Params: see, verse, thesis, thesis_em, lede, label, items
+  Copy is the page's (`page.see`); this file invents none of it. Params: see,
+  verse, thesis, thesis_em, lede, label, items
 {%- endcomment -%}
 {%- assign home_see = include.see | default: page.see -%}
-{%- assign home_see_label = include.label | default: home_see.label | default: 'Anyone can see math differently' -%}
+{%- assign home_see_label = include.label | default: home_see.label -%}
 {%- assign home_see_items = include.items | default: home_see.items -%}
-<section class="helios-see" aria-label="{{ home_see_label | escape }}">
+<section class="helios-see"{% if home_see_label %} aria-label="{{ home_see_label | escape }}"{% endif %}>
   {%- if home_see_items -%}
   <div class="helios-see__field" aria-hidden="true">
     {%- for home_see_item in home_see_items -%}
@@ -30,9 +31,9 @@
   {%- endif -%}
   <div class="helios-see__copy">
     <h2 class="helios-see__head">
-      <span class="helios-verse">{{ include.verse | default: home_see.verse | default: 'Anyone can' }}</span>
-      <span class="helios-see__line">{{ include.thesis | default: home_see.thesis | default: 'see math' }}</span>
-      <span class="helios-see__line"><em>{{ include.thesis_em | default: home_see.thesis_em | default: 'differently.' }}</em></span>
+      <span class="helios-verse">{{ include.verse | default: home_see.verse }}</span>
+      <span class="helios-see__line">{{ include.thesis | default: home_see.thesis }}</span>
+      <span class="helios-see__line"><em>{{ include.thesis_em | default: home_see.thesis_em }}</em></span>
     </h2>
     {%- assign home_see_lede = include.lede | default: home_see.lede -%}
     {%- if home_see_lede -%}

@@ -4,6 +4,17 @@ title: Helios Dojo
 permalink: /helios-dojo
 nav_tone: dark
 description: A standalone canvas for the helix commands. The landing is unchanged.
+
+# The page's own words, including the status line's — the dojo writes that line
+# as the drawing changes (assets/js/home/helios-dojo.js), so its vocabulary is
+# handed to the runtime as data attributes rather than written into the script:
+# a status word invented in JS is a word no page can change. The fallback is a
+# PREFIX — the runtime appends the parser's own message to it.
+copy:
+  note: The landing is unchanged. Edit the commands. If the draw fails, the film returns.
+  status: waiting
+  drawing: drawing from the commands
+  fallback: fell back to the film —
 ---
 
 <style>
@@ -71,7 +82,10 @@ description: A standalone canvas for the helix commands. The landing is unchange
   }
 </style>
 
-<section class="helios-dojo" data-helios-dojo>
+<section class="helios-dojo" data-helios-dojo
+  data-dojo-status="{{ page.copy.status }}"
+  data-dojo-drawing="{{ page.copy.drawing }}"
+  data-dojo-fallback="{{ page.copy.fallback }}">
   <div class="helios-dojo__stage">
     <video data-helios-dojo-film hidden muted playsinline loop
       poster="/assets/lib/helios/see-helix-ccddfd.webp"
@@ -79,8 +93,8 @@ description: A standalone canvas for the helix commands. The landing is unchange
     <canvas data-helios-dojo-canvas aria-label="Helix drawn from the commands"></canvas>
   </div>
   <div class="helios-dojo__side">
-    <p>The landing is unchanged. Edit the commands. If the draw fails, the film returns.</p>
-    <p class="helios-dojo__status" data-helios-dojo-status>waiting</p>
+    <p>{{ page.copy.note }}</p>
+    <p class="helios-dojo__status" data-helios-dojo-status>{{ page.copy.status }}</p>
     <textarea data-helios-dojo-program spellcheck="false">#dnahelix
 def helix r d do
   fn angle 180

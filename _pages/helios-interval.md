@@ -5,13 +5,41 @@ permalink: /helios-interval
 nav_tone: dark
 look: helios
 description: The interval's wager tried before the landing moves — the morphology of code, walked by the dojo's own runtime.
+
+# The page's copy surface: what this REHEARSAL says around the program. The
+# writeup below the stage — "What is real here", the honest list — is the page's
+# document, not a component's words, and stays where it is written. The verse
+# and the lede are the landing's own interval said again, which is the point of
+# the rehearsal; they are this page's copy all the same, so they are here and
+# not read from _pages/helios.md.
+#
+# The status line's words go to the runtime as data attributes (see the section
+# below and assets/js/home/helios-interval.js): the score is written by the
+# script as the walk moves, so the vocabulary travels with the page instead of
+# living in a second copy inside the script.
+copy:
+  label: Anyone can see math differently, performed as a program
+  verse: Anyone can
+  line: see math
+  line_em: differently.
+  lede: We designed an intuitive language so a mathematical idea becomes something you can see, play with, and breathe to life.
+  program_label: the program
+  status: waiting
+  performing: performing
+  finished: the finished figure
+  fallback: fell back to the finished figure —
+  missing_pin: the pin is missing — no runtime was vendored
 ---
 
 <div class="helios-twilight">
 <div class="helios-act">
 <section class="helios-see helios-interval" data-helios-interval
   data-helios-interval-hatch="{{ site.data.hatch.artifact_path }}"
-  aria-label="Anyone can see math differently, performed as a program">
+  data-interval-performing="{{ page.copy.performing }}"
+  data-interval-finished="{{ page.copy.finished }}"
+  data-interval-fallback="{{ page.copy.fallback }}"
+  data-interval-missing-pin="{{ page.copy.missing_pin }}"
+  aria-label="{{ page.copy.label }}">
   <div class="helios-see__field helios-interval__field" aria-hidden="true">
     <canvas class="helios-interval__stroke" data-helios-interval-stroke aria-hidden="true"></canvas>
     <img class="helios-interval__still" data-helios-interval-still hidden alt=""
@@ -19,17 +47,17 @@ description: The interval's wager tried before the landing moves — the morphol
   </div>
   <div class="helios-see__copy">
     <h2 class="helios-see__head">
-      <span class="helios-verse">Anyone can</span>
-      <span class="helios-see__line">see math</span>
-      <span class="helios-see__line"><em>differently.</em></span>
+      <span class="helios-verse">{{ page.copy.verse }}</span>
+      <span class="helios-see__line">{{ page.copy.line }}</span>
+      <span class="helios-see__line"><em>{{ page.copy.line_em }}</em></span>
     </h2>
     <div class="helios-see__invite">
       <span class="helios-see__star" aria-hidden="true">✳</span>
-      <p class="helios-see__lede">We designed an intuitive language so a mathematical idea becomes something you can see, play with, and breathe to life.</p>
+      <p class="helios-see__lede">{{ page.copy.lede }}</p>
     </div>
   </div>
   <div class="helios-interval__program" aria-hidden="true">
-    <p class="helios-interval__label">the program</p>
+    <p class="helios-interval__label">{{ page.copy.program_label }}</p>
 <pre class="helios-interval__verse" data-helios-interval-verse># the morphology: square, exhaustion, pursuit
 
 def polygon sides r do
@@ -84,7 +112,7 @@ exhaust 5 240
 # movement three -- breathe
 ring 12 240</pre>
   </div>
-  <p class="helios-interval__status" data-helios-interval-status>waiting</p>
+  <p class="helios-interval__status" data-helios-interval-status>{{ page.copy.status }}</p>
 </section>
 </div>
 </div>

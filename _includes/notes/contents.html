@@ -1,13 +1,17 @@
 {%- comment -%}
   The contents rail: where the reader is.
 
+  The words (`In this note`, the two aria-labels) are _data/notes.yml's, the
+  edition's standing copy; this file places them and says none of its own.
+
   Params:
     toc  the contents list HTML, from the note_contents filter — generated
          from the headings kramdown actually rendered, never a second outline
 {%- endcomment -%}
-<aside class="contents-rail" aria-label="Reading navigation">
+{%- assign edition = site.data.notes -%}
+<aside class="contents-rail" aria-label="{{ edition.contents_aria }}">
   <div class="contents-sticky">
-    <p class="eyebrow rail-title">In this note</p>
-    <nav aria-label="Table of contents"><ol class="toc">{{ include.toc }}</ol></nav>
+    <p class="eyebrow rail-title">{{ edition.contents_title }}</p>
+    <nav aria-label="{{ edition.contents_label }}"><ol class="toc">{{ include.toc }}</ol></nav>
   </div>
 </aside>

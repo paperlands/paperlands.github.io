@@ -55,13 +55,17 @@ function boot() {
   const film = root.querySelector("[data-helios-dojo-film]");
   const box = root.querySelector("[data-helios-dojo-program]");
   const status = root.querySelector("[data-helios-dojo-status]");
+  /* The status line's WORDS are the page's, not this script's: they arrive as
+     data attributes on the root (see _pages/helios-dojo.md), so the page can say
+     what its own drawing is doing without a second copy of the vocabulary here. */
+  const words = root.dataset;
   let turtle = null;
   let timer = 0;
 
   function fail(err) {
     canvas.hidden = true;
     film.hidden = false;
-    if (status) status.textContent = "fell back to the film — " + (err && err.message ? err.message : err);
+    if (status) status.textContent = words.dojoFallback + " " + (err && err.message ? err.message : err);
   }
 
   function run() {
@@ -77,7 +81,7 @@ function boot() {
         turtle.draw(ast, { comms: false });
         canvas.hidden = false;
         film.hidden = true;
-        if (status) status.textContent = "drawing from the commands";
+        if (status) status.textContent = words.dojoDrawing;
       } catch (err) {
         console.error(err);
         fail(err);

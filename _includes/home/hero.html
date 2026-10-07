@@ -11,16 +11,18 @@
   and the hero has no empty corner to spend on a legend. The reel still
   advances on `ended`; there is deliberately no control here.
 
-  Copy is the page's (`page.hero`). Params override it:
+  Copy is the page's (`page.hero`). Params override it, and this file invents no
+  word of its own — every string below is either a param or the page's (`group`
+  is a decoder group, not copy, and it is the one value that may default here):
     hero, items, group, thesis, thesis_em, kicker, label
 {%- endcomment -%}
 {%- assign home_hero = include.hero | default: page.hero -%}
 {%- assign home_hero_group = include.group | default: home_hero.group | default: 'how' -%}
 {%- assign home_hero_items = include.items | default: home_hero.items -%}
-{%- assign home_hero_label = include.label | default: home_hero.label | default: 'In how we' -%}
+{%- assign home_hero_label = include.label | default: home_hero.label -%}
 {%- assign home_hero_kicker = include.kicker | default: home_hero.kicker -%}
-<section class="helios-hero" aria-label="{{ home_hero_label | escape }}">
-  <h1 class="helios-thesis">{{ include.thesis | default: home_hero.thesis | default: 'We See Math' }}<br><em>{{ include.thesis_em | default: home_hero.thesis_em | default: 'Differently' }}</em></h1>
+<section class="helios-hero"{% if home_hero_label %} aria-label="{{ home_hero_label | escape }}"{% endif %}>
+  <h1 class="helios-thesis">{{ include.thesis | default: home_hero.thesis }}<br><em>{{ include.thesis_em | default: home_hero.thesis_em }}</em></h1>
   {% include media/carousel.html
      kind="stack"
      surface="fill"

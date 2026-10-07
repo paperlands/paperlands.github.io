@@ -7,6 +7,25 @@ image: /assets/lib/beauty_first.png
 id: lan
 permalink: /lan
 version: 0.4.2
+
+# The page's copy. What is NOT here is deliberate: `Windows`, `macOS`, `Linux`
+# and `x86`/`x64`/`arm64` are the ARTEFACTS' own names — they appear in the
+# release URL and the download filename on the same button (see the anchors
+# below), so they are data about the thing being fetched, not prose about it.
+# A word here is one the page says; a platform name there is one the download
+# already has.
+copy:
+  title: Install
+  title_em: PaperLan
+  platform_label: Choose your platform
+  requirements_label: System Requirements
+  requirements:
+    - label: Local Network
+      note: mobile hotspot, wired ethernet or wifi router
+    - label: Friends Nearby
+      note: the only true requirement
+  brand: PaperLan
+  tagline: crafted with reverence for fellowship
 ---
 <body class="bg-bg text-txt font-mono min-h-screen overflow-x-hidden">
  
@@ -15,7 +34,7 @@ version: 0.4.2
   <!-- Header -->
   <header class="text-center mb-16 animate-fade-up">
     <h1 class="font-paperlang font-bold text-center  text-4xl sm:text-5xl tracking-wide text-txt mb-4">
-      Install <span class="text-primary ">PaperLan </span> 
+      {{ page.copy.title }} <span class="text-primary ">{{ page.copy.title_em }} </span> 
     </h1>
     <div class="w-16 h-px mx-auto bg-gradient-to-r from-transparent via-primary to-transparent"></div>
   </header>
@@ -23,7 +42,7 @@ version: 0.4.2
   <!-- OS Selector -->
   <div class="mb-16 animate-fade-up-1">
     <p class="text-center text-[10px] tracking-[0.25em] uppercase text-stone-warm mb-7">
-      Choose your platform
+      {{ page.copy.platform_label }}
     </p>
     <div class="flex gap-3 justify-center" id="os-buttons">
  
@@ -171,21 +190,21 @@ version: 0.4.2
   <section class="mb-16 animate-fade-up-2">
     <div class="border border-primary/20 rounded-lg p-8 relative">
       <span class="absolute -top-2.5 left-6 bg-bg px-3 text-[10px] tracking-[0.25em] uppercase text-primary-dark">
-        System Requirements
+        {{ page.copy.requirements_label }}
       </span>
       <div class="grid sm:grid-cols-2 gap-5 text-sm">
         <div class="flex gap-3 items-start">
           <span class="text-primary/50 mt-0.5 text-[10px]">►</span>
           <div>
-            <div class="text-txt-light">Local Network</div>
-            <div class="text-sage text-xs mt-0.5">mobile hotspot, wired ethernet or wifi router</div>
+            <div class="text-txt-light">{{ page.copy.requirements[0].label }}</div>
+            <div class="text-sage text-xs mt-0.5">{{ page.copy.requirements[0].note }}</div>
           </div>
         </div>
         <div class="flex gap-3 items-start">
           <span class="text-primary/50 mt-0.5 text-[10px]">►</span>
           <div>
-            <div class="text-txt-light">Friends Nearby</div>
-            <div class="text-sage text-xs mt-0.5">the only true requirement</div>
+            <div class="text-txt-light">{{ page.copy.requirements[1].label }}</div>
+            <div class="text-sage text-xs mt-0.5">{{ page.copy.requirements[1].note }}</div>
           </div>
         </div>
       </div>
@@ -194,8 +213,8 @@ version: 0.4.2
  
   <!-- Footer -->
   <footer class="text-center pt-8 border-t border-primary/10 animate-fade-up-3">
-    <div class="font-paperlang text-sm text-primary tracking-widest">PaperLan</div>
-    <div class="text-[10px] text-sage mt-1">crafted with reverence for fellowship</div>
+    <div class="font-paperlang text-sm text-primary tracking-widest">{{ page.copy.brand }}</div>
+    <div class="text-[10px] text-sage mt-1">{{ page.copy.tagline }}</div>
     <div class="flex justify-center gap-2 mt-4">
       <span class="w-[3px] h-[3px] rounded-full bg-primary/30"></span>
       <span class="w-[3px] h-[3px] rounded-full bg-primary/20"></span>

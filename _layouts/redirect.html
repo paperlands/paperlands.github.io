@@ -9,7 +9,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Redirecting...</title>
+    <title>{{ site.data.site.redirect_title }}</title>
     <meta name="theme-color" content="#140806">
     <link rel="canonical" href="{{ redirect_link }}">
 
@@ -151,7 +151,7 @@
     </svg>
     <noscript>
       <meta http-equiv="refresh" content="0; url={{ redirect_link }}">
-      <a href="{{ redirect_link }}">Continue</a>
+      <a href="{{ redirect_link }}">{{ site.data.site.redirect_continue }}</a>
     </noscript>
   </body>
 </html>
