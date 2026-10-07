@@ -44,13 +44,12 @@ see:
   thesis_em: differently.
   lede: We designed an intuitive language so a mathematical idea becomes something you can see, play with, and breathe to life.
   label: Anyone can see math differently
-  items:
-    - id: see_helix
-      role: ribbon
-    - id: see_spiral
-      role: mass
-    - id: see_tree
-      role: echo
+  program_label: the program
+  status: waiting
+  performing: performing
+  finished: the finished figure
+  fallback: fell back to the finished figure —
+  missing_pin: the pin is missing — no runtime was vendored
 
 who:
   verse: In who we
@@ -163,7 +162,7 @@ colophon:
     home/wordmark.html   the identity — the mark assembles on scroll distance
     home/hero.html       thesis + stack carousel (fill) + flash + play fill
     home/ticker.html     the crawl
-    home/see.html        the interval — anyone can, and the math the language leaves in the air
+    home/see.html        the interval — the language drawing its own figure
     home/who.html        three identities, paired footage in their own reels — the row loops on narrow screens
     home/possibilities.html   parallel lives — becoming, expressed and shared
     home/colophon.html   the close

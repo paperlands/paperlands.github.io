@@ -517,16 +517,19 @@
   }
 
   /* ---- the interval: anyone can -------------------------------------- */
-  /* One sky for the interval and the people. Painted on the wrapper, not on
-     each act, so the seam cannot invent a new climate. Violet and ember cross
-     the boundary the way they cross a single picture. */
-  [data-look="helios"] .helios-twilight {
-    background:
+  /* The interval paints this sky over its own viewport on both the landing
+     and its reference page. The wrapper keeps the same sky behind the people. */
+  [data-look="helios"] {
+    --helios-twilight-sky:
       radial-gradient(ellipse 56% 30% at 76% 20%, rgb(41 29 87 / 0.58), transparent 70%),
       radial-gradient(ellipse 42% 22% at 16% 34%, rgb(212 90 20 / 0.09), transparent 72%),
       radial-gradient(ellipse 50% 24% at 82% 47%, rgb(232 160 32 / 0.14), transparent 68%),
       radial-gradient(ellipse 64% 28% at 70% 56%, rgb(41 29 87 / 0.32), transparent 74%),
       var(--light-ground-2);
+  }
+
+  [data-look="helios"] .helios-twilight {
+    background: var(--helios-twilight-sky);
   }
 
 
@@ -542,7 +545,7 @@
     height: 100%;
     min-height: 0;
     overflow: hidden;
-    background: transparent;
+    background: var(--helios-twilight-sky);
   }
 
   [data-look="helios"] .helios-see__field {
@@ -803,6 +806,11 @@
     object-fit: contain;
     -webkit-mask-image: linear-gradient(90deg, #000 0, #000 62%, transparent 88%);
     mask-image: linear-gradient(90deg, #000 0, #000 62%, transparent 88%);
+  }
+
+  [data-look="helios"] .helios-interval__stroke[hidden],
+  [data-look="helios"] .helios-interval__still[hidden] {
+    display: none;
   }
 
   [data-look="helios"] .helios-interval__program {

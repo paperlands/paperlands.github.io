@@ -53,8 +53,9 @@ function boot() {
   var still = root.querySelector("[data-helios-interval-still]");
   var hatchUrl = root.getAttribute("data-helios-interval-hatch");
   /* The status line's WORDS are the page's, not this script's: they arrive as
-     data attributes on the root (see _pages/helios-interval.md), so the page can
-     say what its own rehearsal is doing without a second copy of the vocabulary
+     data attributes on the root (see _includes/home/see.html and
+     _pages/helios-interval.md), so each page can say what its interval is doing
+     without a second copy of the vocabulary
      here. `fallback` is a PREFIX — the runtime appends the error to it. */
   var words = root.dataset;
   if (!canvas || !verse) return;
@@ -217,6 +218,7 @@ function boot() {
   var running = false;
   var finished = false;
   var act = "";
+  var runId = 0;
 
   function showStill(note) {
     canvas.hidden = true;
@@ -297,6 +299,7 @@ function boot() {
   }
 
   function run() {
+    var thisRun = ++runId;
     running = true;
     act = "";
     /* A performance, not a pause: whatever the last one left lit, including a
@@ -315,16 +318,32 @@ function boot() {
     }
     if (status) status.textContent = words.intervalPerforming;
     import(hatchUrl).then(function (mod) {
+      /* Import can finish after the act has left the viewport. In that case,
+         do not create a renderer or start a performance offscreen. */
+      if (thisRun !== runId) return null;
       hatch = mod.createHatch(canvas);
-      hatch.onLine(kindle);
+      hatch.onLine(function (beat) { if (thisRun === runId) kindle(beat); });
       return hatch.play(src);
     }).then(function (handle) {
-      return handle.finished;
+      return handle ? handle.finished : null;
     }).then(function () {
+      if (thisRun !== runId) return;
       running = false;
       finished = true;
       settle();
-    }).catch(fail);
+    }).catch(function (err) {
+      if (thisRun === runId) fail(err);
+    });
+  }
+
+  function leave() {
+    ++runId;
+    if (hatch) { try { hatch.dispose(); } catch (e) {} hatch = null; }
+    quiet();
+    running = false;
+    /* The completed canvas is replaced by its still before its renderer is
+       released, so scrolling back keeps the finished figure. */
+    if (finished) showStill(words.intervalFinished);
   }
 
   if (motion) {
@@ -333,12 +352,8 @@ function boot() {
         for (var i = 0; i < entries.length; i++) {
           if (entries[i].isIntersecting) {
             if (!finished && !running) run();
-          } else if (running && hatch) {
-            /* Abandon the performance; the contract says dispose, not pause. */
-            try { hatch.dispose(); } catch (e) {}
-            quiet();
-            hatch = null;
-            running = false;
+          } else if (running || hatch) {
+            leave();
           }
         }
       }, { threshold: 0.3 });
