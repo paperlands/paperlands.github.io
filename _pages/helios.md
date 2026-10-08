@@ -16,30 +16,30 @@ image: /assets/lib/helios/see-helix-ccddfd.webp
 # Clip files stay in _data/media.yml (name the id, not the src).
 
 hero:
-  thesis: We See Math
-  thesis_em: Differently
-  kicker: In how we
-  label: In how we
+  thesis: Mathematical
+  thesis_em: Storytellers
+  kicker: Learn to animate
+  label: Learn to animate
   items:
     - id: tree_fractal
-      title: Observe
+      title: stars
       slate: the hidden geometry of stars
     - id: polygon_fill
-      title: Experiment
+      title: random distributions
       slate: on the play of randomness
     - id: fibonacci_spiral
-      title: Explore
+      title: golden spirals
       slate: the fibonacci sequence of old
     - id: prime_sequence
-      title: Question
+      title: spiderwebs
       slate: the tangled webs of nature
 
 
 see:
-  verse: Anyone can
-  thesis: see math
-  thesis_em: differently.
-  lede: We designed an intuitive language so a mathematical idea becomes something you can see, play with, and breathe to life.
+  verse: A platform to bring
+  thesis: math to life
+  thesis_em: 
+  lede: Learn how YOU can create beautiful math animations and experiment on them. 
   label: Anyone can see math differently
   program_label: the program
   status: waiting
@@ -71,21 +71,21 @@ who:
 
 possibilities:
   transition:
-    lead: Math is to be
-    experience: experienced.
-    fellowship: Shared
-    shared: in common.
+    lead: Our
+    experience: programs
+    fellowship: 
+    shared: 
   items:
     - id: creators
       identity: To Create
       invitation: Connections through Arts & Stories
       event: Math Festivals & Carnivals
-      title: What I cannot create I do not understand
-      description: Bridge art and nature through mathematics. Turn a pattern into a story, an idea into a movie. Build something for yourself and suddenly, others can see it too.
+      title: Math takes the stage
+      description: Behind every animation is a student with a story to tell. A question they followed, a surprising discovery, or a connection that made an idea click.
       outcome: Mathematics made to be felt.
       href: /experiences#math-festival
       more: 
-      spine: World for others to see.
+      spine: 
       caption: a torus found in architecture
     - id: inquiry
       identity: To Explore
@@ -191,9 +191,6 @@ colophon:
 {% include home/see.html %}
 </div>
 
-<div class="helios-act">
-{% include home/who.html %}
-</div>
 </div>
 
 {% include home/possibilities.html %}
