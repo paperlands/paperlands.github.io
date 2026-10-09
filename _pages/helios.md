@@ -37,7 +37,8 @@ see:
   verse: A platform to bring
   thesis: math to life
   lede: Learn how YOU can create beautiful math animations and experiment on them. 
-  action: Explore our approach
+  action_prefix: Explore
+  action: our approach
   label: Anyone can see math differently
   program_label: the program
   status: waiting
@@ -48,9 +49,12 @@ see:
 
 create:
   title: Math takes the stage
-  description: Behind every animation is a student with a story to tell. A question they followed, a surprising discovery, or a connection that made an idea click.
-  outcome: Mathematics made to be felt.
-  action: Explore the experiences
+  points:
+    - A student with a story to tell
+    - A question they followed
+    - A discovery or connection that made an idea click
+  action_prefix: Explore the
+  action: experiences
   caption: a torus found in architecture
 
 possibilities:

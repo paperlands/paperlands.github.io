@@ -1238,7 +1238,7 @@
     font: .52rem/1.8 var(--font-display); letter-spacing: .13em; text-transform: uppercase;
   }
   [data-look="helios"] .helios-possibility__copy {
-    position: relative; z-index: 9; width: 34%; padding: 0;
+    position: relative; z-index: 9; width: 46%; padding: 0;
     margin-left: var(--helios-gutter); top: 50%; transform: translateY(-50%);
   }
   [data-look="helios"] :is(.helios-possibility__copy, .helios-possibilities__opening) h2 {
@@ -1250,19 +1250,17 @@
   [data-look="helios"] .helios-possibility__copy h2 {
     margin: 0 0 1.3rem;
   }
-  [data-look="helios"] .helios-possibility__description {
-    margin: 0; max-width: 34ch;
-    font: 400 clamp(1rem, 1.3vw, 1.2rem)/1.55 var(--font-serif);
-    color: #e0c3ad;
+  [data-look="helios"] .helios-possibility__points {
+    list-style: disc; margin: 1.4rem 0; padding-left: 1.2em;
+    color: var(--parallel-dim);
+    font: 400 clamp(1.15rem, 1.8vw, 1.6rem)/1.8 var(--font-serif);
   }
-  [data-look="helios"] .helios-possibility__outcome {
-    margin: 1.3rem 0 0; max-width: 27ch;
-    font: italic 400 clamp(1.1rem, 1.5vw, 1.4rem)/1.4 var(--font-serif);
-    color: var(--parallel-wheat);
-  }
-  [data-look="helios"] .helios-possibility__call {
-    margin-top: 1.4rem;
-    color: var(--parallel-wheat);
+  [data-look="helios"] .helios-possibility__points li { padding-left: .15em; }
+  [data-look="helios"] .helios-possibility__points li + li { margin-top: .35rem; }
+  [data-look="helios"] .helios-possibility__points li::marker { color: var(--parallel-wheat); }
+  [data-look="helios"] .helios-possibility__call { color: var(--parallel-wheat); }
+  [data-look="helios"] :is(.helios-see__call, .helios-possibility__call) u {
+    text-decoration-thickness: 1px; text-underline-offset: .16em;
   }
   [data-look="helios"] .helios-possibilities__opening {
     position: relative; z-index: 1; padding: clamp(5rem, 12svh, 8rem) var(--helios-gutter) clamp(6rem, 20svh, 14rem);
@@ -1275,15 +1273,17 @@
   [data-look="helios"] .helios-possibilities__opening h2 {
     margin: 0;
   }
-  [data-look="helios"] .helios-possibilities__opening > p {
+  [data-look="helios"] :is(.helios-possibility__copy, .helios-possibilities__opening) > p {
     color: var(--parallel-dim); font: 400 clamp(1.15rem, 1.8vw, 1.6rem)/1.8 var(--font-serif); margin: 1.4rem 0;
   }
-  [data-look="helios"] .helios-possibilities__opening .helios-possibilities__verse { font-style: italic; color: var(--parallel-wheat); }
-  [data-look="helios"] .helios-possibilities__call {
+  [data-look="helios"] .helios-possibilities__opening > .helios-possibilities__verse {
+    font-style: italic; color: var(--parallel-wheat);
+  }
+  [data-look="helios"] :is(.helios-possibility__call, .helios-possibilities__call) {
     display: inline-block; margin-top: 1rem;
     font: italic 400 clamp(1.3rem, 2.3vw, 2rem)/1.4 var(--font-serif);
   }
-  [data-look="helios"] .helios-possibilities__call span {
+  [data-look="helios"] :is(.helios-possibility__call, .helios-possibilities__call) span {
     display: inline-block; margin-left: .65em; transition: transform .3s ease;
   }
   [data-look="helios"] .helios-possibilities__call:hover span { transform: translate(2px, -2px); }
@@ -1297,8 +1297,6 @@
     [data-look="helios"] .helios-possibility__copy h2 {
       margin-bottom: .65rem;
     }
-    [data-look="helios"] .helios-possibility__description { max-width: 39ch; font-size: 1rem; line-height: 1.4; }
-    [data-look="helios"] .helios-possibility__outcome { margin: .55rem 0 .8rem; max-width: none; font-size: 1.05rem; }
     [data-look="helios"] .helios-possibility__art { top: 32%; }
     [data-look="helios"] .helios-possibility__stage {
       --thought-x: 17%; --thought-y: -22%; --thought-w: 120%; --thought-h: 110%; --thought-scale: 1.9;
