@@ -97,7 +97,6 @@ colophon:
   contains no <video>, no src, no preload, no play(), and no look. Everything
   below is one call per idea:
 
-    home/air.html        grain + silk veil
     home/wordmark.html   the identity — the mark assembles on scroll distance
     home/hero.html       thesis + stack carousel (fill) + flash + play fill
     home/ticker.html     the crawl
@@ -114,8 +113,6 @@ colophon:
   Permalink is `/`. The look was proved at /helios first and then the swap was
   taken; the old homepage is parked at _drafts/index.md.
 {%- endcomment -%}
-
-{% include home/air.html %}
 
 {% include home/wordmark.html %}
 

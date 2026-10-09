@@ -20,7 +20,6 @@ copy:
   sign: ~ Vivekbala && Princeton
 ---
 
-{% include home/air.html %}
 {% include home/wordmark.html %}
 
 <article class="helios-about">

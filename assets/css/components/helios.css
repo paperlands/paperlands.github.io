@@ -126,28 +126,38 @@
     --identity-ring: var(--light-accent);
   }
 
-  /* ---- air ------------------------------------------------------------ */
-  [data-look="helios"] .helios-air {
-    position: fixed;
-    inset: -20%;
-    z-index: 90;
+  /* Grain belongs to each pictured surface, below its copy. A fixed layer
+     above the document also textured the wordmark, all text, and the nav. */
+  [data-look="helios"] :is(
+    .helios-hero [data-media-surface="fill"],
+    .helios-see,
+    .helios-ticker,
+    .helios-possibility__stage,
+    .helios-possibilities,
+    .helios-colophon
+  )::before {
+    content: "";
+    position: absolute;
+    inset: 0;
     pointer-events: none;
     opacity: 0.22;
     mix-blend-mode: overlay;
+    background: url("/assets/lib/helios-grain.png") repeat;
     background-size: 220px 220px;
-    background-image: url("/assets/lib/helios-grain.png");
     animation: helios-grain 1.2s steps(2) infinite;
   }
 
-  [data-look="helios"] .helios-silk {
-    position: fixed;
-    inset: 0;
-    z-index: 4;
-    pointer-events: none;
-    opacity: 0.18;
-    mix-blend-mode: multiply;
-    background: linear-gradient(180deg, rgb(212 90 20 / 0.22), rgb(20 8 6 / 0.55));
-  }
+  /* The active media cell is z=1 and the copy is z=2; as the first child,
+     the grain at z=2 paints over the image and under the later copy slot. */
+  [data-look="helios"] .helios-hero [data-media-surface="fill"]::before { z-index: 2; }
+
+  [data-look="helios"] .helios-see::before { z-index: 1; }
+
+  [data-look="helios"] .helios-possibility__stage::before { z-index: 6; }
+
+  [data-look="helios"] .helios-ticker::before,
+  [data-look="helios"] .helios-possibilities::before,
+  [data-look="helios"] .helios-colophon::before { z-index: 0; }
 
   /* ---- the identity: the mark assembles ------------------------------- */
   /* At rest this is the banner. Inside the first act it is the pieces, carried
@@ -437,8 +447,12 @@
     opacity: 0;
   }
 
+  /* The title needs both animations in one shorthand: a second `animation`
+     declaration would replace its entrance instead of adding moving grain. */
   [data-look="helios"] [data-media-slot="copy"][data-helios-copy="in"] [data-media-slot="title"] {
-    animation: helios-lift 0.6s var(--helios-ease) forwards;
+    animation:
+      helios-lift 0.6s var(--helios-ease) forwards,
+      helios-grain 1.2s steps(2) infinite;
   }
 
   [data-look="helios"] [data-media-slot="copy"][data-helios-copy="in"] [data-media-slot="slate"] {
@@ -487,6 +501,7 @@
 
   /* ---- the ticker ----------------------------------------------------- */
   [data-look="helios"] .helios-ticker {
+    position: relative;
     flex: 0 0 auto;
     border-block: 2px solid var(--light-ridge);
     overflow: hidden;
@@ -497,6 +512,8 @@
   }
 
   [data-look="helios"] .helios-ticker__track {
+    position: relative;
+    z-index: 1;
     display: inline-block;
     animation: helios-crawl 28s linear infinite;
   }
@@ -856,7 +873,7 @@
        no glyph is. */
     width: calc(min(25rem, 29vw) + 2.5rem);
     padding-left: 2.5rem;
-    z-index: 1;
+    z-index: 2;
     overflow: hidden;
     pointer-events: none;
     /* The column is an overlay, not wallpaper: a night scrim keeps the verse
@@ -1244,7 +1261,7 @@
     color: var(--parallel-wheat);
   }
   [data-look="helios"] .helios-possibilities__opening {
-    position: relative; padding: clamp(5rem, 12svh, 8rem) var(--helios-gutter) clamp(6rem, 20svh, 14rem);
+    position: relative; z-index: 1; padding: clamp(5rem, 12svh, 8rem) var(--helios-gutter) clamp(6rem, 20svh, 14rem);
   }
   [data-look="helios"] .helios-possibilities__thread {
     display: block; width: 1px; height: clamp(3rem, 9vh, 6rem);
@@ -1300,6 +1317,7 @@
   }
   /* ---- the close ------------------------------------------------------ */
   [data-look="helios"] .helios-colophon {
+    position: relative;
     display: flex;
     flex-wrap: wrap;
     align-items: end;
@@ -1313,6 +1331,8 @@
   }
 
   [data-look="helios"] .helios-colophon h2 {
+    position: relative;
+    z-index: 1;
     flex: 1 1 18rem;
     min-width: 0;
     margin: 0;
@@ -1332,6 +1352,8 @@
   }
 
   [data-look="helios"] .helios-seal {
+    position: relative;
+    z-index: 1;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1351,13 +1373,40 @@
     color: var(--light-ground);
   }
 
+  /* The hero and colophon already wrap their accent words in <em>. The shared
+     carousel emits [data-media-slot="title"], whose textContent changes in
+     media-carousel.js. No extra markup or duplicate text is needed: clipping
+     the grain background to the glyphs follows every title the writer sets.
+     The support guard leaves the solid accent colour intact in older browsers;
+     the cream copy and nav never receive this texture. */
+  @supports (background-clip: text) or (-webkit-background-clip: text) {
+    [data-look="helios"] .helios-thesis em,
+    [data-look="helios"] .helios-hero [data-media-slot="title"],
+    [data-look="helios"] .helios-colophon h2 em {
+      --helios-accent-veil: color-mix(in srgb, var(--light-accent) 84%, transparent);
+      background-image:
+        linear-gradient(var(--helios-accent-veil), var(--helios-accent-veil)),
+        url("/assets/lib/helios-grain.png");
+      background-size: auto, 220px 220px;
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+    }
+
+    [data-look="helios"] .helios-thesis em,
+    [data-look="helios"] .helios-colophon h2 em {
+      animation: helios-grain 1.2s steps(2) infinite;
+    }
+  }
+
 
   /* ---- keyframes ------------------------------------------------------ */
   @keyframes helios-grain {
-    0% { transform: translate(0, 0); }
-    33% { transform: translate(-2%, 1%); }
-    66% { transform: translate(1%, -2%); }
-    100% { transform: translate(0, 0); }
+    0% { background-position: 0 0; }
+    33% { background-position: -19px 11px; }
+    66% { background-position: 9px -17px; }
+    100% { background-position: 0 0; }
   }
 
   @keyframes helios-breathe {
@@ -1491,6 +1540,26 @@
     }
   }
   /* ---- /about: the same look, a colophon not an act -------------------- */
+  /* This page has no pictured surface. Texture its ground beneath the main
+     content instead of laying a fixed pane across its words and the nav. */
+  body[data-look="helios"]:has(.helios-about)::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.22;
+    mix-blend-mode: overlay;
+    background: url("/assets/lib/helios-grain.png") repeat;
+    background-size: 220px 220px;
+    animation: helios-grain 1.2s steps(2) infinite;
+  }
+
+  body[data-look="helios"]:has(.helios-about) > main {
+    position: relative;
+    z-index: 1;
+  }
+
   [data-look="helios"] .helios-about {
     max-width: 34rem;
     margin: 0 auto;
@@ -1892,7 +1961,17 @@
    would not. */
 @layer utilities {
   @media (prefers-reduced-motion: reduce) {
-    [data-look="helios"] .helios-air,
+    body[data-look="helios"]:has(.helios-about)::before,
+    [data-look="helios"] .helios-thesis em,
+    [data-look="helios"] .helios-colophon h2 em,
+    [data-look="helios"] :is(
+      .helios-hero [data-media-surface="fill"],
+      .helios-see,
+      .helios-ticker,
+      .helios-possibility__stage,
+      .helios-possibilities,
+      .helios-colophon
+    )::before,
     [data-look="helios"] .helios-ticker__track,
     [data-look="helios"] .helios-see__object {
       animation: none;
