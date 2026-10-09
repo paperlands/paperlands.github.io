@@ -10,10 +10,8 @@ image: /assets/lib/helios/see-helix-ccddfd.webp
 
 # Copy lives here. Change words in this block; the body only places acts, and an
 # include invents no word of its own — no filter default, no status line, and a
-# plate's figcaption as much as a thesis. A scene's art and its program are
-# _data/helios_possibilities.yml's, indexed by the same id, and its SPINE and
-# CAPTION are here with the rest of the words (see `possibilities.items`).
-# Clip files stay in _data/media.yml (name the id, not the src).
+# plate's figcaption as much as a thesis. The To Create scene's art and program
+# live in _data/helios_possibilities.yml; its words live here.
 
 hero:
   thesis: Mathematical
@@ -38,7 +36,6 @@ hero:
 see:
   verse: A platform to bring
   thesis: math to life
-  thesis_em: 
   lede: Learn how YOU can create beautiful math animations and experiment on them. 
   label: Anyone can see math differently
   program_label: the program
@@ -48,73 +45,18 @@ see:
   fallback: fell back to the finished figure —
   missing_pin: the pin is missing — no runtime was vendored
 
-who:
-  verse: In who we
-  stress: become
-  label: In who we become
-  items:
-    - title: explorers
-      slate: Question hidden patterns, shared over a shoulder.
-      possibility: inquiry
-      entry: Explore becoming explorers
-      clips: [waves, spring]
-    - title: creatives
-      slate: Design and create worlds to invite others into.
-      possibility: creators
-      entry: Explore becoming creatives
-      clips: [star, benz]
-    - title: leaders
-      slate: Care and tend to the spirit of wonder in others.
-      possibility: leaders
-      entry: Explore becoming leaders
-      clips: [shell]
+create:
+  title: Math takes the stage
+  description: Behind every animation is a student with a story to tell. A question they followed, a surprising discovery, or a connection that made an idea click.
+  outcome: Mathematics made to be felt.
+  caption: a torus found in architecture
 
 possibilities:
-  transition:
-    lead: Our
-    experience: programs
-    fellowship: 
-    shared: 
-  items:
-    - id: creators
-      identity: To Create
-      invitation: Connections through Arts & Stories
-      event: Math Festivals & Carnivals
-      title: Math takes the stage
-      description: Behind every animation is a student with a story to tell. A question they followed, a surprising discovery, or a connection that made an idea click.
-      outcome: Mathematics made to be felt.
-      href: /experiences#math-festival
-      more: 
-      spine: 
-      caption: a torus found in architecture
-    - id: inquiry
-      identity: To Explore
-      invitation: Through Inquiry & Discovery
-      event: Math Symposiums & Hackathons
-      title: Find your own Why.
-      description: Seek patterns and questions that leads you down your own conjectures. Share it with others and start a conversation, few would have thought to have.
-      outcome: Mathematics for you to question.
-      href: /experiences#math-symposium
-      more: What goes behind a spirit of inquiry 
-      spine: it begins with a question
-      caption: good questions are rarer than great answers
-    - id: leaders
-      identity: To Lead
-      invitation: In Service of your Community
-      event: Peer-led Workshops & Labs
-      title: By students for students
-      description: Lean in. Bring people together. Tend to their curiosity,  make room for their questions, the next idea might be theirs.
-      outcome: Nurture our spirit of wonder.
-      href: /experiences#student-led-workshops
-      more: Spearhead the change in your community
-      spine: larger than ourselves
-      caption: a group huddle / a seed for something larger
-  close:
-    title: What do you see?
-    verse: A festival in your school hall, a chapter in your university or in every classroom in your state
-    possibility: Perhaps you see differently.  <br> It could be a possibility we have yet to imagine.
-    community: Your own stage for mathematics in your mathematics.
-    action: Let's design it together.
+  title: What do you see?
+  verse: A festival in your school hall, a chapter in your university or in every classroom in your state
+  possibility: Perhaps you see differently.  <br> It could be a possibility we have yet to imagine.
+  community: Your own stage for mathematics in your mathematics.
+  action: Let's design it together.
 
 ticker:
   - In PaperLand
@@ -150,8 +92,7 @@ colophon:
   Helios, declaratively.
 
   Copy is the front matter above. This body names placements, not words: it
-  contains no <video>, no src, no preload, no play(), and no look. An act is
-  one viewport; the possibilities below open into scroll passages. Everything
+  contains no <video>, no src, no preload, no play(), and no look. Everything
   below is one call per idea:
 
     home/air.html        grain + silk veil
@@ -159,19 +100,14 @@ colophon:
     home/hero.html       thesis + stack carousel (fill) + flash + play fill
     home/ticker.html     the crawl
     home/see.html        the interval — the language drawing its own figure
-    home/who.html        three identities, paired footage in their own reels — the row loops on narrow screens
-    home/possibilities.html   parallel lives — becoming, expressed and shared
+    home/create.html     To Create — one full-width life
+    home/possibilities.html   the closing invitation — What do you see?
     home/colophon.html   the close
     home/boot.html       page-local decoration
 
   The page declares `look: helios`. That puts data-look="helios" on <body>
   (see _layouts/folio.html) and components/helios.css binds the shared media
   slots to the Helios look. Change the look, not this page, to re-theme it.
-
-  Author ergonomics, stated as a rule: if a new act needs a new *clip*, add it to
-  _data/media.yml and name its id; if it needs a new *placement*, pass a surface
-  to media/carousel.html; if it needs a new *look*, add a binding under a
-  [data-look] scope. None of those three is a change to the copy block above.
 
   Permalink is `/`. The look was proved at /helios first and then the swap was
   taken; the old homepage is parked at _drafts/index.md.
@@ -192,6 +128,8 @@ colophon:
 </div>
 
 </div>
+
+{% include home/create.html %}
 
 {% include home/possibilities.html %}
 

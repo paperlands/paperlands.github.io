@@ -1,0 +1,26 @@
+{%- assign item = include.item -%}
+{%- assign scene = include.scene -%}
+<div class="helios-possibility__stage">
+  <figure class="helios-possibility__art"{% if item.caption %} aria-label="{{ item.caption | escape }}"{% endif %}>
+    <div class="helios-possibility__plane helios-possibility__echo">
+      <img src="{{ scene.echo | relative_url }}" alt="" width="{{ scene.echo_width }}" height="{{ scene.echo_height }}" loading="lazy" decoding="async">
+    </div>
+    {%- if scene.memory -%}
+    <div class="helios-possibility__plane helios-possibility__memory" aria-hidden="true">
+      <img src="{{ scene.memory | relative_url }}" alt="" width="{{ scene.memory_width }}" height="{{ scene.memory_height }}" loading="lazy" decoding="async">
+    </div>
+    {%- endif -%}
+    <div class="helios-possibility__plane helios-possibility__pool" aria-hidden="true"></div>
+    <div class="helios-possibility__plane helios-possibility__thought" aria-hidden="true"></div>
+    <div class="helios-possibility__plane helios-possibility__body">
+      <img src="{{ scene.body | relative_url }}" alt="{{ scene.body_alt | escape }}" width="{{ scene.body_width }}" height="{{ scene.body_height }}" loading="lazy" decoding="async">
+    </div>
+    <div class="helios-possibility__plane helios-possibility__light" aria-hidden="true"></div>
+    <figcaption>{{ item.caption }}</figcaption>
+  </figure>
+  <div class="helios-possibility__copy">
+    <h2 id="create-title">{{ item.title }}</h2>
+    <p class="helios-possibility__description">{{ item.description }}</p>
+    <p class="helios-possibility__outcome">{{ item.outcome }}</p>
+  </div>
+</div>
