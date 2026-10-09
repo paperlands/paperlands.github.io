@@ -1,30 +1,14 @@
 {%- comment -%}
   The navigation. One component, every page.
 
-  THREE THINGS IN THREE LAYERS, and the split is not decoration:
+  THREE THINGS IN TWO FIXED LAYERS ON DARK SURFACES:
 
-    __chrome   the brand and the burger. Never blended — the banner is artwork,
-               and a coloured raster under `difference` turns cyan wherever the
-               backdrop is light.
-    __links    the plates. Blended on the overlaying surfaces, so the ink is
-               derived from whatever is actually behind it.
-    panel      the mobile menu. Never blended, because an opaque panel under
-               `difference` stops being a panel at all — it becomes a window
-               onto the page and the links on it are unreadable.
+    __chrome   the brand, burger, and mobile menu.
+    __links    the desktop plates, kept at the fixed --nav-ink colour.
 
-  WHY THE LAYERS EXIST. `mix-blend-mode` blends an element's whole subtree into
-  the backdrop, and a fixed ancestor confines that backdrop to the ancestor's own
-  group. Measured in Chromium on /beginnings, four ways: baseline faint; blend on
-  `.folio-nav__plates` alone, nothing; the same with the nav's `z-index: auto`,
-  the plates vanished behind the content; blend on the whole nav, legible but the
-  mobile panel became a window. So the links must BE the fixed layer, and
-  everything that must not invert has to live outside it. One element cannot do
-  both jobs, which is why there are two.
-
-  The blend is applied only on `data-tone="dark"` (see components/nav.css): those
-  are the surfaces where the bar overlays content. On a light surface the bar is
-  in flow over the page's own ground, where a blend would invert against a
-  background that is already known and fixed, and tint the banner for nothing.
+  The links and chrome keep separate stacking positions. On a dark surface the
+  bar overlays content, but its text colour does not respond to video frames or
+  photographs. On a light surface the bar remains in flow.
 
   ORDER IS A CONTRACT. `[data-nav-mark]` must be the first focusable element in
   the bar — design/probe/helios.mjs asserts it is the first keyboard stop, and

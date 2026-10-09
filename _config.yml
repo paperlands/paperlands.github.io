@@ -91,7 +91,7 @@ defaults:
       layout: "note"
       # The edition is a dark document, so the shared nav needs light ink.
       # It was on the default 'light' tone — near-black ink on a dark ground —
-      # and the nav's old mix-blend-mode hid it by accident rather than design.
+      # The fixed light ink is explicit rather than derived from the backdrop.
       # There is no `nav:` key any more: one template serves every page.
       nav_tone: "dark"
 

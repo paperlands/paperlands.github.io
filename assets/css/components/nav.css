@@ -22,34 +22,11 @@
    — and in practice it only recoloured the links, leaving everything else on
    defaults.
 
-   ---- BACKGROUND AWARENESS -------------------------------------------------
-   On a dark surface the bar overlays content, and its backdrop is not knowable:
-   on a note it is a photograph, bright in places and black in others, so no
-   single ink colour is legible across it. `mix-blend-mode: difference` derives
-   the ink from the backdrop instead — light backdrop gives dark ink, dark
-   backdrop gives light ink — which is what the original folio nav did and what
-   this bar had lost.
-
-   It is applied to `__links` and NOT to the shell, because blending applies to
-   an element's whole subtree and a fixed ancestor confines the backdrop to that
-   ancestor's group. Measured in Chromium on /beginnings:
-
-     baseline                                plates faint over the photograph
-     blend on .folio-nav__plates             no effect at all
-     ...that, with the nav's z-index: auto   plates vanish behind the content
-     blend on the whole nav                  legible, but the mobile panel
-                                             became a window: an opaque #140806
-                                             under `difference` composites to
-                                             the backdrop, so the menu lost its
-                                             ground and its links were unreadable
-
-   Hence the two fixed layers. The plates ARE the blended layer; the brand (a
-   coloured raster, which would go cyan over a light backdrop) and the panel (an
-   opaque ground, which would stop being one) live outside it in `__chrome`.
-
-   The blend is scoped to `dark` alone. Off a fixed bar the page's own ground is
-   already behind the nav, so there is nothing to derive and a blend would only
-   invert the ink against a background that is known and tint the banner for it.
+   ---- INK OVER MOVING BACKGROUNDS -----------------------------------------
+   Dark surfaces keep the links at --nav-ink (#f6e6c4). The desktop links are
+   fixed over photographs and video, but their pigment must not change with the
+   frame behind them. The brand and mobile menu remain in their own chrome layer
+   for layout and stacking.
 
    ---- WHAT THE PROBES PIN --------------------------------------------------
      design/probe/identity.mjs  `[data-nav-mark]` exists and owns every point
@@ -113,13 +90,7 @@
   }
 
   .site-nav {
-    /* NO `position` OR `z-index` HERE, and that is load-bearing. Either one
-       makes the shell a stacking context, and the blended layer inside it then
-       composites against the shell's own (empty) group instead of the page —
-       which is exactly how this shipped a working `difference` that did
-       nothing. The layers carry their own z-index; the shell must stay out of
-       the way. Faint-but-present plates over the note's photograph was the
-       symptom, and it looks identical to having no blend at all. */
+    /* The fixed layers carry their own stacking order on dark surfaces. */
     background: transparent;
 
     /* One place for the bar's geometry, so the two fixed layers cannot drift
@@ -251,20 +222,15 @@
     --nav-mark-box-w: var(--nav-mark-word);
   }
 
-  /* ---- the links: the blended layer ------------------------------------ */
+  /* ---- the links -------------------------------------------------------- */
   .folio-nav__links {
     margin-left: auto;
     color: var(--nav-ink);
   }
 
-  /* The plates carry the whole navigation, always over a backdrop of
-     unknowable brightness, so they are set for PRESENCE rather than for
-     texture: Cinzel 600 at 0.72rem, with the tracking eased from 0.28em to
-     0.22em to buy back the width that the extra size and weight spend. At
-     0.62rem/400 the links read as grain over the notes' photographs — the
-     weight is there to hold them, and the tracking still separates the
-     letters. Colour is the blend's business (see the header); this is size.
-     Six plates still clear the banner at the 1024px breakpoint. */
+  /* Cinzel 600 at 0.72rem keeps the links present over photographs. The
+     tracking buys back the width spent on size and weight; all six plates
+     still clear the banner at the 1024px breakpoint. */
   .folio-nav__plates {
     display: flex;
     align-items: center;
@@ -376,11 +342,9 @@
   }
 
   /* ---- the overlaying surfaces ------------------------------------------ */
-  /* Only the cinematic surfaces take the nav out of flow, and only there is the
-     backdrop unknowable. The two layers are separate fixed boxes so that the
-     blend stays on the one that may invert; both share the bar's geometry, and
-     both pass the pointer through except where there is something to click —
-     a full-width transparent bar that swallows the wheel is a scroll trap. */
+  /* Cinematic surfaces take the nav out of flow. Both fixed layers share the
+     bar's geometry and pass the pointer through except on clickable elements;
+     a full-width transparent bar must not trap scrolling. */
   .site-nav[data-tone="dark"] {
     display: block;
     padding: 0;
@@ -409,7 +373,6 @@
     min-height: var(--nav-bar-h);
     padding: 0 var(--nav-pad-x);
     margin-left: 0;
-    mix-blend-mode: difference;
     pointer-events: none;
   }
 
