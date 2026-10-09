@@ -132,6 +132,7 @@
     --nav-pad-x: 1.6rem;
     --nav-pad-y: 1.1rem;
     --nav-bar-h: calc(var(--nav-mark-h) + 2 * var(--nav-pad-y));
+    --nav-field-bottom: 16rem;
 
     display: flex;
     align-items: flex-start;
@@ -168,15 +169,15 @@
                 fall is what stops the field reading as a panel (measured: a
                 soft-sided plateau still reads as a box).
          dark   over a photograph the density IS the legibility, so it thins
-                more slowly: ~0.45 on the last label is what it is read against.
+                more slowly beneath the lower labels.
 
        It used to be a veil of `--color-background` — the page's own cream —
        and a veil of the page is a veil of nothing: on the Library the menu
        opened as bare links over the page. */
     --nav-sheet:
-      radial-gradient(118% 128% at 100% 0%, rgb(20 8 6 / 0.2) 0%,
-        rgb(20 8 6 / 0.16) 34%, rgb(20 8 6 / 0.075) 62%,
-        rgb(20 8 6 / 0.022) 84%, rgb(20 8 6 / 0) 100%);
+      radial-gradient(118% 128% at 100% 0%, rgb(20 8 6 / 0.26) 0%,
+        rgb(20 8 6 / 0.21) 34%, rgb(20 8 6 / 0.11) 62%,
+        rgb(20 8 6 / 0.04) 84%, rgb(20 8 6 / 0) 100%);
     /* Where the bar's right edge is, as an inset for the field's box: this is
        the point the radial is centred on, so it has to be the CORNER and not
        wherever the chrome happens to stop. Here the chrome is a flex item
@@ -186,6 +187,8 @@
   }
 
   .site-nav[data-tone="dark"] {
+    /* How far the open menu's dark field reaches below the bar. */
+    --nav-field-bottom: 18rem;
     --nav-ink: #f6e6c4;
     --nav-ink-muted: color-mix(in srgb, #f6e6c4 74%, transparent);
     --nav-accent: var(--color-primary);
@@ -194,9 +197,9 @@
     /* The same throw, the same radii — laid down thicker, and landing on a
        higher floor: over a photograph this is what the ink is read against. */
     --nav-sheet:
-      radial-gradient(118% 128% at 100% 0%, rgb(20 8 6 / 0.62) 0%,
-        rgb(20 8 6 / 0.54) 34%, rgb(20 8 6 / 0.32) 62%,
-        rgb(20 8 6 / 0.13) 84%, rgb(20 8 6 / 0) 100%);
+      radial-gradient(118% 128% at 100% 0%, rgb(20 8 6 / 1) 0%,
+        rgb(20 8 6 / 1) 34%, rgb(20 8 6 / 1) 62%,
+        rgb(20 8 6 / 1) 84%, rgb(20 8 6 / 1) 100%);
     /* The chrome IS the bar here, so its padding box already ends at the
        corner. */
     --nav-field-right: 0px;
@@ -353,12 +356,14 @@
   }
 
   .site-nav__link {
-    display: block;
-    padding: 0.32rem 0.55rem;
+    display: flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0.45rem 0.65rem;
     font-family: var(--font-body);
-    font-size: 0.8125rem;
+    font-size: 1.125rem;
     font-weight: 500;
-    line-height: 1.2;
+    line-height: 1.3;
     color: var(--nav-ink);
     text-decoration: none;
     transition: color 200ms;
@@ -443,7 +448,7 @@
     }
 
     .folio-nav__menu.is-open {
-      width: min(13.5rem, calc(100vw - 1.4rem));
+      width: min(15rem, calc(100vw - 1.4rem));
       grid-template-rows: 2.9rem 1fr;
       transition-delay: 0ms;
       /* No material here: the bar carries it (see the field below). The panel
@@ -527,6 +532,13 @@
         linear-gradient(180deg, #000 0 78%, rgb(0 0 0 / 0.7) 90%, transparent 100%);
     }
 
+    .site-nav[data-tone="dark"] .folio-nav__chrome {
+      /* Keep the dark ground solid below the final link, then fade it out. */
+      --folio-field-mask:
+        linear-gradient(90deg, transparent 0, #000 30%, #000 100%),
+        linear-gradient(180deg, #000 0 88%, rgb(0 0 0 / 0.7) 95%, transparent 100%);
+    }
+
     .folio-nav__chrome::before,
     .folio-nav__chrome::after {
       content: "";
@@ -534,14 +546,14 @@
       z-index: -1;
       pointer-events: none;
       opacity: 0;
-      /* The bar's band, its own padding included, and 10rem below it — further
-         than the menu reaches, because the gradients and the mask both run out
+      /* The bar's band, its own padding included, and the tone's field depth
+         below it — further than the menu reaches. The gradients and mask run out
          long before this box ends and its own edges are never what is seen.
 
          The right edge is the corner the radial is centred on, and each tone
          says where that is (--nav-field-right): the box has to reach it, or the
          field's dense end — the whole point of it — lands off screen. */
-      inset: calc(-1 * var(--nav-pad-y)) var(--nav-field-right) -10rem
+      inset: calc(-1 * var(--nav-pad-y)) var(--nav-field-right) calc(-1 * var(--nav-field-bottom))
         calc(-1 * var(--nav-logo-x));
       /* The field is thrown from this corner, so the transform's origin is
          that corner: shut, it is scaled down FROM it, and a close therefore
@@ -608,7 +620,7 @@
        the only way not to see it is to have nothing left for it to cut. */
     .folio-nav__menu-list {
       justify-self: stretch;
-      padding: 0 0.35rem 0.4rem;
+      padding: 0 0.35rem 0.8rem;
       opacity: 0;
       transition: opacity 160ms ease;
     }
