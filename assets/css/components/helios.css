@@ -781,6 +781,27 @@
     color: color-mix(in srgb, var(--light-mist) 42%, var(--light-voice));
   }
 
+  [data-look="helios"] .helios-section__call {
+    display: inline-block;
+    width: fit-content;
+    font: italic 400 clamp(1.05rem, 1.5vw, 1.35rem)/1.4 var(--font-serif);
+    text-decoration: none;
+  }
+
+  [data-look="helios"] .helios-section__call span {
+    display: inline-block;
+    margin-left: .4em;
+    transition: transform .3s ease;
+  }
+
+  [data-look="helios"] .helios-section__call:hover span { transform: translate(2px, -2px); }
+  [data-look="helios"] .helios-section__call:focus-visible { outline: 1px solid var(--light-accent); outline-offset: 6px; }
+  [data-look="helios"] .helios-see__call {
+    grid-column: 2;
+    margin-top: 1.1rem;
+    color: var(--light-ink);
+  }
+
   /* ---- the interval, rehearsed ---------------------------------------- */
   /* The same night as the see act above, with the film's ribbon replaced by
      a clear canvas the site turtle draws on. Nothing here needs a mask or a
@@ -1216,6 +1237,10 @@
   [data-look="helios"] .helios-possibility__outcome {
     margin: 1.3rem 0 0; max-width: 27ch;
     font: italic 400 clamp(1.1rem, 1.5vw, 1.4rem)/1.4 var(--font-serif);
+    color: var(--parallel-wheat);
+  }
+  [data-look="helios"] .helios-possibility__call {
+    margin-top: 1.4rem;
     color: var(--parallel-wheat);
   }
   [data-look="helios"] .helios-possibilities__opening {
