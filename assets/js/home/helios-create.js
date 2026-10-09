@@ -1,10 +1,10 @@
 /* Draw the settled program for the full-width To Create scene while it is near
-   the viewport. Scroll gives its ink and remembered images the same movement
-   they had in the old fold, measured across this section instead of a runway. */
+   the viewport. Scroll moves the artwork while it crosses the visible scene. */
 const root = document.querySelector('[data-create-scene]');
 
 if (root) {
   const stage = root.querySelector('.helios-possibility__stage');
+  const art = stage.querySelector('.helios-possibility__art');
   const thought = stage.querySelector('.helios-possibility__thought');
   const program = root.querySelector('[data-possibility-program]').content.textContent.trim();
   const connection = navigator.connection;
@@ -18,17 +18,22 @@ if (root) {
   let serial = 0;
   let unavailable = false;
   let frame = 0;
+  let lastProgress = NaN;
+  let lastReduced = null;
 
   function updateMotion() {
     frame = 0;
-    const box = root.getBoundingClientRect();
+    const box = art.getBoundingClientRect();
     const viewport = innerHeight;
-    if (box.top > viewport + 200 || box.bottom < -200) return;
-    // A whole passage from entering the viewport to leaving it replaces the
-    // old fold's scroll interval. No time-based animation or scroll correction.
-    const progress = Math.max(0, Math.min(1, (viewport - box.top) / (viewport + box.height)));
-    const light = reduced.matches ? .5 : Math.sin(Math.PI * progress);
-    const offset = reduced.matches ? 0 : progress - .5;
+    // Hold the end poses outside the viewport. Movement starts when the
+    // artwork's top reaches one-quarter screen and ends as its bottom passes it.
+    const progress = Math.max(0, Math.min(1, (viewport * .25 - box.top) / box.height));
+    const motionReduced = reduced.matches;
+    if (progress === lastProgress && motionReduced === lastReduced) return;
+    lastProgress = progress;
+    lastReduced = motionReduced;
+    const light = motionReduced ? .5 : Math.sin(Math.PI * progress);
+    const offset = motionReduced ? 0 : progress - .5;
     stage.style.setProperty('--ink-light', (.84 + light * .24).toFixed(3));
     stage.style.setProperty('--ember', (.12 + light * .14).toFixed(3));
     stage.style.setProperty('--spiral', (offset * 10).toFixed(2) + 'deg');

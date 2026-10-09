@@ -1239,12 +1239,16 @@
   }
   [data-look="helios"] .helios-possibility__copy {
     position: relative; z-index: 9; width: 34%; padding: 0;
-    margin-left: 7%; top: 50%; transform: translateY(-50%);
+    margin-left: var(--helios-gutter); top: 50%; transform: translateY(-50%);
+  }
+  [data-look="helios"] :is(.helios-possibility__copy, .helios-possibilities__opening) h2 {
+    max-width: 20ch;
+    font: 400 clamp(2.5rem, 5.6vw, 5.5rem)/1.06 var(--font-serif);
+    color: var(--parallel-wheat);
+    letter-spacing: -.035em; text-wrap: balance;
   }
   [data-look="helios"] .helios-possibility__copy h2 {
-    margin: 0 0 1.3rem; max-width: 12ch;
-    font: italic 400 clamp(2.3rem, 4.1vw, 4.2rem)/1.08 var(--font-serif);
-    color: var(--parallel-wheat);
+    margin: 0 0 1.3rem;
   }
   [data-look="helios"] .helios-possibility__description {
     margin: 0; max-width: 34ch;
@@ -1269,9 +1273,7 @@
     background: linear-gradient(transparent, #e9ae6466);
   }
   [data-look="helios"] .helios-possibilities__opening h2 {
-    max-width: 20ch; margin: 0; color: var(--parallel-wheat);
-    font: 400 clamp(2.5rem, 5.6vw, 5.5rem)/1.06 var(--font-serif);
-    letter-spacing: -.035em; text-wrap: balance;
+    margin: 0;
   }
   [data-look="helios"] .helios-possibilities__opening > p {
     color: var(--parallel-dim); font: 400 clamp(1.15rem, 1.8vw, 1.6rem)/1.8 var(--font-serif); margin: 1.4rem 0;
@@ -1290,10 +1292,10 @@
     [data-look="helios"] .helios-possibility__stage { min-height: 650px; }
     [data-look="helios"] .helios-possibility__copy {
       position: absolute; width: auto; top: 0; transform: none; margin: 0;
-      padding: 2.5rem 1.5rem 0;
+      padding: 2.5rem var(--helios-gutter) 0;
     }
     [data-look="helios"] .helios-possibility__copy h2 {
-      max-width: 18ch; font-size: clamp(1.85rem, 7.6vw, 2.7rem); margin-bottom: .65rem;
+      margin-bottom: .65rem;
     }
     [data-look="helios"] .helios-possibility__description { max-width: 39ch; font-size: 1rem; line-height: 1.4; }
     [data-look="helios"] .helios-possibility__outcome { margin: .55rem 0 .8rem; max-width: none; font-size: 1.05rem; }
