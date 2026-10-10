@@ -14,22 +14,22 @@ image: /assets/lib/helios/see-helix-ccddfd.webp
 # live in _data/helios_possibilities.yml; its words live here.
 
 hero:
-  thesis: Mathematical
-  thesis_em: Storytellers
-  kicker: Learn to animate
-  label: Learn to animate
+  thesis: We See Math
+  thesis_em: Differently
+  kicker: In how we
+  label: In how we
   items:
     - id: tree_fractal
-      title: stars
+      title: Observe
       slate: the hidden geometry of stars
     - id: polygon_fill
-      title: random distributions
+      title: Experiment
       slate: on the play of randomness
     - id: fibonacci_spiral
-      title: golden spirals
+      title: Explore
       slate: the fibonacci sequence of old
     - id: prime_sequence
-      title: spiderwebs
+      title: Question
       slate: the tangled webs of nature
 
 
