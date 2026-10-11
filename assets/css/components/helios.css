@@ -838,13 +838,16 @@
     text-underline-offset: .16em;
   }
 
-  [data-look="helios"] .helios-section__call span {
+  [data-look="helios"] .helios-section__arrow {
     display: inline-block;
+    width: .8em;
+    height: .8em;
+    vertical-align: text-bottom;
     margin-left: .4em;
     transition: transform .3s ease;
   }
 
-  [data-look="helios"] .helios-section__call:hover span { transform: translate(2px, -2px); }
+  [data-look="helios"] .helios-section__call:hover .helios-section__arrow { transform: translate(2px, -2px); }
   [data-look="helios"] .helios-section__call:focus-visible { outline: 1px solid var(--light-accent); outline-offset: 6px; }
 
   /* ---- the interval, rehearsed ---------------------------------------- */

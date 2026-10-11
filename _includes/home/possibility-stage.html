@@ -22,6 +22,6 @@
     <p class="helios-section__intro">{{ item.verse }}</p>
     <h2 class="helios-section__heading" id="create-title">{{ item.title }}</h2>
     <div class="helios-section__body">{{ item.body | markdownify }}</div>
-    <a class="helios-section__call internal-link" href="{{ site.data.contact.route | relative_url }}">{{ item.action }} <span aria-hidden="true">↗</span></a>
+    <a class="helios-section__call internal-link" href="{{ site.data.contact.route | relative_url }}">{{ item.action }} {% include home/cta-arrow.html %}</a>
   </div>
 </div>
