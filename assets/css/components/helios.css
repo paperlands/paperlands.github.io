@@ -798,11 +798,44 @@
     color: color-mix(in srgb, var(--light-mist) 42%, var(--light-voice));
   }
 
+  /* Shared copy hierarchy for homepage sections two through four. The hero
+     and the standalone interval retain their own display composition. */
+  [data-look="helios"] .helios-section__intro {
+    margin: 0 0 .5rem;
+    font: 400 clamp(1.125rem, 1.5vw, 1.375rem)/1.4 var(--font-serif);
+    color: var(--light-voice);
+  }
+
+  [data-look="helios"] .helios-section__heading {
+    max-width: 20ch;
+    margin: 0 0 1.5rem;
+    font: italic 500 clamp(2.75rem, 5.8vw, 5.5rem)/1.12 var(--font-serif);
+    letter-spacing: -.016em;
+    text-wrap: balance;
+    color: var(--light-ink);
+  }
+
+  [data-look="helios"] .helios-section__body {
+    max-width: 40ch;
+    font: 400 clamp(1.25rem, 1.6vw, 1.5rem)/1.55 var(--font-serif);
+    color: var(--light-voice);
+  }
+
+  [data-look="helios"] .helios-section__body > p { margin: 0; }
+  [data-look="helios"] .helios-section__body > p + p { margin-top: 1rem; }
+
   [data-look="helios"] .helios-section__call {
     display: inline-block;
     width: fit-content;
-    font: italic 400 clamp(1.05rem, 1.5vw, 1.35rem)/1.4 var(--font-serif);
+    margin-top: 1.5rem;
+    font: italic 400 clamp(1.25rem, 1.6vw, 1.5rem)/1.4 var(--font-serif);
+    color: var(--light-accent);
     text-decoration: none;
+  }
+
+  [data-look="helios"] .helios-section__call u {
+    text-decoration-thickness: 1px;
+    text-underline-offset: .16em;
   }
 
   [data-look="helios"] .helios-section__call span {
@@ -813,11 +846,6 @@
 
   [data-look="helios"] .helios-section__call:hover span { transform: translate(2px, -2px); }
   [data-look="helios"] .helios-section__call:focus-visible { outline: 1px solid var(--light-accent); outline-offset: 6px; }
-  [data-look="helios"] .helios-see__call {
-    grid-column: 2;
-    margin-top: 1.1rem;
-    color: var(--light-ink);
-  }
 
   /* ---- the interval, rehearsed ---------------------------------------- */
   /* The same night as the see act above, with the film's ribbon replaced by
@@ -1159,10 +1187,8 @@
   [data-look="helios"] .helios-create,
   [data-look="helios"] .helios-possibilities {
     --parallel-ground: #140910;
-    --parallel-wheat: #f5deb3;
-    --parallel-dim: #c1a48b;
     position: relative;
-    color: var(--parallel-wheat);
+    color: var(--light-ink);
   }
   [data-look="helios"] .helios-create { background: var(--parallel-ground); }
   [data-look="helios"] .helios-possibilities {
@@ -1171,7 +1197,8 @@
   [data-look="helios"] .helios-possibility__stage {
     --ink-light: .94; --ember: .18; --spiral: 0deg;
     --thought-x: 48%; --thought-y: -8%; --thought-w: 76%; --thought-h: 100%; --thought-scale: 2.2;
-    position: relative; width: 100%; height: 100svh; min-height: 600px;
+    position: relative; display: grid; align-items: center;
+    width: 100%; min-height: max(100svh, 720px);
     isolation: isolate; overflow: hidden;
     background: radial-gradient(ellipse 32% 48% at 84% 24%, #bf7bd02b, transparent 76%),
       radial-gradient(ellipse 32% 42% at 73% 42%, #efb87c2e, transparent 80%),
@@ -1234,70 +1261,24 @@
   }
   [data-look="helios"] .helios-possibility__art figcaption {
     position: absolute; right: 4%; bottom: 2.5rem; z-index: 8;
-    max-width: 45%; text-align: right; color: var(--parallel-dim);
+    max-width: 45%; text-align: right; color: var(--light-voice);
     font: .52rem/1.8 var(--font-display); letter-spacing: .13em; text-transform: uppercase;
   }
   [data-look="helios"] .helios-possibility__copy {
-    position: relative; z-index: 9; width: 46%; padding: 0;
-    margin-left: var(--helios-gutter); top: 50%; transform: translateY(-50%);
-  }
-  [data-look="helios"] :is(.helios-possibility__copy, .helios-possibilities__opening) h2 {
-    max-width: 20ch;
-    font: 400 clamp(2.5rem, 5.6vw, 5.5rem)/1.06 var(--font-serif);
-    color: var(--parallel-wheat);
-    letter-spacing: -.035em; text-wrap: balance;
-  }
-  [data-look="helios"] .helios-possibility__copy h2 {
-    margin: 0 0 1.3rem;
-  }
-  [data-look="helios"] .helios-possibility__points {
-    list-style: disc; margin: 1.4rem 0; padding-left: 1.2em;
-    color: var(--parallel-dim);
-    font: 400 clamp(1.15rem, 1.8vw, 1.6rem)/1.8 var(--font-serif);
-  }
-  [data-look="helios"] .helios-possibility__points li { padding-left: .15em; }
-  [data-look="helios"] .helios-possibility__points li + li { margin-top: .35rem; }
-  [data-look="helios"] .helios-possibility__points li::marker { color: var(--parallel-wheat); }
-  [data-look="helios"] .helios-possibility__call { color: var(--parallel-wheat); }
-  [data-look="helios"] :is(.helios-see__call, .helios-possibility__call) u {
-    text-decoration-thickness: 1px; text-underline-offset: .16em;
+    position: relative; z-index: 9; width: min(48%, 42rem);
+    padding: clamp(3rem, 6svh, 5rem) 0;
+    margin-left: var(--helios-gutter);
   }
   [data-look="helios"] .helios-possibilities__opening {
     position: relative; z-index: 1; padding: clamp(5rem, 12svh, 8rem) var(--helios-gutter) clamp(6rem, 20svh, 14rem);
   }
-  [data-look="helios"] .helios-possibilities__thread {
-    display: block; width: 1px; height: clamp(3rem, 9vh, 6rem);
-    margin-bottom: 2rem;
-    background: linear-gradient(transparent, #e9ae6466);
-  }
-  [data-look="helios"] .helios-possibilities__opening h2 {
-    margin: 0;
-  }
-  [data-look="helios"] :is(.helios-possibility__copy, .helios-possibilities__opening) > p {
-    color: var(--parallel-dim); font: 400 clamp(1.15rem, 1.8vw, 1.6rem)/1.8 var(--font-serif); margin: 1.4rem 0;
-  }
-  [data-look="helios"] .helios-possibilities__opening > .helios-possibilities__verse {
-    font-style: italic; color: var(--parallel-wheat);
-  }
-  [data-look="helios"] :is(.helios-possibility__call, .helios-possibilities__call) {
-    display: inline-block; margin-top: 1rem;
-    font: italic 400 clamp(1.3rem, 2.3vw, 2rem)/1.4 var(--font-serif);
-  }
-  [data-look="helios"] :is(.helios-possibility__call, .helios-possibilities__call) span {
-    display: inline-block; margin-left: .65em; transition: transform .3s ease;
-  }
-  [data-look="helios"] .helios-possibilities__call:hover span { transform: translate(2px, -2px); }
-  [data-look="helios"] .helios-possibilities__call:focus-visible { outline: 1px solid var(--light-accent); outline-offset: 6px; }
   @media (max-width: 850px) {
-    [data-look="helios"] .helios-possibility__stage { min-height: 650px; }
+    [data-look="helios"] .helios-possibility__stage { display: block; min-height: 100svh; }
     [data-look="helios"] .helios-possibility__copy {
-      position: absolute; width: auto; top: 0; transform: none; margin: 0;
-      padding: 2.5rem var(--helios-gutter) 0;
+      width: auto; margin: 0;
+      padding: 2.5rem var(--helios-gutter) 22rem;
     }
-    [data-look="helios"] .helios-possibility__copy h2 {
-      margin-bottom: .65rem;
-    }
-    [data-look="helios"] .helios-possibility__art { top: 32%; }
+    [data-look="helios"] .helios-possibility__art { top: auto; height: 27rem; }
     [data-look="helios"] .helios-possibility__stage {
       --thought-x: 17%; --thought-y: -22%; --thought-w: 120%; --thought-h: 110%; --thought-scale: 1.9;
     }

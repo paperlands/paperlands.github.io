@@ -2,10 +2,9 @@
 {%- assign possibilities = include.possibilities | default: page.possibilities -%}
 <section class="helios-possibilities" aria-labelledby="possibilities-title">
   <div class="helios-possibilities__opening">
-    <span class="helios-possibilities__thread" aria-hidden="true"></span>
-    <h2 id="possibilities-title">{{ possibilities.title }}</h2>
-    <p class="helios-possibilities__verse">{{ possibilities.verse }}</p>
-    <p>{{ possibilities.possibility }}<br>{{ possibilities.community }}</p>
-    <a class="helios-possibilities__call" href="{{ site.data.contact.route | relative_url }}">{{ possibilities.action }} <span aria-hidden="true">↗</span></a>
+    <p class="helios-section__intro">{{ possibilities.verse }}</p>
+    <h2 class="helios-section__heading" id="possibilities-title">{{ possibilities.title }}</h2>
+    <div class="helios-section__body">{{ possibilities.body | markdownify }}</div>
+    <a class="helios-section__call internal-link" href="{{ site.data.contact.route | relative_url }}">{{ possibilities.action }} <span aria-hidden="true">↗</span></a>
   </div>
 </section>

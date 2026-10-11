@@ -2,7 +2,7 @@
   The landing interval. Its words live in page.see; the program and canvas
   are adapted from the standalone /helios-interval reference page.
 {%- endcomment -%}
-<section class="helios-see helios-interval" data-helios-interval
+<section class="helios-see helios-see--home helios-interval" data-helios-interval
   data-helios-interval-hatch="{{ site.data.hatch.artifact_path }}"
   data-interval-performing="{{ page.see.performing }}"
   data-interval-finished="{{ page.see.finished }}"
@@ -15,15 +15,10 @@
       data-src="{{ '/assets/lib/helios/morphology-418f99.webp' | relative_url }}" width="900" height="900">
   </div>
   <div class="helios-see__copy">
-    <h2 class="helios-see__head">
-      <span class="helios-verse">{{ page.see.verse }}</span>
-      <span class="helios-see__line">{{ page.see.thesis }}</span>
-    </h2>
-    <div class="helios-see__invite">
-      <span class="helios-see__star" aria-hidden="true">✳</span>
-      <p class="helios-see__lede">{{ page.see.lede }}</p>
-      <a class="helios-section__call helios-see__call internal-link" href="{{ '/our-approach' | relative_url }}">{{ page.see.action_prefix }} <u>{{ page.see.action }}</u> <span aria-hidden="true">↗</span></a>
-    </div>
+    <p class="helios-section__intro">{{ page.see.verse }}</p>
+    <h2 class="helios-section__heading">{{ page.see.thesis }}</h2>
+    <div class="helios-section__body">{{ page.see.body | markdownify }}</div>
+    <a class="helios-section__call internal-link" href="{{ '/our-approach' | relative_url }}">{{ page.see.action }} <span aria-hidden="true">↗</span></a>
   </div>
   <div class="helios-interval__program" aria-hidden="true">
     <p class="helios-interval__label">{{ page.see.program_label }}</p>

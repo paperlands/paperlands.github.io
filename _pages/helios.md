@@ -35,10 +35,10 @@ hero:
 
 see:
   verse: A platform to bring
-  thesis: math to life
-  lede: Learn how YOU can create beautiful math animations and experiment on them. 
-  action_prefix: Explore
-  action: our approach
+  thesis: Math to Life
+  body: |
+    Through learning to create beautiful math animations, students develop the skill of experimenting and being creative with mathematical ideas.
+  action: Explore <u>our approach</u>
   label: Anyone can see math differently
   program_label: the program
   status: waiting
@@ -48,21 +48,23 @@ see:
   missing_pin: the pin is missing — no runtime was vendored
 
 create:
-  title: Math takes the stage
-  points:
-    - A student with a story to tell
-    - A question they followed
-    - A discovery or connection that made an idea click
-  action_prefix: Explore the
-  action: experiences
-  caption: a torus found in architecture
+  verse: A platform to share
+  title: Math on Stage
+  body: |
+    Behind every animation lies a story: a question they've followed, a surprising discovery, a connection that made an idea click.
+
+    We carve out spaces for students to showcase their work and share the beauty of mathematics with their community.
+  action: Host a math <u>showcase</u>
+  caption: students presenting their torus
 
 possibilities:
-  title: What do you see?
-  verse: A festival in your school hall, a chapter in your university or in every classroom in your state
-  possibility: Perhaps you see differently.  <br> It could be a possibility we have yet to imagine.
-  community: Your own stage for mathematics in your mathematics.
-  action: Let's design it together.
+  verse: Are you ready to
+  title: See math differently too?
+  body: |
+    Perhaps a festival in your school hall, a chapter in your university, or a math playground in every classroom in your state...
+    
+    If you believe that mathematics education can be so much more human...
+  action: Don't hesitate to <u>contact us</u>
 
 ticker:
   - In PaperLand
