@@ -1,11 +1,11 @@
 ---
 title: Math Takes The Stage
 author: princeton
-heroimgurl: /assets/lib/notes/experiences/lesson-in-flight.webp
+heroimgurl: /assets/lib/notes/showcases/lesson-in-flight.webp
 excerpt: Mathematics was always meant to be experienced.
 ---
 {% include media/film.html
-   poster="/assets/lib/notes/experiences/gmff-film-still.webp"
+   poster="/assets/lib/notes/showcases/gmff-film-still.webp"
    alt="Students gathered around a laptop at the inaugural Gambian Mathematics Film Festival"
    embed="https://www.youtube-nocookie.com/embed/IT7jGh46MPc?autoplay=1&rel=0"
    title="The Gambian Mathematics Film Festival film"
@@ -19,15 +19,15 @@ PaperLand programmes bring these new possibilities to life in your community, sc
 
 New to PaperLand? Learn about **[[Our Approach|Our Approach]]** first.{% include notes/side_link.html href="/our-approach" title="Create First" invitation="Read Our Approach" %}
 
-**Explore the experiences ↓**
+**Explore the showcases ↓**
 
 ## What could your students share?
 
-Each experience ends with mathematics worth sharing: a question pursued out loud, a creation exhibited, an idea handed to someone else. The students do the sharing themselves.
+Each showcase brings mathematics to life: a question pursued out loud, a creation exhibited, an idea handed to someone else. The students do the sharing themselves.
 
 ### Math Symposium
 
-{% include figure image_path="/assets/lib/notes/experiences/symposium-torus.webp" alt="Students presenting a torus drawn in code to their class" caption="Investigating Changi's Jewel torus inspired architecture *~ Temasek Junior College*" %}
+{% include figure image_path="/assets/lib/notes/showcases/symposium-torus.webp" alt="Students presenting a torus drawn in code to their class" caption="Investigating Changi's Jewel torus inspired architecture *~ Temasek Junior College*" %}
 
 **Questions worth pursuing. Discoveries worth discussing.**
 
@@ -39,7 +39,7 @@ Through guided inquiry, students use computation to explore questions, test idea
 
 ### Math Festival
 
-{% include figure image_path="/assets/lib/notes/experiences/festival-story.webp" alt="A student sharing a story about trigonometry waves into a microphone" caption="Sharing a story about earthquakes a relationship to sinusoidal waves *~ Nemasu Senior Secondary School*" %}
+{% include figure image_path="/assets/lib/notes/showcases/festival-story.webp" alt="A student sharing a story about trigonometry waves into a microphone" caption="Sharing a story about earthquakes a relationship to sinusoidal waves *~ Nemasu Senior Secondary School*" %}
 
 **Mathematics becomes something to experience.**
 
@@ -51,12 +51,12 @@ Through creative exploration, students express mathematical ideas through art, a
 
 ### Student-led Workshops
 
-{% include figure image_path="/assets/lib/notes/experiences/workshop-functions.webp" alt="Student leaders teaching functions and composition at the projector" caption="The arcs and abstractions hidden behind an animated face *~ St Patricks Secondary School*" %}
+{% include figure image_path="/assets/lib/notes/showcases/workshop-functions.webp" alt="Student leaders teaching functions and composition at the projector" caption="The arcs and abstractions hidden behind an animated face *~ St Patricks Secondary School*" %}
 
 **Students become the teachers.**
 
 {% margin %}
- <img src="/assets/lib/notes/experiences/following-the-code.webp" alt="Classmates following a student leader's code at the board"><span class="edition-window-caption">Spearhead and lead your fellow peers in discovery</span>
+ <img src="/assets/lib/notes/showcases/following-the-code.webp" alt="Classmates following a student leader's code at the board"><span class="edition-window-caption">Spearhead and lead your fellow peers in discovery</span>
 {% endmargin %}
 Students lead PaperLand workshops, helping peers or juniors explore mathematics for themselves.
 
@@ -66,13 +66,13 @@ Through leadership training, students deepen their mathematical understanding an
 
 ### We train your students.
 
-{% include figure image_path="/assets/lib/notes/experiences/students-together.webp" alt="A facilitator and students working through a PaperLand lesson together" caption="Students take to the shell together. *~ South Korea Next Challenge School*" %}
+{% include figure image_path="/assets/lib/notes/showcases/students-together.webp" alt="A facilitator and students working through a PaperLand lesson together" caption="Students take to the shell together. *~ South Korea Next Challenge School*" %}
 
 PaperLand runs the lessons, guiding students towards their symposium, festival or workshops.
 
 ### Or we train your teachers.
 
-{% include figure image_path="/assets/lib/notes/experiences/teacher-training.webp" alt="Teachers working through a PaperLand lesson together" caption="*~ Sarawak Digital Economy Corporation*" %}
+{% include figure image_path="/assets/lib/notes/showcases/teacher-training.webp" alt="Teachers working through a PaperLand lesson together" caption="*~ Sarawak Digital Economy Corporation*" %}
 
 Give your teachers the training, resources and guidance to deliver the programme and support its culminating event.
 
@@ -82,7 +82,7 @@ Your organisation hosts the event. We encourage students to help organise it, gu
 
 ## What could mathematics look like at your organisation?
 
-{% include figure image_path="/assets/lib/notes/experiences/online-classroom.webp" alt="An online PaperLand session, with participants joining from their homes" caption="One of our online sessions, in full company." %}
+{% include figure image_path="/assets/lib/notes/showcases/online-classroom.webp" alt="An online PaperLand session, with participants joining from their homes" caption="One of our online sessions, in full company." %}
 
 **Start small. Start with one lesson. Build towards something worth sharing.**
 

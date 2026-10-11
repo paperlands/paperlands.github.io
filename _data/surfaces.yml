@@ -63,7 +63,7 @@ core:
     # classifying it.
     - /a-computational-spirit-to-learning-mathematics
     - /beginnings
-    - /experiences
+    - /showcases
     - /our-approach
     - /why-must-i-learn-this
 
@@ -156,16 +156,18 @@ redirects:
         redirect within the site, so they are also the record of what absorbed
         what.
       routes:
+        - /experiences   # -> /showcases, the note was renamed
         - /approach      # -> /our-approach, the page's content became a note
-        - /mlp           # -> /experiences, the page's content became a note
+        - /mlp           # -> /showcases, the page's content became a note
         - /dojo          # -> /our-approach, absorbed by the approach content
         - /teachers      # -> /our-approach, workshop content superseded
-        - /workshop      # -> /experiences, workshop content superseded
+        - /workshop      # -> /showcases, workshop content superseded
         - /helios        # -> /, the homepage was formerly served here
 
   # The flat list is what surfaces.py asserts against; `kinds` above is the
   # documentation. Both are checked to agree.
   routes:
+    - /experiences
     - /approach
     - /arc
     - /chain-of-squares
