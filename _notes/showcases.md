@@ -11,23 +11,24 @@ excerpt: Give students a stage to share their mathematical creations, discoverie
   <a class="showcases-skip internal-link" href="#possibilities">Skip to the showcases</a>
 
   <header class="showcases-hero showcases-wrap">
-    <p class="showcases-label">PaperLand showcases</p>
-    <h1>Math Takes<br><em>the Stage.</em></h1>
-    <div class="showcases-hero-copy">
-      <p>Give students a stage to share mathematics they have built, explored and made their own—through presentations, films, artworks and workshops they lead.</p>
-      <a class="showcases-link internal-link" href="#possibilities">Imagine the possibilities <span aria-hidden="true">↓</span></a>
+    <div class="showcases-hero-text">
+      <p class="showcases-label">PaperLand showcases</p>
+      <h1>Math Takes<br><em>the Stage.</em></h1>
+      <div class="showcases-hero-copy">
+        <p>Give students a stage to share mathematics they have built, explored and made their own—through presentations, films, artworks and workshops they lead.</p>
+        <a class="showcases-link internal-link" href="#possibilities">Imagine the possibilities <span aria-hidden="true">↓</span></a>
+      </div>
     </div>
-  </header>
 
-  <section class="showcases-film showcases-wrap" aria-label="A showcase in action">
     {% include media/film.html
+       class="showcases-film"
        poster="/assets/lib/notes/showcases/gmff-film-still.webp"
        alt="Students gathered around a laptop at the inaugural Gambian Mathematics Film Festival"
        embed="https://www.youtube-nocookie.com/embed/IT7jGh46MPc?autoplay=1&rel=0"
        title="Gambian Mathematics Film Festival"
-       caption="Watch the Gambian Mathematics Film Festival."
+       caption="Gambian Mathematics Film Festival (GMFF) by YMA"
     %}
-  </section>
+  </header>
 
   <section class="showcases-possibilities showcases-wrap" id="possibilities" aria-labelledby="possibilities-title">
     <h2 class="showcases-possibilities-title" id="possibilities-title">What could this look like for your students?</h2>
