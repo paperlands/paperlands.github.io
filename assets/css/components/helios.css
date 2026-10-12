@@ -1254,7 +1254,7 @@
   [data-look="helios"] .helios-possibility__stage[data-drawing-active] .helios-possibility__pool { opacity: .3; }
   [data-look="helios"] .helios-possibility__body { z-index: 4; }
   [data-look="helios"] .helios-possibility__body img {
-    left: 54%; top: 14%; width: 43%; height: 86%; object-position: center bottom;
+    left: 54%; top: 30%; width: 43%; height: 65%; object-position: center bottom;
     mask-image: linear-gradient(#000 72%, transparent 99%);
   }
   [data-look="helios"] .helios-possibility__light {
