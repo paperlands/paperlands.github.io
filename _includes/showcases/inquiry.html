@@ -1,0 +1,12 @@
+{%- comment -%}The To Explore scene from reskin/fallforwards, as a full-width scroll composition.{%- endcomment -%}
+{%- assign scene = site.data.showcases_inquiry -%}
+<figure class="showcases-inquiry" data-inquiry-scene data-hatch="{{ site.data.hatch.artifact_path | relative_url }}" aria-label="A student exploring mathematical patterns, with Newton and a recursive triangle behind him">
+  <img class="showcases-inquiry-echo" src="{{ scene.echo | relative_url }}" alt="" width="611" height="723" loading="lazy" decoding="async">
+  <div class="showcases-inquiry-thought" aria-hidden="true">
+    <img class="showcases-inquiry-still" src="{{ scene.still | relative_url }}" alt="" width="160" height="96" loading="lazy" decoding="async">
+  </div>
+  <img class="showcases-inquiry-student" src="{{ scene.body | relative_url }}" alt="A student reaching upward with a questioning hand" width="684" height="588" loading="lazy" decoding="async">
+  <div class="showcases-inquiry-light" aria-hidden="true"></div>
+  <img class="showcases-inquiry-apple" src="{{ scene.near | relative_url }}" alt="" width="121" height="136" loading="lazy" decoding="async">
+  <template data-inquiry-program>{{ scene.program | escape }}</template>
+</figure>

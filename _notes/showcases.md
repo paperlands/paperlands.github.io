@@ -30,6 +30,15 @@ excerpt: Give students a stage to share their mathematical creations, discoverie
     %}
   </header>
 
+  <section class="showcases-approach" aria-labelledby="approach-title">
+    <div class="showcases-approach-copy">
+      <h2 id="approach-title">We help students build <br><em>the work they’ll share.</em></h2>
+      <p>With PaperLand’s coding platform and guided lessons, students turn mathematical ideas into models, animations and artworks of their own. We help them investigate how their creations work—and prepare to share what they’ve discovered.</p>
+      <a class="showcases-link internal-link" href="{{ '/our-approach' | relative_url }}">Explore the approach behind our showcases <span aria-hidden="true">↗</span></a>
+    </div>
+    {% include showcases/inquiry.html %}
+  </section>
+
   <section class="showcases-possibilities showcases-wrap" id="possibilities" aria-labelledby="possibilities-title">
     <h2 class="showcases-possibilities-title" id="possibilities-title">What could this look like for your students?</h2>
 
@@ -102,3 +111,4 @@ excerpt: Give students a stage to share their mathematical creations, discoverie
     <a class="showcases-cta internal-link" href="/contact">Let's plan a showcase <span aria-hidden="true">↗</span></a>
   </section>
 </content>
+<script type="module" src="{{ '/assets/js/showcases/inquiry.js' | relative_url }}"></script>

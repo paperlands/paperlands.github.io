@@ -84,6 +84,83 @@
   .showcases-film figcaption { text-align: center; }
   .showcases-film .film-stage { border: 1px solid var(--light-rule); }
 
+  .showcases .showcases-approach {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    min-height: 50svh;
+    padding: 2.5rem max(4rem, calc((100% - 84rem) / 2));
+    background: radial-gradient(ellipse at 68% 35%, #28120b, #140910 65%);
+  }
+  .showcases-approach::after {
+    content: '';
+    position: absolute; inset: 0; z-index: 6; pointer-events: none;
+    background:
+      linear-gradient(90deg, #140910 0%, #140910ee 24%, #14091088 42%, transparent 62%),
+      linear-gradient(0deg, var(--light-ground), transparent 18%, transparent 85%, var(--light-ground));
+  }
+  .showcases-approach-copy {
+    position: relative;
+    z-index: 7;
+    width: min(43%, 34rem);
+  }
+  .showcases-approach h2 {
+    font-size: clamp(2.25rem, 3.2vw, 3.25rem);
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+  .showcases-approach-copy > p { max-width: 43ch; color: var(--light-ink-dim); }
+  .showcases-approach .showcases-link { gap: 1rem; font-size: 1rem; }
+  .showcases .showcases-inquiry {
+    position: absolute;
+    inset: 0;
+    isolation: isolate;
+    overflow: hidden;
+    pointer-events: none;
+    background: radial-gradient(ellipse 30% 32% at 68% 25%, #ffe8ba47, #e9a34a1a 35%, transparent 84%);
+  }
+  .showcases .showcases-inquiry img,
+  .showcases-inquiry canvas { position: absolute; object-fit: contain; }
+  .showcases .showcases-inquiry-echo {
+    z-index: 1;
+    left: 42%; top: -5%; width: 43%; height: 94%;
+    opacity: .32;
+    filter: grayscale(.7) sepia(.55) brightness(.8);
+    mask-image: radial-gradient(ellipse 56% 56% at 50% 44%, #000 18%, #0007 54%, transparent 86%);
+  }
+  .showcases-inquiry-thought { position: absolute; inset: 0; z-index: 2; }
+  .showcases-inquiry-thought canvas {
+    left: 55%; top: 0; width: 50% !important; height: 105% !important;
+    object-fit: cover;
+    max-width: none;
+    mix-blend-mode: screen;
+    opacity: 0;
+    filter: saturate(.65) drop-shadow(0 0 18px #e9ae6433);
+  }
+  .showcases .showcases-inquiry-still { left: 39%; top: 8%; width: 49%; height: 76%; opacity: .65; }
+  .showcases-inquiry[data-drawing-ready] canvas { opacity: .85; }
+  .showcases-inquiry[data-drawing-ready] .showcases-inquiry-still { visibility: hidden; }
+  .showcases .showcases-inquiry-student {
+    z-index: 3;
+    left: 53%; top: 50%; width: 39%; height: 55%;
+    object-position: center bottom;
+    mask-image: linear-gradient(#000 72%, transparent 99%);
+  }
+  .showcases-inquiry-light {
+    position: absolute; inset: 0; z-index: 4;
+    pointer-events: none; opacity: .3; mix-blend-mode: screen;
+    background: linear-gradient(168deg, transparent 28%, #ffe8be66 32%, #fff8e488 33%, #eea44e44 36%, transparent 40%);
+    mask-image: linear-gradient(90deg, transparent 10%, #000 48%, transparent);
+    filter: blur(7px);
+  }
+  .showcases .showcases-inquiry-apple {
+    z-index: 5;
+    right: 5%; top: 14%; width: 7%; height: auto; opacity: .8;
+    transform: translateY(var(--apple-fall, 0px)) rotate(calc(15deg + var(--apple-turn, 0deg)));
+  }
+
   .showcases .showcases-possibilities { padding-block: 4rem 6rem; }
   .showcases .showcases-possibilities-title {
     max-width: 32ch;
@@ -182,6 +259,8 @@
     .showcases .showcases-hero { padding-top: 8rem; column-gap: 2rem; }
     .showcases .showcases-story { gap: 2rem; }
     .showcases .showcases-routes { gap: 2rem; }
+    .showcases .showcases-approach { padding-inline: 2rem; }
+    .showcases-approach-copy { width: 46%; }
   }
 
   @media (max-width: 900px) {
@@ -194,6 +273,19 @@
     .showcases .showcases-wrap { width: calc(100% - 2.5rem); }
     .showcases .showcases-hero { padding-block: 7rem 2.5rem; }
     .showcases h1 { font-size: clamp(4rem, 15vw, 6.5rem); }
+    .showcases .showcases-approach { display: block; padding: 2rem 1.25rem 30svh; }
+    .showcases-approach-copy { width: 100%; }
+    .showcases-approach::after {
+      background: linear-gradient(0deg, var(--light-ground), transparent 12%, transparent 48%, #140910 65%);
+    }
+    .showcases-approach h2 { font-size: clamp(2.1rem, 7.5vw, 3rem); }
+    .showcases-approach h2 br { display: none; }
+    .showcases .showcases-inquiry { inset: auto 0 0; height: 32.5svh; }
+    .showcases .showcases-inquiry-echo { left: 3%; top: -8%; width: 75%; height: 94%; }
+    .showcases .showcases-inquiry-student { left: 20%; top: 29%; width: 78%; height: 71%; }
+    .showcases-inquiry-thought canvas { left: -12%; top: 0; width: 125% !important; height: 105% !important; }
+    .showcases .showcases-inquiry-still { left: 12%; top: 6%; width: 80%; height: 76%; }
+    .showcases .showcases-inquiry-apple { right: 5%; width: 11%; }
     .showcases .showcases-possibilities { padding-block: 2.5rem 4rem; }
     .showcases .showcases-possibilities-title { margin-bottom: 1.5rem; }
     .showcases .showcases-story { grid-template-columns: 1fr; gap: 1.8rem; margin-top: 2.5rem; }
