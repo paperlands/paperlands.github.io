@@ -14,7 +14,7 @@ excerpt: Give students a stage to share their mathematical creations, discoverie
     <p class="showcases-label">PaperLand showcases</p>
     <h1>Math Takes<br><em>the Stage.</em></h1>
     <div class="showcases-hero-copy">
-      <p>Give students a stage to share their mathematical discoveries—through presentations, films, artworks and workshops they lead.</p>
+      <p>Give students a stage to share mathematics they have built, explored and made their own—through presentations, films, artworks and workshops they lead.</p>
       <a class="showcases-link internal-link" href="#possibilities">Imagine the possibilities <span aria-hidden="true">↓</span></a>
     </div>
   </header>
@@ -29,12 +29,8 @@ excerpt: Give students a stage to share their mathematical creations, discoverie
     %}
   </section>
 
-  <section class="showcases-possibilities showcases-wrap" id="possibilities" aria-label="Showcase possibilities">
-    <nav class="showcases-formats" aria-label="Explore showcase formats">
-      <a class="internal-link" href="#symposium"><span>Math Symposium <span aria-hidden="true">↓</span></span></a>
-      <a class="internal-link" href="#festival"><span>Math Festival <span aria-hidden="true">↓</span></span></a>
-      <a class="internal-link" href="#workshops"><span>Student-led Workshops <span aria-hidden="true">↓</span></span></a>
-    </nav>
+  <section class="showcases-possibilities showcases-wrap" id="possibilities" aria-labelledby="possibilities-title">
+    <h2 class="showcases-possibilities-title" id="possibilities-title">What could this look like for your students?</h2>
 
     <article class="showcases-story" id="symposium" aria-labelledby="symposium-title">
       <figure>
@@ -73,31 +69,35 @@ excerpt: Give students a stage to share their mathematical creations, discoverie
   <section class="showcases-support" aria-labelledby="support-title">
     <div class="showcases-wrap">
       <div class="showcases-section-head">
-        <h2 id="support-title">How we <em>help.</em></h2>
+        <h2 id="support-title">How we work <em>together.</em></h2>
         <div class="showcases-context">
-          <p>Your school or organisation hosts the showcase. PaperLand helps students explore mathematics through computation, create animations and prepare to share their work.</p>
-          <a class="showcases-link internal-link" href="/our-approach">Explore our approach <span aria-hidden="true">↗</span></a>
+          <p class="showcases-support-lead">Choose a showcase format and a program focus for your students.</p>
+          <p>We’ll provide the computational platform, a tailored program structure and the training to bring it all together.</p>
         </div>
       </div>
       <div class="showcases-routes">
         <article>
+          <div class="showcases-route-copy">
+            <h3>We train your <em>students.</em></h3>
+            <p>Guided lessons in creating with mathematics, investigating ideas and preparing to share their work.</p>
+          </div>
           <img src="/assets/lib/notes/showcases/students-together.webp" alt="A facilitator and students working through a PaperLand lesson together" loading="lazy" decoding="async">
-          <h3>We teach your students.</h3>
-          <p>PaperLand lessons that help students explore, create and prepare to share.</p>
         </article>
         <article>
+          <div class="showcases-route-copy">
+            <h3>We train your <em>teachers.</em></h3>
+            <p>Professional development, resources and support to lead that learning with your own students.</p>
+          </div>
           <img src="/assets/lib/notes/showcases/teacher-training.webp" alt="Teachers working together during a PaperLand training session" loading="lazy" decoding="async">
-          <h3>We equip your teachers.</h3>
-          <p>Training, resources and guidance to help your teachers lead the learning.</p>
         </article>
       </div>
-      <p class="showcases-practical">Teacher training available <strong>online or in person.</strong></p>
+      <p class="showcases-practical"><em>Training available <strong>online</strong> and/or <strong>in-person.</strong></em></p>
     </div>
   </section>
 
   <section class="showcases-close showcases-wrap" aria-labelledby="start-title">
-    <h2 id="start-title">Start with one lesson<br> or <em>a small sharing session.</em></h2>
-    <p>Let’s explore what could fit your students.</p>
-    <a class="showcases-cta internal-link" href="/contact">Let’s plan a first step <span aria-hidden="true">↗</span></a>
+    <h2 id="start-title">What could your students<br>present on stage?</h2>
+    <p>Start with a classroom showcase or dream bigger with a school-wide math festival.</p>
+    <a class="showcases-cta internal-link" href="/contact">Let's plan a showcase <span aria-hidden="true">↗</span></a>
   </section>
 </content>
