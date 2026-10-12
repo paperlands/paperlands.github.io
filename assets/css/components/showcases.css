@@ -1,0 +1,199 @@
+/* The showcases landing page. Uses the shared folio palette, type and media. */
+@layer components {
+  [data-look="showcases"] {
+    color-scheme: dark;
+    background:
+      radial-gradient(ellipse 65% 45rem at 90% 8rem, color-mix(in srgb, var(--light-ridge) 23%, transparent), transparent),
+      var(--light-ground);
+  }
+
+  [data-look="showcases"] .showcases {
+    display: block;
+    font-size: clamp(1.125rem, 1.45vw, 1.35rem);
+    line-height: 1.55;
+  }
+
+  .showcases .showcases-wrap {
+    width: min(84rem, calc(100% - 8rem));
+    margin-inline: auto;
+  }
+
+  .showcases :is(h1, h2, h3) {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .showcases h1 { font-size: clamp(4.5rem, 8.8vw, 9rem); }
+  .showcases h2 { font-size: clamp(3rem, 5vw, 5.25rem); }
+  .showcases h3 { font-size: clamp(2.5rem, 3.4vw, 3.75rem); }
+  .showcases :is(h1, h2, h3) em { color: var(--light-voice); }
+  .showcases p { margin: 0 0 1.1em; }
+
+  .showcases .showcases-label {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    line-height: 1.6;
+    text-transform: uppercase;
+    color: var(--light-accent);
+    margin: 0 0 1.5rem;
+  }
+
+  .showcases a {
+    color: inherit;
+    background: transparent;
+    text-decoration: none;
+  }
+  .showcases a:focus-visible {
+    outline: 2px solid var(--light-accent);
+    outline-offset: 7px;
+  }
+  .showcases :is(section, article) { scroll-margin-top: 7rem; }
+  .showcases .showcases-link {
+    display: inline-flex;
+    gap: 1.5rem;
+    align-items: center;
+    border-bottom: 1px solid var(--light-rule);
+    padding-block: 0.4rem;
+    font-size: 1.05rem;
+  }
+  .showcases .showcases-link:hover { color: var(--light-accent); }
+
+  .showcases .showcases-hero {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    column-gap: clamp(2rem, 6vw, 7rem);
+    align-items: end;
+    padding-block: 10rem 4rem;
+  }
+  .showcases-hero > .showcases-label { grid-column: 1 / -1; }
+  .showcases .showcases-hero-copy { max-width: 29rem; padding-bottom: 0.5rem; }
+
+  .showcases figure { margin: 0; }
+  .showcases figure > img { display: block; width: 100%; height: auto; }
+  .showcases figcaption {
+    padding-top: 0.9rem;
+    color: var(--light-ink-dim);
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+  .showcases-film figcaption { text-align: center; }
+  .showcases-film .film-stage { border: 1px solid var(--light-rule); }
+
+  .showcases .showcases-possibilities { padding-block: 3.5rem 6rem; }
+  .showcases .showcases-section-head {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    align-items: end;
+    gap: 3rem;
+  }
+  .showcases .showcases-context { max-width: 32rem; margin: 0; }
+  .showcases .showcases-formats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 0;
+    border-block: 1px solid var(--light-rule);
+  }
+  .showcases-formats a { padding: 1.5rem 1rem 1.5rem 0; }
+  .showcases-formats a + a { padding-left: 2rem; border-left: 1px solid var(--light-rule); }
+  .showcases-formats a > span:last-child { display: flex; justify-content: space-between; gap: 1rem; }
+  .showcases-formats a:hover { background: color-mix(in srgb, var(--light-accent) 5%, transparent); }
+
+  .showcases .showcases-story {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    align-items: center;
+    gap: clamp(2rem, 5vw, 6rem);
+    margin-top: 4rem;
+  }
+  .showcases .showcases-story-reverse { grid-template-columns: 1fr 1.35fr; }
+  .showcases-story-reverse figure { grid-column: 2; grid-row: 1; }
+  .showcases-story-reverse .showcases-story-copy { grid-column: 1; grid-row: 1; }
+  .showcases-story h2 { font-size: clamp(2.5rem, 3.4vw, 3.75rem); margin-bottom: 1.5rem; }
+  .showcases-story-copy > p { color: var(--light-ink-dim); margin: 0; }
+
+  .showcases .showcases-support {
+    padding-block: 6rem 3rem;
+    background:
+      radial-gradient(ellipse at 10% 100%, color-mix(in srgb, var(--light-violet) 30%, transparent), transparent 75%),
+      var(--light-ground-2);
+    border-block: 1px solid var(--light-rule);
+  }
+  .showcases .showcases-routes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4rem;
+    margin-top: 3.5rem;
+  }
+  .showcases-routes img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; margin-bottom: 2rem; }
+  .showcases-routes h3 { font-size: clamp(2rem, 3vw, 3rem); margin-bottom: 1rem; }
+  .showcases-routes article > p:last-child { max-width: 32rem; color: var(--light-ink-dim); margin: 0; }
+  .showcases .showcases-practical {
+    border-top: 1px solid var(--light-rule);
+    margin: 2.5rem 0 0;
+    padding-top: 1.5rem;
+    font-size: 1.05rem;
+  }
+  .showcases .showcases-close { padding-block: 6rem; text-align: center; }
+  .showcases-close h2 { font-size: clamp(2.5rem, 4vw, 4.25rem); max-width: 48rem; margin: 0 auto 1.5rem; }
+  .showcases-close > p:not(.showcases-label) { color: var(--light-ink-dim); }
+  .showcases .showcases-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 1rem;
+    padding: 0.8rem 1.6rem;
+    background: var(--light-ink);
+    color: var(--light-ground);
+    border: 1px solid var(--light-ink);
+  }
+  .showcases .showcases-cta:hover { background: var(--light-voice); }
+  .showcases .showcases-skip {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 100;
+    padding: 0.75rem 1rem;
+    background: var(--light-ink);
+    color: var(--light-ground);
+    transform: translateY(-200%);
+  }
+  .showcases .showcases-skip:focus { transform: none; }
+
+  @media (max-width: 1023px) {
+    .showcases .showcases-wrap { width: calc(100% - 4rem); }
+    .showcases .showcases-hero { padding-top: 8rem; column-gap: 2rem; }
+    .showcases .showcases-story { gap: 2rem; }
+    .showcases .showcases-formats { font-size: 1.1rem; }
+    .showcases-formats a + a { padding-left: 1rem; }
+    .showcases .showcases-routes { gap: 2rem; }
+  }
+
+  @media (max-width: 700px) {
+    .showcases .showcases-wrap { width: calc(100% - 2.5rem); }
+    .showcases .showcases-hero { grid-template-columns: 1fr; padding-block: 7rem 2.5rem; }
+    .showcases h1 { font-size: clamp(4rem, 15vw, 6.5rem); }
+    .showcases .showcases-hero-copy { margin-top: 2rem; max-width: 34rem; }
+    .showcases .showcases-possibilities { padding-block: 2.5rem 4rem; }
+    .showcases .showcases-section-head { grid-template-columns: 1fr; gap: 2rem; }
+    .showcases .showcases-formats { grid-template-columns: 1fr; }
+    .showcases-formats a { padding: 1.1rem 0; }
+    .showcases-formats a + a { border-left: 0; border-top: 1px solid var(--light-rule); padding-left: 0; }
+    .showcases .showcases-story { grid-template-columns: 1fr; gap: 1.8rem; margin-top: 2.5rem; }
+    .showcases-story-reverse figure,
+    .showcases-story-reverse .showcases-story-copy { grid-column: auto; grid-row: auto; }
+    .showcases .showcases-support { padding-block: 4rem 2rem; }
+    .showcases .showcases-routes { grid-template-columns: 1fr; gap: 2.5rem; margin-top: 2.5rem; }
+    .showcases .showcases-close { padding-block: 4rem; }
+    .showcases-close br { display: none; }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html:has([data-look="showcases"]) { scroll-behavior: smooth; }
+  }
+}
