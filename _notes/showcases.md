@@ -15,7 +15,7 @@ excerpt: Give students a stage to share their mathematical creations, discoverie
       <p class="showcases-label">PaperLand showcases</p>
       <h1>Math Takes<br><em>the Stage.</em></h1>
       <div class="showcases-hero-copy">
-        <p>Give students a stage to share mathematics they have built, explored and made their own—through presentations, films, artworks and workshops they lead.</p>
+        <p>A platform for students to share the stories behind their mathematical animations at your math showcases.</p>
         <a class="showcases-link internal-link" href="#possibilities">Imagine the possibilities <span aria-hidden="true">↓</span></a>
       </div>
     </div>
@@ -32,9 +32,9 @@ excerpt: Give students a stage to share their mathematical creations, discoverie
 
   <section class="showcases-approach" aria-labelledby="approach-title">
     <div class="showcases-approach-copy">
-      <h2 id="approach-title">We help students build <br><em>the work they’ll share.</em></h2>
-      <p>With PaperLand’s coding platform and guided lessons, students turn mathematical ideas into models, animations and artworks of their own. We help them investigate how their creations work—and prepare to share what they’ve discovered.</p>
-      <a class="showcases-link internal-link" href="{{ '/our-approach' | relative_url }}">Explore the approach behind our showcases <span aria-hidden="true">↗</span></a>
+      <h2 id="approach-title">From curiosity, to creation, to celebration.</h2>
+      <p>Behind every animation lies a story: a question they’ve followed, a surprising discovery, a connection that made an idea click.</p>
+      <a class="showcases-link internal-link" href="{{ '/our-approach' | relative_url }}">Explore Our Approach <span aria-hidden="true">↗</span></a>
     </div>
     {% include showcases/inquiry.html %}
   </section>
