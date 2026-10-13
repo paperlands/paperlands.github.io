@@ -15,7 +15,7 @@ excerpt: Give students a stage to share their mathematical creations, discoverie
       <p class="showcases-label">PaperLand showcases</p>
       <h1>Math Takes<br><em>the Stage.</em></h1>
       <div class="showcases-hero-copy">
-        <p>A platform for students to share the stories behind their mathematical animations at your math showcases.</p>
+        <p>We help you host math showcases where students share their mathematical animations and the stories behind them.</p>
         <a class="showcases-link internal-link" href="#possibilities">Imagine the possibilities <span aria-hidden="true">↓</span></a>
       </div>
     </div>
@@ -33,14 +33,14 @@ excerpt: Give students a stage to share their mathematical creations, discoverie
   <section class="showcases-approach" aria-labelledby="approach-title">
     <div class="showcases-approach-copy">
       <h2 id="approach-title">From curiosity, to creation, to celebration.</h2>
-      <p>Behind every animation lies a story: a question they’ve followed, a surprising discovery, a connection that made an idea click.</p>
+      <p>Students bring their explanations to life with animations and interactive models, helping an audience see what they discovered and how it works.</p>
       <a class="showcases-link internal-link" href="{{ '/our-approach' | relative_url }}">Explore Our Approach <span aria-hidden="true">↗</span></a>
     </div>
     {% include showcases/inquiry.html %}
   </section>
 
   <section class="showcases-possibilities showcases-wrap" id="possibilities" aria-labelledby="possibilities-title">
-    <h2 class="showcases-possibilities-title" id="possibilities-title">What could this look like for your students?</h2>
+    <h2 class="showcases-possibilities-title" id="possibilities-title">Imagine the possibilities</h2>
 
     <article class="showcases-story" id="symposium" aria-labelledby="symposium-title">
       <figure>
@@ -49,7 +49,10 @@ excerpt: Give students a stage to share their mathematical creations, discoverie
       </figure>
       <div class="showcases-story-copy">
         <h2 id="symposium-title">Math <em>Symposium</em></h2>
-        <p>Students present their investigations, explain their discoveries and invite questions.</p>
+        <p>
+          Through guided inquiry, students use computation to explore questions, test ideas and pursue new lines of investigation.<br><br>
+          Students present their mathematical investigations and invite others into the discussion.
+        </p>
       </div>
     </article>
 
@@ -60,7 +63,8 @@ excerpt: Give students a stage to share their mathematical creations, discoverie
       </figure>
       <div class="showcases-story-copy">
         <h2 id="festival-title">Math <em>Festival</em></h2>
-        <p>Students share mathematical films, artworks and animations, telling the stories behind their creations.</p>
+        <p>Through creative exploration, students express mathematical ideas through art, animation and storytelling.<br><br>
+        Screen mathematical films, exhibit student creations or bring their artworks to life through presentations. Make it a standalone celebration or part of an existing school event.</p>
       </div>
     </article>
 
@@ -71,7 +75,10 @@ excerpt: Give students a stage to share their mathematical creations, discoverie
       </figure>
       <div class="showcases-story-copy">
         <h2 id="workshops-title"><em>Student-led</em> Workshops</h2>
-        <p>Students guide peers or juniors through mathematical ideas they can explore for themselves.</p>
+        <p>
+          Through leadership training, students deepen their mathematical understanding and learn to plan workshops, explain ideas and guide others.<br><br>
+          Students lead PaperLand workshops, helping peers or juniors explore mathematics for themselves.
+        </p>
       </div>
     </article>
   </section>
@@ -82,14 +89,14 @@ excerpt: Give students a stage to share their mathematical creations, discoverie
         <h2 id="support-title">How we work <em>together.</em></h2>
         <div class="showcases-context">
           <p class="showcases-support-lead">Choose a showcase format and a program focus for your students.</p>
-          <p>We’ll provide the computational platform, a tailored program structure and the training to bring it all together.</p>
+          <p>We provide the computational platform, a tailored program structure and the training to bring it all together.</p>
         </div>
       </div>
       <div class="showcases-routes">
         <article>
           <div class="showcases-route-copy">
             <h3>We train your <em>students.</em></h3>
-            <p>Guided lessons in creating with mathematics, investigating ideas and preparing to share their work.</p>
+            <p>Guided lessons in creating with mathematics, investigating ideas and telling the stories behind their discoveries.</p>
           </div>
           <img src="/assets/lib/notes/showcases/students-together.webp" alt="A facilitator and students working through a PaperLand lesson together" loading="lazy" decoding="async">
         </article>
