@@ -568,6 +568,10 @@
     hanging-punctuation: first last;
   }
 
+  [data-theme="evening"] .essay-body p.showcase-partnership {
+    margin-top: 1em;
+  }
+
   /* The epigraph: violet air, mist ink, one corner bracket — ornament has a
      place, and this is it. */
   [data-theme="evening"] .essay-body > blockquote {

@@ -1,23 +1,23 @@
 ---
-title: Create First
+title: Creation First
 author: princeton
 last_date: 28-09-2026
 heroimgurl: /assets/lib/notes/our-approach/student-flower.webp
-excerpt: We believe students understand mathematics more deeply when they create with it.
+excerpt: Visual and dynamic way to engage with math through animations
 ---
 
-> “What I cannot create, I do not understand.” \-- Richard Feynman{% margin %}
- <img src="/assets/lib/notes/our-approach/feynman-chalkboard.webp" alt="One of Feynman's last blackboards: What I cannot create, I do not understand"><span class="edition-window-caption">One of Feynman's last blackboards.</span>
-{% endmargin %}
+> “What I cannot create, I do not understand.” \-- Richard Feynman
 
- 
 We believe students understand mathematics more deeply when they create with it.
 
-To realise that vision we built an intuitive coding language that helps students create mathematical objects and visualisations from scratch.
+To realise that vision, we built an intuitive coding language that helps students create mathematical objects and visualisations from scratch.
 
 No premade sliders. Designed for anyone to see math differently.
 
 Students think through each step of the process, learning to debug their code and their own thinking. 
+{% margin %}
+ <img src="/assets/lib/notes/our-approach/feynman-chalkboard.webp" alt="One of Feynman's last blackboards: What I cannot create, I do not understand"><span class="edition-window-caption">One of Feynman's last blackboards.</span>
+{% endmargin %}
 
 You’ll be surprised how far a little math and computing knowledge can take you!
 
@@ -57,7 +57,7 @@ We always start with mathematical ideas familiar to middle and high school stude
 Over time, those questions grow, and deeper mathematics becomes something they **want** to learn because it helps them go further.
 
 
-## **Our programs**
+## **Give their ideas a stage**
 {% margin %}
  <img src="/assets/lib/notes/our-approach/seymour-papert.webp" alt="Seymour Papert with a constructionist learning object"><span class="edition-window-caption">Seymour Papert and a computer turtle, MIT, 1973. Photograph: Susan Pogany.</span>
 {% endmargin %}
@@ -66,14 +66,15 @@ Over time, those questions grow, and deeper mathematics becomes something they *
 > “The role of the **teacher** is to create the **conditions** for **invention** rather than provide ready-made knowledge.”
 > *\-- Seymour Papert*
 
-A platform to play with math is just the [[Beginnings|beginning]]. How we design our classes, structure activities and guide exploration determines whether students truly **see mathematics differently**.
+A platform to play with math is just the [[Beginnings|beginning]]. A showcase gives students something to work towards: a chance to share what they’ve created, explain their thinking and invite others to see mathematics differently.{% include notes/side_link.html href="/showcases" title="Math Takes the Stage" invitation="Explore our showcases" %}
 
-That’s why we’ve developed programmes around inquiry, creativity and teaching others. We partner with ambitious mathematics organisations around the world to bring these experiences to their students.{% include notes/side_link.html href="/mlp" title="Math Leaders Program" invitation="Explore our programmes" %}
+Imagine your students:
 
-1. **Math Inquiry Program**
-2. **Math Creators Program**
-3. **Math Leaders Program**
+- **Presenting at a math symposium**, using animations and interactive models to share their investigations.
+- **Sharing films, artworks and stories at a math festival**, bringing mathematical ideas to life for an audience.
+- **Leading workshops for their peers**, helping others explore and create with mathematics.
 
-Find out more below!
+We work with schools and mathematics organisations to make these showcases happen. Starting with what students will create and share, we shape a programme of inquiry, creative work and practice to help them get there.
+{: .showcase-partnership }
 
-[**Explore our programmes →**](/mlp)
+[**Explore our showcases →**](/showcases)
