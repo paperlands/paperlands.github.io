@@ -94,7 +94,7 @@
     font-size: 0.95rem;
     line-height: 1.4;
   }
-  .showcases-film figcaption { text-align: center; }
+  .showcases-film figcaption { text-align: left; }
   .showcases-film .film-stage { border: 1px solid var(--light-rule); }
 
   .showcases .showcases-approach {
@@ -244,7 +244,10 @@
     height: auto;
     object-fit: cover;
   }
-  .showcases-story figcaption { padding-top: 0.9rem; font-size: 1rem; line-height: 1.5; max-width: 50ch; }
+  .showcases-story figcaption { padding-top: 0.9rem; font-size: 0.875rem; line-height: 1.5; }
+  @media (min-width: 1024px) {
+    .showcases-story figcaption { font-size: clamp(0.75rem, 1.1vw, 0.875rem); white-space: nowrap; }
+  }
   .showcases-story h3 {
     font-size: clamp(2rem, 3vw, 2.75rem);
     line-height: 1.08;
