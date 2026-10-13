@@ -1036,6 +1036,11 @@
     border-color: var(--light-ember);
   }
 
+  .side-link__invitation > svg {
+    display: inline-block;
+    vertical-align: -0.125em;
+  }
+
   /* ---- the essay footer ----------------------------------------------- */
   [data-theme="evening"] .essay-footer {
     clear: both;
@@ -1062,6 +1067,12 @@
     content: '☙';
     margin-right: 1.2rem;
     color: var(--light-ink-dim);
+  }
+
+  [data-theme="evening"] .end-mark > svg {
+    display: inline-block;
+    vertical-align: -0.125em;
+    filter: drop-shadow(0 0 0.5rem color-mix(in srgb, var(--light-accent) 50%, transparent));
   }
 
   [data-theme="evening"] .end-mark::after {
@@ -1809,6 +1820,10 @@
 
     [data-theme="evening"] .end-mark {
       text-shadow: none;
+    }
+
+    [data-theme="evening"] .end-mark > svg {
+      filter: none;
     }
 
     [data-theme="evening"] a {

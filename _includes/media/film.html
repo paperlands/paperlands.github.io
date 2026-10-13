@@ -37,7 +37,7 @@
     ></iframe>
     <div class="film-wipe" aria-hidden="true"></div>
     <button class="film-play" type="button" data-film-play aria-label="Play {{ include.title | escape }}">
-      <span aria-hidden="true">▶</span>
+      {% include icon.html name="play" %}
     </button>
   </div>
   {% if include.caption %}

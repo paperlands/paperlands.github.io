@@ -133,7 +133,7 @@ excerpt: Give students a stage to share their mathematical creations, discoverie
   <section class="showcases-close showcases-wrap" aria-labelledby="start-title">
     <h2 id="start-title">What could your students<br>present on stage?</h2>
     <p>Start with a classroom showcase,<br>or dream bigger with a school-wide math festival.</p>
-    <a class="showcases-cta internal-link" href="/contact">Let's plan a showcase <span aria-hidden="true">↗</span></a>
+    <a class="showcases-cta internal-link" href="/contact">Let's plan a showcase {% include icon.html name="arrow-up-right" %}</a>
   </section>
 </content>
 <script type="module" src="{{ '/assets/js/showcases/inquiry.js' | relative_url }}"></script>

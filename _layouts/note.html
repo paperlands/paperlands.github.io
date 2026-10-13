@@ -79,8 +79,8 @@ css_mode: evening
       <article class="essay evening-field" id="essay" aria-labelledby="note-title" tabindex="-1">
         <content class="essay-body">{{ essay }}</content>
         <footer class="essay-footer">
-          <span class="end-mark" aria-hidden="true">✳</span>
-          <a class="internal-link back-top" href="#top" aria-label="{{ site.data.notes.return_label }}" title="{{ site.data.notes.return_label }}">↑</a>
+          <span class="end-mark" aria-hidden="true">{% include icon.html name="asterisk" %}</span>
+          <a class="internal-link back-top" href="#top" aria-label="{{ site.data.notes.return_label }}" title="{{ site.data.notes.return_label }}">{% include icon.html name="arrow-up" %}</a>
         </footer>
       </article>
 

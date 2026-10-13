@@ -19,6 +19,6 @@
   <span class="side-link__title">{{ include.title }}</span>
   {%- endif -%}
   {%- if include.invitation -%}
-  <span class="side-link__invitation">{{ include.invitation }} <span aria-hidden="true">↗</span></span>
+  <span class="side-link__invitation">{{ include.invitation }} {% include icon.html name="arrow-up-right" %}</span>
   {%- endif -%}
 </a>
