@@ -34,10 +34,10 @@ hero:
 
 
 see:
-  verse: A platform to bring
-  thesis: Math to Life
+  verse: A platform to
+  thesis: Bring Math to Life
   body: |
-    Through learning to create beautiful math animations, students develop the skill of experimenting and being creative with mathematical ideas.
+    Learn to create beautiful math animations and discover how to creatively experiment with mathematics.
   action: Explore <u>our approach</u>
   label: Anyone can see math differently
   program_label: the program
@@ -48,12 +48,12 @@ see:
   missing_pin: the pin is missing — no runtime was vendored
 
 create:
-  verse: A platform to share
-  title: Math on Stage
+  verse: A platform to
+  title: Share Math on Stage
   body: |
-    Behind every animation lies a story: a question they've followed, a surprising discovery, a connection that made an idea click.
+    It may be a curious question you've followed, a surprising discovery, a connection that made an idea click.
 
-    We carve out spaces for students to showcase their work and share the beauty of mathematics with their community.
+    We design avenues for students to share the stories behind their mathematical creations with their community.
   action: Host a math <u>showcase</u>
   caption: students presenting their torus
 
