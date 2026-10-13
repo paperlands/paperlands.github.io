@@ -323,7 +323,18 @@ function boot() {
       if (thisRun !== runId) return null;
       hatch = mod.createHatch(canvas);
       hatch.onLine(function (beat) { if (thisRun === runId) kindle(beat); });
-      return hatch.play(src);
+      var program = src;
+      if (root.classList.contains('helios-see--home') && window.matchMedia('(max-width: 850px)').matches) {
+        /* The pinned renderer frames a viewport, even inside a smaller row.
+           Scale both the figure and pursuit steps to fit that row; CSS keeps
+           the canvas's viewport aspect ratio so circles stay circular. */
+        var field = canvas.parentElement.getBoundingClientRect();
+        var scale = Math.min(1, window.innerWidth / window.innerHeight,
+          field.height / field.width * window.innerWidth / window.innerHeight);
+        program = src.replace(/\b240\b/g, String(240 * scale))
+          .replace(/\bfw 27\b/g, 'fw ' + (27 * scale));
+      }
+      return hatch.play(program);
     }).then(function (handle) {
       return handle ? handle.finished : null;
     }).then(function () {

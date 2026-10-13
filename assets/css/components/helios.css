@@ -1276,23 +1276,78 @@
     position: relative; z-index: 1; padding: clamp(5rem, 12svh, 8rem) var(--helios-gutter) clamp(6rem, 20svh, 14rem);
   }
   @media (max-width: 850px) {
-    [data-look="helios"] .helios-possibility__stage { display: block; min-height: 100svh; }
+    /* Let the mobile story follow its content. Viewport-height acts and
+       absolute copy leave long empty pauses and clip text on short screens. */
+    [data-look="helios"] { --helios-section-space: clamp(5rem, 11svh, 6rem); }
+    [data-look="helios"] .helios-act--content { height: auto; max-height: none; }
+    [data-look="helios"] .helios-see--home {
+      display: flex;
+      flex-direction: column;
+      height: auto;
+    }
+    [data-look="helios"] .helios-see--home .helios-see__copy {
+      position: relative;
+      inset: auto;
+      max-width: none;
+      padding: var(--helios-section-space) var(--helios-gutter) 1.5rem;
+    }
+    [data-look="helios"] .helios-see--home .helios-interval__field {
+      position: relative;
+      inset: auto;
+      order: 1;
+      height: clamp(16rem, 72vw, 23rem);
+    }
+    [data-look="helios"] .helios-see--home .helios-interval__stroke {
+      /* The vendored renderer writes viewport-sized inline dimensions.
+         Fit that canvas into the illustration row without distorting it. */
+      inset: 50% auto auto 50%;
+      width: 100% !important;
+      height: auto !important;
+      max-width: none;
+      transform: translate(-50%, -50%);
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+    [data-look="helios"] .helios-see--home .helios-interval__still {
+      mix-blend-mode: screen;
+      -webkit-mask-image: radial-gradient(ellipse, #000 45%, transparent 72%);
+      mask-image: radial-gradient(ellipse, #000 45%, transparent 72%);
+    }
+    [data-look="helios"] .helios-see--home .helios-interval__status {
+      position: relative;
+      inset: auto;
+      order: 2;
+      padding: 1rem var(--helios-gutter) 2rem;
+    }
+    [data-look="helios"] .helios-possibility__stage {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
     [data-look="helios"] .helios-possibility__copy {
       width: auto; margin: 0;
-      padding: 2.5rem var(--helios-gutter) 22rem;
+      padding: var(--helios-section-space) var(--helios-gutter) 1.5rem;
     }
-    [data-look="helios"] .helios-possibility__art { top: auto; height: 27rem; }
+    [data-look="helios"] .helios-possibility__art {
+      position: relative;
+      inset: auto;
+      order: 1;
+      width: 100%;
+      height: clamp(18rem, 85vw, 27rem);
+    }
     [data-look="helios"] .helios-possibility__stage {
       --thought-x: 17%; --thought-y: -22%; --thought-w: 120%; --thought-h: 110%; --thought-scale: 1.9;
     }
     [data-look="helios"] .helios-possibility__stage::after {
-      background: linear-gradient(180deg, #140910 0%, #140910ee 27%, #14091055 47%, transparent 67%, #140910 100%);
+      background:
+        linear-gradient(180deg, var(--light-ground-2), transparent var(--helios-section-space)),
+        linear-gradient(180deg, #140910 0%, #140910ee 27%, #14091055 47%, transparent 67%, #140910 100%);
     }
     [data-look="helios"] .helios-possibility__art figcaption { bottom: 1.2rem; max-width: 75%; font-size: .43rem; }
     [data-look="helios"] .helios-possibility__echo img { left: 11%; width: 68%; }
     [data-look="helios"] .helios-possibility__body img { left: 32%; top: 19%; width: 65%; height: 81%; }
     [data-look="helios"] .helios-possibilities__opening {
-      padding-top: clamp(3.5rem, 8svh, 5.5rem);
+      padding-block: var(--helios-section-space);
     }
   }
   @media (prefers-reduced-motion: reduce) {

@@ -128,7 +128,7 @@ colophon:
 </div>
 
 <div class="helios-twilight">
-<div class="helios-act">
+<div class="helios-act helios-act--content">
 {% include home/see.html %}
 </div>
 

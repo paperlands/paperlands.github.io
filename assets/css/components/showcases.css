@@ -389,8 +389,12 @@
   }
 
   @media (max-width: 700px) {
+    .showcases {
+      --showcases-section-space: clamp(5rem, 11svh, 6rem);
+      --showcases-story-space: clamp(2.5rem, 6svh, 3rem);
+    }
     .showcases .showcases-wrap { width: calc(100% - 2.5rem); }
-    .showcases .showcases-hero { padding-block: 7rem 2.5rem; }
+    .showcases .showcases-hero { padding-block: 7rem 3.5rem; }
     .showcases h1 { font-size: clamp(4rem, 15vw, 6.5rem); }
     .showcases .showcases-approach { display: block; padding: 2rem 1.25rem 30svh; }
     .showcases-approach-copy { width: 100%; }
@@ -405,27 +409,32 @@
     .showcases-inquiry-thought canvas { left: -12%; top: 0; width: 125% !important; height: 105% !important; }
     .showcases .showcases-inquiry-still { left: 12%; top: 6%; width: 80%; height: 76%; }
     .showcases .showcases-inquiry-apple { right: 5%; width: 11%; }
-    .showcases .showcases-possibilities { padding-block: 2.5rem 4rem; }
-    .showcases-section-heading { margin-bottom: 1.5rem; }
+    .showcases .showcases-possibilities { padding-block: var(--showcases-section-space); }
+    .showcases-section-heading { margin-bottom: 2.5rem; }
     .showcases .showcases-story {
       grid-template-columns: minmax(0, 1fr);
-      grid-template-areas: "title" "visual" "copy" "example";
+      grid-template-areas: "title" "visual" "copy";
       gap: 1.25rem;
-      padding-block: 2rem;
+      padding-block: var(--showcases-story-space);
     }
-    .showcases-story > figure { display: contents; }
-    .showcases-story figure > img { grid-area: visual; }
-    .showcases-story figcaption { grid-area: example; padding-top: 0; }
-    .showcases .showcases-support { padding-block: 2.5rem 2rem; }
+    /* Keep each caption with its image as the story becomes one column. */
+    .showcases-story > figure { display: block; }
+    .showcases-story figcaption { padding-top: 0.75rem; }
+    .showcases .showcases-story:last-child { padding-bottom: 0; }
+    .showcases .showcases-support {
+      padding-block: var(--showcases-section-space);
+      border-bottom: 0;
+    }
     .showcases .showcases-section-head { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
-    .showcases .showcases-routes { grid-template-columns: 1fr; gap: 1.5rem; margin-top: 1.5rem; padding-top: 1.5rem; }
+    .showcases .showcases-routes { grid-template-columns: 1fr; gap: 2.5rem; margin-top: 2rem; padding-top: 2rem; }
     .showcases-routes article { gap: 1rem; }
-    .showcases-routes article + article { padding-top: 1.5rem; border-top: 1px solid var(--light-rule); }
-    .showcases .showcases-planning { padding-block: 3rem; }
+    .showcases-routes article + article { padding-top: 2.5rem; border-top: 1px solid var(--light-rule); }
+    .showcases .showcases-planning { padding-block: var(--showcases-section-space); }
     .showcases-planning-grid { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+    .showcases-planning-copy h2 { margin-bottom: 0; }
     .showcases-faq summary { gap: 1rem; }
     .showcases-faq details > p { padding-right: 0; }
-    .showcases .showcases-close { padding-block: 4rem; }
+    .showcases .showcases-close { padding-block: var(--showcases-section-space); }
     .showcases-close br { display: none; }
   }
 
