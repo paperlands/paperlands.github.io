@@ -185,12 +185,14 @@
     .showcases .showcases-inquiry-apple { left: 5%; right: auto; }
   }
 
-  .showcases .showcases-possibilities { padding-block: 4rem 6rem; }
+  .showcases .showcases-possibilities {
+    max-width: 72rem;
+    padding-block: 3.5rem 4rem;
+  }
   .showcases .showcases-possibilities-title {
-    max-width: 32ch;
-    font-size: clamp(1.875rem, 2.8vw, 2.75rem);
-    line-height: 1.15;
-    margin-bottom: 2.5rem;
+    font-size: clamp(2.75rem, 4.5vw, 4.25rem);
+    line-height: 1.08;
+    margin-bottom: 2rem;
   }
   .showcases .showcases-possibilities-title + .showcases-story { margin-top: 0; }
   .showcases .showcases-section-head {
@@ -212,16 +214,37 @@
 
   .showcases .showcases-story {
     display: grid;
-    grid-template-columns: 1.35fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     align-items: center;
-    gap: clamp(2rem, 5vw, 6rem);
-    margin-top: 4rem;
+    gap: clamp(1.5rem, 3.5vw, 3.5rem);
+    margin-top: 2.5rem;
   }
-  .showcases .showcases-story-reverse { grid-template-columns: 1fr 1.35fr; }
   .showcases-story-reverse figure { grid-column: 2; grid-row: 1; }
   .showcases-story-reverse .showcases-story-copy { grid-column: 1; grid-row: 1; }
-  .showcases-story h2 { font-size: clamp(2.5rem, 3.4vw, 3.75rem); margin-bottom: 1.5rem; }
-  .showcases-story-copy > p { color: var(--light-ink-dim); margin: 0; }
+  .showcases .showcases-story figure > img {
+    aspect-ratio: 16 / 9;
+    height: auto;
+    object-fit: cover;
+  }
+  .showcases-story figcaption { padding-top: 0.6rem; font-size: 0.875rem; }
+  .showcases-story h3 {
+    font-size: clamp(2rem, 3vw, 2.75rem);
+    line-height: 1.08;
+    margin-bottom: 0.8rem;
+  }
+  .showcases-story-copy > p {
+    max-width: 43ch;
+    color: var(--light-ink);
+    font-size: clamp(1.125rem, 1.4vw, 1.25rem);
+    line-height: 1.5;
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .showcases-story-copy > .showcases-story-preparation {
+    margin-top: 0.75rem;
+    color: var(--light-ink-dim);
+    font-size: 1rem;
+  }
 
   .showcases .showcases-support {
     padding-block: 6rem 3rem;
@@ -312,7 +335,7 @@
     .showcases .showcases-inquiry-apple { right: 5%; width: 11%; }
     .showcases .showcases-possibilities { padding-block: 2.5rem 4rem; }
     .showcases .showcases-possibilities-title { margin-bottom: 1.5rem; }
-    .showcases .showcases-story { grid-template-columns: 1fr; gap: 1.8rem; margin-top: 2.5rem; }
+    .showcases .showcases-story { grid-template-columns: 1fr; gap: 1.1rem; margin-top: 2.5rem; }
     .showcases-story-reverse figure,
     .showcases-story-reverse .showcases-story-copy { grid-column: auto; grid-row: auto; }
     .showcases .showcases-support { padding-block: 4rem 2rem; }

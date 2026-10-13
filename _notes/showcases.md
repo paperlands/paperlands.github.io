@@ -48,37 +48,33 @@ excerpt: Give students a stage to share their mathematical creations, discoverie
         <figcaption>Investigating the torus behind Changi’s Jewel · Temasek Junior College</figcaption>
       </figure>
       <div class="showcases-story-copy">
-        <h2 id="symposium-title">Math <em>Symposium</em></h2>
-        <p>
-          Through guided inquiry, students use computation to explore questions, test ideas and pursue new lines of investigation.<br><br>
-          Students present their mathematical investigations and invite others into the discussion.
-        </p>
+        <h3 id="symposium-title">Math <em>Symposium</em></h3>
+        <p>Students present mathematical investigations through animations and interactive models, inviting the audience to follow their reasoning and join the discussion.</p>
+        <p class="showcases-story-preparation">Guided inquiry helps students explore questions and test ideas with computation.</p>
       </div>
     </article>
 
     <article class="showcases-story showcases-story-reverse" id="festival" aria-labelledby="festival-title">
       <figure>
-        <img src="/assets/lib/notes/showcases/festival-story.webp" alt="A student telling a story connecting earthquakes and sinusoidal waves into a microphone" loading="lazy" decoding="async">
+        <img src="/assets/lib/notes/showcases/festival-story.webp" alt="A student telling a story connecting earthquakes and sinusoidal waves into a microphone" loading="lazy" decoding="async" width="1400" height="782">
         <figcaption>A story of earthquakes and sinusoidal waves · Nemasu Senior Secondary School</figcaption>
       </figure>
       <div class="showcases-story-copy">
-        <h2 id="festival-title">Math <em>Festival</em></h2>
-        <p>Through creative exploration, students express mathematical ideas through art, animation and storytelling.<br><br>
-        Screen mathematical films, exhibit student creations or bring their artworks to life through presentations. Make it a standalone celebration or part of an existing school event.</p>
+        <h3 id="festival-title">Math <em>Festival</em></h3>
+        <p>Students share mathematical films, artworks and stories, inviting the audience to watch screenings, explore exhibits and meet the creators.</p>
+        <p class="showcases-story-preparation">Creative exploration helps students shape mathematical ideas into visual stories.</p>
       </div>
     </article>
 
     <article class="showcases-story" id="workshops" aria-labelledby="workshops-title">
       <figure>
-        <img src="/assets/lib/notes/showcases/workshop-functions.webp" alt="Student leaders explaining functions and composition beside a projected animation" loading="lazy" decoding="async">
+        <img src="/assets/lib/notes/showcases/workshop-functions.webp" alt="Student leaders explaining functions and composition beside a projected animation" loading="lazy" decoding="async" width="1400" height="784">
         <figcaption>The mathematics behind an animated face · St Patrick’s Secondary School</figcaption>
       </figure>
       <div class="showcases-story-copy">
-        <h2 id="workshops-title"><em>Student-led</em> Workshops</h2>
-        <p>
-          Through leadership training, students deepen their mathematical understanding and learn to plan workshops, explain ideas and guide others.<br><br>
-          Students lead PaperLand workshops, helping peers or juniors explore mathematics for themselves.
-        </p>
+        <h3 id="workshops-title"><em>Student-led</em> Workshops</h3>
+        <p>Students guide peers or juniors through PaperLand workshops, helping participants explore mathematical ideas and create animations of their own.</p>
+        <p class="showcases-story-preparation">Leadership training helps students plan activities, explain ideas and support others.</p>
       </div>
     </article>
   </section>
