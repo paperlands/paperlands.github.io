@@ -13,10 +13,10 @@ excerpt: Give students a stage to share their mathematical creations, discoverie
   <header class="showcases-hero showcases-wrap">
     <div class="showcases-hero-text">
       <p class="showcases-label">PaperLand showcases</p>
-      <h1>Math Takes<br><em>the Stage.</em></h1>
+      <h1>Math Takes<br>the<em> Stage.</em></h1>
       <div class="showcases-hero-copy">
-        <p>We help you host math showcases where students share their mathematical animations and the stories behind them.</p>
-        <a class="showcases-link internal-link" href="#possibilities">Imagine the possibilities <span aria-hidden="true">↓</span></a>
+        <p>Building a thriving culture that put students' mathematical ideas, animations and stories front and centre.</p>
+        <!-- <p>We help you host math showcases where students share their mathematical animations and the stories behind them.</p> -->
       </div>
     </div>
 
@@ -30,51 +30,51 @@ excerpt: Give students a stage to share their mathematical creations, discoverie
     %}
   </header>
 
-  <section class="showcases-approach" aria-labelledby="approach-title">
-    <div class="showcases-approach-copy">
-      <h2 id="approach-title">From curiosity, to creation, to celebration.</h2>
-      <p>Students bring their explanations to life with animations and interactive models, helping an audience see what they discovered and how it works.</p>
-      <a class="showcases-link internal-link" href="{{ '/our-approach' | relative_url }}">Explore Our Approach <span aria-hidden="true">↗</span></a>
-    </div>
-    {% include showcases/inquiry.html %}
-  </section>
+  <nav class="showcases-jump showcases-wrap" aria-label="On this page">
+    <span class="showcases-label">Various Culmination Events</span>
+    <a class="internal-link" href="#symposium">Symposium</a>
+    <a class="internal-link" href="#festival">Festival</a>
+    <a class="internal-link" href="#workshops">Student-led workshops</a>
+  </nav>
 
   <section class="showcases-possibilities showcases-wrap" id="possibilities" aria-labelledby="possibilities-title">
-    <h2 class="showcases-possibilities-title" id="possibilities-title">Imagine the possibilities</h2>
+    <div class="showcases-section-heading">
+      <h2 class="showcases-possibilities-title" id="possibilities-title">Imagine the possibilities</h2>
+    </div>
 
     <article class="showcases-story" id="symposium" aria-labelledby="symposium-title">
+      <h3 id="symposium-title">Math <em>Symposium</em></h3>
       <figure>
         <img src="/assets/lib/notes/showcases/symposium-torus.webp" alt="Students presenting their coded model of a torus to their class" loading="lazy" decoding="async" width="1400" height="967">
         <figcaption>Investigating the torus behind Changi’s Jewel · Temasek Junior College</figcaption>
       </figure>
       <div class="showcases-story-copy">
-        <h3 id="symposium-title">Math <em>Symposium</em></h3>
         <p>Students present mathematical investigations through animations and interactive models, inviting the audience to follow their reasoning and join the discussion.</p>
-        <p class="showcases-story-preparation">Guided inquiry helps students explore questions and test ideas with computation.</p>
+        <p class="showcases-story-preparation">Focus: Mathematical inquiry</p>
       </div>
     </article>
 
     <article class="showcases-story showcases-story-reverse" id="festival" aria-labelledby="festival-title">
+      <h3 id="festival-title">Math <em>Festival</em></h3>
       <figure>
         <img src="/assets/lib/notes/showcases/festival-story.webp" alt="A student telling a story connecting earthquakes and sinusoidal waves into a microphone" loading="lazy" decoding="async" width="1400" height="782">
         <figcaption>A story of earthquakes and sinusoidal waves · Nemasu Senior Secondary School</figcaption>
       </figure>
       <div class="showcases-story-copy">
-        <h3 id="festival-title">Math <em>Festival</em></h3>
         <p>Students share mathematical films, artworks and stories, inviting the audience to watch screenings, explore exhibits and meet the creators.</p>
-        <p class="showcases-story-preparation">Creative exploration helps students shape mathematical ideas into visual stories.</p>
+        <p class="showcases-story-preparation">Focus: Creative expression</p>
       </div>
     </article>
 
     <article class="showcases-story" id="workshops" aria-labelledby="workshops-title">
+      <h3 id="workshops-title"><em>Student-led</em> Workshops</h3>
       <figure>
         <img src="/assets/lib/notes/showcases/workshop-functions.webp" alt="Student leaders explaining functions and composition beside a projected animation" loading="lazy" decoding="async" width="1400" height="784">
         <figcaption>The mathematics behind an animated face · St Patrick’s Secondary School</figcaption>
       </figure>
       <div class="showcases-story-copy">
-        <h3 id="workshops-title"><em>Student-led</em> Workshops</h3>
         <p>Students guide peers or juniors through PaperLand workshops, helping participants explore mathematical ideas and create animations of their own.</p>
-        <p class="showcases-story-preparation">Leadership training helps students plan activities, explain ideas and support others.</p>
+        <p class="showcases-story-preparation">Focus: Student leadership</p>
       </div>
     </article>
   </section>
@@ -84,33 +84,55 @@ excerpt: Give students a stage to share their mathematical creations, discoverie
       <div class="showcases-section-head">
         <h2 id="support-title">How we work <em>together.</em></h2>
         <div class="showcases-context">
-          <p class="showcases-support-lead">Choose a showcase format and a program focus for your students.</p>
-          <p>We provide the computational platform, a tailored program structure and the training to bring it all together.</p>
+          <p>Choose your showcase and learning focus. We provide the platform, a tailored programme and training.</p>
+          <p class="showcases-practical">Training available <strong>online</strong> and/or <strong>in-person</strong>.</p>
         </div>
       </div>
       <div class="showcases-routes">
         <article>
+          <img src="/assets/lib/notes/showcases/students-together.webp" alt="A facilitator and students working through a PaperLand lesson together" loading="lazy" decoding="async">
           <div class="showcases-route-copy">
             <h3>We train your <em>students.</em></h3>
-            <p>Guided lessons in creating with mathematics, investigating ideas and telling the stories behind their discoveries.</p>
+            <p>Guided lessons to explore mathematics, create animations and share discoveries.</p>
           </div>
-          <img src="/assets/lib/notes/showcases/students-together.webp" alt="A facilitator and students working through a PaperLand lesson together" loading="lazy" decoding="async">
         </article>
         <article>
+          <img src="/assets/lib/notes/showcases/teacher-training.webp" alt="Teachers working together during a PaperLand training session" loading="lazy" decoding="async">
           <div class="showcases-route-copy">
             <h3>We train your <em>teachers.</em></h3>
-            <p>Professional development, resources and support to lead that learning with your own students.</p>
+            <p>Training, resources and support to lead PaperLand learning in your classroom.</p>
           </div>
-          <img src="/assets/lib/notes/showcases/teacher-training.webp" alt="Teachers working together during a PaperLand training session" loading="lazy" decoding="async">
         </article>
       </div>
-      <p class="showcases-practical"><em>Training available <strong>online</strong> and/or <strong>in-person.</strong></em></p>
+    </div>
+  </section>
+
+  <section class="showcases-planning" id="planning" aria-labelledby="planning-title">
+    <div class="showcases-wrap showcases-planning-grid">
+      <div class="showcases-planning-copy">
+        <p class="showcases-label">Planning your showcase</p>
+        <h2 id="planning-title">FAQ</h2>
+      </div>
+      <div class="showcases-faq">
+        <details name="showcases-planning">
+          <summary>How much preparation is needed?</summary>
+          <p>A simple classroom show-and-tell may be possible within four sessions. Larger showcases need more preparation. We design the programme around the event you have in mind and the time available.</p>
+        </details>
+        <details name="showcases-planning">
+          <summary>What will the school need to provide?</summary>
+          <p>Students need an internet connection and a suitable device. Tablets work well; laptops are preferred. When PaperLand runs the programme, teachers do not need to deliver the sessions.</p>
+        </details>
+        <details name="showcases-planning">
+          <summary>Is coding knowledge required to get started?</summary>
+          <p>No prior coding experience required to begin! We've designed PaperLand specifically to help beginners easily get started with computational mathematics.</p>
+        </details>
+      </div>
     </div>
   </section>
 
   <section class="showcases-close showcases-wrap" aria-labelledby="start-title">
     <h2 id="start-title">What could your students<br>present on stage?</h2>
-    <p>Start with a classroom showcase or dream bigger with a school-wide math festival.</p>
+    <p>Start with a classroom showcase,<br>or dream bigger with a school-wide math festival.</p>
     <a class="showcases-cta internal-link" href="/contact">Let's plan a showcase <span aria-hidden="true">↗</span></a>
   </section>
 </content>
