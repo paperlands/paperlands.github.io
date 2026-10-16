@@ -54,7 +54,7 @@ create:
     It may be a curious question you've followed, a surprising discovery, a connection that made an idea click.
 
     We design avenues for students to share the stories behind their mathematical creations with their community.
-  action: Host a math <u>showcase</u>
+  action: Explore our <u>experiences</u>
   caption: students presenting their torus
 
 possibilities:

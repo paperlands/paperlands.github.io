@@ -5,7 +5,7 @@
 # A letter's words are the site's words, so they are written in the grammar the
 # notes already use and not in one invented for a data file:
 #
-#   [[showcases|Showcase]]      a link to a note or a page, by the target's
+#   [[experiences|Showcase]]      a link to a note or a page, by the target's
 #                                   filename or by its title
 #   *emphasis*  **strong**          kramdown, as in a note's prose
 #   <span class="font-paperlang">PaperLand</span>
@@ -96,7 +96,7 @@ module SiteMarkup
   end
 
   # The documents a bracket may name. A note is a document; so is a page —
-  # `_pages/contact.md` and `/showcases` are both reachable this way.
+  # `_pages/contact.md` and `/experiences` are both reachable this way.
   def targets(site)
     site.collections['notes'].docs + site.pages
   end

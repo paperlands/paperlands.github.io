@@ -37,7 +37,7 @@
 # goes through — and then read as kramdown. So the letter links, and wears
 # faces, exactly as a note or a page does:
 #
-#   [[showcases|Showcase]]   a note or a page, named by its file or by its
+#   [[experiences|Showcase]]   a note or a page, named by its file or by its
 #                                title. A name that matches nothing is greyed
 #                                out here as it is in a note, so a typo shows
 #                                on the page rather than failing silently.
@@ -58,7 +58,7 @@ arrival: /#contact
 
 title: <span class="font-paperlang not-italic">To <span class="text-primary" >PaperLand</span></span>
 title_em: ","
-lede: Bring your questions, your boldest ideas, or your hopes for a [[showcases|showcase]] you’d like to create. There is a place for all of it here at <span class="font-paperlang text-primary not-italic">PaperLand</span>.
+lede: Bring your questions, your boldest ideas, or your hopes for a [[experiences|showcase]] you’d like to create. There is a place for all of it here at <span class="font-paperlang text-primary not-italic">PaperLand</span>.
 message_placeholder: What's on your mind?
 button_text: Send
 # The line under the form. It is words, so it lives here with the rest of

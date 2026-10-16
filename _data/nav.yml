@@ -41,11 +41,11 @@ links:
     # "Create First"). The key keeps the label, not the route.
     href: /our-approach
   mlp:
-    label: Showcases
-    # The MLP page was retired and its surface is the showcases note. The key
-    # stays `mlp` because a key is a key; the LABEL is "Showcases", which is
+    label: Experiences
+    # The MLP page was retired and its surface is the experiences note. The key
+    # stays `mlp` because a key is a key; the LABEL is "Experiences", which is
     # what that destination is actually called now.
-    href: /showcases
+    href: /experiences
   contact:
     # The label is the action; the target is the letter's route, declared with
     # the letter in _data/contact.yml and opened in place on every page by

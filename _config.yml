@@ -110,9 +110,9 @@ tailwind:
 # ground every folio page stands on, two declarations), as do the foundation
 # sheets — tokens, lights, faces, the bar, the drawn mark, media, document.
 css_modes:
-  showcases:
-    input: assets/css/components/showcases.css
-    output: assets/css/mode-showcases.css
+  experiences:
+    input: assets/css/components/experiences.css
+    output: assets/css/mode-experiences.css
   helios:
     input: assets/css/components/helios.css
     output: assets/css/mode-helios.css

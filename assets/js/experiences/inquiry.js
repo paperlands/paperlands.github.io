@@ -2,8 +2,8 @@
 const scene = document.querySelector('[data-inquiry-scene]');
 
 if (scene) {
-  const section = scene.closest('.showcases-approach');
-  const thought = scene.querySelector('.showcases-inquiry-thought');
+  const section = scene.closest('.experiences-approach');
+  const thought = scene.querySelector('.experiences-inquiry-thought');
   const program = scene.querySelector('[data-inquiry-program]').content.textContent.trim();
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const connection = navigator.connection;
@@ -56,7 +56,7 @@ if (scene) {
         if (ticket !== serial) return; // A newer scroll position superseded this run.
         unavailable = true;
         stop();
-        console.warn('[Showcase inquiry] Drawing unavailable:', error.message);
+        console.warn('[Experiences inquiry] Drawing unavailable:', error.message);
       }
     }, 60);
   }

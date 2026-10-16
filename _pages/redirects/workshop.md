@@ -1,7 +1,7 @@
 ---
 layout: redirect
 permalink: /workshop
-redirect_link: /showcases
+redirect_link: /experiences
 title: MathxCode Paperland Workshop
 sitemap: false
 ---
