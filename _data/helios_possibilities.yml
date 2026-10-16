@@ -1,0 +1,37 @@
+# Art and Paperlang program for the To Create scene. Its copy lives in
+# _pages/helios.md's `create` block.
+creators:
+  echo: /assets/lib/helios/parallel/feynman-echo.webp
+  echo_width: 914
+  echo_height: 955
+  body: /assets/lib/helios/parallel/creators.webp
+  body_width: 420
+  body_height: 530
+  body_alt: Two students sharing a mathematical creation with their class
+  memory: /assets/lib/helios/parallel/code-memory.webp
+  memory_width: 314
+  memory_height: 650
+  program: |
+    hd
+    beColour "d6a8ee"
+    def circle size do
+      loop 360 do
+        fw 1*size
+        rt 1
+      end
+    end
+    loop 100 do
+      circle 1
+      rt 90
+      jmp 54
+      dive 90
+      jmp 25
+      rt 90
+      rt 90
+      jmp 25
+      dive 90
+      jmp 54
+      dive 90
+      rt 90
+      dive 40
+    end

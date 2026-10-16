@@ -1,0 +1,5 @@
+{%- assign scene = site.data.helios_possibilities.creators -%}
+<section class="helios-create" data-create-scene data-hatch="{{ site.data.hatch.artifact_path | relative_url }}" aria-labelledby="create-title">
+  {% include home/possibility-stage.html item=page.create scene=scene %}
+  <template data-possibility-program>{{ scene.program | escape }}</template>
+</section>

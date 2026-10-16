@@ -5,22 +5,59 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.title }}{% endif %}">
+  {%- comment -%} The crossing between documents is declared in CSS
+     (assets/css/core/passage.css, `@view-transition { navigation: auto }`),
+     which is where it belongs. This meta tag says the same thing in the
+     spelling Chrome 111-125 reads — those versions can start a cross-document
+     view transition but have no @view-transition rule, and browsers that
+     understand neither ignore one line of markup. Keep the two in agreement:
+     if the CSS ever stops saying `auto`, this has to go. {%- endcomment -%}
+  <meta name="view-transition" content="same-origin">
 
-{% if page.onlytailwind  %}
-  <link rel="stylesheet" href="{{ "/assets/css/app.css" | relative_url }}">
-  {% else %}
-  <link rel="stylesheet" href="{{ "/assets/css/app.css" | relative_url }}">
-  <link rel="stylesheet" href="{{ site.baseurl }}/styles.css">
-{% endif %}
-  <!-- <link
-      rel="stylesheet"
-      href="assets/css/paper.min.css"
-    /> -->
-  <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
-  {% if layout.google_fonts %}<link href="https://fonts.googleapis.com/css2?{{ layout.google_fonts }}&display=swap" rel="stylesheet">{% endif %}
+  {%- comment -%} The homepage is the page served at `/`. Derived from the URL,
+     not declared in front matter — it used to be `page.id == "home"`, a key a
+     page could silently lack, so a new mainpage inherited the suffix
+     "&mdash; PaperLand : where math Lives" and nobody was told. {%- endcomment -%}
+  {%- assign is_home = false -%}
+  {%- if page.url == '/' -%}{%- assign is_home = true -%}{%- endif -%}
 
-  <meta property="og:site_name" content="{{ site.title }}">
+  {%- comment -%} One description, four consumers. `excerpt` is the page's
+     declared summary; `description` is accepted as its synonym so a page
+     that wrote the latter is not silently demoted to the site title.
+     Neither is required — the fallback is the title, not an empty tag. {%- endcomment -%}
+  {%- assign meta_description = page.excerpt | default: page.description -%}
+  <meta name="description" content="{% if meta_description %}{{ meta_description | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.title }}{% endif %}">
+
+  {%- comment -%} One stylesheet. Everything else is a layer inside it
+     (see assets/css/app.css). {%- endcomment -%}
+  <link rel="stylesheet" href="{{ "/assets/css/app.css" | relative_url }}">
+  {%- comment -%} The surface's own composition, and only its own. `page.look`
+     names one on a look page (`look: helios` -> mode-helios.css, the same
+     value _layouts/folio.html writes to data-look); a layout names its own
+     with `css_mode:` in its front matter (the note layout -> the edition,
+     _layouts/twilight.html -> Twilight). A folio page with no look wants
+     neither, and gets neither.
+
+     ORDER IS LOAD-BEARING: app.css first. Layer order is settled by first
+     appearance — `@layer theme, base, components, utilities` — and a mode
+     sheet linked ahead of it would put its own `components` before `base`.
+     See _plugins/css_modes.rb. {%- endcomment -%}
+  {%- assign css_mode = page.look | default: layout.css_mode -%}
+  {%- if css_mode -%}
+  <link rel="stylesheet" href="{{ "/assets/css/mode-" | append: css_mode | append: ".css" | relative_url }}">
+  {%- endif -%}
+  {%- comment -%} The type system: Cinzel (display), Cormorant Garamond (serif),
+     EB Garamond (body), and — for the sealed Twilight pages — IBM Plex Mono and
+     Lora. Every one of them is @font-face'd from assets/fonts by
+     core/webfonts.css, inside the one stylesheet above: one request, first
+     party, and no render-blocking round trip to fonts.googleapis.com before
+     the page can paint. Adding a family is a token plus a face — see
+     assets/fonts/README.md for the fetch. {%- endcomment -%}
+
+  {%- comment -%} The brand is PaperLand; the title is the promise. They are not
+     the same string, so og:site_name takes the brand from nav.yml — the same
+     source the navs read. {%- endcomment -%}
+  <meta property="og:site_name" content="{{ site.data.nav.brand.label }}">
 
   <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
@@ -36,15 +73,11 @@
   plausible.init()
 </script>
 
-  {% if page.excerpt %}
-  <meta property="og:description" content="{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}"/>
-  {% else %}
-  <meta property="og:description" content="{{ site.title | strip_html | strip_newlines | truncate: 160 }}"/>
-  {% endif %}
+  <meta property="og:description" content="{% if meta_description %}{{ meta_description | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.title | strip_html | strip_newlines | truncate: 160 }}{% endif %}"/>
 
   {% if page.title %}
   <meta property="og:title" content="{{ page.title }}">
-  <meta property="og:type" content="article">
+  <meta property="og:type" content="{% if is_home %}website{% else %}article{% endif %}">
   {% else %}
   <meta property="og:title" content="{{ site.title }}">
   <meta property="og:type" content="website">
@@ -58,12 +91,14 @@
   <meta property="og:url" content="{{ site.url }}{{ page.url }}" />
 
 
-  {% if page.image %}
-  <meta property="og:image" content="{{ site.url }}{{ page.image }}">
+  {%- comment -%} A note carries its art as `heroimgurl`; pages may still set `image`. {%- endcomment -%}
+  {%- assign og_image = page.image | default: page.heroimgurl -%}
+  {% if og_image %}
+  <meta property="og:image" content="{{ site.url }}{{ og_image }}">
   {% endif %}
 
   <title>
-    {% if page.id == "home" %}
+    {% if is_home %}
       {{ site.title }}
     {% else %}
       {{ page.title }} &mdash; {{ site.title }}

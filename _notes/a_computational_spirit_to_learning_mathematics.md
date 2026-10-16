@@ -2,7 +2,7 @@
 title: A Computational Spirit to Learning Mathematics
 author: vivekbala
 last_date: 02-02-2025
-heroimgurl: assets/lib/turtlekanagawawave.png
+heroimgurl: /assets/lib/turtlekanagawawave.png
 ---
 
 > "A mathematician, like a painter or poet, is a maker of patterns. If his patterns are more permanent than theirs, it is because they are made with ideas." \-- G.H. Hardy
@@ -26,7 +26,7 @@ And perhaps most remarkably, they begin to abstract and generalize from their co
 
 If these natural processes of mathematical thinking sounds familiar it is only because students are inadvertently navigating the 4 fundamental themes of mathematics set out by MOE:
 
-{% include figure fullwidth="true" image_path="assets/lib/spiritofcompute/moethemes.png" alt="Mathematical Objects" caption="Mathematical objects and concepts, and related knowledge and methods, are products of insight, logical reasoning and creative thinking, and are often inspired by problems that seek solutions." %}
+{% include figure image_path="/assets/lib/spiritofcompute/moethemes.png" alt="Mathematical Objects" caption="Mathematical objects and concepts, and related knowledge and methods, are products of insight, logical reasoning and creative thinking, and are often inspired by problems that seek solutions." %}
 
 1. Properties and Relationships: What are the properties of mathematical objects and how are they related?  
 2. Operations and Algorithms: What meaningful actions can we perform on these mathematical objects and how do we carry them out?

@@ -1,0 +1,82 @@
+/* ==========================================================================
+   core/lights.css — the lights, named once, exposed per surface
+   --------------------------------------------------------------------------
+   The landing and the edition are two exposures of one fire. This file holds
+   the roles those lights play; each surface holds the values it is lit with.
+   Before this file, the same light had two names in two sheets —
+   --evening-flare and --helios-brand were both #ff9933, --evening-ember-deep
+   and --helios-ember were both #d45a14, --evening-ridge and --helios-ridge were
+   both #8b2e0c, --evening-violet and --helios-see-violet were both #291d57 —
+   and the ramp positions in between drifted without anything able to notice,
+   which is how the drawn mark ended up 3.2px high on one surface (see
+   components/identity.css).
+
+   WHAT A ROLE IS. A role is what the light is FOR on the page, not where it
+   sits on a ramp: `--light-ground` is the ground, `--light-voice` is the light
+   the voice is set in, `--light-accent` is the brand's own colour. Two surfaces
+   may answer a role with different values — that is the point — and they may
+   not answer it with a different name.
+
+   WHAT IS NOT HERE. Geometry, type scale and the apparatus of a particular
+   composition stay with the composition that has them: --evening-measure,
+   --evening-key, --helios-copy-center, --helios-ease, --evening-orbit (the
+   graph) and --evening-wing (the spirits) are not lights and are not shared.
+   A role with one surface and no second consumer is a token layer with one
+   consumer — the mistake components/evening.css already refused to make for
+   --evening-ease — so nothing is named here until two surfaces want it.
+
+   THE VALUES. The edition's sixteen lights are answered by the landing's seven.
+   Where the landing has no counterpart the edition's value is CARRIED (marked
+   below) rather than invented, so that a composition can be paired with either
+   exposure today — the edition's essay lit by the landing's exposure, or this
+   landing's acts lit by the edition's — without a value going missing. Nothing
+   is re-lit by this file: each surface's own rules read the roles, and each
+   exposure answers the roles its own rules used to read.
+   ========================================================================== */
+
+@layer components {
+  /* ---- the edition: a lit paper ---------------------------------------- */
+  /* Warm brown-black ground, ember low right, violet high left; ink a cream
+     with age in it, the accents running amber to gold to sun. */
+  [data-theme="evening"] {
+    --light-ground: #140806;
+    --light-ground-2: #201218;
+    --light-ink: #eadcc4;
+    --light-ink-dim: #bda78e;
+    --light-voice: #ecd3b2;
+    --light-high: #ffe2a1;
+    --light-accent: #ff9933;
+    --light-ember: #f3aa63;
+    --light-ember-deep: #d45a14;
+    --light-ridge: #8b2e0c;
+    --light-amber: #e8a020;
+    --light-gold: #d4a84a;
+    --light-mist: #c8b4da;
+    --light-violet: #291d57;
+    --light-rule: #573621;
+  }
+
+  /* ---- the landing: a night sky ---------------------------------------- */
+  /* The same fire, colder and deeper: near-black air, cream with more fire in
+     it, the accents running ridge to ember to brand, and a violet and a mist
+     that are the edition's own mist and violet one step apart. Carried values
+     are the edition's, named here so that the pairing is complete. */
+  [data-look="helios"],
+  [data-theme="folio"] {
+    --light-ground: #050009;
+    --light-ground-2: #140910;
+    --light-ink: #f6e6c4;
+    --light-ink-dim: color-mix(in srgb, var(--light-ink) 74%, transparent);
+    --light-voice: #f2d2b0;
+    --light-high: #ffe27a;
+    --light-accent: #ff9933;
+    --light-ember: #d45a14;      /* the look's ember is the deep one; the edition's is lit */
+    --light-ember-deep: #d45a14; /* carried: one ember on this ramp, not two */
+    --light-ridge: #8b2e0c;
+    --light-amber: var(--light-ember);      /* carried: no amber on this surface */
+    --light-gold: var(--light-ink);         /* carried: the landing's gold is its cream */
+    --light-mist: #d4c4ee;
+    --light-violet: #291d57;
+    --light-rule: #573621;                  /* carried */
+  }
+}

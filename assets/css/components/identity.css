@@ -1,0 +1,172 @@
+/* ==========================================================================
+   components/identity.css — the drawn mark, styled once
+   --------------------------------------------------------------------------
+   _includes/home/wordmark.html is ONE component with TWO consumers: the
+   landing composes it (_pages/helios.md) and so does every note
+   (_layouts/note.html). The markup was collapsed when the edition took it up.
+   This file is that collapse finished: the parts of the mark that are the same
+   on both surfaces are stated here, once, and each surface keeps only what it
+   actually does differently.
+
+   WHAT WAS WRONG BEFORE. Both looks styled the same element with the same
+   rules under their own scope — [data-look="helios"] .helios-wordmark and
+   [data-theme="evening"] .helios-wordmark — and the copies had drifted:
+
+     the corner      --helios-wm-box-y 0.9rem against --evening-wm-box-y 1.1rem.
+                     The drawn mark stands in for the bar's own banner (opacity 0
+                     where the mark paints), whose ink begins at the bar's
+                     --nav-pad-y. The edition read the bar's corner; the look
+                     read its own, and was 3.2px high for it. That 3.2px is
+                     visible as a second mark during every crossing between the
+                     landing and a note — design/probe/passage.mjs measures it
+                     (y 14.39 against 17.59 at 1440x900). The corner is now one
+                     declaration on <body> beside --nav-logo-x, for the reason
+                     components/nav.css already gives for the left inset: the
+                     bar, the look and the edition are siblings, so neither can
+                     inherit it, and written three times it drifted.
+     the motion      the retract ran on --helios-ease in the look and on `ease`
+                     in the edition, whose comment explained that inventing an
+                     --evening-ease for one declaration was a token layer with
+                     one consumer. Agreed — so the token is the bar's: one
+                     --nav-ease, already the curve components/nav.css uses for
+                     its own transitions, and both surfaces read it.
+     the rest state  the edition hid [data-helios-build] and the look hid
+                     [data-helios-blocks]; the parent hides the children, so
+                     both were saying the same thing twice.
+
+   WHAT IS NOT COLLAPSED, ON PURPOSE. The pieces that only the landing has stay
+   in components/helios.css: the assembly choreography ([data-helios-writing]),
+   the veil, the drop-shadowed art, and the "In" that holds the unbuilt mark.
+   The palettes stay two exposures of one fire — --helios-night/--helios-air
+   against --evening-paper/--evening-wash, with #8b2e0c a shared ridge and
+   #d45a14 an ember at two positions on the ramp. That is lighting, not
+   vocabulary, and merging two lighting treatments is how a site loses one.
+
+   The scope of these rules is the presence of the component, not a look: the
+   element is emitted by one include, used by exactly two surfaces, and a third
+   surface that never draws it is unaffected. `:has(.helios-wordmark)` carries
+   the three rules that reach outside the mark, because they are only true when
+   it is actually there — the same condition both looks wrote by hand.
+   ========================================================================== */
+
+/* Registered so the crop can be TRANSITIONED: an unregistered custom property
+   changes in one step, which would drop the feather and snap the edge. Where a
+   browser does not support @property the mark still crops, instantly, exactly
+   as a clip-path would have. */
+@property --mark-crop {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+@layer components {
+  /* ---- the box: the corner it is born in, and the width it takes there --- */
+  .helios-wordmark {
+    position: fixed;
+    z-index: 91;
+    left: var(--nav-logo-x, 1.1rem);
+    top: var(--nav-mark-y, 1.1rem);
+    width: var(--nav-mark-w, min(12rem, calc(100vw - 12rem)));
+    aspect-ratio: 1280 / 250;
+    pointer-events: none;
+
+    /* ---- it retracts to its mark ---------------------------------------
+       The assembled state is ONE raster: [data-helios-banner] is
+       bannerpaperlang.png with the emblem AND the word inside it, so the word
+       cannot be hidden, only cropped away. [data-helios-word] covers the
+       assembling state, where the two are separate elements.
+
+       `clip-path`, not `width`: geometry is what the probes measure.
+       design/probe/helios.mjs wants `identity renders` over 80px and walks the
+       identity's own box; a clip paints less without moving a single rect, and
+       the identity is pointer-events: none, so there is nothing to hit-test
+       away. x=220 of the 1280 viewBox — past the emblem (ends at 189) with
+       slack for the rays the assembling state draws a few units wider, and
+       well inside the empty gap before the word starts at 249. */
+    /* ---- the word leaves under a soft edge -----------------------------
+       `clip-path` crops with a hard vertical edge: the word is cut off, mid
+       letter, by a shutter. That reads as a wipe, and because the crop is
+       driven by a 96px scroll threshold it has to happen fast (320ms) — a slow
+       shutter is worse, not better. So the edge is feathered instead, and the
+       feather travels with the crop rather than sitting at a fixed place: the
+       mask is fully opaque until `--mark-feather` before the edge, so at rest
+       (crop 0) there is no feather at all.
+
+       THE FEATHER IS SMALL ON PURPOSE. It has to fit in the gap between the
+       emblem (ends at x 189 of 1280, 14.8%) and the crop's resting edge (220,
+       17.2%) — a wider one eats the emblem's own edge and dims the mark, which
+       is exactly what the first attempt did at 10% and what the screenshot
+       showed. 2% is 3.8px at 1440: enough to take the shutter off a fast crop,
+       not enough to touch the art.
+
+       The geometry is unchanged — masks paint less without moving a rect, the
+       same reason the crop was a clip and not a width (design/probe/helios.mjs
+       walks the identity's own box). */
+    --mark-crop: 0%;
+    --mark-feather: min(2%, calc(var(--mark-crop) * 0.25));
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - var(--mark-crop) - var(--mark-feather)), transparent calc(100% - var(--mark-crop)));
+    mask-image: linear-gradient(to right, #000 calc(100% - var(--mark-crop) - var(--mark-feather)), transparent calc(100% - var(--mark-crop)));
+    /* Not `--nav-ease`, deliberately. That curve is the bar's: it is for
+       hover and press, where the first 10% of the time covering half the
+       distance is what makes a control feel immediate. A crop travelling
+       across a mark is a camera move, and the same shape reads as a snap
+       followed by a creep. This is the standard ease-in-out at the same
+       duration — the crop still keeps up with the scroll (it has to: it is
+       driven by a 96px threshold), it just arrives instead of pouncing. */
+    transition: --mark-crop 320ms cubic-bezier(.4, 0, .2, 1);
+  }
+
+  [data-helios-collapsed="true"] .helios-wordmark {
+    --mark-crop: 82.8125%;              /* keep x 0..220 of 1280 */
+  }
+
+  .helios-wordmark__art {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  /* ---- at rest: the banner, and nothing else ---------------------------- */
+  /* The look re-shows these while the mark assembles (data-helios-writing);
+     the edition never assembles anything, so this is its whole identity. The
+     assembly parts are inside [data-helios-blocks], which is why one rule
+     covers the pieces the two looks were hiding by different names. */
+  [data-helios-blocks],
+  [data-helios-dawn],
+  [data-helios-light],
+  [data-helios-shade],
+  [data-helios-word],
+  .helios-wordmark__in {
+    display: none;
+  }
+
+  /* ---- the bar's link, under the mark ----------------------------------- */
+  /* The mark is pointer-events: none, so the link IS the hit area, and it has
+     to spread over the box the mark paints — "PaperLand" at the nav's 1.15rem
+     box stops around the third letter, so the rest would be dead ground.
+     Absolute, against the fixed nav, which is the positioned ancestor: the
+     pseudo-element holds no layout and paints nothing. The link itself is
+     drawn invisible because something is painted over it — hence `:has`,
+     which is a statement about this page, not about a look. */
+  body:has(.helios-wordmark) [data-nav-mark] {
+    opacity: 0;
+  }
+
+  body:has(.helios-wordmark) [data-nav-mark]::after {
+    content: "";
+    position: absolute;
+    left: var(--nav-logo-x, 1.1rem);
+    top: var(--nav-mark-y, 1.1rem);
+    width: var(--nav-mark-w, min(12rem, calc(100vw - 12rem)));
+    aspect-ratio: 1280 / 250;
+  }
+
+  /* The ring lands on the drawn twin, because the link is opacity 0 and an
+     outline on an invisible element is invisible. The ink is the surface's:
+     the brand on the look's pages, the edition's ember in the edition. */
+  body:has([data-nav-mark]:focus-visible) .helios-wordmark {
+    outline: 1px solid var(--identity-ring, var(--color-primary));
+    outline-offset: 4px;
+  }
+}

@@ -1,0 +1,16 @@
+{%- comment -%}
+  The Helios ticker. Two passes of the same list so the crawl can translate a
+  clean -50%; the words themselves are page copy (`page.ticker`).
+
+  Params: words (array). Defaults to page.ticker.
+{%- endcomment -%}
+{%- assign home_ticker_words = include.words | default: page.ticker -%}
+{%- if home_ticker_words -%}
+<div class="helios-ticker" aria-hidden="true">
+  <div class="helios-ticker__track">
+    {%- for pass in (1..2) -%}
+      {%- for word in home_ticker_words -%}<b>{{ word }}</b><i>/</i>{%- endfor -%}
+    {%- endfor -%}
+  </div>
+</div>
+{%- endif -%}

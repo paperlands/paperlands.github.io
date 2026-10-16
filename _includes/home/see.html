@@ -1,0 +1,81 @@
+{%- comment -%}
+  The landing interval. Its words live in page.see; the program and canvas
+  are adapted from the standalone /helios-interval reference page.
+{%- endcomment -%}
+<section class="helios-see helios-see--home helios-interval" data-helios-interval
+  data-helios-interval-hatch="{{ site.data.hatch.artifact_path }}"
+  data-interval-performing="{{ page.see.performing }}"
+  data-interval-finished="{{ page.see.finished }}"
+  data-interval-fallback="{{ page.see.fallback }}"
+  data-interval-missing-pin="{{ page.see.missing_pin }}"
+  aria-label="{{ page.see.label }}">
+  <div class="helios-see__field helios-interval__field" aria-hidden="true">
+    <canvas class="helios-interval__stroke" data-helios-interval-stroke aria-hidden="true"></canvas>
+    <img class="helios-interval__still" data-helios-interval-still hidden alt=""
+      data-src="{{ '/assets/lib/helios/morphology-418f99.webp' | relative_url }}" width="900" height="900">
+  </div>
+  <div class="helios-see__copy">
+    <p class="helios-section__intro">{{ page.see.verse }}</p>
+    <h2 class="helios-section__heading">{{ page.see.thesis }}</h2>
+    <div class="helios-section__body">{{ page.see.body | markdownify }}</div>
+    <a class="helios-section__call internal-link" href="{{ '/our-approach' | relative_url }}">{{ page.see.action }} {% include home/cta-arrow.html %}</a>
+  </div>
+  <div class="helios-interval__program" aria-hidden="true">
+    <p class="helios-interval__label">{{ page.see.program_label }}</p>
+<pre class="helios-interval__verse" data-helios-interval-verse># the morphology: square, exhaustion, pursuit
+
+def polygon sides r do
+  jmpto r 0
+  faceto r*cos[360/sides] r*sin[360/sides]
+  loop sides do
+    fw 2*r*sin[180/sides]
+    lt 360/sides
+  end
+end
+
+def exhaust sides r do
+  beColour d45a14
+  when sides==12 do
+    beColour ff9933
+  end
+  polygon sides r
+  wait 0.35
+  when sides&lt;12 do
+    exhaust sides+1 r
+  end
+end
+
+def ring sides r do
+  jmpto r 0
+  faceto r*cos[360/sides] r*sin[360/sides]
+  loop sides do
+    fw 2*r*sin[180/sides]
+    lt 360/sides
+    as 'mouse[count]' do
+      fn next [[count+1]//12]
+      beColour f2d2b0
+      wait 1/60
+      loop 34 do
+        faceto "mouse[next]".x "mouse[next]".y
+        fw 27
+        wait 1/60
+      end
+    end
+  end
+end
+
+# movement one -- see
+hd
+beColour ff9933
+polygon 4 240
+wait 0.6
+
+# movement two -- play with
+exhaust 5 240
+
+# movement three -- breathe
+ring 12 240</pre>
+  </div>
+  <p class="helios-interval__status" data-helios-interval-status>{{ page.see.status }}</p>
+</section>
+<script type="module" src="{{ '/assets/js/home/helios-interval.js' | relative_url }}"></script>

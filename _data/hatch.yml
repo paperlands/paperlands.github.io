@@ -1,0 +1,21 @@
+# Written by design/vendor.mjs --from-spike. A SPIKE PIN, NOT A RELEASE:
+# there is no dojo manifest, no host-v1 entry, no tag and no conformance
+# fixture behind these bytes. Do not edit by hand — re-run the command.
+# Checked by design/probe/hatch.py.
+schema: 1
+release: false
+host_api: null
+language_revision: null
+dojo_commit: c7f28ab
+artifact: hatch-v1.eb60124795052a1c.mjs
+artifact_path: /assets/lib/hatch/hatch-v1.eb60124795052a1c.mjs
+artifact_sha256: eb60124795052a1cda28b112c15b3ecd80d579bbe75507ba1c687a162cf475b9
+artifact_bytes: 1475223
+closure_inputs: 89
+closure_sha256: 66c51f36798b04ca1d9cd0a39540564dc1bbf954f463c48b9a49e1e891f455a1
+licence: LICENSE
+licence_id: AGPL-3.0-only
+licence_sha256: 8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef
+notices: THIRD_PARTY_NOTICES.txt
+notices_sha256: 1e535702b3ed4e3ee642f7b24b10c8f092202b2ebb1817604d2c9caaa1dd4f87
+vendored_at: 2026-10-05

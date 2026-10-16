@@ -1,0 +1,195 @@
+# Named clips. Pages pass `id:` to {% include media/video.html %}.
+# Explicit src/poster/av1 on the include override the catalog.
+#
+# Fields: src (required), poster, av1, webm, width, height, alt
+# width/height reserve the box so lazy attach cannot collapse the page.
+
+waves:
+  src: /assets/lib/helios/waves-ffbdda.mp4
+  poster: /assets/lib/helios/waves-start.webp
+  alt: Number patterns, shared over a shoulder
+  width: 720
+  height: 1280
+
+spring:
+  src: /assets/lib/helios/spring-88005d.mp4
+  poster: /assets/lib/helios/spring-start.webp
+  alt: The room turns; someone begins to teach
+  width: 720
+  height: 1280
+
+hero:
+  src: /assets/lib/landing/hero_video.mp4
+  poster: /assets/lib/landing/3DWaves.webp
+  alt: Math x Computation hero video
+  width: 1920
+  height: 1080
+
+polygon:
+  src: /assets/lib/landing/polygon.mp4
+  alt: polygon animation
+  width: 1918
+  height: 936
+
+sine_curve:
+  src: /assets/lib/landing/sine_curve.webm
+  alt: sine curve animation
+  width: 1096
+  height: 720
+
+fibonacci:
+  src: /assets/lib/landing/fibonacci.webm
+  alt: fibonacci animation
+  width: 1402
+  height: 966
+
+xsinx:
+  src: /assets/lib/landing/xsinx.mp4
+  poster: /assets/lib/landing/xsinx.webp
+  alt: xsin(x) animation
+  width: 1918
+  height: 936
+tree:
+  src: /assets/lib/landing/tree.mp4
+  alt: tree animation
+  width: 762
+  height: 544
+
+prime_numbers:
+  src: /assets/lib/landing/prime_numbers.webm
+  alt: trigonometric unit circle animation
+  width: 684
+  height: 562
+
+shell:
+  src: /assets/lib/helios/shell-2dfe4d.mp4
+  poster: /assets/lib/helios/shell-start.webp
+  alt: Leaning in until the table is a council
+  width: 720
+  height: 1280
+
+benz:
+  src: /assets/lib/helios/benz-ccbf06.mp4
+  poster: /assets/lib/helios/benz-start.webp
+  alt: Looking up into a figure they just made
+  width: 720
+  height: 1280
+
+star:
+  src: /assets/lib/helios/star-126ed5.mp4
+  poster: /assets/lib/helios/star-start.webp
+  alt: A voice, a tree of code on the wall
+  width: 720
+  height: 1280
+
+workshop_hero:
+  src: /assets/lib/landing/workshop_hero_video.mp4
+  alt: workshop hero video
+  width: 1920
+  height: 1080
+
+knowledge_park:
+  src: /assets/lib/landing/knowledge_park.mp4
+  alt: student care center workshop
+  width: 848
+  height: 464
+
+# Helios. Minted from design/assets, sized to the surface they sit on.
+# how-ids are distinct from approach.md. who-ids waves/spring/star/shell/benz
+# are Helios-only via the catalog. xsinx stays the approach.md animation;
+# creators is the Helios pane.
+sine_curve_with_code:
+  src: /assets/lib/helios/sine_curve_with_code-73cd5b.mp4
+  av1: /assets/lib/helios/sine_curve_with_code-0f23be.av1.mp4
+  poster: /assets/lib/helios/sine_curve_with_code-63bc98.webp
+  alt: Toying with circular motion on a laptop
+  width: 1920
+  height: 1080
+
+polygon_fill:
+  src: /assets/lib/helios/polygon_fill-99b7f6.mp4
+  av1: /assets/lib/helios/polygon_fill-e68025.av1.mp4
+  poster: /assets/lib/helios/polygon_fill-20eac5.webp
+  alt: Playing with randomness to form faces
+  width: 1920
+  height: 1080
+
+fibonacci_spiral:
+  src: /assets/lib/helios/fibonacci_spiral-646e11.mp4
+  av1: /assets/lib/helios/fibonacci_spiral-5dfee0.av1.mp4
+  poster: /assets/lib/helios/fibonacci_spiral-cc8f08.webp
+  alt: Recreating a Fibonacci spiral in code
+  width: 1920
+  height: 1080
+
+tree_fractal:
+  src: /assets/lib/helios/tree_fractal-aa0fe5.mp4
+  av1: /assets/lib/helios/tree_fractal-bd62c7.av1.mp4
+  poster: /assets/lib/helios/tree_fractal-a88fe6.webp
+  alt: Exploring the hidden geometry of stars
+  width: 1920
+  height: 1080
+
+prime_sequence:
+  src: /assets/lib/helios/prime_sequence-dd5ba6.mp4
+  av1: /assets/lib/helios/prime_sequence-8227c9.av1.mp4
+  poster: /assets/lib/helios/prime_sequence-f1c1a9.webp
+  alt: Modelling spider webs in nature
+  width: 1920
+  height: 1080
+
+creators:
+  src: /assets/lib/helios/creators-6ac435.mp4
+  poster: /assets/lib/helios/creators-18c55f.webp
+  alt: A face on the screen, claimed in public
+  width: 720
+  height: 1280
+
+# The interval. Spines minted for the floating surface, not the hero box.
+# A clip here must not reuse a how-id: one id, one box.
+see_spiral:
+  src: /assets/lib/helios/see-spiral-bfab8e.mp4
+  poster: /assets/lib/landing/fibonacci_spiral.webp
+  alt: A Fibonacci spiral drawing itself
+  width: 960
+  height: 540
+
+see_tree:
+  src: /assets/lib/helios/see-tree-92d569.mp4
+  poster: /assets/lib/landing/tree_fractal.webp
+  alt: A fractal tree growing from a few lines
+  width: 960
+  height: 540
+
+see_wheel:
+  src: /assets/lib/helios/see-wheel-23331e.mp4
+  poster: /assets/lib/helios/see-wheel-f66844.webp
+  alt: A sine wheel drawing itself, and the wave it casts
+  width: 960
+  height: 630
+
+see_helix:
+  src: /assets/lib/helios/see-helix-f4a342.mp4
+  poster: /assets/lib/helios/see-helix-ccddfd.webp
+  alt: An amber helix drawing itself across the dark
+  width: 1280
+  height: 644
+
+# The Library notes. A note clip belongs to its note, so the id names the
+# idea (not the page it appears on), and the files live under
+# assets/lib/notes/<note>/ rather than the landing catalogs above.
+recursion-tree:
+  src: /assets/lib/notes/our-approach/recursion-tree.mp4
+  webm: /assets/lib/notes/our-approach/recursion-tree.webm
+  poster: /assets/lib/notes/our-approach/recursion-tree-poster.webp
+  alt: A tree of recursion growing from a handful of repeated branches
+  width: 640
+  height: 332
+
+chaos-game:
+  src: /assets/lib/notes/our-approach/chaos-game.mp4
+  webm: /assets/lib/notes/our-approach/chaos-game.webm
+  poster: /assets/lib/notes/our-approach/chaos-game-poster.webp
+  alt: A Sierpinski triangle emerging from the chaos game
+  width: 640
+  height: 376

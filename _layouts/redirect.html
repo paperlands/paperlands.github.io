@@ -1,8 +1,17 @@
+{%- comment -%}
+  One target, resolved once. A stub declares its own `redirect_link`; the one
+  page that declares none is /contact, and its destination belongs to the
+  letter, not to this layout — `_data/contact.yml` says where a cold arrival
+  lands, and the dialog opens there. So the letter's address is written in
+  exactly one file, and this layout is the thing that knows how to find it.
+{%- endcomment -%}
+{%- assign redirect_link = page.redirect_link | default: site.data.contact.arrival -%}
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Redirecting...</title>
-    <link rel="canonical" href="{{ page.redirect_link }}">
+    <title>{{ site.data.site.redirect_title }}</title>
+    <meta name="theme-color" content="#140806">
+    <link rel="canonical" href="{{ redirect_link }}">
 
     <script type="text/javascript">
       
@@ -69,10 +78,10 @@
               });
           }
 
-      {% if page.redirect_link %}
+      {% if redirect_link %}
           // redirect
           
-          window.location.replace("{{ page.redirect_link }}");
+          window.location.replace("{{ redirect_link }}");
       {% endif %}
       })();
     </script>
@@ -85,7 +94,13 @@
         
         body {
             min-height: 100vh;
-            background: black;
+            /* The cinematic ground the redirect lands on: / and the notes both
+               stand on #140806 (components/folio.css, --evening-paper), so the
+               hand-off does not flash a colour the site never uses. The ember
+               bloom is the same air the Helios acts breathe. */
+            background:
+              radial-gradient(ellipse 58% 46% at 50% 44%, rgb(212 90 20 / 0.16), transparent 72%),
+              #140806;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -106,25 +121,37 @@
             stroke-dasharray: 314;
             stroke-dashoffset: 314;
         }
+        
+        /* The arc is brand amber (--color-primary / --helios-brand) over a faint
+           cream track, so it reads on the night ground instead of vanishing into
+           it. */
+        .track {
+            stroke: rgb(246 230 196 / 0.12);
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            .stroke { animation: none; stroke-dashoffset: 0; }
+        }
     </style>
   </head>
-  <body class="flex items-center justify-center">
+  <body>
     <!-- redirect shouldnt fail -->
-    <svg width="100" height="100" viewBox="0 0 100 100">
+    <svg width="100" height="100" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+        <circle class="track" cx="50" cy="50" r="40" fill="none" stroke-width="2" />
         <circle
             cx="50"
             cy="50"
             r="40"
             fill="none"
-            stroke="#000"
+            stroke="#ff9933"
             stroke-width="2"
             stroke-linecap="round"
             class="stroke"
         />
     </svg>
     <noscript>
-      <meta http-equiv="refresh" content="0; url={{ page.redirect_link }}">
-      <a href="{{ page.redirect_link }}">Continue</a>
+      <meta http-equiv="refresh" content="0; url={{ redirect_link }}">
+      <a href="{{ redirect_link }}">{{ site.data.site.redirect_continue }}</a>
     </noscript>
   </body>
 </html>

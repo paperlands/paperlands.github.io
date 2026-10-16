@@ -1,12 +1,12 @@
 ---
 title: Why Must I Learn This?
+excerpt: I always asked this question as a kid.
 author: princeton
 last_date: 25-09-2024
-heroimgurl: assets/lib/apprenticeship.jpg
+heroimgurl: /assets/lib/apprenticeship.jpg
 ---
 
 
-I always asked this question as a kid. <br>
 The common replies are:<br>
 - "I don't really know"
 - “Because it’s tested in the exam"

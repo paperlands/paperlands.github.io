@@ -1,0 +1,24 @@
+# Art and Paperlang from To Explore on reskin/fallforwards.
+# The scene supplies sceneScale to fit the runtime's viewport-sized camera;
+# scrolling replaces the final recursion depth (2 through 6).
+echo: /assets/lib/helios/parallel/newton-echo.webp
+body: /assets/lib/helios/parallel/inquiry.webp
+near: /assets/lib/helios/parallel/apple.png
+still: /assets/lib/helios/parallel/inquiry-mark.svg
+program: |
+  hd
+  beColour "e0663a"
+  jmp -250*sceneScale
+  rt 90
+  jmp 216.5*sceneScale
+  lt 90
+  def tri len n do
+    when n>0 do
+      loop 3 do
+        fw len
+        lt 120
+        tri len/2 n-1
+      end
+    end
+  end
+  tri 500*sceneScale 4
