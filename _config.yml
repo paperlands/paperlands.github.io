@@ -110,6 +110,14 @@ tailwind:
 # ground every folio page stands on, two declarations), as do the foundation
 # sheets — tokens, lights, faces, the bar, the drawn mark, media, document.
 css_modes:
+  # The parallel copy of the landing, vendored from reskin/fallforwards-v2 as
+  # _pages/helios2.md. It is a whole look of its own rather than an override:
+  # the sheet is that branch's helios.css re-scoped to [data-look="helios2"],
+  # so both landings can be judged side by side without either one touching
+  # the other's composition.
+  helios2:
+    input: assets/css/components/helios2.css
+    output: assets/css/mode-helios2.css
   helios:
     input: assets/css/components/helios.css
     output: assets/css/mode-helios.css
