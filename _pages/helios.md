@@ -42,15 +42,11 @@ see:
   verse: Anyone can
   thesis: see math
   thesis_em: differently.
-  lede: We designed an intuitive language so a mathematical idea becomes something you can see, play with, and breathe to life.
   label: Anyone can see math differently
-  items:
-    - id: see_helix
-      role: ribbon
-    - id: see_spiral
-      role: mass
-    - id: see_tree
-      role: echo
+  instrument:
+    title: The fourth turn
+    becomes: In a mathematical world, <br>  ㅤ where you can 
+
 
 who:
   verse: In who we
@@ -117,7 +113,7 @@ possibilities:
     title: What do you see?
     verse: A festival in your school hall, a chapter in your university or in every classroom in your state
     possibility: Perhaps you see differently.  <br> It could be a possibility we have yet to imagine.
-    community: Your own stage for mathematics in your mathematics.
+    community: Your own stage for mathematics for your community
     action: Let's design it together.
 
 ticker:
@@ -163,7 +159,7 @@ colophon:
     home/wordmark.html   the identity — the mark assembles on scroll distance
     home/hero.html       thesis + stack carousel (fill) + flash + play fill
     home/ticker.html     the crawl
-    home/see.html        the interval — anyone can, and the math the language leaves in the air
+    home/fourth-turn.html     the instrument — a rule the visitor can make their own
     home/who.html        three identities, paired footage in their own reels — the row loops on narrow screens
     home/possibilities.html   parallel lives — becoming, expressed and shared
     home/colophon.html   the close
@@ -192,9 +188,7 @@ colophon:
 </div>
 
 <div class="helios-twilight">
-<div class="helios-act">
-{% include home/see.html %}
-</div>
+{% include home/fourth-turn.html %}
 
 <div class="helios-act">
 {% include home/who.html %}

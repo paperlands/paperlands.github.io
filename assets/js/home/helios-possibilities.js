@@ -2,6 +2,10 @@
    deliberately closing every fold releases it back into the people above.
    Automatic handoffs never correct scroll. Native details are the baseline;
    the real hatch's own ink carries the glint, growth and light ladder. */
+import { hatchFactory } from './fourth-turn/hatch.mjs';
+import { createDirectPerformer } from './paperlang/performer.mjs';
+import { createRunController } from './fourth-turn/run.mjs';
+
 const root = document.querySelector('[data-possibilities]');
 if (root) boot(root);
 
@@ -35,6 +39,7 @@ function boot(root) {
   surface.className = 'helios-possibilities__surface';
   folds.append(surface);
   const canvas = document.createElement('canvas');
+  canvas.className = 'helios-possibility__ink';
   canvas.setAttribute('aria-hidden', 'true');
   let active = -1;
   let station = 0;
@@ -42,13 +47,18 @@ function boot(root) {
   let navigating = false;
   let arrivalTimer = 0;
   let arrivalY = null;
-  let hatch = null;
-  let loading = null;
   let unavailable = false;
-  let serial = 0;
-  let drawn = '';
-  let target = '';
+  // What each scene has been ASKED for. Readiness is the captured request and its
+  // outcome, not a second flag this file sets when a play happens to finish.
+  const askedFor = new Map();
   let drawTimer = 0;
+  let pending = '';
+  let life = 0;
+  let performer = null;
+  let runs = null;
+  let pin = '';
+  let opening = null;
+  let armGlint = false;
 
   scenes.forEach((scene, i) => {
     const summary = chapters[i].querySelector('summary');
@@ -75,8 +85,7 @@ function boot(root) {
   function activate(index) {
     if (index === active) return;
     clearTimeout(drawTimer);
-    serial++;
-    drawn = target = '';
+    pending = '';
     active = index;
     root.toggleAttribute('data-folds-closed', index < 0);
     chapters.forEach((chapter, i) => {
@@ -84,6 +93,7 @@ function boot(root) {
       chapter.removeAttribute('data-drawing-ready');
       scenes[i].removeAttribute('data-drawing-ready');
       scenes[i].removeAttribute('data-drawing-active');
+      scenes[i].removeAttribute('data-drawing');
       scenes[i].toggleAttribute('data-current', i === index);
       scenes[i].inert = i !== index;
       scenes[i].setAttribute('aria-hidden', String(i !== index));
@@ -168,7 +178,7 @@ function boot(root) {
     frame = 0;
     const box = folds.getBoundingClientRect();
     if (box.bottom <= 0 || box.top >= innerHeight || document.hidden) {
-      if (hatch || target) stopDrawing();
+      if (runs || pending) stopDrawing();
       return;
     }
     if (active < 0) return; // A closed stack stays closed as the reader passes.
@@ -198,28 +208,61 @@ function boot(root) {
       const amount = flat ? 0 : ({ far: -2, memory: -6, near: -18 }[plane.dataset.plane]);
       plane.style.setProperty('--dy', reduced.matches ? '0px' : ((local - .5) * amount).toFixed(2) + 'px');
     });
-    if (!navigating) requestDrawing(active, reduced.matches ? (DEPTH_FROM + DEPTH_TO) / 2 : Math.round(DEPTH_FROM + local * (DEPTH_TO - DEPTH_FROM)));
+    // Asked for unconditionally. `navigating` used to gate this, and it is the last
+    // thing that could strand a scene: `arrive()` clears it in a timer that returns
+    // early when the reader is still moving, so a reader who stops at that instant left
+    // `navigating` true for good — no frame ever asked again, and the plate kept a
+    // drawing for a position the reader had left, with no `ready` and no ink to replace
+    // it. The ask is cheap and debounced; what the reader is looking at is the only
+    // input that should decide it. `navigating` still holds the chosen fold.
+    requestDrawing(active, reduced.matches ? (DEPTH_FROM + DEPTH_TO) / 2 : Math.round(DEPTH_FROM + local * (DEPTH_TO - DEPTH_FROM)));
   }
   function schedule() { if (!frame) frame = requestAnimationFrame(render); }
   addEventListener('scroll', () => { if (navigating) arrive(); schedule(); }, { passive: true });
   addEventListener('resize', schedule);
 
-  async function loadHatch() {
-    if (hatch) return hatch;
-    if (loading) return loading;
-    if (!root.dataset.hatch) unavailable = true;
-    if (unavailable || connection?.saveData) return null;
-    const epoch = serial;
-    loading = import(root.dataset.hatch).then(({ createHatch }) => {
-      if (epoch !== serial || document.hidden || active < 0 || connection?.saveData) return null;
-      hatch = createHatch(canvas, { caps: { maxCommands: 500000, maxRecurseDepth: 60 } });
-      return hatch;
+  function onDrawing(state, event) {
+    if (event.kind === 'stale') return;
+    if (event.kind === 'fault') {
+      unavailable = true;
+      const message = event.fault?.message ?? 'drawing failed';
+      stopDrawing();
+      console.warn('[parallel lives] Drawing unavailable:', message);
+      return;
+    }
+    // Only the chapter in hand may show ink. A finish or a first clear from the
+    // phase just left would otherwise label this scene with that creation.
+    const scene = active >= 0 ? scenes[active] : null;
+    const wantKey = scene ? keyOf(active, askedFor.get(active)) : '';
+    const key = state.presented?.context?.key ?? state.submitted?.context?.key;
+    if (scene && key && key === wantKey && (event.kind === 'visibility' || event.kind === 'finished')) {
+      scene.dataset.drawing = key;
+      if (!reduced.matches) scene.setAttribute('data-drawing-active', '');
+      if (event.kind === 'finished' && armGlint) { armGlint = false; glint(); }
+    }
+    syncReady();
+  }
+  function ensureRuntime() {
+    if (runs) return Promise.resolve(runs);
+    if (opening) return opening;
+    if (unavailable || connection?.saveData) return Promise.resolve(null);
+    const ticket = life;
+    // One door onto the pin. The performer is this encounter's own canvas and
+    // its own 500000 / 60 budget. The request ledger is the shared one.
+    opening = hatchFactory({ dataset: root.dataset }).then(({ path, createHatch }) => {
+      if (ticket !== life || document.hidden || active < 0 || connection?.saveData) return null;
+      pin = path;
+      performer = createDirectPerformer(canvas, {
+        path, createHatch, caps: { maxCommands: 500000, maxRecurseDepth: 60 },
+      });
+      runs = createRunController({ perform: performer.perform, pin: path, onState: onDrawing });
+      return runs;
     }).catch(error => {
       unavailable = true;
       console.warn('[parallel lives] Drawing unavailable:', error.message);
       return null;
-    }).finally(() => { loading = null; schedule(); });
-    return loading;
+    }).finally(() => { opening = null; schedule(); });
+    return opening;
   }
   function glint() {
     if (reduced.matches) return;
@@ -249,55 +292,85 @@ function boot(root) {
     return line.replace(/\d+(?:\.\d+)?(?![\s\S]*\d)/, String(Math.round(value * 1000) / 1000));
   }
 
+  const keyOf = (index, depth) => {
+    const chapter = chapters[index];
+    const line = growthLine(chapter);
+    return chapter.dataset.chapter + (line ? ':' + depth : '');
+  };
+
+  // `ready` is the active scene's ask matching the desire and a successful
+  // presentation of that same source. A scene that has not been asked, and a
+  // run that is still walking, are not ready.
+  function syncReady() {
+    const state = runs?.snapshot() ?? null;
+    const desired = state?.desired;
+    const shown = state?.presented;
+    chapters.forEach((chapter, index) => {
+      const key = keyOf(index, askedFor.get(index));
+      const ready = index === active && !!state && state.disposition !== 'running'
+        && shown?.done === true && shown.ok === true
+        && shown.context?.key === key && desired?.context?.key === key
+        && shown.source === desired?.source;
+      chapter.toggleAttribute('data-drawing-ready', ready);
+      scenes[index].toggleAttribute('data-drawing-ready', ready);
+    });
+  }
+
   function requestDrawing(index, depth) {
     if (unavailable || connection?.saveData) return;
     const chapter = chapters[index];
     const line = growthLine(chapter);
-    const key = chapter.dataset.chapter + (line ? ':' + depth : '');
-    if (key === target || key === drawn) return;
-    target = key;
+    askedFor.set(index, depth);
+    const key = keyOf(index, depth);
+    syncReady();
+    const state = runs?.snapshot();
+    const desiredKey = state?.desired?.context?.key;
+    const shownKey = state?.disposition !== 'running' && state?.presented?.done === true && state?.presented?.ok === true
+      ? state.presented.context?.key : undefined;
+    if (key === pending || key === desiredKey || key === shownKey) return;
+    // The shared canvas stays with the reader. A program that waits — To Lead's
+    // spiral — would keep creating on the fold scrolled back to, in place of
+    // the figure that fold names. Stop that walk before asking for the next.
+    const flight = runs?.snapshot();
+    if (flight?.disposition === 'running' && flight.submitted?.context?.key !== key) runs.cancel();
+    pending = key;
     clearTimeout(drawTimer);
+    const ticket = life;
     drawTimer = setTimeout(async () => {
-      const runtime = await loadHatch();
-      if (!runtime || active !== index || target !== key || document.hidden) {
-        if (target === key) target = '';
+      const controller = await ensureRuntime();
+      if (!controller || ticket !== life || active !== index || document.hidden) {
+        if (pending === key) pending = '';
         schedule();
         return;
       }
-      const epoch = ++serial;
       let program = chapter.querySelector('[data-possibility-program]').content.textContent.trim();
       if (line) program = program.replace(line, grown(chapter, line, depth));
-      try {
-        const wasDrawing = scenes[index].hasAttribute('data-drawing-active');
-        chapter.removeAttribute('data-drawing-ready');
-        scenes[index].removeAttribute('data-drawing-ready');
-        if (!reduced.matches) scenes[index].setAttribute('data-drawing-active', '');
-        if (wasDrawing) glint();
-        const run = await runtime.play(program);
-        await run.finished;
-        if (epoch !== serial || active !== index) return;
-        drawn = key;
-        scenes[index].dataset.drawing = key;
-        chapter.setAttribute('data-drawing-ready', '');
-        scenes[index].setAttribute('data-drawing-ready', '');
-        scenes[index].setAttribute('data-drawing-active', '');
-        if (!wasDrawing) glint();
-      } catch (error) {
-        if (epoch !== serial) return; // A later fold/depth legitimately supersedes this run.
-        unavailable = true;
-        stopDrawing();
-        console.warn('[parallel lives] Drawing unavailable:', error.message);
-      }
+      const wasDrawing = scenes[index].hasAttribute('data-drawing-active');
+      armGlint = !wasDrawing;
+      if (wasDrawing) glint();
+      const asked = controller.want({
+        source: program, presentation: 'progressive', pin,
+        context: { key, index, depth },
+      });
+      if (pending === key) pending = '';
+      if (!asked) schedule();
+      syncReady();
     }, line ? 180 : 40);
   }
   function stopDrawing() {
     clearTimeout(drawTimer);
-    serial++;
-    hatch?.dispose();
-    hatch = null;
-    drawn = target = '';
-    chapters.forEach(chapter => chapter.removeAttribute('data-drawing-ready'));
-    scenes.forEach(scene => scene.removeAttribute('data-drawing-ready'));
+    pending = '';
+    armGlint = false;
+    life++;
+    const controller = runs;
+    const owned = performer;
+    runs = null;
+    performer = null;
+    pin = '';
+    opening = null;
+    try { controller?.dispose(); } catch { /* teardown is final */ }
+    try { owned?.dispose(); } catch { /* the hatch may already be gone */ }
+    syncReady();
     scenes.forEach(scene => scene.removeAttribute('data-drawing-active'));
   }
   document.addEventListener('visibilitychange', () => { if (document.hidden) stopDrawing(); else schedule(); });

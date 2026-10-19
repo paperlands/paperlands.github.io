@@ -1,3 +1,5 @@
+@import './fourth-turn.css';
+
 /* ==========================================================================
    components/helios.css — the Helios look
    --------------------------------------------------------------------------
@@ -95,6 +97,12 @@
     --helios-hero-slate: clamp(1.12rem, 1.62vw, 1.45rem);
     --helios-see-verse: clamp(1.28rem, 1.9vw, 1.62rem);
     --helios-see-thesis: clamp(2.7rem, 6.1vw, 5.6rem);
+    /* The stair's tread, and the invitation's scale. Two acts say the same
+       phrase — the interval here, the instrument on the landing — so the step
+       the stress sits in and the light and size the invitation is handed on at
+       are the look's, not either act's. */
+    --helios-step: clamp(1.1rem, 5.2vw, 4.6rem);
+    --helios-invite-size: clamp(1.05rem, 1.4vw, 1.28rem);
     /* Where the copy sits. Not the seam between the thesis and the card — the
        block they form, centred on the 45% eye line: the reference's
        `#copy { top: 45% }`, and it is the screen being measured, so the unit is
@@ -536,7 +544,6 @@
      change climate. Masks retire the editor. The arc may leave the frame. */
   [data-look="helios"] .helios-see {
     --helios-see-night: #110a16;
-    --helios-see-step: clamp(1.1rem, 5.2vw, 4.6rem);
     position: relative;
     flex: 1 1 auto;
     height: 100%;
@@ -703,10 +710,13 @@
     align-items: flex-start;
   }
 
+  /* The verse is the look's own verse (see the .helios-verse rule): same
+     family, same light, as on every other act. The mist mix that stood here
+     made this the one verse set dimmer than the rest of the surface. */
   [data-look="helios"] .helios-see__head .helios-verse {
     margin: 0 0 0.22em;
     font-size: var(--helios-see-verse);
-    color: color-mix(in srgb, var(--light-mist) 46%, var(--light-voice));
+    color: var(--light-voice);
   }
 
   [data-look="helios"] .helios-see__line {
@@ -723,20 +733,20 @@
     text-shadow: 0 0 1.4rem rgb(17 10 22 / 0.85);
   }
 
-  /* The step. The stress sits in, and the invitation follows it. Mist warmed
-     toward the cream, so the violet is a light in the night, not another ink. */
+  /* The step. The stress sits in, and the invitation follows it. */
   [data-look="helios"] .helios-see__line:last-child {
-    padding-left: var(--helios-see-step);
+    padding-left: var(--helios-step);
   }
 
+  /* The stress is lit by the look's one emphasis light — --light-accent and
+     --helios-glow — the same pair the hero's thesis, the who act's stress and
+     the colophon's em carry. The violet halo that stood here was this page's
+     own invention, and it was the only purple light on the surface. */
   [data-look="helios"] .helios-see__line em {
     font-style: italic;
     font-weight: 500;
-    color: color-mix(in srgb, var(--light-mist) 58%, var(--light-ink));
-    text-shadow:
-      0 0 0.65rem rgb(212 196 238 / 0.4),
-      0 0 1.5rem color-mix(in srgb, var(--light-violet) 50%, transparent),
-      0 0 2.1rem rgb(232 160 32 / 0.16);
+    color: var(--light-accent);
+    text-shadow: var(--helios-glow);
   }
 
   [data-look="helios"] .helios-see__invite {
@@ -744,7 +754,7 @@
     grid-template-columns: 1.35rem 1fr;
     column-gap: 0.7rem;
     align-items: start;
-    margin: 1.45rem 0 0 var(--helios-see-step);
+    margin: 1.45rem 0 0 var(--helios-step);
     max-width: 28rem;
   }
 
@@ -760,7 +770,7 @@
     font-family: var(--font-serif);
     font-style: italic;
     font-weight: 500;
-    font-size: clamp(1.05rem, 1.4vw, 1.28rem);
+    font-size: var(--helios-invite-size);
     line-height: 1.38;
     letter-spacing: 0.01em;
     color: color-mix(in srgb, var(--light-mist) 42%, var(--light-voice));
@@ -1461,12 +1471,11 @@
   [data-look="helios"] .helios-possibility__memory { z-index: 2; }
   [data-look="helios"] .helios-possibility__memory img { right: 1%; top: 1%; width: 30%; height: 66%; opacity: .11; mix-blend-mode: screen; }
   [data-look="helios"] .helios-possibility__thought { z-index: 3; }
-  /* The current hatch pin writes viewport-sized inline canvas dimensions on
-     create/resize. The plane owns its CSS box; only width/height outrank those
-     inline styles. object-fit keeps the drawing buffer's own aspect ratio. */
-  [data-look="helios"] .helios-possibility__thought canvas {
+  /* The page sizes the paper; the hatch follows its content box. Runtime
+     overlays are separate surfaces, not another copy of the paper's styling. */
+  [data-look="helios"] .helios-possibility__thought .helios-possibility__ink {
     left: var(--thought-x); top: var(--thought-y);
-    width: var(--thought-w) !important; height: var(--thought-h) !important;
+    width: var(--thought-w); height: var(--thought-h);
     mix-blend-mode: screen; opacity: 0;
     transform: rotate(var(--spiral)) scale(var(--thought-scale)); transform-origin: 50% 50%;
     filter: saturate(.55) hue-rotate(8deg) brightness(var(--ink-light)) contrast(1.28)
@@ -1474,7 +1483,7 @@
     mask-image: radial-gradient(ellipse 58% 60% at 52% 46%, #000 26%, #000b 61%, transparent 94%);
     transition: opacity .35s ease;
   }
-  [data-look="helios"] .helios-possibility__stage[data-drawing-active] .helios-possibility__thought canvas { opacity: 1; }
+  [data-look="helios"] .helios-possibility__stage[data-drawing-active] .helios-possibility__thought .helios-possibility__ink { opacity: 1; }
   /* The mathematics' own air — the mirror of __light. The ink is screened, so it
      can only add: where the plate under it is already bright (a light pool, an
      echo's face) it has nothing left to add and the line dissolves. A dark edge
@@ -1496,7 +1505,7 @@
     transition: opacity .35s ease;
   }
   [data-look="helios"] .helios-possibility__stage[data-drawing-active] .helios-possibility__pool { opacity: var(--ink-pool, .3); }
-  [data-look="helios"] .helios-possibility__thought canvas.glint { animation: helios-ink-glint .46s var(--helios-ease); }
+  [data-look="helios"] .helios-possibility__thought .helios-possibility__ink.glint { animation: helios-ink-glint .46s var(--helios-ease); }
   /* Light belongs to the ink. No full-stage pulse: a short glint and a long
      falloff, following the same wheat -> ember -> near-black value ladder. */
   @keyframes helios-ink-glint {
@@ -1821,7 +1830,7 @@
     }
 
     [data-look="helios"] .helios-see {
-      --helios-see-step: 0.35rem;
+      --helios-step: 0.35rem;
     }
 
     [data-look="helios"] .helios-see__copy {
