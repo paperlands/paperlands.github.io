@@ -1194,6 +1194,11 @@
     color: var(--light-ink);
   }
   [data-look="helios"] .helios-create { background: var(--parallel-ground); }
+  /* One plate, one runway. Scroll grows the figure; the stage stays put. */
+  [data-look="helios"] .helios-create__journey { height: 220svh; }
+  [data-look="helios"] .helios-create .helios-possibility__stage {
+    position: sticky; top: 3.8rem; height: calc(100svh - 4.2rem); min-height: 0;
+  }
   [data-look="helios"] .helios-possibilities {
     background: linear-gradient(180deg, var(--parallel-ground), var(--parallel-ground) 75%, var(--light-ground));
   }
@@ -1234,7 +1239,7 @@
     left: var(--thought-x); top: var(--thought-y);
     width: var(--thought-w) !important; height: var(--thought-h) !important;
     mix-blend-mode: screen; opacity: 0;
-    transform: translateY(var(--torus-shift, 0px)) rotate(var(--spiral)) scale(var(--thought-scale)); transform-origin: 50% 50%;
+    transform: rotate(var(--spiral, 0deg)) scale(var(--thought-scale)); transform-origin: 50% 50%;
     filter: saturate(.55) hue-rotate(8deg) brightness(var(--ink-light)) contrast(1.28)
       drop-shadow(0 0 20px rgb(233 174 100 / var(--ember))) drop-shadow(0 0 60px #c96e281a);
     mask-image: radial-gradient(ellipse 58% 60% at 52% 46%, #000 26%, #000b 61%, transparent 94%);
@@ -1245,7 +1250,7 @@
     z-index: 2; inset: auto;
     left: var(--thought-x); top: var(--thought-y);
     width: var(--thought-w); height: var(--thought-h);
-    transform: translateY(var(--torus-shift, 0px)) rotate(var(--spiral, 0deg)) scale(var(--thought-scale, 1)); transform-origin: 50% 50%;
+    transform: rotate(var(--spiral, 0deg)) scale(var(--thought-scale, 1)); transform-origin: 50% 50%;
     background: radial-gradient(ellipse 56% 58% at 52% 46%, #0a0308, #0a0308b3 48%, transparent 78%);
     mix-blend-mode: multiply; opacity: 0;
     mask-image: radial-gradient(ellipse 58% 60% at 52% 46%, #000 24%, #000b 60%, transparent 94%);
@@ -1276,6 +1281,10 @@
     position: relative; z-index: 1; padding: clamp(5rem, 12svh, 8rem) var(--helios-gutter) clamp(6rem, 20svh, 14rem);
   }
   @media (max-width: 850px) {
+    [data-look="helios"] .helios-create__journey { height: auto; }
+    [data-look="helios"] .helios-create .helios-possibility__stage {
+      position: relative; top: auto; height: auto;
+    }
     /* Let the mobile story follow its content. Viewport-height acts and
        absolute copy leave long empty pauses and clip text on short screens. */
     [data-look="helios"] { --helios-section-space: clamp(5rem, 11svh, 6rem); }
@@ -1351,6 +1360,10 @@
     }
   }
   @media (prefers-reduced-motion: reduce) {
+    [data-look="helios"] .helios-create__journey { height: auto; }
+    [data-look="helios"] .helios-create .helios-possibility__stage {
+      position: relative; top: auto; height: auto; min-height: max(100svh, 720px);
+    }
     [data-look="helios"] .helios-create *,
     [data-look="helios"] .helios-possibilities * { transition: none !important; }
   }

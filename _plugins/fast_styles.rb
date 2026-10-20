@@ -325,7 +325,16 @@ module FastStyles
         log = File.join(cache_dir(site), "fast_styles-#{job[:name].gsub(/[^\w.-]/, "_")}.log")
         FileUtils.mkdir_p(File.dirname(job[:output]))
         FileUtils.mkdir_p(File.dirname(log))
-        { :job => job, :log => log, :pid => Process.spawn(*command(site, job), :chdir => site.source, :out => log, :err => [:child, :out]) }
+        # The CLI is a bun binary. It unpacks lightningcss into TMPDIR under a
+        # name that is the same for every process. Four sheets at once used to
+        # share /tmp, and one of them unlinked the file while another was still
+        # opening it — twilight then exited 1 with ERR_DLOPEN_FAILED and the
+        # whole batch was thrown away. A directory of its own means the unpack
+        # is not a shared file.
+        tmp = File.join(cache_dir(site), "fast_styles-tmp", job[:name].gsub(/[^\w.-]/, "_"))
+        FileUtils.rm_rf(tmp)
+        FileUtils.mkdir_p(tmp)
+        { :job => job, :log => log, :pid => Process.spawn({ "TMPDIR" => tmp }, *command(site, job), :chdir => site.source, :out => log, :err => [:child, :out]) }
       end
 
       runs.each do |r|

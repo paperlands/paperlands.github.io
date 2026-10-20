@@ -43,6 +43,14 @@
    ========================================================================== */
 
 import { tokensOf, OPENERS, ENTERS, REST } from "./helios-plang-tokens.js";
+// The execution light itself is shared with the fourth turn's instrument: one bookkeeping for
+// what a beat means, two looks. See assets/js/home/kindle.mjs.
+import { createKindle } from "./kindle.mjs";
+// One door onto the pin, the same one the fourth turn's viewport uses: this page names the
+// artifact with `data-hatch` like every other page, and `hatch.mjs` does the reading.
+import { hatchFactory } from "./fourth-turn/hatch.mjs";
+import { createDirectPerformer } from "./paperlang/performer.mjs";
+import { createRunController, PRESENTATION } from "./fourth-turn/run.mjs";
 
 function boot() {
   var root = document.querySelector("[data-helios-interval]");
@@ -51,11 +59,13 @@ function boot() {
   var verse = root.querySelector("[data-helios-interval-verse]");
   var status = root.querySelector("[data-helios-interval-status]");
   var still = root.querySelector("[data-helios-interval-still]");
-  var hatchUrl = root.getAttribute("data-helios-interval-hatch");
+  /* The pin's one attribute name, templated by the build from `site.data.hatch.artifact_path`;
+     `hatch.mjs` reads it (or the YAML, on a page served without Jekyll) and imports nothing
+     else. */
+  var hatchUrl = root.dataset.hatch;
   /* The status line's WORDS are the page's, not this script's: they arrive as
-     data attributes on the root (see _includes/home/see.html and
-     _pages/helios-interval.md), so each page can say what its interval is doing
-     without a second copy of the vocabulary
+     data attributes on the root (see _pages/helios-interval.md), so the page can
+     say what its own rehearsal is doing without a second copy of the vocabulary
      here. `fallback` is a PREFIX — the runtime appends the error to it. */
   var words = root.dataset;
   if (!canvas || !verse) return;
@@ -214,11 +224,13 @@ function boot() {
     if (frame) { cancelAnimationFrame(frame); frame = 0; }
   }
 
-  var hatch = null;
+  var performer = null;
+  var controller = null;
+  var lifetime = 0;
+  root.paperlangRun = function () { return controller ? controller.snapshot() : null; };
   var running = false;
   var finished = false;
   var act = "";
-  var runId = 0;
 
   function showStill(note) {
     canvas.hidden = true;
@@ -249,24 +261,31 @@ function boot() {
 
   /* One beat. Every line walked in it warms; the line the walk is on is kindled;
      a body the walk has entered ticks its far end; and the joint is struck. */
+  /* The light itself is `kindle.mjs`'s bookkeeping with this page's own look: every line the
+     beat walked is reached and stays reached, and the line the walk is on is also current. */
+  var light = createKindle({
+    rowAt: function (number) { return spans[number]; },
+    light: {
+      current: "helios-interval__line--lit",
+      past: "helios-interval__line--done",
+      pending: "helios-interval__line--pending",
+    },
+    overlap: true,
+  });
+
+  /* One beat. Every line walked in it warms; the line the walk is on is kindled;
+     a body the walk has entered ticks its far end; and the joint is struck. */
   function kindle(beat) {
     if (still) still.hidden = true;
     canvas.hidden = false;
-    for (var i = 0; i < spans.length; i++) {
-      if (spans[i]) spans[i].classList.remove("helios-interval__line--lit");
-    }
-    var walked = beat.lines || [];
+    var walked = light.beat(beat).lines;
     var j;
     for (j = 0; j < walked.length; j++) {
-      var el = spans[walked[j]];
-      if (el) el.classList.add("helios-interval__line--done");
       /* The body the walk has entered: its `end` is the pair's other half, and
          the look ticks both. `def`/`draw` do not enter where they stand. */
       var body = bodyAt[walked[j]];
       if (body && body.enters && spans[body.end]) spans[body.end].classList.add("helios-interval__line--pair");
     }
-    var lit = spans[beat.line];
-    if (lit) lit.classList.add("helios-interval__line--lit");
     var at = restOf(beat);
     if (at) strike(at);
     for (j = 0; j < marks.length; j++) {
@@ -294,13 +313,13 @@ function boot() {
   function fail(err) {
     running = false;
     quiet();
-    if (hatch) { try { hatch.dispose(); } catch (e) {} hatch = null; }
+    if (performer) { performer.dispose(); performer = null; }
     showStill(words.intervalFallback + " " + (err && err.message ? err.message : err));
   }
 
   function run() {
-    var thisRun = ++runId;
     running = true;
+    var mine = ++lifetime;
     act = "";
     /* A performance, not a pause: whatever the last one left lit, including a
        rest still running on its own frame, goes out first. */
@@ -317,54 +336,43 @@ function boot() {
       spans[i].style.removeProperty("--helios-rest");
     }
     if (status) status.textContent = words.intervalPerforming;
-    import(hatchUrl).then(function (mod) {
-      /* Import can finish after the act has left the viewport. In that case,
-         do not create a renderer or start a performance offscreen. */
-      if (thisRun !== runId) return null;
-      hatch = mod.createHatch(canvas);
-      hatch.onLine(function (beat) { if (thisRun === runId) kindle(beat); });
-      var program = src;
-      if (root.classList.contains('helios-see--home') && window.matchMedia('(max-width: 850px)').matches) {
-        /* The pinned renderer frames a viewport, even inside a smaller row.
-           Scale both the figure and pursuit steps to fit that row; CSS keeps
-           the canvas's viewport aspect ratio so circles stay circular. */
-        var field = canvas.parentElement.getBoundingClientRect();
-        var scale = Math.min(1, window.innerWidth / window.innerHeight,
-          field.height / field.width * window.innerWidth / window.innerHeight);
-        program = src.replace(/\b240\b/g, String(240 * scale))
-          .replace(/\bfw 27\b/g, 'fw ' + (27 * scale));
-      }
-      return hatch.play(program);
-    }).then(function (handle) {
-      return handle ? handle.finished : null;
-    }).then(function () {
-      if (thisRun !== runId) return;
-      running = false;
-      finished = true;
-      settle();
-    }).catch(function (err) {
-      if (thisRun === runId) fail(err);
-    });
+    hatchFactory({ dataset: root.dataset }).then(function (mod) {
+      if (mine !== lifetime) return;
+      if (performer) performer.dispose();
+      performer = createDirectPerformer(canvas, mod);
+      controller = createRunController({
+        pin: mod.path,
+        perform: performer.perform,
+        onState: function (state, event) {
+          if (mine !== lifetime) return;
+          if (event.kind === "beat") kindle(event.beat);
+          if (event.kind === "fault") fail(event.fault);
+          if (event.kind === "finished") { running = false; finished = true; settle(); }
+        },
+      });
+      controller.want({ source: src, presentation: PRESENTATION.progressive });
+    }).catch(function (error) { if (mine === lifetime) fail(error); });
   }
 
-  function leave() {
-    ++runId;
-    if (hatch) { try { hatch.dispose(); } catch (e) {} hatch = null; }
+  window.addEventListener("pagehide", function () {
+    lifetime++;
+    if (controller) controller.cancel();
+    if (performer) { performer.dispose(); performer = null; }
     quiet();
     running = false;
-    /* The completed canvas is replaced by its still before its renderer is
-       released, so scrolling back keeps the finished figure. */
-    if (finished) showStill(words.intervalFinished);
-  }
-
+  });
   if (motion) {
     if ("IntersectionObserver" in window) {
       var io = new IntersectionObserver(function (entries) {
         for (var i = 0; i < entries.length; i++) {
           if (entries[i].isIntersecting) {
             if (!finished && !running) run();
-          } else if (running || hatch) {
-            leave();
+          } else if (running) {
+            lifetime++;
+            if (controller) controller.cancel();
+            if (performer) { performer.dispose(); performer = null; }
+            quiet();
+            running = false;
           }
         }
       }, { threshold: 0.3 });

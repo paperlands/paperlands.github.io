@@ -1,13 +1,19 @@
-# Art and Paperlang program for the To Create scene. Its copy lives in
-# _pages/helios.md's `create` block.
+# Art and Paperlang program for the To Create plate. Its copy lives in
+# _pages/helios.md's `create` block. The plate is not a torus player: `grows`
+# names one line, and scroll moves the last number on that line from `from`
+# to `to`. The programme as written is the settled figure.
 creators:
   echo: /assets/lib/helios/parallel/feynman-echo.webp
   echo_width: 914
   echo_height: 955
-  body: /assets/lib/helios/parallel/creators.webp
-  body_width: 420
-  body_height: 530
-  body_alt: Two students sharing a mathematical creation with their class
+  # The smiling variant (design/cutouts/smiling.py): the same two students in a
+  # second frame of the same scene. Same 0.7925 aspect as creators.webp on
+  # purpose — the body plane's box, its object-fit: contain and its mobile
+  # width-bound case then keep every number they already have.
+  body: /assets/lib/helios/parallel/creators-smiling.webp
+  body_width: 427
+  body_height: 539
+  body_alt: Two students watching their own mathematical creation on the screen
   memory: /assets/lib/helios/parallel/code-memory.webp
   memory_width: 314
   memory_height: 650
@@ -35,3 +41,9 @@ creators:
       rt 90
       dive 40
     end
+  # The outer loop is the turn that builds the torus. Scroll moves that count;
+  # the programme above, at 100, is the settled figure.
+  grows:
+    line: loop 100 do
+    from: 1
+    to: 100

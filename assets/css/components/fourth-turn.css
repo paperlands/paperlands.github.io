@@ -1,0 +1,125 @@
+@layer components {
+  .fourth-turn {
+    --turn-night: #120d17;
+    --turn-paper: #ebddc9;
+    --turn-gold: #f1dba4;
+    --turn-hand: #e0a077;
+    --turn-quiet: #c4b6a4;
+    --turn-rule: #a6cbd0;
+    position: relative;
+    isolation: isolate;
+    min-height: 760px;
+    height: 100svh;
+    overflow: clip;
+    padding: clamp(36px, 5vh, 64px) clamp(22px, 5vw, 80px) 24px;
+    color: var(--turn-paper);
+    color-scheme: dark;
+    font-family: var(--font-body);
+    background: radial-gradient(ellipse at 73% 40%, #49292c12, transparent 60%), var(--turn-night);
+    scroll-margin-top: 24px;
+    overflow-anchor: none;
+  }
+  .fourth-turn *, .fourth-turn *::before, .fourth-turn *::after { box-sizing: border-box; }
+  .fourth-turn [hidden] { display: none !important; }
+  .fourth-turn .turn-room { max-width: 1440px; height: 100%; margin: auto; display: grid; grid-template-rows: auto minmax(0, 1fr) 76px; }
+  .fourth-turn .turn-canvas-layer { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+  .fourth-turn .turn-controller-layer { position: absolute; left: calc(50% + 20svh); top: 50%; width: 400px; height: 400px; transform: translate(-50%, -50%); z-index: 1; pointer-events: none; }
+  .fourth-turn .turn-canvas-layer > canvas, .fourth-turn .turn-controller-layer > canvas { width: 100%; height: 100%; display: block; background: transparent; }
+  .fourth-turn[data-state="accepted"] .turn-controller-layer > canvas { pointer-events: auto; }
+  .fourth-turn .turn-heading, .fourth-turn .turn-score { position: relative; z-index: 2; }
+  .fourth-turn .turn-score > summary { display: none; }
+  .fourth-turn button, .fourth-turn input { font: inherit; color: inherit; }
+  .fourth-turn button { min-height: 44px; border: 0; padding: 0; background: none; cursor: pointer; touch-action: manipulation; }
+  .fourth-turn button:disabled { opacity: .35; cursor: default; }
+  .fourth-turn button:not(:disabled):hover, .fourth-turn summary:hover { color: var(--turn-gold); }
+  .fourth-turn :focus-visible { outline: 1px solid var(--turn-gold); outline-offset: 5px; }
+  .fourth-turn .turn-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+  .fourth-turn .turn-heading h2 { margin: 0; font: italic 400 clamp(48px, 5.9vw, 86px)/.96 var(--font-serif); letter-spacing: -.035em; }
+  .fourth-turn .turn-kicker { display: block; margin: 0 0 14px; font: italic 22px/1.3 var(--font-body); letter-spacing: 0; }
+  .fourth-turn .turn-line { display: block; }
+  .fourth-turn .turn-line--step { margin-left: .85em; }
+  .fourth-turn .turn-heading em { color: var(--color-primary); font-style: inherit; font-weight: inherit; }
+  .fourth-turn .turn-title { margin: 4px 0 0; color: var(--turn-quiet); font: italic 14px/1.5 var(--font-body); }
+  .fourth-turn .turn-work { display: grid; grid-template-columns: minmax(260px, .7fr) minmax(0, 1.3fr); align-items: center; gap: 24px; min-height: 0; padding: 16px 0; }
+  .fourth-turn .turn-recipe { min-width: 0; padding-left: clamp(0px, 2vw, 28px); }
+  .fourth-turn .turn-invitation, .fourth-turn .turn-promise { display: none; }
+  .fourth-turn .turn-steps { display: flex; align-items: center; gap: 14px; margin: 0 0 16px; font-size: 15px; color: var(--turn-quiet); }
+  .fourth-turn .turn-steps button { position: relative; min-width: 44px; }
+  .fourth-turn .turn-steps button[aria-current="step"] { color: var(--turn-hand); }
+  .fourth-turn .turn-steps button[aria-current="step"]::after { content: ''; position: absolute; bottom: 4px; left: 0; right: 0; height: 1px; background: currentColor; }
+  .fourth-turn .turn-steps > span, .fourth-turn .control-tabs > span { opacity: .4; }
+  .fourth-turn #recipe { margin: 0; min-height: 216px; max-height: 31svh; overflow: auto; color: var(--turn-paper); font: 14px/1.85 var(--font-mono); white-space: pre-wrap; overflow-wrap: anywhere; }
+  .fourth-turn .turn-gloss { margin: 14px 0 0; color: var(--turn-quiet); font: italic 14px/1.5 var(--font-body); }
+  .fourth-turn .turn-gloss code { color: var(--turn-paper); font: 12px var(--font-mono); }
+  .fourth-turn .turn-explanation { margin: 5px 0 18px; max-width: 35ch; min-height: 2.6em; color: var(--turn-quiet); font: 16px/1.45 var(--font-body); }
+  .fourth-turn .turn-next { color: var(--turn-hand); font: italic 30px/1.2 var(--font-serif); letter-spacing: -.025em; text-align: left; }
+  .fourth-turn .turn-next span { margin-left: 8px; font-size: .8em; }
+  .fourth-turn .turn-figure { display: contents; }
+  .fourth-turn .turn-control { position: absolute; top: 74%; left: calc(50% + 20svh); width: min(350px, calc(100% - 44px)); transform: translateX(-50%); z-index: 2; text-align: center; }
+  .fourth-turn .control-tabs { display: flex; justify-content: center; align-items: center; gap: 18px; color: var(--turn-quiet); font-size: 15px; }
+  .fourth-turn .control-tabs button { min-width: 54px; }
+  .fourth-turn .control-tabs button[aria-pressed="true"] { color: var(--turn-gold); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; }
+  .fourth-turn #reading { min-height: 1.5em; margin: 0; color: var(--turn-hand); font: 17px/1.5 var(--font-body); }
+  .fourth-turn .turn-hint { margin: 4px 0 0; color: var(--turn-quiet); font: italic 14px/1.5 var(--font-body); }
+  .fourth-turn .turn-enable, .fourth-turn .turn-await { position: absolute; top: 42%; left: calc(50% + 20svh); width: min(350px, calc(100% - 44px)); transform: translateX(-50%); z-index: 2; margin: 0; text-align: center; color: var(--turn-gold); font: italic 21px/1.4 var(--font-body); }
+  .fourth-turn:not([data-enhanced]) .turn-work { grid-template-columns: minmax(0, 1fr); }
+  .fourth-turn:not([data-enhanced]) .turn-figure,
+  .fourth-turn:not([data-enhanced]) .turn-steps,
+  .fourth-turn:not([data-enhanced]) .turn-next,
+  .fourth-turn:not([data-enhanced]) .turn-promise,
+  .fourth-turn:not([data-enhanced]) .turn-floor { display: none; }
+  .fourth-turn .turn-floor { position: relative; z-index: 3; display: flex; justify-content: space-between; align-items: center; gap: 24px; min-height: 76px; border-top: 1px solid #f1dba424; color: var(--turn-quiet); }
+  .fourth-turn .turn-actions { display: flex; align-items: center; gap: clamp(16px, 3vw, 32px); font-size: 14px; }
+  .fourth-turn #previous { min-width: 44px; }
+  .fourth-turn #previous span { margin-left: 5px; }
+  .fourth-turn .turn-underneath { font-size: 13px; }
+  .fourth-turn .turn-underneath summary { min-height: 44px; padding: 12px 0; cursor: pointer; }
+  .fourth-turn .turn-sheet { position: absolute; bottom: 74px; right: 0; z-index: 4; width: min(520px, 100%); max-height: 70svh; overflow: auto; padding: 26px; border: 1px solid #f1dba44a; background: #17131dfc; box-shadow: 0 10px 35px #0005; }
+  .fourth-turn .turn-sheet h3 { margin: 24px 0 12px; color: var(--turn-paper); font: italic 23px/1.3 var(--font-serif); }
+  .fourth-turn .turn-sheet pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--turn-quiet); font: 12px/1.7 var(--font-mono); }
+  .fourth-turn .proposal { min-width: 0; margin: 0; border: 0; padding: 0; }
+  .fourth-turn .proposal legend { color: var(--turn-paper); font: italic 23px/1.3 var(--font-serif); }
+  .fourth-turn .proposal p { margin: 10px 0 12px; font-size: 15px; line-height: 1.5; }
+  .fourth-turn .proposal-fields { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; }
+  .fourth-turn .proposal label { display: grid; gap: 6px; color: var(--turn-quiet); font: 12px var(--font-mono); }
+  .fourth-turn .proposal input { width: 88px; min-height: 44px; padding: 8px; border: 1px solid #f1dba44a; background: transparent; font: 12px var(--font-mono); }
+  .fourth-turn #propose { color: var(--turn-hand); font-style: italic; }
+  .fourth-turn #proposal-result { min-height: 1.5em; color: var(--turn-rule); }
+  .fourth-turn .turn-fault, .fourth-turn .turn-no-script { max-width: 70ch; color: var(--turn-paper); font-size: 16px; line-height: 1.6; }
+  @media (max-width: 950px) {
+    .fourth-turn .turn-work { grid-template-columns: minmax(245px, 1fr) minmax(0, 1.1fr); gap: 20px; }
+    .fourth-turn .turn-recipe { padding-left: 0; }
+    .fourth-turn .turn-steps { gap: 9px; }
+  }
+  @media (max-width: 700px) {
+    .fourth-turn { min-height: 680px; padding: 48px 22px 24px; }
+    .fourth-turn .turn-heading { gap: 12px; }
+    .fourth-turn .turn-heading h2 { font-size: clamp(43px, 10.8vw, 64px); }
+    .fourth-turn .turn-kicker { font-size: 18px; margin-bottom: 12px; }
+    .fourth-turn .turn-title { max-width: 5ch; font-size: 12px; line-height: 1.4; text-align: right; }
+    .fourth-turn .turn-canvas-layer { transform: none; }
+    .fourth-turn .turn-controller-layer { left: 50%; width: 240px; height: 240px; }
+    .fourth-turn .turn-control { left: 50%; top: 61%; }
+    .fourth-turn .turn-enable, .fourth-turn .turn-await { left: 50%; }
+    .fourth-turn .turn-hint { font-size: 13px; }
+    .fourth-turn .turn-work { display: block; padding: 0; }
+    .fourth-turn[data-enhanced] .turn-score { position: absolute; left: 22px; bottom: 24px; z-index: 3; }
+    .fourth-turn[data-enhanced] .turn-score > summary { display: list-item; min-height: 44px; padding: 12px 0; color: var(--turn-quiet); font-size: 13px; cursor: pointer; }
+    .fourth-turn[data-enhanced] .turn-score[open] .turn-recipe { position: absolute; bottom: 56px; left: 0; width: calc(100vw - 44px); max-height: min(52svh, 440px); overflow: auto; padding: 20px; border: 1px solid #f1dba44a; background: #17131dfc; box-shadow: 0 10px 35px #0005; }
+    .fourth-turn .turn-steps { justify-content: space-between; gap: 4px; margin-bottom: 12px; }
+    .fourth-turn #recipe { min-height: 0; font-size: 13px; }
+    .fourth-turn .turn-explanation { min-height: 0; max-width: none; margin-bottom: 10px; }
+    .fourth-turn .turn-next { font-size: 28px; }
+    .fourth-turn .turn-floor { justify-content: flex-end; }
+    .fourth-turn .turn-actions { position: absolute; left: 0; right: 0; top: -42px; justify-content: center; gap: 24px; font-size: 13px; }
+    .fourth-turn #previous span { display: none; }
+    .fourth-turn .turn-underneath { font-size: 12px; }
+    .fourth-turn .turn-sheet { max-height: 75svh; padding: 20px; }
+  }
+  .fourth-turn:not([data-enhanced]) { height: auto; min-height: 100svh; overflow: visible; }
+  .fourth-turn:not([data-enhanced]) .turn-room { height: auto; display: block; }
+  .fourth-turn:not([data-enhanced]) .turn-work { display: block; padding: 40px 0; }
+  @media (prefers-reduced-motion: reduce) {
+    .fourth-turn *, .fourth-turn *::before, .fourth-turn *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+  }
+}

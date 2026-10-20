@@ -1,0 +1,2237 @@
+{
+  "inputs": {
+    "assets/js/turtling/ast.js": {
+      "bytes": 455,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/mafs/operators.js": {
+      "bytes": 2360,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/mafs/delimiters.js": {
+      "bytes": 856,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/mafs/number.js": {
+      "bytes": 589,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/mafs/lexer.js": {
+      "bytes": 5047,
+      "imports": [
+        {
+          "path": "assets/js/turtling/mafs/operators.js",
+          "kind": "import-statement",
+          "original": "./operators.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/delimiters.js",
+          "kind": "import-statement",
+          "original": "./delimiters.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/number.js",
+          "kind": "import-statement",
+          "original": "./number.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/operators.js",
+          "kind": "import-statement",
+          "original": "./operators.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/mafs/tower.js": {
+      "bytes": 18638,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/mafs/parse.js": {
+      "bytes": 16025,
+      "imports": [
+        {
+          "path": "assets/js/turtling/ast.js",
+          "kind": "import-statement",
+          "original": "../ast.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/lexer.js",
+          "kind": "import-statement",
+          "original": "./lexer.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/operators.js",
+          "kind": "import-statement",
+          "original": "./operators.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/delimiters.js",
+          "kind": "import-statement",
+          "original": "./delimiters.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/number.js",
+          "kind": "import-statement",
+          "original": "./number.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/tower.js",
+          "kind": "import-statement",
+          "original": "./tower.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/relations.js": {
+      "bytes": 4447,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/report.js": {
+      "bytes": 1078,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/numerics.js": {
+      "bytes": 8410,
+      "imports": [
+        {
+          "path": "assets/js/turtling/report.js",
+          "kind": "import-statement",
+          "original": "./report.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/vec3.js": {
+      "bytes": 4135,
+      "imports": [
+        {
+          "path": "assets/js/turtling/numerics.js",
+          "kind": "import-statement",
+          "original": "../numerics.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/cone.js": {
+      "bytes": 5281,
+      "imports": [
+        {
+          "path": "assets/js/turtling/laws/vec3.js",
+          "kind": "import-statement",
+          "original": "./vec3.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/realize.js": {
+      "bytes": 6353,
+      "imports": [
+        {
+          "path": "assets/js/turtling/laws/vec3.js",
+          "kind": "import-statement",
+          "original": "./vec3.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/cone.js",
+          "kind": "import-statement",
+          "original": "./cone.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/relationships.js": {
+      "bytes": 12245,
+      "imports": [
+        {
+          "path": "assets/js/turtling/laws/relations.js",
+          "kind": "import-statement",
+          "original": "./relations.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/realize.js",
+          "kind": "import-statement",
+          "original": "./realize.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/vec3.js",
+          "kind": "import-statement",
+          "original": "./vec3.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/angle.js": {
+      "bytes": 10305,
+      "imports": [
+        {
+          "path": "assets/js/turtling/laws/vec3.js",
+          "kind": "import-statement",
+          "original": "./vec3.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/cone.js",
+          "kind": "import-statement",
+          "original": "./cone.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/realize.js",
+          "kind": "import-statement",
+          "original": "./realize.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/meet.js": {
+      "bytes": 31365,
+      "imports": [
+        {
+          "path": "assets/js/turtling/laws/relationships.js",
+          "kind": "import-statement",
+          "original": "./relationships.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/angle.js",
+          "kind": "import-statement",
+          "original": "./angle.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/vec3.js",
+          "kind": "import-statement",
+          "original": "./vec3.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/cone.js",
+          "kind": "import-statement",
+          "original": "./cone.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/rigid_precision.js": {
+      "bytes": 687,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/mafs/versors.js": {
+      "bytes": 6037,
+      "imports": [
+        {
+          "path": "assets/js/turtling/rigid_precision.js",
+          "kind": "import-statement",
+          "original": "../rigid_precision.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/se3.js": {
+      "bytes": 3741,
+      "imports": [
+        {
+          "path": "assets/js/turtling/mafs/versors.js",
+          "kind": "import-statement",
+          "original": "./mafs/versors.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/authored.js": {
+      "bytes": 35894,
+      "imports": [
+        {
+          "path": "assets/js/turtling/laws/relationships.js",
+          "kind": "import-statement",
+          "original": "./relationships.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/relations.js",
+          "kind": "import-statement",
+          "original": "./relations.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/realize.js",
+          "kind": "import-statement",
+          "original": "./realize.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/meet.js",
+          "kind": "import-statement",
+          "original": "./meet.js"
+        },
+        {
+          "path": "assets/js/turtling/se3.js",
+          "kind": "import-statement",
+          "original": "../se3.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/vec3.js",
+          "kind": "import-statement",
+          "original": "./vec3.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/address.js": {
+      "bytes": 1662,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/parse.js": {
+      "bytes": 53921,
+      "imports": [
+        {
+          "path": "assets/js/turtling/ast.js",
+          "kind": "import-statement",
+          "original": "./ast.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/authored.js",
+          "kind": "import-statement",
+          "original": "./laws/authored.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/operators.js",
+          "kind": "import-statement",
+          "original": "./mafs/operators.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/lexer.js",
+          "kind": "import-statement",
+          "original": "./mafs/lexer.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/parse.js",
+          "kind": "import-statement",
+          "original": "./mafs/parse.js"
+        },
+        {
+          "path": "assets/js/turtling/address.js",
+          "kind": "import-statement",
+          "original": "./address.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/weave/queries.js": {
+      "bytes": 15199,
+      "imports": [
+        {
+          "path": "assets/js/turtling/parse.js",
+          "kind": "import-statement",
+          "original": "../turtling/parse.js"
+        },
+        {
+          "path": "assets/js/turtling/address.js",
+          "kind": "import-statement",
+          "original": "../turtling/address.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/commands.js": {
+      "bytes": 12029,
+      "imports": [
+        {
+          "path": "assets/js/turtling/mafs/versors.js",
+          "kind": "import-statement",
+          "original": "./mafs/versors.js"
+        },
+        {
+          "path": "assets/js/turtling/se3.js",
+          "kind": "import-statement",
+          "original": "./se3.js"
+        },
+        {
+          "path": "assets/js/turtling/numerics.js",
+          "kind": "import-statement",
+          "original": "./numerics.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/vec3.js",
+          "kind": "import-statement",
+          "original": "./laws/vec3.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/view.js": {
+      "bytes": 4006,
+      "imports": [
+        {
+          "path": "assets/js/turtling/mafs/versors.js",
+          "kind": "import-statement",
+          "original": "./mafs/versors.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/stroke.js": {
+      "bytes": 1201,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/match.js": {
+      "bytes": 1856,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/space.js": {
+      "bytes": 1241,
+      "imports": [
+        {
+          "path": "assets/js/turtling/numerics.js",
+          "kind": "import-statement",
+          "original": "./numerics.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/localize.js": {
+      "bytes": 1827,
+      "imports": [
+        {
+          "path": "assets/js/turtling/se3.js",
+          "kind": "import-statement",
+          "original": "./se3.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/reactive.js": {
+      "bytes": 2335,
+      "imports": [
+        {
+          "path": "assets/js/turtling/mafs/tower.js",
+          "kind": "import-statement",
+          "original": "../mafs/tower.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/mafs/parse_memo.js": {
+      "bytes": 1031,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/kernel/observable.js": {
+      "bytes": 2522,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/ring-buffer.js": {
+      "bytes": 1581,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/ledger.js": {
+      "bytes": 2989,
+      "imports": [
+        {
+          "path": "assets/js/turtling/report.js",
+          "kind": "import-statement",
+          "original": "./report.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/frame.js": {
+      "bytes": 3080,
+      "imports": [
+        {
+          "path": "assets/js/turtling/se3.js",
+          "kind": "import-statement",
+          "original": "./se3.js"
+        },
+        {
+          "path": "assets/js/kernel/observable.js",
+          "kind": "import-statement",
+          "original": "../kernel/observable.js"
+        },
+        {
+          "path": "assets/js/turtling/ring-buffer.js",
+          "kind": "import-statement",
+          "original": "./ring-buffer.js"
+        },
+        {
+          "path": "assets/js/turtling/ledger.js",
+          "kind": "import-statement",
+          "original": "./ledger.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/bindings.js": {
+      "bytes": 2696,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/executor.js": {
+      "bytes": 64590,
+      "imports": [
+        {
+          "path": "assets/js/turtling/commands.js",
+          "kind": "import-statement",
+          "original": "./commands.js"
+        },
+        {
+          "path": "assets/js/turtling/parse.js",
+          "kind": "import-statement",
+          "original": "./parse.js"
+        },
+        {
+          "path": "assets/js/turtling/ast.js",
+          "kind": "import-statement",
+          "original": "./ast.js"
+        },
+        {
+          "path": "assets/js/turtling/se3.js",
+          "kind": "import-statement",
+          "original": "./se3.js"
+        },
+        {
+          "path": "assets/js/turtling/view.js",
+          "kind": "import-statement",
+          "original": "./view.js"
+        },
+        {
+          "path": "assets/js/turtling/stroke.js",
+          "kind": "import-statement",
+          "original": "./stroke.js"
+        },
+        {
+          "path": "assets/js/turtling/match.js",
+          "kind": "import-statement",
+          "original": "./match.js"
+        },
+        {
+          "path": "assets/js/turtling/space.js",
+          "kind": "import-statement",
+          "original": "./space.js"
+        },
+        {
+          "path": "assets/js/turtling/localize.js",
+          "kind": "import-statement",
+          "original": "./localize.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/number.js",
+          "kind": "import-statement",
+          "original": "./mafs/number.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/authored.js",
+          "kind": "import-statement",
+          "original": "./laws/authored.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/reactive.js",
+          "kind": "import-statement",
+          "original": "./laws/reactive.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/tower.js",
+          "kind": "import-statement",
+          "original": "./mafs/tower.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/parse_memo.js",
+          "kind": "import-statement",
+          "original": "./mafs/parse_memo.js"
+        },
+        {
+          "path": "assets/js/turtling/numerics.js",
+          "kind": "import-statement",
+          "original": "./numerics.js"
+        },
+        {
+          "path": "assets/js/turtling/report.js",
+          "kind": "import-statement",
+          "original": "./report.js"
+        },
+        {
+          "path": "assets/js/turtling/frame.js",
+          "kind": "import-statement",
+          "original": "./frame.js"
+        },
+        {
+          "path": "assets/js/turtling/bindings.js",
+          "kind": "import-statement",
+          "original": "./bindings.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/mafs/evaluate.js": {
+      "bytes": 14240,
+      "imports": [
+        {
+          "path": "assets/js/turtling/mafs/operators.js",
+          "kind": "import-statement",
+          "original": "./operators.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/tower.js",
+          "kind": "import-statement",
+          "original": "./tower.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/parse.js",
+          "kind": "import-statement",
+          "original": "./parse.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/parse_memo.js",
+          "kind": "import-statement",
+          "original": "./parse_memo.js"
+        },
+        {
+          "path": "assets/js/turtling/bindings.js",
+          "kind": "import-statement",
+          "original": "../bindings.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/render/loop.js": {
+      "bytes": 2766,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/utils/three.core.min.js": {
+      "bytes": 385386,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/utils/three.module.min.js": {
+      "bytes": 365552,
+      "imports": [
+        {
+          "path": "assets/js/utils/three.core.min.js",
+          "kind": "import-statement",
+          "original": "./three.core.min.js"
+        },
+        {
+          "path": "assets/js/utils/three.core.min.js",
+          "kind": "import-statement",
+          "original": "./three.core.min.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/utils/three-entry.js": {
+      "bytes": 1784,
+      "imports": [
+        {
+          "path": "assets/js/utils/three.core.min.js",
+          "kind": "import-statement",
+          "original": "./three.core.min.js"
+        },
+        {
+          "path": "assets/js/utils/three.module.min.js",
+          "kind": "import-statement",
+          "original": "./three.module.min.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/utils/earcut.js": {
+      "bytes": 5719,
+      "imports": [
+        {
+          "path": "<runtime>",
+          "kind": "import-statement",
+          "external": true
+        }
+      ],
+      "format": "cjs"
+    },
+    "assets/js/turtling/render/shape.js": {
+      "bytes": 14390,
+      "imports": [
+        {
+          "path": "assets/js/utils/three-entry.js",
+          "kind": "import-statement",
+          "original": "../../utils/three-entry.js"
+        },
+        {
+          "path": "assets/js/utils/earcut.js",
+          "kind": "import-statement",
+          "original": "../../utils/earcut.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/utils/threetext.js": {
+      "bytes": 124689,
+      "imports": [
+        {
+          "path": "assets/js/utils/three.core.min.js",
+          "kind": "import-statement",
+          "original": "./three.core.min"
+        },
+        {
+          "path": "assets/js/utils/three.module.min.js",
+          "kind": "import-statement",
+          "original": "./three.module.min"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/utils/color.js": {
+      "bytes": 1318,
+      "imports": [
+        {
+          "path": "assets/js/utils/three-entry.js",
+          "kind": "import-statement",
+          "original": "./three-entry.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/ink.js": {
+      "bytes": 191,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/render/head.js": {
+      "bytes": 10129,
+      "imports": [
+        {
+          "path": "assets/js/utils/three-entry.js",
+          "kind": "import-statement",
+          "original": "../../utils/three-entry.js"
+        },
+        {
+          "path": "assets/js/utils/color.js",
+          "kind": "import-statement",
+          "original": "../../utils/color.js"
+        },
+        {
+          "path": "assets/js/turtling/ink.js",
+          "kind": "import-statement",
+          "original": "../ink.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/render/index.js": {
+      "bytes": 317,
+      "imports": [
+        {
+          "path": "assets/js/turtling/render/loop.js",
+          "kind": "import-statement",
+          "original": "./loop.js"
+        },
+        {
+          "path": "assets/js/turtling/render/shape.js",
+          "kind": "import-statement",
+          "original": "./shape.js"
+        },
+        {
+          "path": "assets/js/utils/threetext.js",
+          "kind": "import-statement",
+          "original": "../../utils/threetext.js"
+        },
+        {
+          "path": "assets/js/turtling/render/head.js",
+          "kind": "import-statement",
+          "original": "./head.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/adapter.js": {
+      "bytes": 982,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/bridged.js": {
+      "bytes": 5859,
+      "imports": [
+        {
+          "path": "assets/js/adapter.js",
+          "kind": "import-statement",
+          "original": "./adapter.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/utils/threeorbital.js": {
+      "bytes": 40518,
+      "imports": [
+        {
+          "path": "assets/js/utils/three.core.min.js",
+          "kind": "import-statement",
+          "original": "./three.core.min.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/utils/gesture.js": {
+      "bytes": 3462,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/orbit.js": {
+      "bytes": 7156,
+      "imports": [
+        {
+          "path": "assets/js/utils/three-entry.js",
+          "kind": "import-statement",
+          "original": "../utils/three-entry.js"
+        },
+        {
+          "path": "assets/js/utils/threeorbital.js",
+          "kind": "import-statement",
+          "original": "../utils/threeorbital.js"
+        },
+        {
+          "path": "assets/js/utils/gesture.js",
+          "kind": "import-statement",
+          "original": "../utils/gesture.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/utils/three-addons/lines/LineMaterial.js": {
+      "bytes": 14040,
+      "imports": [
+        {
+          "path": "assets/js/utils/three.module.min.js",
+          "kind": "import-statement",
+          "original": "../../three.module.min.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/render/line/material-cache.js": {
+      "bytes": 4965,
+      "imports": [
+        {
+          "path": "assets/js/utils/three-addons/lines/LineMaterial.js",
+          "kind": "import-statement",
+          "original": "../../../utils/three-addons/lines/LineMaterial.js"
+        },
+        {
+          "path": "assets/js/turtling/ink.js",
+          "kind": "import-statement",
+          "original": "../../ink.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/viewport.js": {
+      "bytes": 10007,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/camera_command.js": {
+      "bytes": 901,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/batch.js": {
+      "bytes": 2851,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/feel.js": {
+      "bytes": 1292,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/outcome.js": {
+      "bytes": 1880,
+      "imports": [
+        {
+          "path": "assets/js/turtling/laws/feel.js",
+          "kind": "import-statement",
+          "original": "./feel.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/handle.js": {
+      "bytes": 5626,
+      "imports": [
+        {
+          "path": "assets/js/turtling/se3.js",
+          "kind": "import-statement",
+          "original": "../se3.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/vec3.js",
+          "kind": "import-statement",
+          "original": "./vec3.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/batch.js",
+          "kind": "import-statement",
+          "original": "./batch.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/outcome.js",
+          "kind": "import-statement",
+          "original": "./outcome.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/feel.js",
+          "kind": "import-statement",
+          "original": "./feel.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/fit.js": {
+      "bytes": 3182,
+      "imports": [
+        {
+          "path": "assets/js/turtling/laws/meet.js",
+          "kind": "import-statement",
+          "original": "./meet.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/vec3.js",
+          "kind": "import-statement",
+          "original": "./vec3.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/stage.js": {
+      "bytes": 19439,
+      "imports": [
+        {
+          "path": "assets/js/utils/three-entry.js",
+          "kind": "import-statement",
+          "original": "../utils/three-entry.js"
+        },
+        {
+          "path": "assets/js/turtling/orbit.js",
+          "kind": "import-statement",
+          "original": "./orbit.js"
+        },
+        {
+          "path": "assets/js/turtling/render/index.js",
+          "kind": "import-statement",
+          "original": "./render/index.js"
+        },
+        {
+          "path": "assets/js/turtling/render/line/material-cache.js",
+          "kind": "import-statement",
+          "original": "./render/line/material-cache.js"
+        },
+        {
+          "path": "assets/js/turtling/viewport.js",
+          "kind": "import-statement",
+          "original": "./viewport.js"
+        },
+        {
+          "path": "assets/js/turtling/camera_command.js",
+          "kind": "import-statement",
+          "original": "./camera_command.js"
+        },
+        {
+          "path": "assets/js/turtling/se3.js",
+          "kind": "import-statement",
+          "original": "./se3.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/handle.js",
+          "kind": "import-statement",
+          "original": "./laws/handle.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/fit.js",
+          "kind": "import-statement",
+          "original": "./laws/fit.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/participation.js": {
+      "bytes": 1420,
+      "imports": [
+        {
+          "path": "assets/js/turtling/frame.js",
+          "kind": "import-statement",
+          "original": "./frame.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/execution.js": {
+      "bytes": 1173,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/ambient.js": {
+      "bytes": 1568,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/resolution.js": {
+      "bytes": 2414,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/expression.js": {
+      "bytes": 3244,
+      "imports": [
+        {
+          "path": "assets/js/turtling/laws/relations.js",
+          "kind": "import-statement",
+          "original": "./relations.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/relationships.js",
+          "kind": "import-statement",
+          "original": "./relationships.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/authored.js",
+          "kind": "import-statement",
+          "original": "./authored.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/vec3.js",
+          "kind": "import-statement",
+          "original": "./vec3.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/replacement.js": {
+      "bytes": 8448,
+      "imports": [
+        {
+          "path": "assets/js/turtling/laws/expression.js",
+          "kind": "import-statement",
+          "original": "./expression.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/authored.js",
+          "kind": "import-statement",
+          "original": "./authored.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/component.js": {
+      "bytes": 4898,
+      "imports": [
+        {
+          "path": "assets/js/turtling/laws/vec3.js",
+          "kind": "import-statement",
+          "original": "./vec3.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/authored.js",
+          "kind": "import-statement",
+          "original": "./authored.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/constraints.js": {
+      "bytes": 23693,
+      "imports": [
+        {
+          "path": "assets/js/turtling/laws/meet.js",
+          "kind": "import-statement",
+          "original": "./meet.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/fit.js",
+          "kind": "import-statement",
+          "original": "./fit.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/vec3.js",
+          "kind": "import-statement",
+          "original": "./vec3.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/cone.js",
+          "kind": "import-statement",
+          "original": "./cone.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/authored.js",
+          "kind": "import-statement",
+          "original": "./authored.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/candidate.js": {
+      "bytes": 1974,
+      "imports": [
+        {
+          "path": "assets/js/turtling/laws/authored.js",
+          "kind": "import-statement",
+          "original": "./authored.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/batch.js",
+          "kind": "import-statement",
+          "original": "./batch.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/constraints.js",
+          "kind": "import-statement",
+          "original": "./constraints.js"
+        },
+        {
+          "path": "assets/js/turtling/localize.js",
+          "kind": "import-statement",
+          "original": "../localize.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/following.js": {
+      "bytes": 4121,
+      "imports": [
+        {
+          "path": "assets/js/turtling/laws/vec3.js",
+          "kind": "import-statement",
+          "original": "./vec3.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/authored.js",
+          "kind": "import-statement",
+          "original": "./authored.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/verdict.js": {
+      "bytes": 41730,
+      "imports": [
+        {
+          "path": "assets/js/turtling/laws/relations.js",
+          "kind": "import-statement",
+          "original": "./relations.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/meet.js",
+          "kind": "import-statement",
+          "original": "./meet.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/realize.js",
+          "kind": "import-statement",
+          "original": "./realize.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/authored.js",
+          "kind": "import-statement",
+          "original": "./authored.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/component.js",
+          "kind": "import-statement",
+          "original": "./component.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/vec3.js",
+          "kind": "import-statement",
+          "original": "./vec3.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/replacement.js",
+          "kind": "import-statement",
+          "original": "./replacement.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/expression.js",
+          "kind": "import-statement",
+          "original": "./expression.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/batch.js",
+          "kind": "import-statement",
+          "original": "./batch.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/candidate.js",
+          "kind": "import-statement",
+          "original": "./candidate.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/following.js",
+          "kind": "import-statement",
+          "original": "./following.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/constraints.js",
+          "kind": "import-statement",
+          "original": "./constraints.js"
+        },
+        {
+          "path": "assets/js/turtling/numerics.js",
+          "kind": "import-statement",
+          "original": "../numerics.js"
+        },
+        {
+          "path": "assets/js/turtling/se3.js",
+          "kind": "import-statement",
+          "original": "../se3.js"
+        },
+        {
+          "path": "assets/js/turtling/localize.js",
+          "kind": "import-statement",
+          "original": "../localize.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/program_following.js": {
+      "bytes": 6641,
+      "imports": [
+        {
+          "path": "assets/js/turtling/laws/authored.js",
+          "kind": "import-statement",
+          "original": "./authored.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/component.js",
+          "kind": "import-statement",
+          "original": "./component.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/following.js",
+          "kind": "import-statement",
+          "original": "./following.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/candidate.js",
+          "kind": "import-statement",
+          "original": "./candidate.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/verdict.js",
+          "kind": "import-statement",
+          "original": "./verdict.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/vec3.js",
+          "kind": "import-statement",
+          "original": "./vec3.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/batch.js",
+          "kind": "import-statement",
+          "original": "./batch.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/meet.js",
+          "kind": "import-statement",
+          "original": "./meet.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/readout.js": {
+      "bytes": 31812,
+      "imports": [
+        {
+          "path": "assets/js/turtling/mafs/tower.js",
+          "kind": "import-statement",
+          "original": "../mafs/tower.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/observation.js": {
+      "bytes": 487,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/mafs/keyed_stream.js": {
+      "bytes": 1526,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/scheduler.js": {
+      "bytes": 203106,
+      "imports": [
+        {
+          "path": "assets/js/turtling/frame.js",
+          "kind": "import-statement",
+          "original": "./frame.js"
+        },
+        {
+          "path": "assets/js/turtling/participation.js",
+          "kind": "import-statement",
+          "original": "./participation.js"
+        },
+        {
+          "path": "assets/js/turtling/execution.js",
+          "kind": "import-statement",
+          "original": "./execution.js"
+        },
+        {
+          "path": "assets/js/turtling/ambient.js",
+          "kind": "import-statement",
+          "original": "./ambient.js"
+        },
+        {
+          "path": "assets/js/turtling/report.js",
+          "kind": "import-statement",
+          "original": "./report.js"
+        },
+        {
+          "path": "assets/js/turtling/match.js",
+          "kind": "import-statement",
+          "original": "./match.js"
+        },
+        {
+          "path": "assets/js/turtling/executor.js",
+          "kind": "import-statement",
+          "original": "./executor.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/batch.js",
+          "kind": "import-statement",
+          "original": "./laws/batch.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/resolution.js",
+          "kind": "import-statement",
+          "original": "./laws/resolution.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/replacement.js",
+          "kind": "import-statement",
+          "original": "./laws/replacement.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/verdict.js",
+          "kind": "import-statement",
+          "original": "./laws/verdict.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/program_following.js",
+          "kind": "import-statement",
+          "original": "./laws/program_following.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/expression.js",
+          "kind": "import-statement",
+          "original": "./laws/expression.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/authored.js",
+          "kind": "import-statement",
+          "original": "./laws/authored.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/meet.js",
+          "kind": "import-statement",
+          "original": "./laws/meet.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/relations.js",
+          "kind": "import-statement",
+          "original": "./laws/relations.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/readout.js",
+          "kind": "import-statement",
+          "original": "./laws/readout.js"
+        },
+        {
+          "path": "assets/js/turtling/se3.js",
+          "kind": "import-statement",
+          "original": "./se3.js"
+        },
+        {
+          "path": "assets/js/turtling/localize.js",
+          "kind": "import-statement",
+          "original": "./localize.js"
+        },
+        {
+          "path": "assets/js/turtling/observation.js",
+          "kind": "import-statement",
+          "original": "./observation.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/keyed_stream.js",
+          "kind": "import-statement",
+          "original": "./mafs/keyed_stream.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/parse_memo.js",
+          "kind": "import-statement",
+          "original": "./mafs/parse_memo.js"
+        },
+        {
+          "path": "assets/js/turtling/ledger.js",
+          "kind": "import-statement",
+          "original": "./ledger.js"
+        },
+        {
+          "path": "assets/js/turtling/space.js",
+          "kind": "import-statement",
+          "original": "./space.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/point_state.js": {
+      "bytes": 2804,
+      "imports": [
+        {
+          "path": "assets/js/turtling/scheduler.js",
+          "kind": "import-statement",
+          "original": "../scheduler.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/authored.js",
+          "kind": "import-statement",
+          "original": "./authored.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/constraints.js",
+          "kind": "import-statement",
+          "original": "./constraints.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/batch.js",
+          "kind": "import-statement",
+          "original": "./batch.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/render/label-pool.js": {
+      "bytes": 4737,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/utils/three-addons/lines/LineSegmentsGeometry.js": {
+      "bytes": 6913,
+      "imports": [
+        {
+          "path": "assets/js/utils/three.module.min.js",
+          "kind": "import-statement",
+          "original": "../../three.module.min.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/utils/three-addons/lines/LineSegments2.js": {
+      "bytes": 11497,
+      "imports": [
+        {
+          "path": "assets/js/utils/three.module.min.js",
+          "kind": "import-statement",
+          "original": "../../three.module.min.js"
+        },
+        {
+          "path": "assets/js/utils/three-addons/lines/LineSegmentsGeometry.js",
+          "kind": "import-statement",
+          "original": "./LineSegmentsGeometry.js"
+        },
+        {
+          "path": "assets/js/utils/three-addons/lines/LineMaterial.js",
+          "kind": "import-statement",
+          "original": "./LineMaterial.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/utils/three-addons/lines/LineGeometry.js": {
+      "bytes": 3479,
+      "imports": [
+        {
+          "path": "assets/js/utils/three-addons/lines/LineSegmentsGeometry.js",
+          "kind": "import-statement",
+          "original": "./LineSegmentsGeometry.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/utils/three-addons/lines/Line2.js": {
+      "bytes": 1486,
+      "imports": [
+        {
+          "path": "assets/js/utils/three-addons/lines/LineSegments2.js",
+          "kind": "import-statement",
+          "original": "./LineSegments2.js"
+        },
+        {
+          "path": "assets/js/utils/three-addons/lines/LineGeometry.js",
+          "kind": "import-statement",
+          "original": "./LineGeometry.js"
+        },
+        {
+          "path": "assets/js/utils/three-addons/lines/LineMaterial.js",
+          "kind": "import-statement",
+          "original": "./LineMaterial.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/render/line/GrowLine.js": {
+      "bytes": 5229,
+      "imports": [
+        {
+          "path": "assets/js/utils/three-entry.js",
+          "kind": "import-statement",
+          "original": "../../../utils/three-entry.js"
+        },
+        {
+          "path": "assets/js/utils/three-addons/lines/LineSegmentsGeometry.js",
+          "kind": "import-statement",
+          "original": "../../../utils/three-addons/lines/LineSegmentsGeometry.js"
+        },
+        {
+          "path": "assets/js/utils/three-addons/lines/Line2.js",
+          "kind": "import-statement",
+          "original": "../../../utils/three-addons/lines/Line2.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/materializer.js": {
+      "bytes": 13295,
+      "imports": [
+        {
+          "path": "assets/js/utils/three-entry.js",
+          "kind": "import-statement",
+          "original": "../utils/three-entry.js"
+        },
+        {
+          "path": "assets/js/turtling/view.js",
+          "kind": "import-statement",
+          "original": "./view.js"
+        },
+        {
+          "path": "assets/js/utils/color.js",
+          "kind": "import-statement",
+          "original": "../utils/color.js"
+        },
+        {
+          "path": "assets/js/turtling/render/label-pool.js",
+          "kind": "import-statement",
+          "original": "./render/label-pool.js"
+        },
+        {
+          "path": "assets/js/utils/three-addons/lines/Line2.js",
+          "kind": "import-statement",
+          "original": "../utils/three-addons/lines/Line2.js"
+        },
+        {
+          "path": "assets/js/utils/three-addons/lines/LineGeometry.js",
+          "kind": "import-statement",
+          "original": "../utils/three-addons/lines/LineGeometry.js"
+        },
+        {
+          "path": "assets/js/turtling/render/line/GrowLine.js",
+          "kind": "import-statement",
+          "original": "./render/line/GrowLine.js"
+        },
+        {
+          "path": "assets/js/turtling/render/line/material-cache.js",
+          "kind": "import-statement",
+          "original": "./render/line/material-cache.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/timeline.js": {
+      "bytes": 1693,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/pacer.js": {
+      "bytes": 1518,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/compositor.js": {
+      "bytes": 29316,
+      "imports": [
+        {
+          "path": "assets/js/utils/three-entry.js",
+          "kind": "import-statement",
+          "original": "../utils/three-entry.js"
+        },
+        {
+          "path": "assets/js/turtling/materializer.js",
+          "kind": "import-statement",
+          "original": "./materializer.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/batch.js",
+          "kind": "import-statement",
+          "original": "./laws/batch.js"
+        },
+        {
+          "path": "assets/js/turtling/scheduler.js",
+          "kind": "import-statement",
+          "original": "./scheduler.js"
+        },
+        {
+          "path": "assets/js/turtling/se3.js",
+          "kind": "import-statement",
+          "original": "./se3.js"
+        },
+        {
+          "path": "assets/js/turtling/view.js",
+          "kind": "import-statement",
+          "original": "./view.js"
+        },
+        {
+          "path": "assets/js/turtling/timeline.js",
+          "kind": "import-statement",
+          "original": "./timeline.js"
+        },
+        {
+          "path": "assets/js/turtling/pacer.js",
+          "kind": "import-statement",
+          "original": "./pacer.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/lab.js": {
+      "bytes": 661,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/focus.js": {
+      "bytes": 2796,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/hatch.js": {
+      "bytes": 2504,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/hand.js": {
+      "bytes": 14188,
+      "imports": [
+        {
+          "path": "assets/js/turtling/laws/handle.js",
+          "kind": "import-statement",
+          "original": "./handle.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/cone.js",
+          "kind": "import-statement",
+          "original": "./cone.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/vec3.js",
+          "kind": "import-statement",
+          "original": "./vec3.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/meet.js",
+          "kind": "import-statement",
+          "original": "./meet.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/feel.js",
+          "kind": "import-statement",
+          "original": "./feel.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/gesture.js": {
+      "bytes": 11248,
+      "imports": [
+        {
+          "path": "assets/js/turtling/laws/handle.js",
+          "kind": "import-statement",
+          "original": "./handle.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/outcome.js",
+          "kind": "import-statement",
+          "original": "./outcome.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/feel.js",
+          "kind": "import-statement",
+          "original": "./feel.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/hand.js",
+          "kind": "import-statement",
+          "original": "./hand.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/pin.js": {
+      "bytes": 10432,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/reveal.js": {
+      "bytes": 1442,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/overlay.js": {
+      "bytes": 8656,
+      "imports": [
+        {
+          "path": "assets/js/turtling/laws/handle.js",
+          "kind": "import-statement",
+          "original": "./laws/handle.js"
+        },
+        {
+          "path": "assets/js/turtling/viewport.js",
+          "kind": "import-statement",
+          "original": "./viewport.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/vitals.js": {
+      "bytes": 3469,
+      "imports": [
+        {
+          "path": "assets/js/turtling/match.js",
+          "kind": "import-statement",
+          "original": "./match.js"
+        },
+        {
+          "path": "assets/js/turtling/focus.js",
+          "kind": "import-statement",
+          "original": "./focus.js"
+        },
+        {
+          "path": "assets/js/turtling/scheduler.js",
+          "kind": "import-statement",
+          "original": "./scheduler.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/kernel/witness.js": {
+      "bytes": 874,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/turtle.js": {
+      "bytes": 44807,
+      "imports": [
+        {
+          "path": "assets/js/turtling/mafs/parse.js",
+          "kind": "import-statement",
+          "original": "./mafs/parse.js"
+        },
+        {
+          "path": "assets/js/turtling/parse.js",
+          "kind": "import-statement",
+          "original": "./parse.js"
+        },
+        {
+          "path": "assets/js/weave/queries.js",
+          "kind": "import-statement",
+          "original": "../weave/queries.js"
+        },
+        {
+          "path": "assets/js/turtling/executor.js",
+          "kind": "import-statement",
+          "original": "./executor.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/evaluate.js",
+          "kind": "import-statement",
+          "original": "./mafs/evaluate.js"
+        },
+        {
+          "path": "assets/js/turtling/render/index.js",
+          "kind": "import-statement",
+          "original": "./render/index.js"
+        },
+        {
+          "path": "assets/js/turtling/ink.js",
+          "kind": "import-statement",
+          "original": "./ink.js"
+        },
+        {
+          "path": "assets/js/bridged.js",
+          "kind": "import-statement",
+          "original": "../bridged.js"
+        },
+        {
+          "path": "assets/js/turtling/stage.js",
+          "kind": "import-statement",
+          "original": "./stage.js"
+        },
+        {
+          "path": "assets/js/turtling/se3.js",
+          "kind": "import-statement",
+          "original": "./se3.js"
+        },
+        {
+          "path": "assets/js/turtling/scheduler.js",
+          "kind": "import-statement",
+          "original": "./scheduler.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/point_state.js",
+          "kind": "import-statement",
+          "original": "./laws/point_state.js"
+        },
+        {
+          "path": "assets/js/turtling/compositor.js",
+          "kind": "import-statement",
+          "original": "./compositor.js"
+        },
+        {
+          "path": "assets/js/turtling/lab.js",
+          "kind": "import-statement",
+          "original": "./lab.js"
+        },
+        {
+          "path": "assets/js/turtling/focus.js",
+          "kind": "import-statement",
+          "original": "./focus.js"
+        },
+        {
+          "path": "assets/js/turtling/hatch.js",
+          "kind": "import-statement",
+          "original": "./hatch.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/gesture.js",
+          "kind": "import-statement",
+          "original": "./laws/gesture.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/batch.js",
+          "kind": "import-statement",
+          "original": "./laws/batch.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/handle.js",
+          "kind": "import-statement",
+          "original": "./laws/handle.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/outcome.js",
+          "kind": "import-statement",
+          "original": "./laws/outcome.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/feel.js",
+          "kind": "import-statement",
+          "original": "./laws/feel.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/pin.js",
+          "kind": "import-statement",
+          "original": "./laws/pin.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/constraints.js",
+          "kind": "import-statement",
+          "original": "./laws/constraints.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/fit.js",
+          "kind": "import-statement",
+          "original": "./laws/fit.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/reveal.js",
+          "kind": "import-statement",
+          "original": "./laws/reveal.js"
+        },
+        {
+          "path": "assets/js/turtling/overlay.js",
+          "kind": "import-statement",
+          "original": "./overlay.js"
+        },
+        {
+          "path": "assets/js/turtling/vitals.js",
+          "kind": "import-statement",
+          "original": "./vitals.js"
+        },
+        {
+          "path": "assets/js/kernel/witness.js",
+          "kind": "import-statement",
+          "original": "../kernel/witness.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/run.js": {
+      "bytes": 1977,
+      "imports": [
+        {
+          "path": "assets/js/turtling/scheduler.js",
+          "kind": "import-statement",
+          "original": "./scheduler.js"
+        },
+        {
+          "path": "assets/js/weave/queries.js",
+          "kind": "import-statement",
+          "original": "../weave/queries.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/host.js": {
+      "bytes": 5627,
+      "imports": [
+        {
+          "path": "assets/js/turtling/turtle.js",
+          "kind": "import-statement",
+          "original": "./turtling/turtle.js"
+        },
+        {
+          "path": "assets/js/turtling/run.js",
+          "kind": "import-statement",
+          "original": "./turtling/run.js"
+        }
+      ],
+      "format": "esm"
+    }
+  },
+  "outputs": {
+    "host.mjs.LEGAL.txt": {
+      "imports": [],
+      "exports": [],
+      "inputs": {},
+      "bytes": 796
+    },
+    "host.mjs": {
+      "imports": [],
+      "exports": [
+        "createHatch"
+      ],
+      "entryPoint": "assets/js/host.js",
+      "inputs": {
+        "assets/js/utils/earcut.js": {
+          "bytesInOutput": 5670
+        },
+        "assets/js/turtling/ast.js": {
+          "bytesInOutput": 154
+        },
+        "assets/js/turtling/mafs/operators.js": {
+          "bytesInOutput": 1368
+        },
+        "assets/js/turtling/mafs/delimiters.js": {
+          "bytesInOutput": 239
+        },
+        "assets/js/turtling/mafs/number.js": {
+          "bytesInOutput": 108
+        },
+        "assets/js/turtling/mafs/lexer.js": {
+          "bytesInOutput": 1511
+        },
+        "assets/js/turtling/mafs/tower.js": {
+          "bytesInOutput": 4908
+        },
+        "assets/js/turtling/mafs/parse.js": {
+          "bytesInOutput": 6104
+        },
+        "assets/js/turtling/laws/relations.js": {
+          "bytesInOutput": 1021
+        },
+        "assets/js/turtling/report.js": {
+          "bytesInOutput": 126
+        },
+        "assets/js/turtling/numerics.js": {
+          "bytesInOutput": 1934
+        },
+        "assets/js/turtling/laws/vec3.js": {
+          "bytesInOutput": 878
+        },
+        "assets/js/turtling/laws/cone.js": {
+          "bytesInOutput": 650
+        },
+        "assets/js/turtling/laws/realize.js": {
+          "bytesInOutput": 2011
+        },
+        "assets/js/turtling/laws/relationships.js": {
+          "bytesInOutput": 1179
+        },
+        "assets/js/turtling/laws/angle.js": {
+          "bytesInOutput": 1493
+        },
+        "assets/js/turtling/laws/meet.js": {
+          "bytesInOutput": 13013
+        },
+        "assets/js/turtling/rigid_precision.js": {
+          "bytesInOutput": 229
+        },
+        "assets/js/turtling/mafs/versors.js": {
+          "bytesInOutput": 2019
+        },
+        "assets/js/turtling/se3.js": {
+          "bytesInOutput": 1508
+        },
+        "assets/js/turtling/laws/authored.js": {
+          "bytesInOutput": 14341
+        },
+        "assets/js/turtling/address.js": {
+          "bytesInOutput": 154
+        },
+        "assets/js/turtling/parse.js": {
+          "bytesInOutput": 8414
+        },
+        "assets/js/weave/queries.js": {
+          "bytesInOutput": 1029
+        },
+        "assets/js/turtling/commands.js": {
+          "bytesInOutput": 4331
+        },
+        "assets/js/turtling/view.js": {
+          "bytesInOutput": 285
+        },
+        "assets/js/turtling/stroke.js": {
+          "bytesInOutput": 321
+        },
+        "assets/js/turtling/match.js": {
+          "bytesInOutput": 518
+        },
+        "assets/js/turtling/space.js": {
+          "bytesInOutput": 146
+        },
+        "assets/js/turtling/localize.js": {
+          "bytesInOutput": 328
+        },
+        "assets/js/turtling/laws/reactive.js": {
+          "bytesInOutput": 940
+        },
+        "assets/js/turtling/mafs/parse_memo.js": {
+          "bytesInOutput": 424
+        },
+        "assets/js/kernel/observable.js": {
+          "bytesInOutput": 295
+        },
+        "assets/js/turtling/ring-buffer.js": {
+          "bytesInOutput": 361
+        },
+        "assets/js/turtling/ledger.js": {
+          "bytesInOutput": 1018
+        },
+        "assets/js/turtling/frame.js": {
+          "bytesInOutput": 584
+        },
+        "assets/js/turtling/bindings.js": {
+          "bytesInOutput": 516
+        },
+        "assets/js/turtling/executor.js": {
+          "bytesInOutput": 17603
+        },
+        "assets/js/turtling/mafs/evaluate.js": {
+          "bytesInOutput": 4508
+        },
+        "assets/js/turtling/render/loop.js": {
+          "bytesInOutput": 1298
+        },
+        "assets/js/utils/three.core.min.js": {
+          "bytesInOutput": 237738
+        },
+        "assets/js/utils/three-entry.js": {
+          "bytesInOutput": 0
+        },
+        "assets/js/utils/three.module.min.js": {
+          "bytesInOutput": 344931
+        },
+        "assets/js/turtling/render/shape.js": {
+          "bytesInOutput": 5693
+        },
+        "assets/js/utils/threetext.js": {
+          "bytesInOutput": 115308
+        },
+        "assets/js/utils/color.js": {
+          "bytesInOutput": 500
+        },
+        "assets/js/turtling/ink.js": {
+          "bytesInOutput": 17
+        },
+        "assets/js/turtling/render/head.js": {
+          "bytesInOutput": 3364
+        },
+        "assets/js/turtling/render/index.js": {
+          "bytesInOutput": 48
+        },
+        "assets/js/adapter.js": {
+          "bytesInOutput": 284
+        },
+        "assets/js/bridged.js": {
+          "bytesInOutput": 316
+        },
+        "assets/js/utils/threeorbital.js": {
+          "bytesInOutput": 19697
+        },
+        "assets/js/utils/gesture.js": {
+          "bytesInOutput": 637
+        },
+        "assets/js/turtling/orbit.js": {
+          "bytesInOutput": 2169
+        },
+        "assets/js/utils/three-addons/lines/LineMaterial.js": {
+          "bytesInOutput": 10556
+        },
+        "assets/js/turtling/render/line/material-cache.js": {
+          "bytesInOutput": 1871
+        },
+        "assets/js/turtling/viewport.js": {
+          "bytesInOutput": 3931
+        },
+        "assets/js/turtling/camera_command.js": {
+          "bytesInOutput": 327
+        },
+        "assets/js/turtling/laws/batch.js": {
+          "bytesInOutput": 480
+        },
+        "assets/js/turtling/laws/outcome.js": {
+          "bytesInOutput": 504
+        },
+        "assets/js/turtling/laws/handle.js": {
+          "bytesInOutput": 1252
+        },
+        "assets/js/turtling/laws/fit.js": {
+          "bytesInOutput": 1122
+        },
+        "assets/js/turtling/stage.js": {
+          "bytesInOutput": 4770
+        },
+        "assets/js/turtling/participation.js": {
+          "bytesInOutput": 323
+        },
+        "assets/js/turtling/execution.js": {
+          "bytesInOutput": 358
+        },
+        "assets/js/turtling/ambient.js": {
+          "bytesInOutput": 227
+        },
+        "assets/js/turtling/laws/resolution.js": {
+          "bytesInOutput": 419
+        },
+        "assets/js/turtling/laws/expression.js": {
+          "bytesInOutput": 815
+        },
+        "assets/js/turtling/laws/replacement.js": {
+          "bytesInOutput": 2425
+        },
+        "assets/js/turtling/laws/component.js": {
+          "bytesInOutput": 1099
+        },
+        "assets/js/turtling/laws/constraints.js": {
+          "bytesInOutput": 7264
+        },
+        "assets/js/turtling/laws/candidate.js": {
+          "bytesInOutput": 363
+        },
+        "assets/js/turtling/laws/following.js": {
+          "bytesInOutput": 1429
+        },
+        "assets/js/turtling/laws/verdict.js": {
+          "bytesInOutput": 13104
+        },
+        "assets/js/turtling/laws/program_following.js": {
+          "bytesInOutput": 2180
+        },
+        "assets/js/turtling/laws/readout.js": {
+          "bytesInOutput": 8729
+        },
+        "assets/js/turtling/observation.js": {
+          "bytesInOutput": 172
+        },
+        "assets/js/turtling/mafs/keyed_stream.js": {
+          "bytesInOutput": 347
+        },
+        "assets/js/turtling/scheduler.js": {
+          "bytesInOutput": 57002
+        },
+        "assets/js/turtling/laws/point_state.js": {
+          "bytesInOutput": 614
+        },
+        "assets/js/turtling/render/label-pool.js": {
+          "bytesInOutput": 884
+        },
+        "assets/js/utils/three-addons/lines/LineSegmentsGeometry.js": {
+          "bytesInOutput": 2496
+        },
+        "assets/js/utils/three-addons/lines/LineSegments2.js": {
+          "bytesInOutput": 3749
+        },
+        "assets/js/utils/three-addons/lines/LineGeometry.js": {
+          "bytesInOutput": 804
+        },
+        "assets/js/utils/three-addons/lines/Line2.js": {
+          "bytesInOutput": 134
+        },
+        "assets/js/turtling/render/line/GrowLine.js": {
+          "bytesInOutput": 1923
+        },
+        "assets/js/turtling/materializer.js": {
+          "bytesInOutput": 3510
+        },
+        "assets/js/turtling/timeline.js": {
+          "bytesInOutput": 125
+        },
+        "assets/js/turtling/pacer.js": {
+          "bytesInOutput": 393
+        },
+        "assets/js/turtling/compositor.js": {
+          "bytesInOutput": 7939
+        },
+        "assets/js/turtling/lab.js": {
+          "bytesInOutput": 262
+        },
+        "assets/js/turtling/focus.js": {
+          "bytesInOutput": 629
+        },
+        "assets/js/turtling/hatch.js": {
+          "bytesInOutput": 325
+        },
+        "assets/js/turtling/laws/hand.js": {
+          "bytesInOutput": 4756
+        },
+        "assets/js/turtling/laws/gesture.js": {
+          "bytesInOutput": 2887
+        },
+        "assets/js/turtling/laws/pin.js": {
+          "bytesInOutput": 3299
+        },
+        "assets/js/turtling/laws/reveal.js": {
+          "bytesInOutput": 255
+        },
+        "assets/js/turtling/overlay.js": {
+          "bytesInOutput": 2402
+        },
+        "assets/js/turtling/vitals.js": {
+          "bytesInOutput": 525
+        },
+        "assets/js/kernel/witness.js": {
+          "bytesInOutput": 14
+        },
+        "assets/js/turtling/turtle.js": {
+          "bytesInOutput": 15771
+        },
+        "assets/js/turtling/run.js": {
+          "bytesInOutput": 594
+        },
+        "assets/js/host.js": {
+          "bytesInOutput": 2272
+        }
+      },
+      "bytes": 1012746
+    }
+  }
+}
