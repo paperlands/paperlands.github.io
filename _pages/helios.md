@@ -34,36 +34,37 @@ hero:
 
 
 see:
-  verse: A platform to
+  verse: Where we
   thesis: Bring Math to Life
+  focus: Life
+  focus_gesture: grow
   body: |
     Learn to create beautiful math animations and discover how to creatively experiment with mathematics.
   action: Explore <u>our approach</u>
-  label: Anyone can see math differently
-  program_label: the program
-  status: waiting
-  performing: performing
-  finished: the finished figure
-  fallback: fell back to the finished figure —
-  missing_pin: the pin is missing — no runtime was vendored
+  href: /our-approach
 
 create:
-  verse: A platform to
-  title: Share Math on Stage
+  verse: Where your
+  title: Math takes the Stage
+  focus: Stage
+  focus_gesture: gather
   body: |
-    It may be a curious question you've followed, a surprising discovery, a connection that made an idea click.
+    It may be a curious question you've asked, ideas you wrestled with, a surprising discovery you stumbled.
 
-    We design avenues for students to share the stories behind their mathematical creations with their community.
+    We design avenues for students to share their own stories through their mathematical creations for their community.
   action: Explore our <u>experiences</u>
   caption: students presenting their torus
 
 possibilities:
-  verse: Are you ready to
-  title: See math differently too?
+  verse: Perhaps you
+  title: See math differently?
+  focus: differently?
   body: |
-    Perhaps a festival in your school hall, a chapter in your university, or a math playground in every classroom in your state...
+    A festival in your school hall, a chapter in your university, or a peer led movement in every classroom across your state...
     
-    If you believe that mathematics education can be so much more human...
+    If you believe in bringing your stage 
+    for mathematics to life.
+    
   action: Don't hesitate to <u>contact us</u>
 
 ticker:
@@ -106,9 +107,9 @@ colophon:
     home/wordmark.html   the identity — the mark assembles on scroll distance
     home/hero.html       thesis + stack carousel (fill) + flash + play fill
     home/ticker.html     the crawl
-    home/see.html        the interval — the language drawing its own figure
+    home/see.html        the Sierpinski — the same plate as To Create, a different figure
     home/create.html     To Create — one full-width life
-    home/possibilities.html   the closing invitation — What do you see?
+    home/possibilities.html   the closing invitation — Are you ready to…
     home/colophon.html   the close
     home/boot.html       page-local decoration
 
@@ -127,16 +128,13 @@ colophon:
 {% include home/ticker.html %}
 </div>
 
-<div class="helios-twilight">
-<div class="helios-act helios-act--content">
+<div class="helios-landscape">
 {% include home/see.html %}
-</div>
-
-</div>
 
 {% include home/create.html %}
 
 {% include home/possibilities.html %}
+</div>
 
 {% include home/colophon.html %}
 

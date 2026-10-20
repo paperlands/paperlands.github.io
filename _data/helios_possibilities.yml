@@ -2,6 +2,40 @@
 # _pages/helios.md's `create` block. The plate is not a torus player: `grows`
 # names one line, and scroll moves the last number on that line from `from`
 # to `to`. The programme as written is the settled figure.
+inquiry:
+  echo: /assets/lib/helios/parallel/newton-echo.webp
+  echo_width: 611
+  echo_height: 723
+  body: /assets/lib/helios/parallel/inquiry.webp
+  body_width: 684
+  body_height: 588
+  body_alt: A student reaching upward with a questioning hand
+  near: /assets/lib/helios/parallel/apple.png
+  near_width: 121
+  near_height: 136
+  # Settled depth is 4, the middle of the scroll. The last number is the only
+  # thing the plate moves; there is no wait, so scroll is the clock.
+  program: |
+    hd
+    beColour "e0663a"
+    jmp -250
+    rt 90
+    jmp 216.5
+    lt 90
+    def tri len n do
+      when n>0 do
+        loop 3 do
+          fw len
+          lt 120
+          tri len/2 n-1
+        end
+      end
+    end
+    tri 500 4
+  grows:
+    line: tri 500 4
+    from: 2
+    to: 6
 creators:
   echo: /assets/lib/helios/parallel/feynman-echo.webp
   echo_width: 914

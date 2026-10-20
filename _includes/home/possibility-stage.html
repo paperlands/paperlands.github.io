@@ -1,6 +1,7 @@
 {%- assign item = include.item -%}
 {%- assign scene = include.scene -%}
 <div class="helios-possibility__stage">
+  {%- if item.focus -%}<div class="helios-atmosphere" aria-hidden="true"></div>{%- endif -%}
   <figure class="helios-possibility__art"{% if item.caption %} aria-label="{{ item.caption | escape }}"{% endif %}>
     <div class="helios-possibility__plane helios-possibility__echo">
       <img src="{{ scene.echo | relative_url }}" alt="" width="{{ scene.echo_width }}" height="{{ scene.echo_height }}" loading="lazy" decoding="async">
@@ -15,13 +16,19 @@
     <div class="helios-possibility__plane helios-possibility__body">
       <img src="{{ scene.body | relative_url }}" alt="{{ scene.body_alt | escape }}" width="{{ scene.body_width }}" height="{{ scene.body_height }}" loading="lazy" decoding="async">
     </div>
+    {%- if scene.near -%}
+    <div class="helios-possibility__plane helios-possibility__near" data-plane="near" aria-hidden="true">
+      <img src="{{ scene.near | relative_url }}" alt="" width="{{ scene.near_width }}" height="{{ scene.near_height }}" loading="lazy" decoding="async">
+    </div>
+    {%- endif -%}
     <div class="helios-possibility__plane helios-possibility__light" aria-hidden="true"></div>
     <figcaption>{{ item.caption }}</figcaption>
   </figure>
   <div class="helios-possibility__copy">
     <p class="helios-section__intro">{{ item.verse }}</p>
-    <h2 class="helios-section__heading" id="create-title">{{ item.title }}</h2>
+    {%- assign stage_heading = item.title | default: item.thesis -%}
+    <h2 class="helios-section__heading" id="{{ include.heading | default: 'plate-title' }}">{% include home/focus.html text=stage_heading word=item.focus gesture=item.focus_gesture %}</h2>
     <div class="helios-section__body">{{ item.body | markdownify }}</div>
-    <a class="helios-section__call internal-link" href="{{ '/experiences' | relative_url }}">{{ item.action }} {% include home/cta-arrow.html %}</a>
+    <a class="helios-section__call internal-link" href="{{ item.href | default: '/experiences' | relative_url }}">{{ item.action }} {% include home/cta-arrow.html %}</a>
   </div>
 </div>

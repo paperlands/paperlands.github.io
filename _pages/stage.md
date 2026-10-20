@@ -1,7 +1,13 @@
 ---
 layout: folio
 title: Math takes the Stage
-permalink: /stage
+permalink: /stage-landing
+sitemap: false
+# NOT /stage: that route belongs to _notes/stage.md, the article the blog links
+# to. Both files used to claim it, and Jekyll's own build said so — "Conflict:
+# the following destination is shared by multiple files" — while silently writing
+# one over the other. This page is an unlinked variant, so it takes the variant
+# route. If it is ever meant to BE /stage, the article has to move first.
 nav_tone: dark
 look: helios
 description: Bring math to life for others to see

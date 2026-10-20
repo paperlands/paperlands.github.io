@@ -1,5 +1,6 @@
 {%- comment -%}Page-local Helios decoration and the To Create drawing.{%- endcomment -%}
 <script src="{{ '/assets/js/home/helios.js' | relative_url }}" defer></script>
-{%- if page.create -%}
+<script src="{{ '/assets/js/home/helios-focus.js' | relative_url }}" defer></script>
+{%- if page.see or page.create -%}
 <script type="module" src="{{ '/assets/js/home/scroll-scrub.mjs' | relative_url }}"></script>
 {%- endif -%}

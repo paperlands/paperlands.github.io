@@ -1,4 +1,7 @@
 (function () {
+  // Decoders, not clips: every attached clip holds one, and the hero's stack is
+  // already four. Whatever the reader can see plus what the writer bet on fits
+  // inside this; the clip over the line stays on its still until its turn.
   var MAX_ATTACH = 3;
   var api = { sync: function () {} };
   window.paperlandMedia = api;
@@ -68,19 +71,52 @@
     video.dataset.mediaAttached = '1';
   }
 
+  // A still is the picture the clip is LEAVING, so it is only worth taking when
+  // the clip actually advanced: media/video.html already carries a poster, and
+  // that poster is the first frame. Taking a still of frame zero rewrote the
+  // same picture as a JPEG and paid for it — measured on the built page, 1x CPU:
+  // drawImage 10-30ms and a 21-45ms toDataURL at 1920x1080, inside the scroll or
+  // inside the first frame of the hero. Guarded twice: never for a clip that
+  // never moved, and never twice for one frame (`ended` is followed by `unbind`
+  // at the same currentTime).
+  var capturedAt = new WeakMap();
+  var stills = new WeakMap();
+  var STILL_MAX = 960;
+
+  function stillSize(video) {
+    var width = video.videoWidth;
+    var height = video.videoHeight;
+    var css = video.clientWidth;
+    var dpr = window.devicePixelRatio || 1;
+    var wanted = css > 0 ? Math.min(width, Math.round(css * dpr)) : width;
+    if (wanted < STILL_MAX) {
+      height = Math.round(height * wanted / width);
+      width = wanted;
+    } else if (width > STILL_MAX) {
+      height = Math.round(height * STILL_MAX / width);
+      width = STILL_MAX;
+    }
+    return { width: Math.max(1, width), height: Math.max(1, height) };
+  }
+
   function captureStill(video) {
     var host = video.closest('.media-clip');
     if (!host) return;
     if (video.readyState < 2 || !video.videoWidth) return;
+    var poster = host.querySelector('.media-clip-poster');
+    if (video.currentTime === 0 && poster) return;
+    if (capturedAt.get(video) === video.currentTime) return;
+    var box = stillSize(video);
     var canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    canvas.width = box.width;
+    canvas.height = box.height;
     try {
-      canvas.getContext('2d').drawImage(video, 0, 0);
+      canvas.getContext('2d').drawImage(video, 0, 0, box.width, box.height);
     } catch (e) {
       return;
     }
-    var img = host.querySelector('.media-clip-poster');
+    capturedAt.set(video, video.currentTime);
+    var img = poster;
     if (!img) {
       img = document.createElement('img');
       img.className = 'media-clip-poster';
@@ -89,7 +125,21 @@
       img.setAttribute('aria-hidden', 'true');
       host.insertBefore(img, video);
     }
-    img.src = canvas.toDataURL('image/jpeg', 0.72);
+    // The draw has to happen while the frame is live, the encode does not:
+    // toBlob hands the JPEG to a worker, where toDataURL encoded it on this
+    // thread and inflated the bytes by a third on the way out as base64.
+    if (!canvas.toBlob) {
+      img.src = canvas.toDataURL('image/jpeg', 0.72);
+      return;
+    }
+    canvas.toBlob(function (blob) {
+      if (!blob) return;
+      var previous = stills.get(img);
+      var url = URL.createObjectURL(blob);
+      stills.set(img, url);
+      img.src = url;
+      if (previous) URL.revokeObjectURL(previous);
+    }, 'image/jpeg', 0.72);
   }
 
   function unbind(video) {
@@ -138,8 +188,8 @@
       if (video.dataset.mediaAttached !== '1') return;
       if ((video.dataset.mediaMode || 'loop') !== 'hover') {
         if (document.hidden) return;
-        var p = policy(video);
-        if (p === 'drop' || p === 'warm') return;
+        var p = policy(video, markedGroups());
+        if (p === 'drop' || p === 'warm' || p === 'hold') return;
         if (p === 'io' && visOf.has(video) && !visOf.get(video)) return;
       }
       if (!video.paused && !video.ended) {
@@ -168,15 +218,26 @@
     }
   }
 
-  // A group is carousel-owned. Unmarked members stay on the still.
-  function policy(video) {
+  // A group is carousel-owned. Unmarked members stay on the still — but only
+  // once the writer has SPOKEN for that group. `marked` is "some member of this
+  // group carries a mark", computed once per reconcile.
+  //
+  // The distinction is a measured bug, not tidiness. Both observers live in this
+  // file; the writer's first marks are published by media-carousel's own
+  // IntersectionObserver, and on a cold load this file's callback is delivered
+  // first. With unmarked read as `drop`, that callback unbound the priority clip
+  // the markup had deliberately started at parse (media/video.html preloads it),
+  // took a still of it on the way out (drawImage 36.6ms + toDataURL 32.7ms at
+  // 1x), threw away the 257KB it had already fetched, and re-attached it 60ms
+  // later. `hold` says what `policy` meant: the player has no opinion until the
+  // carousel has one.
+  function policy(video, marked) {
     var group = video.dataset.mediaGroup || '';
     if (!group) return 'io';
     if (video.hasAttribute('data-media-active')) return 'play';
     if (video.hasAttribute('data-media-decode')) return 'warm';
-    return 'drop';
+    return marked[group] ? 'drop' : 'hold';
   }
-
   function score(video, p) {
     var n = 0;
     if (p === 'play') n += 40;
@@ -188,17 +249,32 @@
   }
 
   function wantsAttach(p, video) {
-    if (p === 'drop') return false;
+    if (p === 'drop' || p === 'hold') return false;
     if (p === 'play' || p === 'warm') return true;
     return !!nearOf.get(video);
   }
-
+  // Which groups the writer has ever spoken for. Read from the marks themselves —
+  // the writer publishes them synchronously when it boots, so no second channel
+  // can disagree with it — and remembered, because the writer also WITHDRAWS them
+  // when the carousel leaves the viewport. "Hold" is only for a group that has
+  // never been marked at all; a group whose marks are merely gone is still
+  // carousel-owned, and its clips must be released as before.
+  var written = {};
+  function markedGroups() {
+    nodes().forEach(function (v) {
+      if (v.hasAttribute('data-media-active') || v.hasAttribute('data-media-decode')) {
+        written[v.dataset.mediaGroup || ''] = true;
+      }
+    });
+    return written;
+  }
   function reconcileAll() {
     var list = nodes().filter(function (v) {
       return (v.dataset.mediaMode || 'loop') !== 'hover';
     });
+    var marked = markedGroups();
     var ranked = list.map(function (v) {
-      var p = policy(v);
+      var p = policy(v, marked);
       return { v: v, p: p, s: score(v, p), want: wantsAttach(p, v) };
     }).sort(function (a, b) { return b.s - a.s; });
 
@@ -222,9 +298,18 @@
 
     var attached = 0;
     ranked.forEach(function (row) {
-      if (row.p === 'warm' && !readyGroups[row.v.dataset.mediaGroup || '']) return;
       var video = row.v;
       var p = row.p;
+      // The player has no opinion on this clip yet (see policy): do not start
+      // it, and do not tear down what the markup started.
+      if (p === 'hold') return;
+      if (p === 'warm' && !readyGroups[video.dataset.mediaGroup || '']) {
+        // A warm clip that is already attached still holds a decoder, so it
+        // counts against the cap even while the bet is not worth placing. It
+        // used to return without counting, which let the cap leak to four.
+        if (video.dataset.mediaAttached === '1') attached += 1;
+        return;
+      }
       if (!row.want || attached >= MAX_ATTACH) {
         unbind(video);
         return;

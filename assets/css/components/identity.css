@@ -163,8 +163,9 @@
   }
 
   /* The ring lands on the drawn twin, because the link is opacity 0 and an
-     outline on an invisible element is invisible. The ink is the surface's:
-     the brand on the look's pages, the edition's ember in the edition. */
+     outline on an invisible element is invisible. The ink is the surface's
+     highlight: the look's --helios-highlight on its pages, the edition's
+     ember in the edition. */
   body:has([data-nav-mark]:focus-visible) .helios-wordmark {
     outline: 1px solid var(--identity-ring, var(--color-primary));
     outline-offset: 4px;

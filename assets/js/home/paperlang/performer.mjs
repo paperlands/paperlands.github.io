@@ -1,8 +1,8 @@
 import { faultOf, rejection } from './record.mjs';
 
-// The producer uses onBeat. onLine is a legacy spike adapter only.
-// These are line-walk occurrences, never deduplicated state readings.
-export function bindBeat(_factory, hatch, callback) {
+// The producer uses onBeat; onLine is the legacy spike adapter only. These are
+// line-walk occurrences, never deduplicated state readings.
+export function bindBeat(hatch, callback) {
   const method = typeof hatch.onBeat === 'function' ? 'onBeat'
     : typeof hatch.onLine === 'function' ? 'onLine' : null;
   if (method) hatch[method](callback);
@@ -31,7 +31,14 @@ export function createDirectPerformer(canvas, { path, createHatch, caps } = {}) 
           reason: 'unsupported',
         }, { visibility: { presented: false, beatSent: false } });
       }
-      resident?.dispose(); resident = null;
+      // The runtime is RESIDENT across requests. createHatch builds the
+      // interpreter, the host, its GL programs and its glyph atlases, and on the
+      // To Create plate one scroll pass asks for twenty figures — a pass measured
+      // 12-14 compileShader, 6-7 linkProgram and 14-28 texImage2D, with the host
+      // re-measuring the DOM on every construction. None of that is needed to
+      // change one integer: hatch.play() supersedes the run in flight and keeps
+      // the rest, and the host already watches the canvas with a ResizeObserver,
+      // so reuse survives a resize. Only the erase is still per run.
       const facts = { presented: false, beatSent: false };
       let reject, listener = null;
       const mine = { cancelled: false, cancel: () => {
@@ -50,9 +57,8 @@ export function createDirectPerformer(canvas, { path, createHatch, caps } = {}) 
           try {
             clear(); facts.presented = true; onVisibility({ ...facts });
             if (mine.cancelled) return;
-            const hatch = createHatch(canvas, caps === undefined ? {} : { caps });
-            resident = hatch;
-            listener = bindBeat(createHatch, hatch, (beat) => {
+            const hatch = resident || (resident = createHatch(canvas, caps === undefined ? {} : { caps }));
+            listener = bindBeat(hatch, (beat) => {
               if (mine.cancelled || active !== mine) return;
               facts.beatSent = true; onVisibility({ ...facts }); onBeat(beat);
             });

@@ -36,16 +36,20 @@
         the marks and ARIA states the shared player and writer publish. */
   function restart(el, attr, value) {
     if (!el) return;
+    // The restart needs a style recalc between removal and re-add: setting the
+    // same value twice in one task is a no-op to the cascade. `void el.offsetWidth`
+    // bought that with a LAYOUT flush — measured 12-44ms mid-scroll and at cold
+    // load, on the tree the hero's own pose had just dirtied, 3-9 times per
+    // gesture. A computed-style read flushes style only, which is all the restart
+    // needs; the animations this restarts are opacity and transform.
     el.removeAttribute(attr);
-    void el.offsetWidth;
+    void getComputedStyle(el).animationName;
     el.setAttribute(attr, value);
   }
 
   /* 3. Play fill. The player attaches, plays and releases; we only read the
         clock of whichever clip currently carries the active mark. */
   var active = null;
-  var activeHandlers = false;
-
   function paint() {
     if (!fill) return;
     var p = 0;
@@ -60,12 +64,10 @@
   function bindPlay() {
     var next = hero ? hero.querySelector('[data-media-active]') : null;
     if (next === active) return;
-    if (active && activeHandlers) active.removeEventListener('timeupdate', onTime);
+    if (active) active.removeEventListener('timeupdate', onTime);
     active = next;
-    activeHandlers = false;
     if (active) {
       active.addEventListener('timeupdate', onTime);
-      activeHandlers = true;
     }
     paint();
   }

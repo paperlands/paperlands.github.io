@@ -1,3 +1,5 @@
+@import "./helios-focus.css";
+
 /* ==========================================================================
    components/helios.css — the Helios look
    --------------------------------------------------------------------------
@@ -121,9 +123,51 @@
      actually here, which `:has(.helios-wordmark)` states for both surfaces.
      /helios-interval declares the look and includes no wordmark, so a rule
      keyed on the look alone would take that page's brand away. The ring's ink
-     is the one thing that is this surface's: */
+     is the highlight's — the ink the interaction below lights with: */
   [data-look="helios"] {
-    --identity-ring: var(--light-accent);
+    --helios-highlight: #f3aa63;
+    --identity-ring: var(--helios-highlight);
+  }
+
+  /* ---- the highlight interaction --------------------------------------
+     What the reader's own hand asks of the page — selecting a passage,
+     hovering a link, tabbing to one — answered once, and the way the edition
+     answers it (components/evening.css): one ink lights all three, the
+     selection keeps that ink as its plate under the ground's own ink, the
+     focus ring is 2px five pixels out, and the tap keeps its native flash out
+     of it. Before this block the look had no selection at all — the browser's
+     own blue — and three focus treatments of its own: 1px accent at offsets
+     6, 4 and 2. They are one interaction now.
+
+     THE COLOUR IS THE EDITION'S, taken as the reference: its lit ember
+     #f3aa63 is the ink that lights. It is not this exposure's --light-ember —
+     the look's ember is the deep one (#d45a14) and it PAINTS (the ticker's
+     ground, a body's bookend), where the edition's ember only ever lights.
+     Where the two embers disagree, this interaction follows the edition. The
+     value stays local to this block: the fire has no role for the lit ember on
+     this exposure, and minting one in core/lights.css is a lights decision,
+     not one interaction's.
+
+     The letter paints inside itself (components/contact.css carries its own
+     ink and ground), so nothing here paints inside one — the same exclusion
+     the edition makes, for the same reason. */
+  [data-look="helios"] ::selection {
+    background: var(--helios-highlight);
+    color: var(--light-ground);
+  }
+
+  [data-look="helios"] :focus-visible:not(dialog, dialog *) {
+    outline: 2px solid var(--helios-highlight);
+    outline-offset: 5px;
+  }
+
+  [data-look="helios"] a:not(dialog, dialog *),
+  [data-look="helios"] button {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  [data-look="helios"] a:hover:not(dialog, dialog *) {
+    color: var(--helios-highlight);
   }
 
   /* Grain belongs to each pictured surface, below its copy. A fixed layer
@@ -848,7 +892,6 @@
   }
 
   [data-look="helios"] .helios-section__call:hover .helios-section__arrow { transform: translate(2px, -2px); }
-  [data-look="helios"] .helios-section__call:focus-visible { outline: 1px solid var(--light-accent); outline-offset: 6px; }
 
   /* ---- the interval, rehearsed ---------------------------------------- */
   /* The same night as the see act above, with the film's ribbon replaced by
@@ -1188,17 +1231,14 @@
 
   /* ---- To Create and the closing invitation ------------------------- */
   [data-look="helios"] .helios-create,
+  [data-look="helios"] .helios-plate,
   [data-look="helios"] .helios-possibilities {
     --parallel-ground: #140910;
     position: relative;
     color: var(--light-ink);
   }
-  [data-look="helios"] .helios-create { background: var(--parallel-ground); }
-  /* One plate, one runway. Scroll grows the figure; the stage stays put. */
-  [data-look="helios"] .helios-create__journey { height: 220svh; }
-  [data-look="helios"] .helios-create .helios-possibility__stage {
-    position: sticky; top: 3.8rem; height: calc(100svh - 4.2rem); min-height: 0;
-  }
+  [data-look="helios"] .helios-create,
+  [data-look="helios"] .helios-plate { background: var(--parallel-ground); }
   [data-look="helios"] .helios-possibilities {
     background: linear-gradient(180deg, var(--parallel-ground), var(--parallel-ground) 75%, var(--light-ground));
   }
@@ -1238,7 +1278,7 @@
   [data-look="helios"] .helios-possibility__thought canvas {
     left: var(--thought-x); top: var(--thought-y);
     width: var(--thought-w) !important; height: var(--thought-h) !important;
-    mix-blend-mode: screen; opacity: 0;
+    opacity: 0;
     transform: rotate(var(--spiral, 0deg)) scale(var(--thought-scale)); transform-origin: 50% 50%;
     filter: saturate(.55) hue-rotate(8deg) brightness(var(--ink-light)) contrast(1.28)
       drop-shadow(0 0 20px rgb(233 174 100 / var(--ember))) drop-shadow(0 0 60px #c96e281a);
@@ -1257,13 +1297,48 @@
     transition: opacity .35s ease;
   }
   [data-look="helios"] .helios-possibility__stage[data-drawing-active] .helios-possibility__pool { opacity: .3; }
-  [data-look="helios"] .helios-possibility__body { z-index: 4; }
+  [data-look="helios"] .helios-possibility__body { z-index: 4; isolation: isolate; }
   [data-look="helios"] .helios-possibility__body img {
     left: 54%; top: 30%; width: 43%; height: 65%; object-position: center bottom;
-    mask-image: linear-gradient(#000 72%, transparent 99%);
+  }
+  /* Settle the cutout into the room. A mask would open a hole onto the figure behind it. */
+  [data-look="helios"] .helios-possibility__body::after {
+    content: ""; position: absolute; left: 54%; top: 30%; width: 43%; height: 65%;
+    background: linear-gradient(180deg, transparent 78%, #090409 97%);
+    pointer-events: none;
+  }
+  [data-look="helios"] .helios-possibility__near { z-index: 5; }
+  [data-look="helios"] .helios-possibility__near img {
+    right: 5%; top: 14%; width: 7%; height: auto;
+    transform: rotate(calc(12deg + var(--fall-spin, 0deg)));
+  }
+  /* The see plate only. The finger sits high in the cutout; the pyramid's tip
+     is placed on that line, with air between the hand and the point. It sits
+     low enough that the peak clears the plate's top fade and reads as a point
+     rather than a shape running off the edge. The torus plate keeps the shared
+     focus. */
+  [data-look="helios"] .helios-plate .helios-possibility__stage {
+    --thought-x: 66%; --thought-y: 10%; --thought-w: 40%; --thought-h: 48%; --thought-scale: 2.4;
+  }
+  [data-look="helios"] .helios-plate .helios-possibility__thought canvas,
+  [data-look="helios"] .helios-plate .helios-possibility__pool {
+    transform-origin: 50% 28%;
+  }
+  [data-look="helios"] .helios-plate .helios-possibility__thought canvas {
+    mask-image: radial-gradient(ellipse 72% 78% at 50% 30%, #000 42%, #000c 70%, transparent 96%);
+  }
+  [data-look="helios"] .helios-plate .helios-possibility__body img,
+  [data-look="helios"] .helios-plate .helios-possibility__body::after {
+    left: 34%; top: 20%; width: 52%; height: 76%;
+  }
+  [data-look="helios"] .helios-plate .helios-possibility__echo img {
+    left: 42%; top: 2%; width: 38%; height: 72%; opacity: .16;
+  }
+  [data-look="helios"] .helios-plate .helios-possibility__near img {
+    right: 2%; top: 36%; width: 6.5%;
   }
   [data-look="helios"] .helios-possibility__light {
-    z-index: 5; mix-blend-mode: screen; opacity: calc(var(--ember) + .12);
+    z-index: 3; mix-blend-mode: screen; opacity: calc(var(--ember) + .12);
     background: linear-gradient(177deg, transparent 42%, #e284321a 43%, #fff2d699 44%, #ffd69666 44.4%, transparent 46%);
     mask-image: linear-gradient(90deg, transparent 25%, #000 48%, transparent);
   }
@@ -1281,10 +1356,6 @@
     position: relative; z-index: 1; padding: clamp(5rem, 12svh, 8rem) var(--helios-gutter) clamp(6rem, 20svh, 14rem);
   }
   @media (max-width: 850px) {
-    [data-look="helios"] .helios-create__journey { height: auto; }
-    [data-look="helios"] .helios-create .helios-possibility__stage {
-      position: relative; top: auto; height: auto;
-    }
     /* Let the mobile story follow its content. Viewport-height acts and
        absolute copy leave long empty pauses and clip text on short screens. */
     [data-look="helios"] { --helios-section-space: clamp(5rem, 11svh, 6rem); }
@@ -1346,6 +1417,14 @@
     }
     [data-look="helios"] .helios-possibility__stage {
       --thought-x: 17%; --thought-y: -22%; --thought-w: 120%; --thought-h: 110%; --thought-scale: 1.9;
+    [data-look="helios"] .helios-plate .helios-possibility__stage {
+      --thought-x: 46%; --thought-y: -4%; --thought-w: 54%; --thought-h: 62%; --thought-scale: 1.9;
+    }
+    [data-look="helios"] .helios-plate .helios-possibility__body img,
+    [data-look="helios"] .helios-plate .helios-possibility__body::after {
+      left: 18%; top: 8%; width: 72%; height: 90%;
+    }
+    [data-look="helios"] .helios-plate .helios-possibility__near img { right: 3%; top: 22%; width: 9%; }
     }
     [data-look="helios"] .helios-possibility__stage::after {
       background:
@@ -1354,16 +1433,13 @@
     }
     [data-look="helios"] .helios-possibility__art figcaption { bottom: 1.2rem; max-width: 75%; font-size: .43rem; }
     [data-look="helios"] .helios-possibility__echo img { left: 11%; width: 68%; }
-    [data-look="helios"] .helios-possibility__body img { left: 32%; top: 19%; width: 65%; height: 81%; }
+    [data-look="helios"] .helios-possibility__body img,
+    [data-look="helios"] .helios-possibility__body::after { left: 32%; top: 19%; width: 65%; height: 81%; }
     [data-look="helios"] .helios-possibilities__opening {
       padding-block: var(--helios-section-space);
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    [data-look="helios"] .helios-create__journey { height: auto; }
-    [data-look="helios"] .helios-create .helios-possibility__stage {
-      position: relative; top: auto; height: auto; min-height: max(100svh, 720px);
-    }
     [data-look="helios"] .helios-create *,
     [data-look="helios"] .helios-possibilities * { transition: none !important; }
   }
@@ -1916,8 +1992,8 @@
   }
 
   [data-look="helios"] .helios-hall__switch input:focus-visible + label {
-    outline: 1px solid var(--light-accent);
-    outline-offset: 2px;
+    outline: 2px solid var(--helios-highlight);
+    outline-offset: 5px;
   }
 
   /* `today` is the shipped close: the scene leaves AND the section gives its

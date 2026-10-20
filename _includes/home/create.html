@@ -1,7 +1,7 @@
 {%- assign scene = site.data.helios_possibilities.creators -%}
 <section class="helios-create" data-scroll-scrub data-hatch="{{ site.data.hatch.artifact_path | relative_url }}" aria-labelledby="create-title"{% if scene.grows %} data-grows="{{ scene.grows.line | escape }}" data-grows-from="{{ scene.grows.from }}" data-grows-to="{{ scene.grows.to }}"{% endif %}>
   <div class="helios-create__journey" data-scrub-journey>
-    {% include home/possibility-stage.html item=page.create scene=scene %}
+    {% include home/possibility-stage.html item=page.create scene=scene heading="create-title" %}
   </div>
   <template data-scrub-program>{{ scene.program | escape }}</template>
 </section>
