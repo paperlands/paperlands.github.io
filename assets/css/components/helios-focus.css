@@ -153,9 +153,11 @@
     mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
   }
   /* Both sides arrive at the same pigment, with the same absence of grain at
-     the join. Grain returns gradually inside each scene, never at a cut. */
-  [data-look="helios"] .helios-landscape .helios-possibility__stage::before,
-  [data-look="helios"] .helios-landscape .helios-possibilities::before {
+     the join. Grain returns gradually inside each scene, never at a cut.
+     The body prefix beats the later generic grain list: :is() takes the
+     specificity of its hero arm, even when it matches a landscape stage. */
+  body[data-look="helios"] .helios-landscape .helios-possibility__stage::before,
+  body[data-look="helios"] .helios-landscape .helios-possibilities::before {
     -webkit-mask-image: linear-gradient(180deg, transparent, #000 24%, #000 76%, transparent);
     mask-image: linear-gradient(180deg, transparent, #000 24%, #000 76%, transparent);
     /* A still print, not a full-viewport repaint on an endless grain clock. */
