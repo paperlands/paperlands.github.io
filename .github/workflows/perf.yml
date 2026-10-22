@@ -4,6 +4,9 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 concurrency:
   group: perf-${{ github.ref }}
   cancel-in-progress: true
@@ -12,16 +15,13 @@ jobs:
   budget:
     name: Front page budget
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - name: Install Tailwind CSS
-        run: |
-          curl -sLo tailwindcss https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64
-          chmod +x tailwindcss
-          sudo mv tailwindcss /usr/bin/tailwindcss
-
+      # No `curl releases/latest`: the stylesheet pipeline uses the CLI inside
+      # the `tailwindcss-ruby` gem (_plugins/fast_styles.rb).
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -30,10 +30,11 @@ jobs:
           cache-version: 0
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
+
       - name: Install the still encoder
         run: npm ci
 
@@ -51,7 +52,7 @@ jobs:
 
       - name: Keep the reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: lighthouseci
           path: .lighthouseci

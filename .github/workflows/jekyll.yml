@@ -1,11 +1,15 @@
 name: To the Moon 🌙
 
+# Every pull request is built and gated, whatever its base branch: the gates
+# are what keep a reskin honest, so a PR aimed at master must run them or the
+# only thing standing between it and production is review. Deploy is the one
+# job that is not on the PR path — it waits for a push to master.
 on:
   pull_request:
-    branches: [staging]
   push:
     branches:
       - master
+  workflow_dispatch:
   workflow_call:
 
 permissions:
@@ -14,46 +18,46 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: pages-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      - name: Install Tailwind CSS
-        run: |
-          curl -sLo tailwindcss https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64
-          chmod +x tailwindcss
-          sudo mv tailwindcss /usr/bin/tailwindcss
+        uses: actions/checkout@v5
+
+      # The stylesheet pipeline shells out to the CLI that ships inside the
+      # `tailwindcss-ruby` gem (see _plugins/fast_styles.rb), so there is no
+      # `curl releases/latest` step: an unpinned download of a moving target is
+      # how a build breaks on a day nobody edited anything.
       - name: Setup Ruby
-        uses: ruby/setup-ruby@v1 # v1.161.0
+        uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.3' # Not needed with a .ruby-version file
-          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-          cache-version: 0 # Increment this number if you need to re-download cached gems
+          ruby-version: '3.3'
+          bundler-cache: true
+          cache-version: 0
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
+
       - name: Install the still encoder
         run: npm ci
 
-      - name: Setup Pages
-        id: pages
-        uses: actions/configure-pages@v5
       - name: Build with Jekyll
-        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+        run: bundle exec jekyll build
         env:
           JEKYLL_ENV: production
 
       - name: Verify generated media
         run: node design/mint-media.mjs verify
+
       - name: Verify compiled ink, stills, and bounded frame selection
         run: |
           node --test design/probe/ink-state.test.mjs
@@ -61,18 +65,39 @@ jobs:
           ruby design/probe/compiled_ink_test.rb
           ruby design/probe/image_sources_test.rb
 
+      - name: Verify page markup and edition contracts
+        run: |
+          ruby design/probe/site_markup_test.rb
+          ruby design/probe/notes_edition_test.rb
+          ruby design/probe/experiences_page_test.rb
+          python3 design/probe/media_serve_test.py
+
+      - name: Verify runtime state machines
+        run: |
+          node --test design/probe/experiences-lifecycle.test.mjs
+          node --test design/probe/experiences-stage.test.mjs
+          node --test design/probe/host-release.test.mjs
+          node --test design/probe/open-garden-model.test.mjs
+          node --test design/probe/render-window.test.mjs
+          node --test design/probe/scroll-clock.test.mjs
+
       # Generates service worker
       - name: generate sw
         run: npx workbox generateSW workbox-config.js
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
+
   deploy:
     name: To the Moon
+    # A pull request is not a release. Without this guard every same-repo PR
+    # carrying `pages: write` could publish itself to the live site.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     environment:
       name: github-pages
-      url: ${{steps.deployment.outputs.page_url}}
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: build
     steps:
       - name: Deploy to GitHub Pages
