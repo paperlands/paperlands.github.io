@@ -35,3 +35,17 @@ assets/js/home/helios-interval.js
 assets/js/home/helios-plang-tokens.js
 assets/js/home/kindle.mjs
 assets/js/home/paperlang/
+
+# The design workbench's raw material: the video masters clips are minted from
+# (design/assets) and the superseded hifi/prototype pages they were studied in
+# (iterations, cutouts, prior, rapiditer, stage). ~155MB, and no build input or
+# gate reads them — the gates read design/*.mjs, design/probe, design/fixtures
+# and the doc set, which are committed. Re-minting a still or clip needs the
+# masters back from the producer's archive, the same trade as the hatch sources
+# above.
+design/assets/
+design/iterations/
+design/cutouts/
+design/prior/
+design/rapiditer/
+design/stage/

@@ -1,0 +1,5141 @@
+{
+  "milestone": "experiences-performance baseline and single-factor ablations",
+  "owner": "paired experimentalist (probe/evidence only; no production edits)",
+  "contract": {
+    "preserved": [
+      "slow living overture (idle orbit plus scroll-added speed)",
+      "scroll energy (demand-driven word/light/tree ink)",
+      "complete still (reduced motion, forced colours, Save-Data, no JavaScript)"
+    ],
+    "question": "what does the authored richness actually cost, and is any of it removable without losing it"
+  },
+  "frozen_build": {
+    "root": "/tmp/experiences-perf/baseline",
+    "build": "bundle exec jekyll build --disable-disk-cache --destination /tmp/experiences-perf/baseline",
+    "note": "private destination and no disk cache, so neither _site nor .jekyll-cache was shared with another session",
+    "sha256": {
+      "experiences.html": "b1df45e93c04091908cb524796be00d86861fa5e097166f956bb28285ab3ce44",
+      "stage.mjs": "9f42710e8f2ea220604c016143a22323b55ed77d90e3581b45db84821672f02c",
+      "focus.mjs": "4b8e18eb981d5ac831fc9ebe7008287076393c441ea1844892fb4779ce6801e0",
+      "arcs.mjs": "f70bd77d9fe1874c70b8b2ea4d6b8fc4657259ae84022db6bebb511d060b3d53"
+    }
+  },
+  "environment": {
+    "browser": {
+      "protocolVersion": "1.3",
+      "product": "Chrome/154.0.8037.97",
+      "revision": "@b510e9d7cd3a2fbd78d0ddc42234103206c5f78d",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+      "jsVersion": "15.4.80.20"
+    },
+    "gpu": {
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver-5.0.0)",
+      "vendor": "Google Inc. (Google)",
+      "aux": {
+        "amdSwitchable": false,
+        "canSupportThreadedTextureMailbox": false,
+        "directRenderingVersion": "",
+        "displayType": "ANGLE_SWIFTSHADER",
+        "glExtensions": "GL_AMD_performance_monitor GL_ANGLE_base_vertex_base_instance_shader_builtin GL_ANGLE_blob_cache GL_ANGLE_client_arrays GL_ANGLE_clip_cull_distance GL_ANGLE_compressed_texture_etc GL_ANGLE_copy_texture_3d GL_ANGLE_depth_texture GL_ANGLE_framebuffer_blit GL_ANGLE_framebuffer_multisample GL_ANGLE_get_image GL_ANGLE_get_serialized_context_string GL_ANGLE_get_tex_level_parameter GL_ANGLE_instanced_arrays GL_ANGLE_memory_object_flags GL_ANGLE_memory_size GL_ANGLE_multi_draw GL_ANGLE_pack_reverse_row_order GL_ANGLE_polygon_mode GL_ANGLE_program_binary_readiness_query GL_ANGLE_program_cache_control GL_ANGLE_read_only_depth_stencil_feedback_loops GL_ANGLE_relaxed_vertex_attribute_type GL_ANGLE_renderability_validation GL_ANGLE_request_extension GL_ANGLE_rgbx_internal_format GL_ANGLE_robust_client_memory GL_ANGLE_robust_fragment_shader_output GL_ANGLE_robust_resource_initialization GL_ANGLE_shader_pixel_local_storage GL_ANGLE_shader_pixel_local_storage_coherent GL_ANGLE_stencil_texturing GL_ANGLE_texture_compression_dxt3 GL_ANGLE_texture_compression_dxt5 GL_ANGLE_texture_multisample GL_ANGLE_texture_usage GL_ANGLE_translated_shader_source GL_ANGLE_vulkan_image GL_ANGLE_yuv_internal_format GL_APPLE_clip_distance GL_ARM_rgba8 GL_ARM_shader_framebuffer_fetch GL_CHROMIUM_bind_generates_resource GL_CHROMIUM_bind_uniform_location GL_CHROMIUM_copy_compressed_texture GL_CHROMIUM_copy_texture GL_CHROMIUM_lose_context GL_EXT_EGL_image_array GL_EXT_EGL_image_external_wrap_modes GL_EXT_EGL_image_storage GL_EXT_base_instance GL_EXT_blend_minmax GL_EXT_buffer_storage GL_EXT_clear_texture GL_EXT_clip_control GL_EXT_clip_cull_distance GL_EXT_color_buffer_float GL_EXT_color_buffer_half_float GL_EXT_compressed_ETC1_RGB8_sub_texture GL_EXT_conservative_depth GL_EXT_copy_image GL_EXT_debug_label GL_EXT_debug_marker GL_EXT_depth_clamp GL_EXT_discard_framebuffer GL_EXT_disjoint_timer_query GL_EXT_draw_buffers GL_EXT_draw_buffers_indexed GL_EXT_draw_elements_base_vertex GL_EXT_float_blend GL_EXT_frag_depth GL_EXT_instanced_arrays GL_EXT_map_buffer_range GL_EXT_memory_object GL_EXT_memory_object_fd GL_EXT_occlusion_query_boolean GL_EXT_polygon_offset_clamp GL_EXT_read_format_bgra GL_EXT_robustness GL_EXT_sRGB GL_EXT_sRGB_write_control GL_EXT_semaphore GL_EXT_semaphore_fd GL_EXT_separate_shader_objects GL_EXT_shader_framebuffer_fetch GL_EXT_shader_framebuffer_fetch_non_coherent GL_EXT_shader_non_constant_global_initializers GL_EXT_shader_texture_lod GL_EXT_shadow_samplers GL_EXT_texture_border_clamp GL_EXT_texture_compression_bptc GL_EXT_texture_compression_dxt1 GL_EXT_texture_compression_rgtc GL_EXT_texture_compression_s3tc_srgb GL_EXT_texture_filter_anisotropic GL_EXT_texture_format_BGRA8888 GL_EXT_texture_lod_bias GL_EXT_texture_mirror_clamp_to_edge GL_EXT_texture_rg GL_EXT_texture_sRGB_R8 GL_EXT_texture_sRGB_RG8 GL_EXT_texture_sRGB_decode GL_EXT_texture_shadow_lod GL_EXT_texture_storage GL_EXT_texture_type_2_10_10_10_REV GL_EXT_unpack_subimage GL_KHR_blend_equation_advanced GL_KHR_debug GL_KHR_robust_buffer_access_behavior GL_KHR_robustness GL_KHR_texture_compression_astc_ldr GL_NV_fence GL_NV_framebuffer_blit GL_NV_pack_subimage GL_NV_pixel_buffer_object GL_NV_polygon_mode GL_NV_read_depth GL_NV_read_depth_stencil GL_NV_read_stencil GL_NV_shader_noperspective_interpolation GL_OES_EGL_image GL_OES_EGL_image_external GL_OES_EGL_image_external_essl3 GL_OES_EGL_sync GL_OES_compressed_ETC1_RGB8_texture GL_OES_compressed_paletted_texture GL_OES_copy_image GL_OES_depth24 GL_OES_depth32 GL_OES_depth_texture GL_OES_depth_texture_cube_map GL_OES_draw_buffers_indexed GL_OES_draw_elements_base_vertex GL_OES_element_index_uint GL_OES_fbo_render_mipmap GL_OES_get_program_binary GL_OES_mapbuffer GL_OES_packed_depth_stencil GL_OES_required_internalformat GL_OES_rgb8_rgba8 GL_OES_sample_shading GL_OES_sample_variables GL_OES_shader_multisample_interpolation GL_OES_standard_derivatives GL_OES_surfaceless_context GL_OES_texture_3D GL_OES_texture_border_clamp GL_OES_texture_float GL_OES_texture_float_linear GL_OES_texture_half_float GL_OES_texture_half_float_linear GL_OES_texture_npot GL_OES_texture_stencil8 GL_OES_texture_storage_multisample_2d_array GL_OES_vertex_array_object GL_OES_vertex_half_float GL_OES_vertex_type_10_10_10_2 GL_OVR_multiview GL_OVR_multiview2 GL_QCOM_texture_lod_bias ",
+        "glImplementationParts": "(gl=egl-angle,angle=swiftshader)",
+        "glRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver-5.0.0)",
+        "glResetNotificationStrategy": 33362,
+        "glVendor": "Google Inc. (Google)",
+        "glVersion": "OpenGL ES 3.0 (ANGLE 2.1.1 git hash: e12217f3e133)",
+        "glWsExtensions": "EGL_EXT_create_context_robustness EGL_ANGLE_surface_orientation EGL_KHR_create_context EGL_KHR_image EGL_KHR_image_base EGL_EXT_image_gl_colorspace EGL_KHR_gl_colorspace EGL_KHR_gl_texture_2D_image EGL_KHR_gl_texture_cubemap_image EGL_KHR_gl_renderbuffer_image EGL_KHR_get_all_proc_addresses EGL_KHR_fence_sync EGL_KHR_wait_sync EGL_ANGLE_create_context_webgl_compatibility EGL_CHROMIUM_create_context_bind_generates_resource EGL_KHR_swap_buffers_with_damage EGL_EXT_pixel_format_float EGL_KHR_surfaceless_context EGL_ANGLE_display_texture_share_group EGL_ANGLE_display_semaphore_share_group EGL_ANGLE_create_context_client_arrays EGL_ANGLE_program_cache_control EGL_ANGLE_robust_resource_initialization EGL_ANGLE_create_context_extensions_enabled EGL_ANDROID_blob_cache EGL_ANDROID_recordable EGL_ANGLE_create_context_backwards_compatible EGL_KHR_no_config_context EGL_IMG_context_priority EGL_KHR_create_context_no_error EGL_KHR_reusable_sync EGL_EXT_buffer_age EGL_ANGLE_create_surface_swap_interval EGL_ANGLE_vulkan_image EGL_KHR_partial_update EGL_ANGLE_global_fence_sync EGL_ANGLE_memory_usage_report ",
+        "glWsVendor": "Google Inc. (Google)",
+        "glWsVersion": "1.5 (ANGLE 2.1.1 git hash: e12217f3e133)",
+        "hardwareSupportsVulkan": false,
+        "inProcessGpu": false,
+        "initializationTime": 0.013875,
+        "isAsan": false,
+        "isClangCoverage": false,
+        "jpegDecodeAcceleratorSupported": false,
+        "maxMsaaSamples": "4",
+        "optimus": false,
+        "passthroughCmdDecoder": true,
+        "pixelShaderVersion": "3.00",
+        "processCrashCount": 0,
+        "sandboxed": false,
+        "skiaBackendType": "None",
+        "subpixelFontRendering": true,
+        "targetCpuBits": 64,
+        "vertexShaderVersion": "3.00",
+        "visibilityCallbackCallCount": 0
+      }
+    },
+    "headlessSoftwareCompositor": true,
+    "note": "headless Chromium with --disable-gpu; frame distributions are diagnostics, not device FPS. localhost with cache disabled is a cold server-speed bound, not a field network measurement. A permanent rAF monitor is part of the sampling path, so no arm can prove zero idle page work; the monitor sets the cadence floor and the counters are attribution only. customPropertyWrites counts CSSStyleDeclaration.setProperty, not direct style.transform assignments. Fetch interception is scoped to the two module URLs, so media Range responses are never paused."
+  },
+  "method": {
+    "devices": [
+      {
+        "id": "desktop",
+        "viewport": "1440x900",
+        "deviceScaleFactor": 1,
+        "cpuThrottle": 1
+      },
+      {
+        "id": "phone",
+        "viewport": "390x844",
+        "deviceScaleFactor": 3,
+        "cpuThrottle": 4
+      }
+    ],
+    "reps": 3,
+    "arm_order": "reversed on even repeats (ABBA), so drift is not baked into one arm",
+    "cold_load": "Network.setCacheDisabled + Network.setBypassServiceWorker; every rep is a fresh navigation",
+    "lcp": "buffered largest-contentful-paint observer, finalised by a trusted Shift keydown instead of a timeout; element identity, resource arrival (responseEnd) and render-after-arrival are recorded",
+    "frames": "one permanent rAF monitor samples deltas; a sampling-only rAF monitor is part of the path, so no arm proves zero idle work",
+    "stationary": "2.2 s window with the hero visible, no input",
+    "scroll": "desktop: Input.synthesizeScrollGesture (mouse); phone: 14-step Input.dispatchTouchEvent stream, because synthesizeScrollGesture's touch source does not scroll this page",
+    "counters": "canvas clearRect counted only on [data-stage-arcs]; customPropertyWrites counts CSSStyleDeclaration.setProperty and deliberately does not see direct style.transform assignments",
+    "interception_scope": "Fetch interception patterns are limited to stage.mjs, focus.mjs and arcs.mjs, so media Range responses are never paused",
+    "target_lifecycle": "Target.closeTarget in the finally block, not just a websocket close"
+  },
+  "arms": [
+    {
+      "id": "shipped",
+      "change": "none"
+    },
+    {
+      "id": "still",
+      "change": "Emulation.setEmulatedMedia prefers-reduced-motion: reduce"
+    },
+    {
+      "id": "no-stage",
+      "change": "stage.mjs response blanked; authored SVG arcs remain visible"
+    },
+    {
+      "id": "no-focus",
+      "change": "focus.mjs response blanked; CSS resting ink remains"
+    },
+    {
+      "id": "no-clocks",
+      "change": "stage.mjs and focus.mjs blanked; navigation and media scripts still run"
+    },
+    {
+      "id": "no-arcs",
+      "change": "arcs.mjs response replaced with no-op drawArcs: clock and torus transform kept, canvas neither rasterised nor invalidated",
+      "devices": [
+        "desktop"
+      ]
+    },
+    {
+      "id": "no-mask",
+      "change": "probe style hook removes .experiences-arcs mask-image",
+      "devices": [
+        "desktop"
+      ]
+    },
+    {
+      "id": "no-transform",
+      "change": "probe hook freezes the torus transform after load; clock and canvas keep running",
+      "devices": [
+        "desktop"
+      ]
+    }
+  ],
+  "summary": [
+    {
+      "device": "desktop",
+      "arm": "shipped",
+      "reps": 3,
+      "lcpMs": 232,
+      "lcpElement": {
+        "time": 524,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 1106,
+          "height": 975
+        }
+      },
+      "lcpSource": "creators-wide-b242e351226ad6bb.webp",
+      "arrivalMs": 85.20000000298023,
+      "renderAfterArrivalMs": 146.8,
+      "bytes": 694035,
+      "ttfbMs": 11.699999988079071,
+      "fcpMs": 180,
+      "stationaryFrameP50": 16.7,
+      "stationaryFrameP95": 33.5,
+      "stationarySecondFrames": 41,
+      "stationaryDrawsPerSecond": 41,
+      "stationaryLongTasks": 0,
+      "stationaryScriptMs": 0,
+      "scrollFrameP50": 16.7,
+      "scrollFrameP95": 49.9,
+      "scrollCustomPropertyWrites": 44,
+      "scrollLongTasks": 0
+    },
+    {
+      "device": "desktop",
+      "arm": "still",
+      "reps": 3,
+      "lcpMs": 208,
+      "lcpElement": {
+        "time": 132,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 973,
+          "height": 808
+        }
+      },
+      "lcpSource": "creators-wide-b242e351226ad6bb.webp",
+      "arrivalMs": 34.19999998807907,
+      "renderAfterArrivalMs": 161.2,
+      "bytes": 694035,
+      "ttfbMs": 3.300000011920929,
+      "fcpMs": 208,
+      "stationaryFrameP50": 16.7,
+      "stationaryFrameP95": 16.8,
+      "stationarySecondFrames": 2,
+      "stationaryDrawsPerSecond": 0,
+      "stationaryLongTasks": 0,
+      "stationaryScriptMs": 0,
+      "scrollFrameP50": 16.7,
+      "scrollFrameP95": 33.4,
+      "scrollCustomPropertyWrites": 0,
+      "scrollLongTasks": 0
+    },
+    {
+      "device": "desktop",
+      "arm": "no-stage",
+      "reps": 3,
+      "lcpMs": 220,
+      "lcpElement": {
+        "time": 220,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 973,
+          "height": 808
+        }
+      },
+      "lcpSource": "creators-wide-b242e351226ad6bb.webp",
+      "arrivalMs": 60,
+      "renderAfterArrivalMs": 148,
+      "bytes": 686424,
+      "ttfbMs": 3.5999999940395355,
+      "fcpMs": 172,
+      "stationaryFrameP50": 16.7,
+      "stationaryFrameP95": 16.8,
+      "stationarySecondFrames": 0,
+      "stationaryDrawsPerSecond": 0,
+      "stationaryLongTasks": 0,
+      "stationaryScriptMs": 0,
+      "scrollFrameP50": 16.7,
+      "scrollFrameP95": 50.1,
+      "scrollCustomPropertyWrites": 43,
+      "scrollLongTasks": 0
+    },
+    {
+      "device": "desktop",
+      "arm": "no-focus",
+      "reps": 3,
+      "lcpMs": 140,
+      "lcpElement": {
+        "time": 128,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 1106,
+          "height": 975
+        }
+      },
+      "lcpSource": "creators-wide-b242e351226ad6bb.webp",
+      "arrivalMs": 30.900000005960464,
+      "renderAfterArrivalMs": 109.1,
+      "bytes": 685647,
+      "ttfbMs": 3.9000000059604645,
+      "fcpMs": 140,
+      "stationaryFrameP50": 16.7,
+      "stationaryFrameP95": 33.4,
+      "stationarySecondFrames": 37,
+      "stationaryDrawsPerSecond": 41.9,
+      "stationaryLongTasks": 0,
+      "stationaryScriptMs": 0,
+      "scrollFrameP50": 16.7,
+      "scrollFrameP95": 33.4,
+      "scrollCustomPropertyWrites": 0,
+      "scrollLongTasks": 0
+    },
+    {
+      "device": "desktop",
+      "arm": "no-clocks",
+      "reps": 3,
+      "lcpMs": 160,
+      "lcpElement": {
+        "time": 156,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 973,
+          "height": 808
+        }
+      },
+      "lcpSource": "creators-wide-b242e351226ad6bb.webp",
+      "arrivalMs": 36.70000000298023,
+      "renderAfterArrivalMs": 120.4,
+      "bytes": 678036,
+      "ttfbMs": 2.7999999970197678,
+      "fcpMs": 156,
+      "stationaryFrameP50": 16.7,
+      "stationaryFrameP95": 16.7,
+      "stationarySecondFrames": 0,
+      "stationaryDrawsPerSecond": 0,
+      "stationaryLongTasks": 0,
+      "stationaryScriptMs": 0,
+      "scrollFrameP50": 16.7,
+      "scrollFrameP95": 16.8,
+      "scrollCustomPropertyWrites": 0,
+      "scrollLongTasks": 0
+    },
+    {
+      "device": "desktop",
+      "arm": "no-arcs",
+      "reps": 3,
+      "lcpMs": 204,
+      "lcpElement": {
+        "time": 204,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 1110,
+          "height": 980
+        }
+      },
+      "lcpSource": "creators-wide-b242e351226ad6bb.webp",
+      "arrivalMs": 35.30000001192093,
+      "renderAfterArrivalMs": 168.7,
+      "bytes": 692673,
+      "ttfbMs": 3.7999999970197678,
+      "fcpMs": 204,
+      "stationaryFrameP50": 16.7,
+      "stationaryFrameP95": 33.4,
+      "stationarySecondFrames": 34,
+      "stationaryDrawsPerSecond": 0,
+      "stationaryLongTasks": 0,
+      "stationaryScriptMs": 0,
+      "scrollFrameP50": 16.7,
+      "scrollFrameP95": 50,
+      "scrollCustomPropertyWrites": 43,
+      "scrollLongTasks": 0
+    },
+    {
+      "device": "desktop",
+      "arm": "no-mask",
+      "reps": 3,
+      "lcpMs": 204,
+      "lcpElement": {
+        "time": 156,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 1110,
+          "height": 980
+        }
+      },
+      "lcpSource": "creators-wide-b242e351226ad6bb.webp",
+      "arrivalMs": 39.5,
+      "renderAfterArrivalMs": 156.5,
+      "bytes": 694035,
+      "ttfbMs": 3.0999999940395355,
+      "fcpMs": 160,
+      "stationaryFrameP50": 16.7,
+      "stationaryFrameP95": 33.4,
+      "stationarySecondFrames": 22,
+      "stationaryDrawsPerSecond": 50.3,
+      "stationaryLongTasks": 0,
+      "stationaryScriptMs": 0,
+      "scrollFrameP50": 16.7,
+      "scrollFrameP95": 33.4,
+      "scrollCustomPropertyWrites": 48,
+      "scrollLongTasks": 0
+    },
+    {
+      "device": "desktop",
+      "arm": "no-transform",
+      "reps": 3,
+      "lcpMs": 172,
+      "lcpElement": {
+        "time": 172,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 973,
+          "height": 808
+        }
+      },
+      "lcpSource": "creators-wide-b242e351226ad6bb.webp",
+      "arrivalMs": 43.3999999910593,
+      "renderAfterArrivalMs": 134.7,
+      "bytes": 694035,
+      "ttfbMs": 3.5,
+      "fcpMs": 172,
+      "stationaryFrameP50": 16.7,
+      "stationaryFrameP95": 16.7,
+      "stationarySecondFrames": 0,
+      "stationaryDrawsPerSecond": 60.5,
+      "stationaryLongTasks": 0,
+      "stationaryScriptMs": 0,
+      "scrollFrameP50": 16.7,
+      "scrollFrameP95": 50,
+      "scrollCustomPropertyWrites": 45,
+      "scrollLongTasks": 0
+    },
+    {
+      "device": "phone",
+      "arm": "shipped",
+      "reps": 3,
+      "lcpMs": 240,
+      "lcpElement": {
+        "time": 280,
+        "size": 178230,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-narrow-77ab24e4d1271650.webp",
+        "rect": {
+          "width": 661,
+          "height": 559
+        }
+      },
+      "lcpSource": "creators-narrow-77ab24e4d1271650.webp",
+      "arrivalMs": 47.5,
+      "renderAfterArrivalMs": 186.9,
+      "bytes": 728291,
+      "ttfbMs": 3.7999999970197678,
+      "fcpMs": 240,
+      "stationaryFrameP50": 16.7,
+      "stationaryFrameP95": 16.7,
+      "stationarySecondFrames": 0,
+      "stationaryDrawsPerSecond": 60,
+      "stationaryLongTasks": 0,
+      "stationaryScriptMs": 0,
+      "scrollFrameP50": 16.7,
+      "scrollFrameP95": 16.8,
+      "scrollCustomPropertyWrites": 60,
+      "scrollLongTasks": 0
+    },
+    {
+      "device": "phone",
+      "arm": "still",
+      "reps": 3,
+      "lcpMs": 204,
+      "lcpElement": {
+        "time": 204,
+        "size": 178230,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-narrow-77ab24e4d1271650.webp",
+        "rect": {
+          "width": 585,
+          "height": 456
+        }
+      },
+      "lcpSource": "creators-narrow-77ab24e4d1271650.webp",
+      "arrivalMs": 47.70000000298023,
+      "renderAfterArrivalMs": 159.3,
+      "bytes": 728291,
+      "ttfbMs": 3.5999999940395355,
+      "fcpMs": 204,
+      "stationaryFrameP50": 16.7,
+      "stationaryFrameP95": 16.7,
+      "stationarySecondFrames": 0,
+      "stationaryDrawsPerSecond": 0,
+      "stationaryLongTasks": 0,
+      "stationaryScriptMs": 0,
+      "scrollFrameP50": 16.7,
+      "scrollFrameP95": 16.7,
+      "scrollCustomPropertyWrites": 0,
+      "scrollLongTasks": 0
+    },
+    {
+      "device": "phone",
+      "arm": "no-stage",
+      "reps": 3,
+      "lcpMs": 200,
+      "lcpElement": {
+        "time": 200,
+        "size": 178230,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-narrow-77ab24e4d1271650.webp",
+        "rect": {
+          "width": 585,
+          "height": 456
+        }
+      },
+      "lcpSource": "creators-narrow-77ab24e4d1271650.webp",
+      "arrivalMs": 44.20000000298023,
+      "renderAfterArrivalMs": 155.8,
+      "bytes": 720680,
+      "ttfbMs": 3.2999999970197678,
+      "fcpMs": 200,
+      "stationaryFrameP50": 16.7,
+      "stationaryFrameP95": 16.8,
+      "stationarySecondFrames": 0,
+      "stationaryDrawsPerSecond": 0,
+      "stationaryLongTasks": 0,
+      "stationaryScriptMs": 0,
+      "scrollFrameP50": 16.7,
+      "scrollFrameP95": 33.3,
+      "scrollCustomPropertyWrites": 282,
+      "scrollLongTasks": 0
+    },
+    {
+      "device": "phone",
+      "arm": "no-focus",
+      "reps": 3,
+      "lcpMs": 188,
+      "lcpElement": {
+        "time": 212,
+        "size": 178230,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-narrow-77ab24e4d1271650.webp",
+        "rect": {
+          "width": 660,
+          "height": 558
+        }
+      },
+      "lcpSource": "creators-narrow-77ab24e4d1271650.webp",
+      "arrivalMs": 38.30000001192093,
+      "renderAfterArrivalMs": 149.7,
+      "bytes": 719903,
+      "ttfbMs": 3.5999999940395355,
+      "fcpMs": 188,
+      "stationaryFrameP50": 16.7,
+      "stationaryFrameP95": 16.7,
+      "stationarySecondFrames": 0,
+      "stationaryDrawsPerSecond": 60,
+      "stationaryLongTasks": 0,
+      "stationaryScriptMs": 0,
+      "scrollFrameP50": 16.7,
+      "scrollFrameP95": 16.8,
+      "scrollCustomPropertyWrites": 0,
+      "scrollLongTasks": 0
+    },
+    {
+      "device": "phone",
+      "arm": "no-clocks",
+      "reps": 3,
+      "lcpMs": 204,
+      "lcpElement": {
+        "time": 224,
+        "size": 178230,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-narrow-77ab24e4d1271650.webp",
+        "rect": {
+          "width": 585,
+          "height": 456
+        }
+      },
+      "lcpSource": "creators-narrow-77ab24e4d1271650.webp",
+      "arrivalMs": 40.8999999910593,
+      "renderAfterArrivalMs": 163.1,
+      "bytes": 712292,
+      "ttfbMs": 4.200000002980232,
+      "fcpMs": 204,
+      "stationaryFrameP50": 16.7,
+      "stationaryFrameP95": 16.8,
+      "stationarySecondFrames": 0,
+      "stationaryDrawsPerSecond": 0,
+      "stationaryLongTasks": 0,
+      "stationaryScriptMs": 0,
+      "scrollFrameP50": 16.7,
+      "scrollFrameP95": 16.8,
+      "scrollCustomPropertyWrites": 0,
+      "scrollLongTasks": 0
+    }
+  ],
+  "rows": [
+    {
+      "device": "desktop",
+      "arm": "shipped",
+      "rep": 1,
+      "load": {
+        "ttfb": 11.699999988079071,
+        "fcp": 524,
+        "lcp": 524,
+        "domContentLoaded": 514.1999999880791,
+        "load": 517.0999999940395,
+        "bytes": 709421,
+        "requests": 26,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 524,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 1106,
+          "height": 975
+        }
+      },
+      "arrival": {
+        "start": 24.799999997019768,
+        "request": 341.19999998807907,
+        "end": 345.29999999701977,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 178.7,
+      "stationary": {
+        "frames": {
+          "n": 86,
+          "p50": 33.2,
+          "p95": 50,
+          "max": 50.1,
+          "secondFrames": 43
+        },
+        "draws": 86,
+        "elapsedMs": 2266,
+        "drawsPerSecond": 38,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 63,
+          "p50": 16.7,
+          "p95": 49.9,
+          "max": 133.3,
+          "secondFrames": 31
+        },
+        "customPropertyWrites": 40,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 1,
+          "script": 0,
+          "render": 4.8,
+          "styleLayout": 4.1
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "1.000",
+          "canopy": "1.000"
+        },
+        "above": {
+          "growth": "0.367",
+          "canopy": "0.000"
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "moving",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          1440,
+          749
+        ]
+      },
+      "note": "authored page as built"
+    },
+    {
+      "device": "desktop",
+      "arm": "still",
+      "rep": 1,
+      "load": {
+        "ttfb": 3.300000011920929,
+        "fcp": 132,
+        "lcp": 132,
+        "domContentLoaded": 127.40000000596046,
+        "load": 128.5,
+        "bytes": 694035,
+        "requests": 25,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 132,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 973,
+          "height": 808
+        }
+      },
+      "arrival": {
+        "start": 11.800000011920929,
+        "request": 25.600000008940697,
+        "end": 32.5,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 99.5,
+      "stationary": {
+        "frames": {
+          "n": 134,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 33.4,
+          "secondFrames": 2
+        },
+        "draws": 0,
+        "elapsedMs": 2269,
+        "drawsPerSecond": 0,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 77,
+          "p50": 16.7,
+          "p95": 33.4,
+          "max": 50,
+          "secondFrames": 17
+        },
+        "customPropertyWrites": 0,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "",
+          "canopy": ""
+        },
+        "above": {
+          "growth": "",
+          "canopy": ""
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "still",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          1440,
+          749
+        ]
+      },
+      "note": "same build under prefers-reduced-motion: reduce"
+    },
+    {
+      "device": "desktop",
+      "arm": "no-stage",
+      "rep": 1,
+      "load": {
+        "ttfb": 3.4000000059604645,
+        "fcp": 172,
+        "lcp": 220,
+        "domContentLoaded": 153.29999999701977,
+        "load": 155.70000000298023,
+        "bytes": 686424,
+        "requests": 24,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 220,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 973,
+          "height": 808
+        }
+      },
+      "arrival": {
+        "start": 40.79999999701977,
+        "request": 54.29999999701977,
+        "end": 60,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 160,
+      "stationary": {
+        "frames": {
+          "n": 136,
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 0,
+        "elapsedMs": 2269,
+        "drawsPerSecond": 0,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 67,
+          "p50": 16.7,
+          "p95": 50.1,
+          "max": 83.3,
+          "secondFrames": 16
+        },
+        "customPropertyWrites": 42,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 6,
+          "script": 0,
+          "render": 12.9,
+          "styleLayout": 10.3
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "1.000",
+          "canopy": "1.000"
+        },
+        "above": {
+          "growth": "0.367",
+          "canopy": "0.000"
+        }
+      },
+      "arcState": {
+        "live": false,
+        "stageState": null,
+        "svgVisible": "visible",
+        "canvasVisible": "hidden",
+        "canvasPixels": [
+          300,
+          150
+        ]
+      },
+      "note": "overture clock ablated; authored SVG arcs remain visible"
+    },
+    {
+      "device": "desktop",
+      "arm": "no-focus",
+      "rep": 1,
+      "load": {
+        "ttfb": 3.9000000059604645,
+        "fcp": 128,
+        "lcp": 128,
+        "domContentLoaded": 120.59999999403954,
+        "load": 121.40000000596046,
+        "bytes": 685647,
+        "requests": 24,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 128,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 1106,
+          "height": 975
+        }
+      },
+      "arrival": {
+        "start": 12.200000002980232,
+        "request": 23.700000002980232,
+        "end": 29.5,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 98.5,
+      "stationary": {
+        "frames": {
+          "n": 94,
+          "p50": 16.7,
+          "p95": 33.4,
+          "max": 66.7,
+          "secondFrames": 37
+        },
+        "draws": 94,
+        "elapsedMs": 2268,
+        "drawsPerSecond": 41.4,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 2,
+          "script": 0,
+          "render": 1.2,
+          "styleLayout": 0.4
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 71,
+          "p50": 16.7,
+          "p95": 33.4,
+          "max": 50,
+          "secondFrames": 28
+        },
+        "customPropertyWrites": 0,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "",
+          "canopy": ""
+        },
+        "above": {
+          "growth": "",
+          "canopy": ""
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "moving",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          1440,
+          749
+        ]
+      },
+      "note": "reading clock ablated; CSS resting ink remains"
+    },
+    {
+      "device": "desktop",
+      "arm": "no-clocks",
+      "rep": 1,
+      "load": {
+        "ttfb": 3.4000000059604645,
+        "fcp": 156,
+        "lcp": 156,
+        "domContentLoaded": 82.59999999403954,
+        "load": 87.70000000298023,
+        "bytes": 678036,
+        "requests": 23,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 156,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 973,
+          "height": 808
+        }
+      },
+      "arrival": {
+        "start": 12.900000005960464,
+        "request": 32,
+        "end": 35.599999994039536,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 120.4,
+      "stationary": {
+        "frames": {
+          "n": 137,
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 0,
+        "elapsedMs": 2269,
+        "drawsPerSecond": 0,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 96,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "customPropertyWrites": 0,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "",
+          "canopy": ""
+        },
+        "above": {
+          "growth": "",
+          "canopy": ""
+        }
+      },
+      "arcState": {
+        "live": false,
+        "stageState": null,
+        "svgVisible": "visible",
+        "canvasVisible": "hidden",
+        "canvasPixels": [
+          300,
+          150
+        ]
+      },
+      "note": "both clocks ablated; nav and media remain; complete authored still"
+    },
+    {
+      "device": "desktop",
+      "arm": "no-arcs",
+      "rep": 1,
+      "load": {
+        "ttfb": 3.5,
+        "fcp": 204,
+        "lcp": 204,
+        "domContentLoaded": 94.30000001192093,
+        "load": 157.5,
+        "bytes": 692673,
+        "requests": 25,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 204,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 1110,
+          "height": 980
+        }
+      },
+      "arrival": {
+        "start": 10.300000011920929,
+        "request": 29.5,
+        "end": 35.30000001192093,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 168.7,
+      "stationary": {
+        "frames": {
+          "n": 94,
+          "p50": 16.7,
+          "p95": 33.4,
+          "max": 50,
+          "secondFrames": 40
+        },
+        "draws": 0,
+        "elapsedMs": 2267,
+        "drawsPerSecond": 0,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 69,
+          "p50": 16.7,
+          "p95": 50,
+          "max": 83.4,
+          "secondFrames": 27
+        },
+        "customPropertyWrites": 43,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 1,
+          "script": 0,
+          "render": 2,
+          "styleLayout": 1.5
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "1.000",
+          "canopy": "1.000"
+        },
+        "above": {
+          "growth": "0.367",
+          "canopy": "0.000"
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "moving",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          1440,
+          749
+        ]
+      },
+      "note": "clock and torus transform kept, canvas raster removed"
+    },
+    {
+      "device": "desktop",
+      "arm": "no-mask",
+      "rep": 1,
+      "load": {
+        "ttfb": 3.0999999940395355,
+        "fcp": 156,
+        "lcp": 156,
+        "domContentLoaded": 114.40000000596046,
+        "load": 156.20000000298023,
+        "bytes": 694035,
+        "requests": 25,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 156,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 1110,
+          "height": 980
+        }
+      },
+      "arrival": {
+        "start": 15.200000002980232,
+        "request": 35.79999999701977,
+        "end": 39.5,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 116.5,
+      "stationary": {
+        "frames": {
+          "n": 115,
+          "p50": 16.7,
+          "p95": 33.4,
+          "max": 33.4,
+          "secondFrames": 21
+        },
+        "draws": 115,
+        "elapsedMs": 2266,
+        "drawsPerSecond": 50.8,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 75,
+          "p50": 16.7,
+          "p95": 33.4,
+          "max": 50,
+          "secondFrames": 22
+        },
+        "customPropertyWrites": 48,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 1,
+          "script": 0,
+          "render": 1.8,
+          "styleLayout": 1.3
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "1.000",
+          "canopy": "1.000"
+        },
+        "above": {
+          "growth": "0.367",
+          "canopy": "0.000"
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "moving",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          1440,
+          749
+        ]
+      },
+      "note": "clock, transform and canvas kept, authored mask removed"
+    },
+    {
+      "device": "desktop",
+      "arm": "no-transform",
+      "rep": 1,
+      "load": {
+        "ttfb": 3.800000011920929,
+        "fcp": 132,
+        "lcp": 172,
+        "domContentLoaded": 121.5,
+        "load": 124.5,
+        "bytes": 694035,
+        "requests": 25,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 172,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 973,
+          "height": 808
+        }
+      },
+      "arrival": {
+        "start": 13.800000011920929,
+        "request": 33.20000000298023,
+        "end": 37.30000001192093,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 134.7,
+      "stationary": {
+        "frames": {
+          "n": 136,
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 136,
+        "elapsedMs": 2267,
+        "drawsPerSecond": 60,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 70,
+          "p50": 16.7,
+          "p95": 50,
+          "max": 50.1,
+          "secondFrames": 25
+        },
+        "customPropertyWrites": 45,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "1.000",
+          "canopy": "1.000"
+        },
+        "above": {
+          "growth": "0.367",
+          "canopy": "0.000"
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "moving",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          1440,
+          749
+        ]
+      },
+      "note": "clock and canvas kept, torus transform writes suppressed after load"
+    },
+    {
+      "device": "desktop",
+      "arm": "no-transform",
+      "rep": 2,
+      "load": {
+        "ttfb": 3.5,
+        "fcp": 196,
+        "lcp": 196,
+        "domContentLoaded": 110.59999999403954,
+        "load": 127.3999999910593,
+        "bytes": 694035,
+        "requests": 25,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 196,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 973,
+          "height": 808
+        }
+      },
+      "arrival": {
+        "start": 18,
+        "request": 36.69999998807907,
+        "end": 43.3999999910593,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 152.6,
+      "stationary": {
+        "frames": {
+          "n": 137,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 137,
+        "elapsedMs": 2265,
+        "drawsPerSecond": 60.5,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 73,
+          "p50": 16.7,
+          "p95": 33.4,
+          "max": 50.1,
+          "secondFrames": 25
+        },
+        "customPropertyWrites": 45,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 1,
+          "script": 0,
+          "render": 2.7,
+          "styleLayout": 2.3
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "1.000",
+          "canopy": "1.000"
+        },
+        "above": {
+          "growth": "0.367",
+          "canopy": "0.000"
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "moving",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          1440,
+          749
+        ]
+      },
+      "note": "clock and canvas kept, torus transform writes suppressed after load"
+    },
+    {
+      "device": "desktop",
+      "arm": "no-mask",
+      "rep": 2,
+      "load": {
+        "ttfb": 2.800000011920929,
+        "fcp": 160,
+        "lcp": 204,
+        "domContentLoaded": 141.20000000298023,
+        "load": 162.80000001192093,
+        "bytes": 694035,
+        "requests": 25,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 204,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 1108,
+          "height": 978
+        }
+      },
+      "arrival": {
+        "start": 14,
+        "request": 39.1000000089407,
+        "end": 47.5,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 156.5,
+      "stationary": {
+        "frames": {
+          "n": 114,
+          "p50": 16.7,
+          "p95": 33.4,
+          "max": 33.4,
+          "secondFrames": 22
+        },
+        "draws": 114,
+        "elapsedMs": 2265,
+        "drawsPerSecond": 50.3,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 78,
+          "p50": 16.7,
+          "p95": 33.4,
+          "max": 49.9,
+          "secondFrames": 21
+        },
+        "customPropertyWrites": 51,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "1.000",
+          "canopy": "1.000"
+        },
+        "above": {
+          "growth": "0.367",
+          "canopy": "0.000"
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "moving",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          1440,
+          749
+        ]
+      },
+      "note": "clock, transform and canvas kept, authored mask removed"
+    },
+    {
+      "device": "desktop",
+      "arm": "no-arcs",
+      "rep": 2,
+      "load": {
+        "ttfb": 6.700000002980232,
+        "fcp": 220,
+        "lcp": 220,
+        "domContentLoaded": 103.90000000596046,
+        "load": 115,
+        "bytes": 692673,
+        "requests": 25,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 220,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 1108,
+          "height": 978
+        }
+      },
+      "arrival": {
+        "start": 18.900000005960464,
+        "request": 37.400000005960464,
+        "end": 42.900000005960464,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 177.1,
+      "stationary": {
+        "frames": {
+          "n": 96,
+          "p50": 16.7,
+          "p95": 49.9,
+          "max": 66.7,
+          "secondFrames": 34
+        },
+        "draws": 0,
+        "elapsedMs": 2268,
+        "drawsPerSecond": 0,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 2,
+          "script": 0,
+          "render": 0.8,
+          "styleLayout": 0.4
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 69,
+          "p50": 16.7,
+          "p95": 33.4,
+          "max": 50,
+          "secondFrames": 29
+        },
+        "customPropertyWrites": 46,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "1.000",
+          "canopy": "1.000"
+        },
+        "above": {
+          "growth": "0.367",
+          "canopy": "0.000"
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "moving",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          1440,
+          749
+        ]
+      },
+      "note": "clock and torus transform kept, canvas raster removed"
+    },
+    {
+      "device": "desktop",
+      "arm": "no-clocks",
+      "rep": 2,
+      "load": {
+        "ttfb": 2.7999999970197678,
+        "fcp": 148,
+        "lcp": 192,
+        "domContentLoaded": 92.40000000596046,
+        "load": 120.1000000089407,
+        "bytes": 678036,
+        "requests": 23,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 192,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 973,
+          "height": 808
+        }
+      },
+      "arrival": {
+        "start": 11.900000005960464,
+        "request": 30.799999997019768,
+        "end": 36.70000000298023,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 155.3,
+      "stationary": {
+        "frames": {
+          "n": 136,
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 0,
+        "elapsedMs": 2267,
+        "drawsPerSecond": 0,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 96,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "customPropertyWrites": 0,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "",
+          "canopy": ""
+        },
+        "above": {
+          "growth": "",
+          "canopy": ""
+        }
+      },
+      "arcState": {
+        "live": false,
+        "stageState": null,
+        "svgVisible": "visible",
+        "canvasVisible": "hidden",
+        "canvasPixels": [
+          300,
+          150
+        ]
+      },
+      "note": "both clocks ablated; nav and media remain; complete authored still"
+    },
+    {
+      "device": "desktop",
+      "arm": "no-focus",
+      "rep": 2,
+      "load": {
+        "ttfb": 16.099999994039536,
+        "fcp": 160,
+        "lcp": 212,
+        "domContentLoaded": 145.59999999403954,
+        "load": 147.20000000298023,
+        "bytes": 685647,
+        "requests": 24,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 212,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 1106,
+          "height": 975
+        }
+      },
+      "arrival": {
+        "start": 28.799999997019768,
+        "request": 48.79999999701977,
+        "end": 51.70000000298023,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 160.3,
+      "stationary": {
+        "frames": {
+          "n": 95,
+          "p50": 16.7,
+          "p95": 50,
+          "max": 66.6,
+          "secondFrames": 35
+        },
+        "draws": 95,
+        "elapsedMs": 2265,
+        "drawsPerSecond": 41.9,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 1,
+          "script": 0,
+          "render": 0.4,
+          "styleLayout": 0.1
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 68,
+          "p50": 16.7,
+          "p95": 50,
+          "max": 50.1,
+          "secondFrames": 28
+        },
+        "customPropertyWrites": 0,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "",
+          "canopy": ""
+        },
+        "above": {
+          "growth": "",
+          "canopy": ""
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "moving",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          1440,
+          749
+        ]
+      },
+      "note": "reading clock ablated; CSS resting ink remains"
+    },
+    {
+      "device": "desktop",
+      "arm": "no-stage",
+      "rep": 2,
+      "load": {
+        "ttfb": 3.5999999940395355,
+        "fcp": 152,
+        "lcp": 152,
+        "domContentLoaded": 81.69999998807907,
+        "load": 106.69999998807907,
+        "bytes": 686424,
+        "requests": 24,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 152,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 973,
+          "height": 808
+        }
+      },
+      "arrival": {
+        "start": 12.299999997019768,
+        "request": 30.299999997019768,
+        "end": 32.19999998807907,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 119.8,
+      "stationary": {
+        "frames": {
+          "n": 136,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 0,
+        "elapsedMs": 2269,
+        "drawsPerSecond": 0,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 67,
+          "p50": 16.7,
+          "p95": 50.1,
+          "max": 83.4,
+          "secondFrames": 14
+        },
+        "customPropertyWrites": 43,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 4,
+          "script": 0,
+          "render": 6.8,
+          "styleLayout": 4.5
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "1.000",
+          "canopy": "1.000"
+        },
+        "above": {
+          "growth": "0.367",
+          "canopy": "0.000"
+        }
+      },
+      "arcState": {
+        "live": false,
+        "stageState": null,
+        "svgVisible": "visible",
+        "canvasVisible": "hidden",
+        "canvasPixels": [
+          300,
+          150
+        ]
+      },
+      "note": "overture clock ablated; authored SVG arcs remain visible"
+    },
+    {
+      "device": "desktop",
+      "arm": "still",
+      "rep": 2,
+      "load": {
+        "ttfb": 5.4000000059604645,
+        "fcp": 220,
+        "lcp": 220,
+        "domContentLoaded": 117.20000000298023,
+        "load": 182.5,
+        "bytes": 694035,
+        "requests": 25,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 220,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 973,
+          "height": 808
+        }
+      },
+      "arrival": {
+        "start": 38,
+        "request": 52.400000005960464,
+        "end": 58.79999999701977,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 161.2,
+      "stationary": {
+        "frames": {
+          "n": 134,
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 33.4,
+          "secondFrames": 2
+        },
+        "draws": 0,
+        "elapsedMs": 2269,
+        "drawsPerSecond": 0,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 78,
+          "p50": 16.7,
+          "p95": 33.4,
+          "max": 33.4,
+          "secondFrames": 18
+        },
+        "customPropertyWrites": 0,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "",
+          "canopy": ""
+        },
+        "above": {
+          "growth": "",
+          "canopy": ""
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "still",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          1440,
+          749
+        ]
+      },
+      "note": "same build under prefers-reduced-motion: reduce"
+    },
+    {
+      "device": "desktop",
+      "arm": "shipped",
+      "rep": 2,
+      "load": {
+        "ttfb": 13.400000005960464,
+        "fcp": 180,
+        "lcp": 232,
+        "domContentLoaded": 180.20000000298023,
+        "load": 182.29999999701977,
+        "bytes": 694035,
+        "requests": 25,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 232,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 1107,
+          "height": 976
+        }
+      },
+      "arrival": {
+        "start": 64.79999999701977,
+        "request": 81.79999999701977,
+        "end": 85.20000000298023,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 146.8,
+      "stationary": {
+        "frames": {
+          "n": 94,
+          "p50": 16.7,
+          "p95": 33.5,
+          "max": 50.1,
+          "secondFrames": 38
+        },
+        "draws": 94,
+        "elapsedMs": 2266,
+        "drawsPerSecond": 41.5,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 1,
+          "script": 0,
+          "render": 0.5,
+          "styleLayout": 0.2
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 67,
+          "p50": 16.8,
+          "p95": 50,
+          "max": 50.1,
+          "secondFrames": 29
+        },
+        "customPropertyWrites": 44,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "1.000",
+          "canopy": "1.000"
+        },
+        "above": {
+          "growth": "0.367",
+          "canopy": "0.000"
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "moving",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          1440,
+          749
+        ]
+      },
+      "note": "authored page as built"
+    },
+    {
+      "device": "desktop",
+      "arm": "shipped",
+      "rep": 3,
+      "load": {
+        "ttfb": 3,
+        "fcp": 172,
+        "lcp": 172,
+        "domContentLoaded": 99.19999998807907,
+        "load": 102.09999999403954,
+        "bytes": 694035,
+        "requests": 25,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 172,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 1108,
+          "height": 978
+        }
+      },
+      "arrival": {
+        "start": 12,
+        "request": 36.29999999701977,
+        "end": 41.599999994039536,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 130.4,
+      "stationary": {
+        "frames": {
+          "n": 93,
+          "p50": 16.7,
+          "p95": 33.4,
+          "max": 50,
+          "secondFrames": 41
+        },
+        "draws": 93,
+        "elapsedMs": 2268,
+        "drawsPerSecond": 41,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 69,
+          "p50": 16.7,
+          "p95": 33.5,
+          "max": 50,
+          "secondFrames": 28
+        },
+        "customPropertyWrites": 46,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "1.000",
+          "canopy": "1.000"
+        },
+        "above": {
+          "growth": "0.367",
+          "canopy": "0.000"
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "moving",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          1440,
+          749
+        ]
+      },
+      "note": "authored page as built"
+    },
+    {
+      "device": "desktop",
+      "arm": "still",
+      "rep": 3,
+      "load": {
+        "ttfb": 3.0999999940395355,
+        "fcp": 208,
+        "lcp": 208,
+        "domContentLoaded": 84.79999999701977,
+        "load": 100.29999999701977,
+        "bytes": 694035,
+        "requests": 25,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 208,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 973,
+          "height": 808
+        }
+      },
+      "arrival": {
+        "start": 11.699999988079071,
+        "request": 29,
+        "end": 34.19999998807907,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 173.8,
+      "stationary": {
+        "frames": {
+          "n": 136,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 33.4,
+          "secondFrames": 1
+        },
+        "draws": 0,
+        "elapsedMs": 2269,
+        "drawsPerSecond": 0,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 76,
+          "p50": 16.7,
+          "p95": 33.4,
+          "max": 33.5,
+          "secondFrames": 20
+        },
+        "customPropertyWrites": 0,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "",
+          "canopy": ""
+        },
+        "above": {
+          "growth": "",
+          "canopy": ""
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "still",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          1440,
+          749
+        ]
+      },
+      "note": "same build under prefers-reduced-motion: reduce"
+    },
+    {
+      "device": "desktop",
+      "arm": "no-stage",
+      "rep": 3,
+      "load": {
+        "ttfb": 14.100000008940697,
+        "fcp": 208,
+        "lcp": 236,
+        "domContentLoaded": 181.29999999701977,
+        "load": 185.1000000089407,
+        "bytes": 686424,
+        "requests": 24,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 236,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 973,
+          "height": 808
+        }
+      },
+      "arrival": {
+        "start": 64.5,
+        "request": 84.20000000298023,
+        "end": 88,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 148,
+      "stationary": {
+        "frames": {
+          "n": 137,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 0,
+        "elapsedMs": 2269,
+        "drawsPerSecond": 0,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 68,
+          "p50": 16.7,
+          "p95": 50.1,
+          "max": 83.3,
+          "secondFrames": 15
+        },
+        "customPropertyWrites": 44,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 3,
+          "script": 0,
+          "render": 6.7,
+          "styleLayout": 5.9
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "1.000",
+          "canopy": "1.000"
+        },
+        "above": {
+          "growth": "0.367",
+          "canopy": "0.000"
+        }
+      },
+      "arcState": {
+        "live": false,
+        "stageState": null,
+        "svgVisible": "visible",
+        "canvasVisible": "hidden",
+        "canvasPixels": [
+          300,
+          150
+        ]
+      },
+      "note": "overture clock ablated; authored SVG arcs remain visible"
+    },
+    {
+      "device": "desktop",
+      "arm": "no-focus",
+      "rep": 3,
+      "load": {
+        "ttfb": 3.800000011920929,
+        "fcp": 140,
+        "lcp": 140,
+        "domContentLoaded": 121.5,
+        "load": 122.70000000298023,
+        "bytes": 685647,
+        "requests": 24,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 140,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 1104,
+          "height": 973
+        }
+      },
+      "arrival": {
+        "start": 11.300000011920929,
+        "request": 26.200000002980232,
+        "end": 30.900000005960464,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 109.1,
+      "stationary": {
+        "frames": {
+          "n": 97,
+          "p50": 16.7,
+          "p95": 33.4,
+          "max": 50,
+          "secondFrames": 37
+        },
+        "draws": 97,
+        "elapsedMs": 2266,
+        "drawsPerSecond": 42.8,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 71,
+          "p50": 16.7,
+          "p95": 33.4,
+          "max": 50,
+          "secondFrames": 28
+        },
+        "customPropertyWrites": 0,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "",
+          "canopy": ""
+        },
+        "above": {
+          "growth": "",
+          "canopy": ""
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "moving",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          1440,
+          749
+        ]
+      },
+      "note": "reading clock ablated; CSS resting ink remains"
+    },
+    {
+      "device": "desktop",
+      "arm": "no-clocks",
+      "rep": 3,
+      "load": {
+        "ttfb": 2.7999999970197678,
+        "fcp": 160,
+        "lcp": 160,
+        "domContentLoaded": 105.59999999403954,
+        "load": 112.59999999403954,
+        "bytes": 678036,
+        "requests": 23,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 160,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 973,
+          "height": 808
+        }
+      },
+      "arrival": {
+        "start": 13.199999988079071,
+        "request": 35.79999999701977,
+        "end": 41.79999999701977,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 118.2,
+      "stationary": {
+        "frames": {
+          "n": 136,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 0,
+        "elapsedMs": 2266,
+        "drawsPerSecond": 0,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 96,
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "customPropertyWrites": 0,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "",
+          "canopy": ""
+        },
+        "above": {
+          "growth": "",
+          "canopy": ""
+        }
+      },
+      "arcState": {
+        "live": false,
+        "stageState": null,
+        "svgVisible": "visible",
+        "canvasVisible": "hidden",
+        "canvasPixels": [
+          300,
+          150
+        ]
+      },
+      "note": "both clocks ablated; nav and media remain; complete authored still"
+    },
+    {
+      "device": "desktop",
+      "arm": "no-arcs",
+      "rep": 3,
+      "load": {
+        "ttfb": 3.7999999970197678,
+        "fcp": 200,
+        "lcp": 200,
+        "domContentLoaded": 90.3999999910593,
+        "load": 110.19999998807907,
+        "bytes": 692673,
+        "requests": 25,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 200,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 1110,
+          "height": 980
+        }
+      },
+      "arrival": {
+        "start": 10.899999991059303,
+        "request": 29.899999991059303,
+        "end": 34.19999998807907,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 165.8,
+      "stationary": {
+        "frames": {
+          "n": 100,
+          "p50": 16.7,
+          "p95": 33.4,
+          "max": 50,
+          "secondFrames": 32
+        },
+        "draws": 0,
+        "elapsedMs": 2264,
+        "drawsPerSecond": 0,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 1,
+          "script": 0,
+          "render": 0.5,
+          "styleLayout": 0.2
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 64,
+          "p50": 16.7,
+          "p95": 50,
+          "max": 66.7,
+          "secondFrames": 26
+        },
+        "customPropertyWrites": 40,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 2,
+          "script": 0,
+          "render": 3.1,
+          "styleLayout": 2.6
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "1.000",
+          "canopy": "1.000"
+        },
+        "above": {
+          "growth": "0.367",
+          "canopy": "0.000"
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "moving",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          1440,
+          749
+        ]
+      },
+      "note": "clock and torus transform kept, canvas raster removed"
+    },
+    {
+      "device": "desktop",
+      "arm": "no-mask",
+      "rep": 3,
+      "load": {
+        "ttfb": 3.0999999940395355,
+        "fcp": 244,
+        "lcp": 244,
+        "domContentLoaded": 102.5,
+        "load": 114.20000000298023,
+        "bytes": 694035,
+        "requests": 25,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 244,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 1111,
+          "height": 982
+        }
+      },
+      "arrival": {
+        "start": 12.299999997019768,
+        "request": 31,
+        "end": 36,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 208,
+      "stationary": {
+        "frames": {
+          "n": 111,
+          "p50": 16.7,
+          "p95": 33.4,
+          "max": 33.5,
+          "secondFrames": 26
+        },
+        "draws": 111,
+        "elapsedMs": 2266,
+        "drawsPerSecond": 49,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 75,
+          "p50": 16.7,
+          "p95": 50,
+          "max": 66.6,
+          "secondFrames": 20
+        },
+        "customPropertyWrites": 47,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 1,
+          "script": 0,
+          "render": 1.5,
+          "styleLayout": 1.1
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "1.000",
+          "canopy": "1.000"
+        },
+        "above": {
+          "growth": "0.367",
+          "canopy": "0.000"
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "moving",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          1440,
+          749
+        ]
+      },
+      "note": "clock, transform and canvas kept, authored mask removed"
+    },
+    {
+      "device": "desktop",
+      "arm": "no-transform",
+      "rep": 3,
+      "load": {
+        "ttfb": 3.3999999910593033,
+        "fcp": 172,
+        "lcp": 172,
+        "domContentLoaded": 125.29999999701977,
+        "load": 128.3999999910593,
+        "bytes": 694035,
+        "requests": 25,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 172,
+        "size": 629432,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-wide-b242e351226ad6bb.webp",
+        "rect": {
+          "width": 973,
+          "height": 808
+        }
+      },
+      "arrival": {
+        "start": 17.099999994039536,
+        "request": 39,
+        "end": 50.79999999701977,
+        "bytes": 79278
+      },
+      "renderAfterArrival": 121.2,
+      "stationary": {
+        "frames": {
+          "n": 137,
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 137,
+        "elapsedMs": 2265,
+        "drawsPerSecond": 60.5,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 74,
+          "p50": 16.7,
+          "p95": 50,
+          "max": 50.1,
+          "secondFrames": 20
+        },
+        "customPropertyWrites": 48,
+        "gestureSourceType": "mouse",
+        "gestureMechanism": "Input.synthesizeScrollGesture",
+        "displacement": [
+          351,
+          -351
+        ],
+        "loaf": {
+          "count": 1,
+          "script": 0,
+          "render": 2,
+          "styleLayout": 1.7
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "1.000",
+          "canopy": "1.000"
+        },
+        "above": {
+          "growth": "0.367",
+          "canopy": "0.000"
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "moving",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          1440,
+          749
+        ]
+      },
+      "note": "clock and canvas kept, torus transform writes suppressed after load"
+    },
+    {
+      "device": "phone",
+      "arm": "shipped",
+      "rep": 1,
+      "load": {
+        "ttfb": 4.800000011920929,
+        "fcp": 280,
+        "lcp": 280,
+        "domContentLoaded": 420.5,
+        "load": 430.20000000298023,
+        "bytes": 728291,
+        "requests": 26,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 280,
+        "size": 178230,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-narrow-77ab24e4d1271650.webp",
+        "rect": {
+          "width": 661,
+          "height": 559
+        }
+      },
+      "arrival": {
+        "start": 41.400000005960464,
+        "request": 45,
+        "end": 47.5,
+        "bytes": 53458
+      },
+      "renderAfterArrival": 232.5,
+      "stationary": {
+        "frames": {
+          "n": 136,
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 136,
+        "elapsedMs": 2267,
+        "drawsPerSecond": 60,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 114,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 33.4,
+          "secondFrames": 4
+        },
+        "customPropertyWrites": 60,
+        "gestureSourceType": "touch",
+        "gestureMechanism": "Input.dispatchTouchEvent",
+        "displacement": [
+          335,
+          -335
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "1.000",
+          "canopy": "1.000"
+        },
+        "above": {
+          "growth": "0.365",
+          "canopy": "0.000"
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "moving",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          585,
+          950
+        ]
+      },
+      "note": "authored page as built"
+    },
+    {
+      "device": "phone",
+      "arm": "still",
+      "rep": 1,
+      "load": {
+        "ttfb": 3.4000000059604645,
+        "fcp": 204,
+        "lcp": 204,
+        "domContentLoaded": 334.5,
+        "load": 338.90000000596046,
+        "bytes": 728291,
+        "requests": 26,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 204,
+        "size": 178230,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-narrow-77ab24e4d1271650.webp",
+        "rect": {
+          "width": 585,
+          "height": 456
+        }
+      },
+      "arrival": {
+        "start": 35.20000000298023,
+        "request": 40.29999999701977,
+        "end": 43.79999999701977,
+        "bytes": 53458
+      },
+      "renderAfterArrival": 160.2,
+      "stationary": {
+        "frames": {
+          "n": 136,
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 0,
+        "elapsedMs": 2267,
+        "drawsPerSecond": 0,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 89,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "customPropertyWrites": 0,
+        "gestureSourceType": "touch",
+        "gestureMechanism": "Input.dispatchTouchEvent",
+        "displacement": [
+          420,
+          -420
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "",
+          "canopy": ""
+        },
+        "above": {
+          "growth": "",
+          "canopy": ""
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "still",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          585,
+          950
+        ]
+      },
+      "note": "same build under prefers-reduced-motion: reduce"
+    },
+    {
+      "device": "phone",
+      "arm": "no-stage",
+      "rep": 1,
+      "load": {
+        "ttfb": 3.2999999970197678,
+        "fcp": 200,
+        "lcp": 200,
+        "domContentLoaded": 328.29999999701977,
+        "load": 336.20000000298023,
+        "bytes": 720680,
+        "requests": 25,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 200,
+        "size": 178230,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-narrow-77ab24e4d1271650.webp",
+        "rect": {
+          "width": 585,
+          "height": 456
+        }
+      },
+      "arrival": {
+        "start": 37.900000005960464,
+        "request": 42.20000000298023,
+        "end": 44.20000000298023,
+        "bytes": 53458
+      },
+      "renderAfterArrival": 155.8,
+      "stationary": {
+        "frames": {
+          "n": 136,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 0,
+        "elapsedMs": 2267,
+        "drawsPerSecond": 0,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 88,
+          "p50": 16.7,
+          "p95": 33.3,
+          "max": 33.4,
+          "secondFrames": 8
+        },
+        "customPropertyWrites": 282,
+        "gestureSourceType": "touch",
+        "gestureMechanism": "Input.dispatchTouchEvent",
+        "displacement": [
+          438,
+          -414
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.466,
+          "growth": "1.000",
+          "canopy": "1.000"
+        },
+        "above": {
+          "growth": "0.361",
+          "canopy": "0.000"
+        }
+      },
+      "arcState": {
+        "live": false,
+        "stageState": null,
+        "svgVisible": "visible",
+        "canvasVisible": "hidden",
+        "canvasPixels": [
+          300,
+          150
+        ]
+      },
+      "note": "overture clock ablated; authored SVG arcs remain visible"
+    },
+    {
+      "device": "phone",
+      "arm": "no-focus",
+      "rep": 1,
+      "load": {
+        "ttfb": 3.4000000059604645,
+        "fcp": 212,
+        "lcp": 212,
+        "domContentLoaded": 335.1000000089407,
+        "load": 339.20000000298023,
+        "bytes": 719903,
+        "requests": 25,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 212,
+        "size": 178230,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-narrow-77ab24e4d1271650.webp",
+        "rect": {
+          "width": 660,
+          "height": 558
+        }
+      },
+      "arrival": {
+        "start": 35.6000000089407,
+        "request": 42.80000001192093,
+        "end": 44.5,
+        "bytes": 53458
+      },
+      "renderAfterArrival": 167.5,
+      "stationary": {
+        "frames": {
+          "n": 136,
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 136,
+        "elapsedMs": 2267,
+        "drawsPerSecond": 60,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 114,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 33.4,
+          "secondFrames": 4
+        },
+        "customPropertyWrites": 0,
+        "gestureSourceType": "touch",
+        "gestureMechanism": "Input.dispatchTouchEvent",
+        "displacement": [
+          335,
+          -335
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "",
+          "canopy": ""
+        },
+        "above": {
+          "growth": "",
+          "canopy": ""
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "moving",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          585,
+          950
+        ]
+      },
+      "note": "reading clock ablated; CSS resting ink remains"
+    },
+    {
+      "device": "phone",
+      "arm": "no-clocks",
+      "rep": 1,
+      "load": {
+        "ttfb": 3.5999999940395355,
+        "fcp": 224,
+        "lcp": 224,
+        "domContentLoaded": 314.59999999403954,
+        "load": 321.70000000298023,
+        "bytes": 712292,
+        "requests": 24,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 224,
+        "size": 178230,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-narrow-77ab24e4d1271650.webp",
+        "rect": {
+          "width": 585,
+          "height": 456
+        }
+      },
+      "arrival": {
+        "start": 45.900000005960464,
+        "request": 49.099999994039536,
+        "end": 51.5,
+        "bytes": 53458
+      },
+      "renderAfterArrival": 172.5,
+      "stationary": {
+        "frames": {
+          "n": 136,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 0,
+        "elapsedMs": 2265,
+        "drawsPerSecond": 0,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 92,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "customPropertyWrites": 0,
+        "gestureSourceType": "touch",
+        "gestureMechanism": "Input.dispatchTouchEvent",
+        "displacement": [
+          335,
+          -335
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "",
+          "canopy": ""
+        },
+        "above": {
+          "growth": "",
+          "canopy": ""
+        }
+      },
+      "arcState": {
+        "live": false,
+        "stageState": null,
+        "svgVisible": "visible",
+        "canvasVisible": "hidden",
+        "canvasPixels": [
+          300,
+          150
+        ]
+      },
+      "note": "both clocks ablated; nav and media remain; complete authored still"
+    },
+    {
+      "device": "phone",
+      "arm": "no-clocks",
+      "rep": 2,
+      "load": {
+        "ttfb": 4.200000002980232,
+        "fcp": 192,
+        "lcp": 192,
+        "domContentLoaded": 299.5,
+        "load": 305.30000001192093,
+        "bytes": 712292,
+        "requests": 24,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 192,
+        "size": 178230,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-narrow-77ab24e4d1271650.webp",
+        "rect": {
+          "width": 585,
+          "height": 456
+        }
+      },
+      "arrival": {
+        "start": 31.200000002980232,
+        "request": 36.20000000298023,
+        "end": 38.900000005960464,
+        "bytes": 53458
+      },
+      "renderAfterArrival": 153.1,
+      "stationary": {
+        "frames": {
+          "n": 136,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 0,
+        "elapsedMs": 2266,
+        "drawsPerSecond": 0,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 93,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "customPropertyWrites": 0,
+        "gestureSourceType": "touch",
+        "gestureMechanism": "Input.dispatchTouchEvent",
+        "displacement": [
+          335,
+          -335
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "",
+          "canopy": ""
+        },
+        "above": {
+          "growth": "",
+          "canopy": ""
+        }
+      },
+      "arcState": {
+        "live": false,
+        "stageState": null,
+        "svgVisible": "visible",
+        "canvasVisible": "hidden",
+        "canvasPixels": [
+          300,
+          150
+        ]
+      },
+      "note": "both clocks ablated; nav and media remain; complete authored still"
+    },
+    {
+      "device": "phone",
+      "arm": "no-focus",
+      "rep": 2,
+      "load": {
+        "ttfb": 3.5999999940395355,
+        "fcp": 180,
+        "lcp": 180,
+        "domContentLoaded": 302.5,
+        "load": 306.3999999910593,
+        "bytes": 719903,
+        "requests": 25,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 180,
+        "size": 178230,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-narrow-77ab24e4d1271650.webp",
+        "rect": {
+          "width": 660,
+          "height": 558
+        }
+      },
+      "arrival": {
+        "start": 30.799999997019768,
+        "request": 34.79999999701977,
+        "end": 36.099999994039536,
+        "bytes": 53458
+      },
+      "renderAfterArrival": 143.9,
+      "stationary": {
+        "frames": {
+          "n": 136,
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 136,
+        "elapsedMs": 2269,
+        "drawsPerSecond": 59.9,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 117,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 33.3,
+          "secondFrames": 3
+        },
+        "customPropertyWrites": 0,
+        "gestureSourceType": "touch",
+        "gestureMechanism": "Input.dispatchTouchEvent",
+        "displacement": [
+          335,
+          -335
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "",
+          "canopy": ""
+        },
+        "above": {
+          "growth": "",
+          "canopy": ""
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "moving",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          585,
+          950
+        ]
+      },
+      "note": "reading clock ablated; CSS resting ink remains"
+    },
+    {
+      "device": "phone",
+      "arm": "no-stage",
+      "rep": 2,
+      "load": {
+        "ttfb": 3.4000000059604645,
+        "fcp": 208,
+        "lcp": 208,
+        "domContentLoaded": 317.09999999403954,
+        "load": 324,
+        "bytes": 720680,
+        "requests": 25,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 208,
+        "size": 178230,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-narrow-77ab24e4d1271650.webp",
+        "rect": {
+          "width": 585,
+          "height": 456
+        }
+      },
+      "arrival": {
+        "start": 34.5,
+        "request": 40.900000005960464,
+        "end": 45.400000005960464,
+        "bytes": 53458
+      },
+      "renderAfterArrival": 162.6,
+      "stationary": {
+        "frames": {
+          "n": 136,
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 0,
+        "elapsedMs": 2266,
+        "drawsPerSecond": 0,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 91,
+          "p50": 16.7,
+          "p95": 33.3,
+          "max": 33.4,
+          "secondFrames": 6
+        },
+        "customPropertyWrites": 298,
+        "gestureSourceType": "touch",
+        "gestureMechanism": "Input.dispatchTouchEvent",
+        "displacement": [
+          458,
+          -409
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.458,
+          "growth": "1.000",
+          "canopy": "1.000"
+        },
+        "above": {
+          "growth": "0.356",
+          "canopy": "0.000"
+        }
+      },
+      "arcState": {
+        "live": false,
+        "stageState": null,
+        "svgVisible": "visible",
+        "canvasVisible": "hidden",
+        "canvasPixels": [
+          300,
+          150
+        ]
+      },
+      "note": "overture clock ablated; authored SVG arcs remain visible"
+    },
+    {
+      "device": "phone",
+      "arm": "still",
+      "rep": 2,
+      "load": {
+        "ttfb": 3.5999999940395355,
+        "fcp": 208,
+        "lcp": 208,
+        "domContentLoaded": 320.5,
+        "load": 324.70000000298023,
+        "bytes": 728291,
+        "requests": 26,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 208,
+        "size": 178230,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-narrow-77ab24e4d1271650.webp",
+        "rect": {
+          "width": 585,
+          "height": 456
+        }
+      },
+      "arrival": {
+        "start": 38.599999994039536,
+        "request": 45.400000005960464,
+        "end": 48.70000000298023,
+        "bytes": 53458
+      },
+      "renderAfterArrival": 159.3,
+      "stationary": {
+        "frames": {
+          "n": 136,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 0,
+        "elapsedMs": 2266,
+        "drawsPerSecond": 0,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 88,
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "customPropertyWrites": 0,
+        "gestureSourceType": "touch",
+        "gestureMechanism": "Input.dispatchTouchEvent",
+        "displacement": [
+          426,
+          -420
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.457,
+          "growth": "",
+          "canopy": ""
+        },
+        "above": {
+          "growth": "",
+          "canopy": ""
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "still",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          585,
+          950
+        ]
+      },
+      "note": "same build under prefers-reduced-motion: reduce"
+    },
+    {
+      "device": "phone",
+      "arm": "shipped",
+      "rep": 2,
+      "load": {
+        "ttfb": 3.4000000059604645,
+        "fcp": 196,
+        "lcp": 196,
+        "domContentLoaded": 325.29999999701977,
+        "load": 332.5,
+        "bytes": 728291,
+        "requests": 26,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 196,
+        "size": 178230,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-narrow-77ab24e4d1271650.webp",
+        "rect": {
+          "width": 661,
+          "height": 559
+        }
+      },
+      "arrival": {
+        "start": 34.79999999701977,
+        "request": 39.099999994039536,
+        "end": 40.900000005960464,
+        "bytes": 53458
+      },
+      "renderAfterArrival": 155.1,
+      "stationary": {
+        "frames": {
+          "n": 136,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 136,
+        "elapsedMs": 2268,
+        "drawsPerSecond": 60,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 116,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 33.4,
+          "secondFrames": 2
+        },
+        "customPropertyWrites": 60,
+        "gestureSourceType": "touch",
+        "gestureMechanism": "Input.dispatchTouchEvent",
+        "displacement": [
+          335,
+          -335
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "1.000",
+          "canopy": "1.000"
+        },
+        "above": {
+          "growth": "0.365",
+          "canopy": "0.000"
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "moving",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          585,
+          950
+        ]
+      },
+      "note": "authored page as built"
+    },
+    {
+      "device": "phone",
+      "arm": "shipped",
+      "rep": 3,
+      "load": {
+        "ttfb": 3.7999999970197678,
+        "fcp": 240,
+        "lcp": 240,
+        "domContentLoaded": 347.6000000089407,
+        "load": 357.5,
+        "bytes": 728291,
+        "requests": 26,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 240,
+        "size": 178230,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-narrow-77ab24e4d1271650.webp",
+        "rect": {
+          "width": 661,
+          "height": 559
+        }
+      },
+      "arrival": {
+        "start": 46.6000000089407,
+        "request": 51.1000000089407,
+        "end": 53.1000000089407,
+        "bytes": 53458
+      },
+      "renderAfterArrival": 186.9,
+      "stationary": {
+        "frames": {
+          "n": 136,
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 136,
+        "elapsedMs": 2267,
+        "drawsPerSecond": 60,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 112,
+          "p50": 16.7,
+          "p95": 33.3,
+          "max": 33.4,
+          "secondFrames": 7
+        },
+        "customPropertyWrites": 60,
+        "gestureSourceType": "touch",
+        "gestureMechanism": "Input.dispatchTouchEvent",
+        "displacement": [
+          335,
+          -335
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "1.000",
+          "canopy": "1.000"
+        },
+        "above": {
+          "growth": "0.365",
+          "canopy": "0.000"
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "moving",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          585,
+          950
+        ]
+      },
+      "note": "authored page as built"
+    },
+    {
+      "device": "phone",
+      "arm": "still",
+      "rep": 3,
+      "load": {
+        "ttfb": 3.7000000029802322,
+        "fcp": 204,
+        "lcp": 204,
+        "domContentLoaded": 329.6000000089407,
+        "load": 332.6000000089407,
+        "bytes": 728291,
+        "requests": 26,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 204,
+        "size": 178230,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-narrow-77ab24e4d1271650.webp",
+        "rect": {
+          "width": 585,
+          "height": 456
+        }
+      },
+      "arrival": {
+        "start": 35.900000005960464,
+        "request": 46.20000000298023,
+        "end": 47.70000000298023,
+        "bytes": 53458
+      },
+      "renderAfterArrival": 156.3,
+      "stationary": {
+        "frames": {
+          "n": 136,
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 0,
+        "elapsedMs": 2264,
+        "drawsPerSecond": 0,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 88,
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "customPropertyWrites": 0,
+        "gestureSourceType": "touch",
+        "gestureMechanism": "Input.dispatchTouchEvent",
+        "displacement": [
+          426,
+          -417
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.456,
+          "growth": "",
+          "canopy": ""
+        },
+        "above": {
+          "growth": "",
+          "canopy": ""
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "still",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          585,
+          950
+        ]
+      },
+      "note": "same build under prefers-reduced-motion: reduce"
+    },
+    {
+      "device": "phone",
+      "arm": "no-stage",
+      "rep": 3,
+      "load": {
+        "ttfb": 2.5999999940395355,
+        "fcp": 196,
+        "lcp": 196,
+        "domContentLoaded": 304,
+        "load": 313.3999999910593,
+        "bytes": 720680,
+        "requests": 25,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 196,
+        "size": 178230,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-narrow-77ab24e4d1271650.webp",
+        "rect": {
+          "width": 585,
+          "height": 456
+        }
+      },
+      "arrival": {
+        "start": 35.599999994039536,
+        "request": 39.70000000298023,
+        "end": 41.3999999910593,
+        "bytes": 53458
+      },
+      "renderAfterArrival": 154.6,
+      "stationary": {
+        "frames": {
+          "n": 136,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 0,
+        "elapsedMs": 2265,
+        "drawsPerSecond": 0,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 88,
+          "p50": 16.7,
+          "p95": 33.3,
+          "max": 33.4,
+          "secondFrames": 7
+        },
+        "customPropertyWrites": 282,
+        "gestureSourceType": "touch",
+        "gestureMechanism": "Input.dispatchTouchEvent",
+        "displacement": [
+          436,
+          -414
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.464,
+          "growth": "1.000",
+          "canopy": "1.000"
+        },
+        "above": {
+          "growth": "0.356",
+          "canopy": "0.000"
+        }
+      },
+      "arcState": {
+        "live": false,
+        "stageState": null,
+        "svgVisible": "visible",
+        "canvasVisible": "hidden",
+        "canvasPixels": [
+          300,
+          150
+        ]
+      },
+      "note": "overture clock ablated; authored SVG arcs remain visible"
+    },
+    {
+      "device": "phone",
+      "arm": "no-focus",
+      "rep": 3,
+      "load": {
+        "ttfb": 4.9000000059604645,
+        "fcp": 188,
+        "lcp": 188,
+        "domContentLoaded": 322.5,
+        "load": 326.1000000089407,
+        "bytes": 719903,
+        "requests": 25,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 188,
+        "size": 178230,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-narrow-77ab24e4d1271650.webp",
+        "rect": {
+          "width": 660,
+          "height": 557
+        }
+      },
+      "arrival": {
+        "start": 31.200000002980232,
+        "request": 35,
+        "end": 38.30000001192093,
+        "bytes": 53458
+      },
+      "renderAfterArrival": 149.7,
+      "stationary": {
+        "frames": {
+          "n": 136,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 136,
+        "elapsedMs": 2265,
+        "drawsPerSecond": 60,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 115,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 33.4,
+          "secondFrames": 3
+        },
+        "customPropertyWrites": 0,
+        "gestureSourceType": "touch",
+        "gestureMechanism": "Input.dispatchTouchEvent",
+        "displacement": [
+          335,
+          -335
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "",
+          "canopy": ""
+        },
+        "above": {
+          "growth": "",
+          "canopy": ""
+        }
+      },
+      "arcState": {
+        "live": true,
+        "stageState": "moving",
+        "svgVisible": "hidden",
+        "canvasVisible": "visible",
+        "canvasPixels": [
+          585,
+          950
+        ]
+      },
+      "note": "reading clock ablated; CSS resting ink remains"
+    },
+    {
+      "device": "phone",
+      "arm": "no-clocks",
+      "rep": 3,
+      "load": {
+        "ttfb": 4.700000002980232,
+        "fcp": 204,
+        "lcp": 204,
+        "domContentLoaded": 303.59999999403954,
+        "load": 308.3999999910593,
+        "bytes": 712292,
+        "requests": 24,
+        "fonts": "loaded"
+      },
+      "lcp": {
+        "time": 204,
+        "size": 178230,
+        "tag": "IMG",
+        "className": "",
+        "src": "creators-narrow-77ab24e4d1271650.webp",
+        "rect": {
+          "width": 585,
+          "height": 456
+        }
+      },
+      "arrival": {
+        "start": 34.20000000298023,
+        "request": 38.79999999701977,
+        "end": 40.8999999910593,
+        "bytes": 53458
+      },
+      "renderAfterArrival": 163.1,
+      "stationary": {
+        "frames": {
+          "n": 137,
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "draws": 0,
+        "elapsedMs": 2268,
+        "drawsPerSecond": 0,
+        "customPropertyWrites": 0,
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "scroll": {
+        "frames": {
+          "n": 92,
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "customPropertyWrites": 0,
+        "gestureSourceType": "touch",
+        "gestureMechanism": "Input.dispatchTouchEvent",
+        "displacement": [
+          335,
+          -335
+        ],
+        "loaf": {
+          "count": 0,
+          "script": 0,
+          "render": 0,
+          "styleLayout": 0
+        },
+        "longTasks": 0
+      },
+      "seam": {
+        "reached": {
+          "phraseAtFraction": 0.45,
+          "growth": "",
+          "canopy": ""
+        },
+        "above": {
+          "growth": "",
+          "canopy": ""
+        }
+      },
+      "arcState": {
+        "live": false,
+        "stageState": null,
+        "svgVisible": "visible",
+        "canvasVisible": "hidden",
+        "canvasPixels": [
+          300,
+          150
+        ]
+      },
+      "note": "both clocks ablated; nav and media remain; complete authored still"
+    },
+    {
+      "device": "desktop",
+      "arm": "shipped+traced",
+      "rep": 0,
+      "traced": true,
+      "stationary": {
+        "frames": {
+          "n": 90,
+          "p50": 16.7,
+          "p95": 50,
+          "max": 50.1,
+          "secondFrames": 37
+        },
+        "drawsPerSecond": 40.9,
+        "loaf": {
+          "count": 0
+        }
+      },
+      "note": "stationary window with the tracer attached; compare with desktop/shipped"
+    }
+  ],
+  "traced_window": {
+    "device": "desktop",
+    "window": "shipped, stationary 2.2 s, categories devtools.timeline,blink,cc,gpu,viz",
+    "overhead_pair": "traced 37 of 90 frames > 25 ms versus 41 of 90 untraced, p50 16.7 ms both: the tracer is not producing the effect",
+    "note": "Inclusive, potentially overlapping durations; do not sum rows.",
+    "inclusive_events": [
+      {
+        "threadId": "1092325:1092347",
+        "thread": "VizCompositorThread",
+        "name": "Graphics.Pipeline",
+        "count": 726,
+        "totalMs": 2098.441999999999,
+        "maxMs": 43.509
+      },
+      {
+        "threadId": "1092325:1092347",
+        "thread": "VizCompositorThread",
+        "name": "DisplayScheduler::DrawAndSwap",
+        "count": 89,
+        "totalMs": 2077.3579999999993,
+        "maxMs": 43.512
+      },
+      {
+        "threadId": "1092325:1092347",
+        "thread": "VizCompositorThread",
+        "name": "Display::DrawAndSwap",
+        "count": 89,
+        "totalMs": 2077.212000000001,
+        "maxMs": 43.511
+      },
+      {
+        "threadId": "1092404:1092404",
+        "thread": "CrRendererMain",
+        "name": "ProxyMain::BeginMainFrame",
+        "count": 90,
+        "totalMs": 237.102,
+        "maxMs": 5.742
+      },
+      {
+        "threadId": "1092404:1092404",
+        "thread": "CrRendererMain",
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "count": 90,
+        "totalMs": 117.09499999999998,
+        "maxMs": 4.364
+      },
+      {
+        "threadId": "1092404:1092420",
+        "thread": "Compositor",
+        "name": "Graphics.Pipeline",
+        "count": 270,
+        "totalMs": 86.749,
+        "maxMs": 1.251
+      },
+      {
+        "threadId": "1092404:1092404",
+        "thread": "CrRendererMain",
+        "name": "Canvas2DResourceProvider::ProduceCanvasResource",
+        "count": 90,
+        "totalMs": 56.355,
+        "maxMs": 2.042
+      },
+      {
+        "threadId": "1092404:1092404",
+        "thread": "CrRendererMain",
+        "name": "LocalFrameView::RunPaintLifecyclePhase",
+        "count": 90,
+        "totalMs": 30.321999999999996,
+        "maxMs": 1.042
+      },
+      {
+        "threadId": "1092404:1092404",
+        "thread": "CrRendererMain",
+        "name": "PaintArtifactCompositor::Update",
+        "count": 90,
+        "totalMs": 25.759000000000007,
+        "maxMs": 0.945
+      },
+      {
+        "threadId": "1092404:1092404",
+        "thread": "CrRendererMain",
+        "name": "LocalFrameView::UpdateStyleAndLayout",
+        "count": 351,
+        "totalMs": 16.556999999999956,
+        "maxMs": 0.858
+      },
+      {
+        "threadId": "1092404:1092404",
+        "thread": "CrRendererMain",
+        "name": "Document::UpdateStyleAndLayout",
+        "count": 273,
+        "totalMs": 2.224999999999992,
+        "maxMs": 0.056
+      },
+      {
+        "threadId": "1092404:1092404",
+        "thread": "CrRendererMain",
+        "name": "ProxyMain::BeginMainFrame::commit",
+        "count": 91,
+        "totalMs": 1.388,
+        "maxMs": 0.056
+      },
+      {
+        "threadId": "1092294:1092294",
+        "thread": "CrBrowserMain",
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "count": 2,
+        "totalMs": 0.7180000000000001,
+        "maxMs": 0.666
+      },
+      {
+        "threadId": "1092294:1092294",
+        "thread": "CrBrowserMain",
+        "name": "Graphics.Pipeline",
+        "count": 7,
+        "totalMs": 0.6459999999999999,
+        "maxMs": 0.136
+      }
+    ],
+    "read": "Display::DrawAndSwap is 89 draws totalling 2077 ms on the viz thread (~23 ms per draw, ~40 draws/s in a 2.2 s window); the renderer main thread is 90 BeginMainFrame in 237 ms (~2.6 ms per frame) and 90 ProduceCanvasResource in 56 ms. This is a software-compositor draw cost, not JavaScript and not canvas raster."
+  },
+  "notes": [
+    "Rep 1 of the desktop matrix is the first cold page of the session and reads 33.2 ms stationary p50 with 43 of 86 frames over 25 ms; reps 2 and 3 read 16.7 ms. The arm order is reversed on even reps, so one warmup rep lands on the shipped arm; medians are reported unchanged rather than trimmed.",
+    "Two draws in the traced window exceed 40 ms; the per-draw mean is the honest figure, not an FPS claim.",
+    "The isolated cost tracks the masked arcs composite plus the per-frame torus transform: no-arcs (34 of 90 second-frames) and no-mask (22 of 90) stay costly, no-transform reaches 0 of 90.",
+    "Every isolation arm keeps the per-frame data-stage-state and classList churn because the stage module is unmodified, so removed attribute churn must not be claimed as frame time. It remains a defensible correctness gate.",
+    "no-clocks is not a no-JavaScript arm: navigation, media and contact scripts still run. Actual no-JS output is checked by the Ruby page contract and the existing browser gates.",
+    "Phone touch displacement varies 335-438 px between arms because it is sampled mid-fling, so phone ink-write counts are confounded by distance and are NOT reported as an ink-rate regression.",
+    "No second representation (bake, promotion, cadence change) is justified by these numbers, and nothing here has been measured on real GPU or real device hardware.",
+    "Audit of the five pre-existing experiences probes: none of them measures time. experiences.mjs / experiences-focus.mjs / experiences-tree.mjs / experiences-stage.mjs / experiences-type.mjs are correctness and geometry gates with no LCP, resource-timing, rAF or LoAF instrumentation, and their default ports disagree (4001/4012/4022), so a default invocation can silently point at another session's server. This probe is therefore the first timing harness for /experiences, not a replacement for those gates.",
+    "Corrected framing of the shipped medians: cold-localhost LCP is 232 ms desktop and 240 ms phone for the shipped arm; the 128-256 ms range quoted elsewhere belongs to abbreviated arms, which is attribution and not a shipped number.",
+    "Harness validation recorded: the full default matrix now runs end to end on both devices with every arm-identity assertion green; the earlier partial runs were filtered subsets and are superseded for harness-soundness purposes, not for their numbers."
+  ],
+  "probe_infra_change": "design/probe/cdp.mjs newPage now also returns targetId (additive only) so a probe can close its target instead of leaking a renderer.",
+  "confounds": [
+    "Phone touch displacement is sampled mid-fling and varies 335-438 px between arms, so phone ink-write counts (60 shipped vs 282-298 no-stage) mix distance with rate and are not reported as an ink-rate regression. A displacement-matched gesture is the test that would close this, not a new representation.",
+    "The no-arcs arm removes canvas invalidation as well as canvas raster: a no-op drawArcs never clears, so the compositor can reuse the previous canvas tile. It rules out canvas raster as the dominant cost (the traced ProduceCanvasResource is 56 ms per 90 frames) but it does not price invalidation separately.",
+    "The no-transform arm swallows transform writes after load, so the torus keeps no transform at all rather than a frozen non-zero one. It is an attribution arm, not a shipped candidate.",
+    "Every number is headless Chromium with --disable-gpu on SwiftShader Subzero: a software compositor. Real GPU and real device hardware are unmeasured, and no FPS, INP or field claim follows.",
+    "Cold localhost has ~4 ms TTFB and no RTT, so LCP here is bytes-becoming-pixels. The 1.6 Mbps / 150 ms / 4x model from the front page has not been run for /experiences and must not be projected from these numbers.",
+    "Stationary drops appear at 1440x900 desktop and not at 390x844 / 4x CPU phone; that is a property of this compositor and viewport, not evidence that the phone is free of the cost."
+  ],
+  "spike_will_change": {
+    "question": "does a compositor hint buy back the stationary draw cost without changing the authored picture",
+    "build": {
+      "root": "/tmp/experiences-efficiency-after",
+      "note": "lifecycle-repaired build from the paired session; experiences.html and focus.mjs identical to the frozen baseline, stage.mjs differs only by the bounded lifecycle repair",
+      "sha256": {
+        "experiences.html": "b1df45e93c04091908cb524796be00d86861fa5e097166f956bb28285ab3ce44",
+        "stage.mjs": "f6e7ddab9538f5b07d72e9a587a770ad3a60cd58c22eaf3ca9272d2114c92a97",
+        "focus.mjs": "4b8e18eb981d5ac831fc9ebe7008287076393c441ea1844892fb4779ce6801e0",
+        "arcs.mjs": "f70bd77d9fe1874c70b8b2ea4d6b8fc4657259ae84022db6bebb511d060b3d53"
+      }
+    },
+    "arms": [
+      {
+        "id": "shipped",
+        "change": "repaired build as-is (reference, and the pixel reference)"
+      },
+      {
+        "id": "will-change",
+        "change": "probe stylesheet .experiences-gathering-thought{will-change:transform}"
+      },
+      {
+        "id": "will-change-visible",
+        "change": "inline hint owned by motion lifetime: present while the overture intersects, removed offscreen"
+      },
+      {
+        "id": "will-change-transient",
+        "change": "rejected-ownership control: hint only while a gesture scrolls, cleared 200 ms after rest"
+      },
+      {
+        "id": "no-transform",
+        "change": "known-0 control from the first milestone, so a null result cannot be confused with a dead measurement"
+      }
+    ],
+    "reps": 4,
+    "order": "ABBA: arm order reversed on even repeats",
+    "stationary_second_frames": {
+      "note": "count of sampled frames longer than 25 ms, out of about 90, per rep",
+      "shipped": [
+        36,
+        37,
+        42,
+        38
+      ],
+      "will-change": [
+        37,
+        34,
+        49,
+        36
+      ],
+      "will-change-visible": [
+        45,
+        34,
+        37,
+        35
+      ],
+      "will-change-transient": [
+        36,
+        38,
+        38,
+        39
+      ]
+    },
+    "scroll_second_frames": {
+      "shipped": [
+        32,
+        28,
+        34,
+        28
+      ],
+      "will-change": [
+        31,
+        29,
+        40,
+        30
+      ],
+      "will-change-visible": [
+        31,
+        34,
+        30,
+        28
+      ],
+      "will-change-transient": [
+        27,
+        27,
+        28,
+        28
+      ]
+    },
+    "traced": {
+      "shipped": {
+        "frames": 88,
+        "secondFrames": 40,
+        "elapsedMs": 2215,
+        "drawsPerSecond": 39.7
+      },
+      "will-change": {
+        "frames": 92,
+        "secondFrames": 35,
+        "elapsedMs": 2211,
+        "drawsPerSecond": 41.6
+      },
+      "will-change-visible": {
+        "frames": 90,
+        "secondFrames": 35,
+        "elapsedMs": 2210,
+        "drawsPerSecond": 40.7
+      }
+    },
+    "pixel_gate": {
+      "method": "reduced motion stops every clock, then the still and three explicitly assigned torus transforms are captured and hashed; at least three non-zero poses were required",
+      "poses": [
+        "translate3d(-12px,6px,0) rotate(-12deg)",
+        "translate3d(-5px,2px,0) rotate(-25.5deg)",
+        "translate3d(0px,0px,0) rotate(-40deg)"
+      ],
+      "result": {
+        "will-change": "still differs in all 4 reps: 52900 px, max channel delta 3/255, bbox (81,240)-(1303,706); all three assigned poses byte-identical",
+        "will-change-visible": "byte-identical still and all three poses, 4 of 4 reps",
+        "will-change-transient": "byte-identical still and all three poses, 4 of 4 reps",
+        "shipped": "self-identical across reps 2-4, so the gate is deterministic"
+      }
+    },
+    "decision": "REJECTED. No arm reduces the stationary or scroll second-frame count beyond arm-to-arm noise, the traced per-draw rate is unchanged (39.7 versus 41.6 and 40.7 draws/s), and the resident hint is not byte-identical at the rest pose. A software-compositor cost does not justify an art or layer change on this evidence.",
+    "release_window": "one browser/server pair on 4051/9251, target closed and server killed in the runner's trap",
+    "control_caveat": "The no-transform control is not stable across sessions. First milestone (frozen baseline): 0 of 90 second-frames in all three reps. Spike session (repaired build): 37/0/18/0 of about 90. Re-checked with an arm-identity assertion that proves the swallow hook is installed (own descriptor on torus.style): 15 of 122 and 11 of 125, against shipped 40 of 81 and 43 of 87. So suppressing the per-frame transform write gives a large reduction (about 50% to about 10% of frames over 25 ms) but not elimination, on a faster frame count. The honest claim is 'dominant contributing factor in these sessions', not 'the sole cost', and the absolute second-frame counts are session-dependent. The spike verdict does not depend on this arm: shipped and the three hint arms were measured under one procedure in one session."
+  },
+  "network_4g": {
+    "question": "does the cold-localhost LCP survive a modelled 1.5 Mbps phone pipe",
+    "model": {
+      "model": "4g",
+      "latencyMs": 150,
+      "downloadBps": 187500
+    },
+    "served_encoding": {
+      "experiences.html": {
+        "encoding": "identity",
+        "contentLength": 31474
+      },
+      "stage.mjs": {
+        "encoding": "identity",
+        "contentLength": 6239
+      },
+      "focus.mjs": {
+        "encoding": "identity",
+        "contentLength": 4941
+      },
+      "arcs.mjs": {
+        "encoding": "identity",
+        "contentLength": 1435
+      }
+    },
+    "served_encoding_note": "the probe server sends identity encoding, so 31474 bytes of HTML and 6239/4941 bytes of module JS are uncompressed on the wire. This is a pessimistic bound, not the deploy server's brotli/gzip behaviour.",
+    "device": "phone 390x844 dpr3, 4x CPU throttle, cache disabled, service worker bypassed",
+    "reps": 3,
+    "lcp_ms": [
+      2912,
+      2692,
+      2676
+    ],
+    "median_lcp_ms": 2692,
+    "arrival_ms": [
+      1832,
+      1698,
+      1705
+    ],
+    "render_after_arrival_ms": [
+      1079.8,
+      994.2,
+      971
+    ],
+    "fcp_equals_lcp": true,
+    "bytes": 728654,
+    "requests": [
+      27,
+      26,
+      26
+    ],
+    "load_event_ms": [
+      4643,
+      4517,
+      4522
+    ],
+    "note": "about 1.7 s of the 2.7 s is bytes arriving and about 1 s follows arrival. Roughly half of the modelled LCP would move with fewer bytes; the other half would not. This is a modelled bound, not a field or production LCP claim."
+  },
+  "corrections": [
+    "Earlier wording in this file said no-transform reached 0 of 90 second-frames. That was one session and does not reproduce; see spike_will_change.control_caveat.",
+    "Second-frame counts are not comparable across sessions with different draw rates: a session that draws at 55/s samples more frames in the same 2.2 s window than one that draws at 36/s. Compare fractions within a session, never raw counts across sessions."
+  ],
+  "decomposition": {
+    "question": "candidate 1: is the overture cost drawing, canvas area, or compositing",
+    "build": {
+      "root": "/tmp/experiences-perf/baseline",
+      "sha256": {
+        "experiences.html": "b1df45e93c04091908cb524796be00d86861fa5e097166f956bb28285ab3ce44",
+        "stage.mjs": "9f42710e8f2ea220604c016143a22323b55ed77d90e3581b45db84821672f02c",
+        "focus.mjs": "4b8e18eb981d5ac831fc9ebe7008287076393c441ea1844892fb4779ce6801e0",
+        "arcs.mjs": "f70bd77d9fe1874c70b8b2ea4d6b8fc4657259ae84022db6bebb511d060b3d53"
+      },
+      "note": "frozen baseline, not the repaired build, so this decomposition is comparable with the first milestone"
+    },
+    "device": "desktop 1440x900 dpr1, 3 reps, ABBA order, cache disabled",
+    "arms": {
+      "shipped": "authored page",
+      "draw-1": "arcs.mjs replaced: same clearRect cadence, one stroke instead of eight",
+      "draw-detached": "authored eight-arc stroke work, executed into a detached canvas; visible canvas never invalidated",
+      "canvas-hidden": "clock, drawing and canvas calls kept, [data-stage-arcs]{visibility:hidden}",
+      "canvas-half": "probe substitution of the dpr line in stage.mjs: backing store halved in each axis, quarter the pixels",
+      "no-mask": "authored mask removed on the arcs container",
+      "no-transform": "torus transform writes suppressed after load"
+    },
+    "measures": {
+      "shipped": {
+        "stationary_second_frame_fraction": [
+          0.4,
+          0.54,
+          0.68
+        ],
+        "stationary_median_fraction": 0.54,
+        "stationary_p50_ms": [
+          16.7,
+          33.3,
+          33.3
+        ],
+        "draws_per_second": [
+          41.9,
+          34.9,
+          33
+        ],
+        "scroll_second_frame_fraction": [
+          0.44,
+          0.57,
+          0.71
+        ],
+        "scroll_median_fraction": 0.57,
+        "scroll_p50_ms": [
+          16.7,
+          33.3,
+          33.4
+        ],
+        "canvas_pixels": [
+          1440,
+          749
+        ]
+      },
+      "draw-1": {
+        "stationary_second_frame_fraction": [
+          0.43,
+          0.94,
+          0.6
+        ],
+        "stationary_median_fraction": 0.6,
+        "stationary_p50_ms": [
+          16.7,
+          50,
+          33.3
+        ],
+        "draws_per_second": [
+          40.6,
+          20.7,
+          35.8
+        ],
+        "scroll_second_frame_fraction": [
+          0.49,
+          0.81,
+          0.56
+        ],
+        "scroll_median_fraction": 0.56,
+        "scroll_p50_ms": [
+          16.8,
+          50,
+          33.3
+        ],
+        "canvas_pixels": [
+          1440,
+          749
+        ]
+      },
+      "draw-detached": {
+        "stationary_second_frame_fraction": [
+          0.38,
+          0.42,
+          0.43
+        ],
+        "stationary_median_fraction": 0.42,
+        "stationary_p50_ms": [
+          16.7,
+          16.7,
+          16.7
+        ],
+        "draws_per_second": [
+          0,
+          0,
+          0
+        ],
+        "scroll_second_frame_fraction": [
+          0.4,
+          0.62,
+          0.63
+        ],
+        "scroll_median_fraction": 0.62,
+        "scroll_p50_ms": [
+          16.7,
+          33.3,
+          33.3
+        ],
+        "canvas_pixels": [
+          1440,
+          749
+        ]
+      },
+      "canvas-hidden": {
+        "stationary_second_frame_fraction": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "stationary_median_fraction": 0.0,
+        "stationary_p50_ms": [
+          16.7,
+          16.7,
+          16.7
+        ],
+        "draws_per_second": [
+          60.3,
+          59.9,
+          59.9
+        ],
+        "scroll_second_frame_fraction": [
+          0.25,
+          0.25,
+          0.24
+        ],
+        "scroll_median_fraction": 0.25,
+        "scroll_p50_ms": [
+          16.7,
+          16.7,
+          16.7
+        ],
+        "canvas_pixels": [
+          1440,
+          749
+        ]
+      },
+      "canvas-half": {
+        "stationary_second_frame_fraction": [
+          0.34,
+          0.37,
+          0.54
+        ],
+        "stationary_median_fraction": 0.37,
+        "stationary_p50_ms": [
+          16.7,
+          16.7,
+          33.3
+        ],
+        "draws_per_second": [
+          43.3,
+          44.2,
+          35.8
+        ],
+        "scroll_second_frame_fraction": [
+          0.41,
+          0.43,
+          0.57
+        ],
+        "scroll_median_fraction": 0.43,
+        "scroll_p50_ms": [
+          16.7,
+          16.7,
+          33.3
+        ],
+        "canvas_pixels": [
+          720,
+          374
+        ]
+      },
+      "no-mask": {
+        "stationary_second_frame_fraction": [
+          0.29,
+          0.41,
+          0.35
+        ],
+        "stationary_median_fraction": 0.35,
+        "stationary_p50_ms": [
+          16.7,
+          16.7,
+          16.7
+        ],
+        "draws_per_second": [
+          44.6,
+          40.1,
+          44.1
+        ],
+        "scroll_second_frame_fraction": [
+          0.26,
+          0.42,
+          0.38
+        ],
+        "scroll_median_fraction": 0.38,
+        "scroll_p50_ms": [
+          16.7,
+          16.7,
+          16.7
+        ],
+        "canvas_pixels": [
+          1440,
+          749
+        ]
+      },
+      "no-transform": {
+        "stationary_second_frame_fraction": [
+          0.01,
+          0.33,
+          0.11
+        ],
+        "stationary_median_fraction": 0.11,
+        "stationary_p50_ms": [
+          16.7,
+          16.7,
+          16.7
+        ],
+        "draws_per_second": [
+          60,
+          44.1,
+          54.2
+        ],
+        "scroll_second_frame_fraction": [
+          0.26,
+          0.45,
+          0.38
+        ],
+        "scroll_median_fraction": 0.38,
+        "scroll_p50_ms": [
+          16.7,
+          16.7,
+          16.7
+        ],
+        "canvas_pixels": [
+          1440,
+          749
+        ]
+      }
+    },
+    "readings": [
+      "Drawing is not the cost: canvas-hidden still executes the eight-arc draw at ~60/s and shows 0 of 138, 0 of 137 and 0 of 136 frames over 25 ms in three reps.",
+      "Canvas invalidation is not the cost either: draw-detached keeps the full stroke work but never touches the visible canvas, and the second-frame fraction stays at shipped levels (0.38/0.42/0.43 against 0.40/0.54/0.68).",
+      "Canvas area is a small contributor: quartering the backing store moves the median fraction from 0.54 to 0.37, well short of removing it.",
+      "The mask and the per-frame transform each remove part of the cost (no-mask median 0.35, no-transform 0.11 with high variance), so this is a scene-composite interaction rather than one dominant factor: the masked, semi-transparent canvas surface is expensive to composite whenever the frame is being recomposited, and the transform write is what forces that recomposition.",
+      "Consequence for the candidate list: there is no faithful single-factor subtraction that removes the cost. Hiding the canvas or dropping the mask or freezing the transform each buys time by removing authored richness, which the acceptance gates forbid. This is a retain, not a repair."
+    ],
+    "traced": {
+      "shipped+traced": {
+        "frames": {
+          "n": 76,
+          "p50": 33.3,
+          "p95": 50.1,
+          "max": 66.7,
+          "secondFrames": 47
+        },
+        "drawsPerSecond": 34.3,
+        "elapsedMs": 2217
+      },
+      "draw-detached+traced": {
+        "frames": {
+          "n": 81,
+          "p50": 33.2,
+          "p95": 50,
+          "max": 83.4,
+          "secondFrames": 42
+        },
+        "drawsPerSecond": 0,
+        "elapsedMs": 2214
+      },
+      "canvas-hidden+traced": {
+        "frames": {
+          "n": 133,
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8,
+          "secondFrames": 0
+        },
+        "drawsPerSecond": 60,
+        "elapsedMs": 2217
+      }
+    }
+  },
+  "harness_validation": {
+    "run": "REPEATS=1 against the frozen baseline with no arm filter, 2026-10-23 03:0xZ, isolated CDP 9251 / HTTP 4051",
+    "result": "all 13 arms complete on desktop and all 5 core arms on phone, no assertion failures, rows written incrementally",
+    "arm_identity_assertions": [
+      "blanked modules: no live canvas where a clock was removed, authored SVG arcs visible instead",
+      "no-arcs: clock still 'moving', canvas draws exactly 0",
+      "draw-detached: clock 'moving', visible canvas never touched",
+      "canvas-half: canvas backing store halves (720x374 against 1440x749)",
+      "canvas-hidden: computed visibility is 'hidden' while draws stay near 60/s",
+      "no-transform: own descriptor installed on torus.style, so the swallow hook cannot be a silent no-op",
+      "will-change arms: computed will-change is 'transform' while the overture is visible; the visible-lifetime arm is 'auto' once the hero is parked offscreen; the scroll-only control is 'auto' at rest"
+    ],
+    "pixel_gate": "records a mismatch by default and saves the PNGs; PIXEL_GATE=strict is what fails a candidate arm. The resident will-change arm's still mismatch is therefore a recorded finding, not a crashed harness.",
+    "not_covered": [
+      "hidden/offscreen animation work and tab visibility are the paired session's lifecycle tests, not this probe",
+      "keyboard navigation and native FAQ operation are covered by the partner's browser gates and the Ruby page contract",
+      "no real-GPU or real-device measurement exists for this page"
+    ]
+  },
+  "arrival_optimisation": {
+    "question": "does the measured critical-path waste buy back real arrival time without changing rendering",
+    "instrument_note": "LHCI simulate LCP is not the gate here: it reported bimodal 3183/4307 ms for an element whose own LCP breakdown subparts total 228 ms. Wall-clock CDP under 1.6 Mbps/150 ms/4x CPU against perf-serve.mjs (brotli, byte ranges, no cache) is the measurement of record.",
+    "bundle_zero_rendering_change": [
+      "remove three redundant <video poster> attributes: the visible poster is the authored .media-clip-poster <img> and the <video> is opacity 0 until a presented frame (verified: reduced motion readyState 0, dataReady false, videoOpacity 0, poster img complete)",
+      "fetchpriority=high on the actual LCP image (overture torus picture)",
+      "fetchpriority=low on decorative images that outranked it: nav banner, hero cutout, ten below-fold lazy images"
+    ],
+    "device": "phone 390x844 dpr3, 4x CPU, cold cache, service worker bypassed, 1.6 Mbps / 150 ms",
+    "reps": 6,
+    "order": "A/B/A/B rounds, 3 cold loads per round",
+    "results": {
+      "lcp_ms": {
+        "baseline": [
+          1748,
+          1756,
+          1776,
+          1780,
+          1840,
+          1916
+        ],
+        "opt": [
+          1572,
+          1624,
+          1628,
+          1636,
+          1872,
+          1892
+        ]
+      },
+      "lcp_median_ms": {
+        "baseline": 1778,
+        "opt": 1632,
+        "delta": -146
+      },
+      "lcp_image_arrival_ms": {
+        "baseline": [
+          1706,
+          1716,
+          1737,
+          1742,
+          1798,
+          1879
+        ],
+        "opt": [
+          1524,
+          1593,
+          1596,
+          1599,
+          1823,
+          1852
+        ]
+      },
+      "arrival_median_ms": {
+        "baseline": 1739,
+        "opt": 1597,
+        "delta": -142
+      },
+      "fcp_median_ms": {
+        "baseline": 1008,
+        "opt": 912,
+        "delta": -96
+      },
+      "bytes_median": {
+        "baseline": 549170,
+        "opt": 507924,
+        "delta": -41246
+      }
+    },
+    "pixel_gate": "hero still plus three assigned non-zero torus poses: 0 differing pixels in all four captures",
+    "clip_poster_gate": "reduced-motion clip frame at readyState 0: 0 differing pixels; the video is opacity 0 in both arms, so the removed attribute never painted",
+    "single_factor_nulls": "priority alone: arrival 1789 vs 1793 ms; poster attribute alone: 1769 vs 1785 ms. The bundle is what moves the number; each factor alone is below the noise floor.",
+    "verdict": "RETAIN as the shipped optimisation: 41 KB and ~146 ms of LCP at zero rendering change.",
+    "not_claimed": [
+      "no real-device or field measurement",
+      "remaining contention is font bytes (144 KB, four faces at VeryHigh) and below-fold seam art (155 KB at High in the 4G window)",
+      "LHCI simulate LCP must not gate this page without explaining the 228 ms breakdown contradiction"
+    ]
+  }
+}

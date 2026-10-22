@@ -1,0 +1,563 @@
+{
+  "scope": "Post-carousel-correctness frozen build. Synthetic progress updates are mechanism tests, not production FPS. No baked video or experimental CSS shipped.",
+  "baseline": {
+    "index.html": "da647bdd2e3977340490837a82e79307cc94fa1ad8a4630c9b89b88abbc9b95b",
+    "assets/css/mode-helios.css": "e202b76bbee3b0ac2ade4a9e7ecfa4ba4d1de8d4172fd6486a11004c143e6ede",
+    "assets/css/app.css": "64d4ed77afff035a773da360df0685198213cc6318d537d97f890982ce16f74f",
+    "assets/js/home/helios.js": "3a8f0c50b7657d1a41f772cf2d82ea6d0e0ea18222a2b90e933ed780014963a6",
+    "assets/js/media-carousel.js": "150d86454d0df5c33cd3a145daebe98403dc673b468fd3a7154f8824a4b04218",
+    "assets/js/media-video.js": "f3a853be9383919851da32c1f35b208a5192021a946ede154cc3c17dd84c101c"
+  },
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "Chrome/154.0.8037.97",
+    "revision": "@b510e9d7cd3a2fbd78d0ddc42234103206c5f78d",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+    "jsVersion": "15.4.80.20"
+  },
+  "retainedFill": {
+    "base": "http://127.0.0.1:4005",
+    "reports": [
+      {
+        "nativeClock": {
+          "before": {
+            "scale": 0.348521,
+            "ratio": 0.3822604,
+            "playing": true,
+            "src": "http://127.0.0.1:4005/assets/lib/helios/tree_fractal-bd62c7.av1.mp4"
+          },
+          "after": {
+            "scale": 0.507898,
+            "ratio": 0.5126299999999999,
+            "playing": true,
+            "src": "http://127.0.0.1:4005/assets/lib/helios/tree_fractal-bd62c7.av1.mp4"
+          }
+        }
+      },
+      {
+        "trial": 0,
+        "mode": "control",
+        "layoutCount": 0,
+        "layoutMs": 0,
+        "styleMs": 0
+      },
+      {
+        "trial": 0,
+        "mode": "width",
+        "layoutCount": 120,
+        "layoutMs": 17.233999999999998,
+        "styleMs": 24.609999999999992
+      },
+      {
+        "trial": 0,
+        "mode": "transform",
+        "layoutCount": 0,
+        "layoutMs": 0,
+        "styleMs": 27.655000000000012
+      },
+      {
+        "trial": 1,
+        "mode": "transform",
+        "layoutCount": 0,
+        "layoutMs": 0,
+        "styleMs": 25.575000000000014
+      },
+      {
+        "trial": 1,
+        "mode": "width",
+        "layoutCount": 120,
+        "layoutMs": 17.665000000000013,
+        "styleMs": 25.658000000000015
+      },
+      {
+        "trial": 1,
+        "mode": "control",
+        "layoutCount": 0,
+        "layoutMs": 0,
+        "styleMs": 0
+      },
+      {
+        "p": 0,
+        "visual": {
+          "meanRGB": 0,
+          "maxChannel": 0
+        }
+      },
+      {
+        "p": 0.001,
+        "visual": {
+          "meanRGB": 0,
+          "maxChannel": 0
+        }
+      },
+      {
+        "p": 0.5,
+        "visual": {
+          "meanRGB": 0,
+          "maxChannel": 0
+        }
+      },
+      {
+        "p": 0.999,
+        "visual": {
+          "meanRGB": 0,
+          "maxChannel": 0
+        }
+      },
+      {
+        "p": 1,
+        "visual": {
+          "meanRGB": 0,
+          "maxChannel": 0
+        }
+      },
+      {
+        "visibleBarDeltaRGB": 73.24623781676414
+      }
+    ]
+  },
+  "knockouts": {
+    "landscape": {
+      "baseline": {
+        "p50": [
+          66.70000000000073
+        ],
+        "p95": [
+          133.30000000000018
+        ]
+      },
+      "flat-planes": {
+        "p50": [
+          66.70000000000073
+        ],
+        "p95": [
+          100
+        ],
+        "visual": {
+          "meanRGB": 6.815843621399177e-05,
+          "maxChannel": 2,
+          "changedOver2": 0
+        }
+      },
+      "flat-body": {
+        "p50": [
+          66.70000000000073
+        ],
+        "p95": [
+          116.69999999999891
+        ],
+        "visual": {
+          "meanRGB": 0,
+          "maxChannel": 0,
+          "changedOver2": 0
+        }
+      },
+      "image-pool": {
+        "p50": [
+          83.29999999999927
+        ],
+        "p95": [
+          133.29999999999927
+        ],
+        "visual": {
+          "meanRGB": 0.0004380144032921811,
+          "maxChannel": 2,
+          "changedOver2": 0
+        }
+      },
+      "promote-atmosphere": {
+        "p50": [
+          83.20000000000073
+        ],
+        "p95": [
+          100
+        ],
+        "visual": {
+          "meanRGB": 0.05070704732510287,
+          "maxChannel": 20,
+          "changedOver2": 0.004464506172839506
+        }
+      },
+      "promote-stage": {
+        "p50": [
+          83.29999999999927
+        ],
+        "p95": [
+          133.29999999999927
+        ],
+        "visual": {
+          "meanRGB": 1.286008230452675e-06,
+          "maxChannel": 1,
+          "changedOver2": 0
+        }
+      },
+      "paint-containment": {
+        "p50": [
+          66.79999999999563
+        ],
+        "p95": [
+          100
+        ],
+        "visual": {
+          "meanRGB": 1.286008230452675e-06,
+          "maxChannel": 1,
+          "changedOver2": 0
+        }
+      }
+    },
+    "heroFactorialFrameZero": {
+      "play-grade": {
+        "p50": [
+          66.60000000000036,
+          66.69999999999709,
+          66.60000000000582
+        ],
+        "p95": [
+          166.69999999999982,
+          116.59999999999854,
+          100.09999999999854
+        ],
+        "overTwoVsync": [
+          0.6590909090909091,
+          0.6956521739130435,
+          0.7872340425531915
+        ]
+      },
+      "play-plain": {
+        "p50": [
+          50,
+          50,
+          50
+        ],
+        "p95": [
+          116.60000000000036,
+          100,
+          100
+        ],
+        "overTwoVsync": [
+          0.72,
+          0.6481481481481481,
+          0.7222222222222222
+        ]
+      },
+      "pause-plain": {
+        "p50": [
+          50,
+          50,
+          50
+        ],
+        "p95": [
+          83.39999999999964,
+          83.29999999999927,
+          66.79999999999563
+        ],
+        "overTwoVsync": [
+          0.7777777777777778,
+          0.6964285714285714,
+          0.6842105263157895
+        ]
+      },
+      "pause-grade": {
+        "p50": [
+          66.60000000000036,
+          66.69999999999709,
+          66.59999999999854
+        ],
+        "p95": [
+          66.79999999999927,
+          100,
+          83.30000000000291
+        ],
+        "overTwoVsync": [
+          0.75,
+          0.782608695652174,
+          0.74
+        ]
+      }
+    },
+    "h264FrameZero": {
+      "play-grade": {
+        "p50": [
+          66.59999999999945,
+          66.69999999999709
+        ],
+        "p95": [
+          133.39999999999964,
+          133.20000000000437
+        ],
+        "overTwoVsync": [
+          0.6888888888888889,
+          0.8181818181818182
+        ]
+      },
+      "play-plain": {
+        "p50": [
+          50,
+          50
+        ],
+        "p95": [
+          99.89999999999964,
+          100
+        ],
+        "overTwoVsync": [
+          0.6923076923076923,
+          0.6785714285714286
+        ]
+      },
+      "pause-plain": {
+        "p50": [
+          50,
+          50
+        ],
+        "p95": [
+          116.69999999999891,
+          66.79999999999927
+        ],
+        "overTwoVsync": [
+          0.6981132075471698,
+          0.6610169491525424
+        ]
+      },
+      "pause-grade": {
+        "p50": [
+          66.59999999999854,
+          66.59999999999854
+        ],
+        "p95": [
+          83.39999999999782,
+          83.29999999999927
+        ],
+        "overTwoVsync": [
+          0.7708333333333334,
+          0.7307692307692307
+        ]
+      }
+    },
+    "gradeArmsFrameZero": {
+      "pause-plain": {
+        "p50": [
+          50,
+          50,
+          50
+        ],
+        "p95": [
+          66.70000000000073,
+          116.59999999999854,
+          66.70000000000437
+        ],
+        "overTwoVsync": [
+          0.6612903225806451,
+          0.6666666666666666,
+          0.7166666666666667
+        ]
+      },
+      "pause-contrast": {
+        "p50": [
+          50.099999999998545,
+          66.59999999999854,
+          50
+        ],
+        "p95": [
+          116.60000000000036,
+          83.40000000000146,
+          83.30000000000291
+        ],
+        "overTwoVsync": [
+          0.7692307692307693,
+          0.74,
+          0.7090909090909091
+        ]
+      },
+      "pause-grade": {
+        "p50": [
+          66.60000000000218,
+          66.69999999999709,
+          66.59999999999854
+        ],
+        "p95": [
+          83.40000000000146,
+          116.59999999999854,
+          83.40000000000146
+        ],
+        "overTwoVsync": [
+          0.7551020408163265,
+          0.7083333333333334,
+          0.7254901960784313
+        ]
+      },
+      "pause-matrix": {
+        "p50": [
+          66.60000000000218,
+          66.59999999999854,
+          66.60000000000582
+        ],
+        "p95": [
+          116.70000000000073,
+          99.90000000000146,
+          116.59999999999854
+        ],
+        "overTwoVsync": [
+          0.8043478260869565,
+          0.72,
+          0.7555555555555555
+        ]
+      },
+      "pause-host": {
+        "p50": [
+          66.59999999999854,
+          66.59999999999854,
+          66.60000000000582
+        ],
+        "p95": [
+          83.39999999999782,
+          83.40000000000146,
+          99.90000000000146
+        ],
+        "overTwoVsync": [
+          0.8,
+          0.7346938775510204,
+          0.7142857142857143
+        ]
+      }
+    },
+    "bakedPrototypeRangeServer": {
+      "play-grade": {
+        "p50": [
+          66.69999999999982,
+          83.29999999999927,
+          66.60000000000218
+        ],
+        "p95": [
+          116.69999999999982,
+          166.70000000000073,
+          116.70000000000073
+        ],
+        "overTwoVsync": [
+          0.8181818181818182,
+          0.9428571428571428,
+          0.7906976744186046
+        ]
+      },
+      "play-baked": {
+        "p50": [
+          66.60000000000036,
+          66.70000000000073,
+          50
+        ],
+        "p95": [
+          133.3000000000011,
+          133.29999999999927,
+          83.30000000000291
+        ],
+        "overTwoVsync": [
+          0.6382978723404256,
+          0.6818181818181818,
+          0.5873015873015873
+        ]
+      }
+    },
+    "echoWarmScreen": {
+      "desktop:baseline": {
+        "p50": [
+          83.39999999999964,
+          100,
+          83.40000000000146
+        ],
+        "p95": [
+          133.39999999999964,
+          133.29999999999927,
+          133.29999999999927
+        ]
+      },
+      "desktop:echo-no-filter": {
+        "p50": [
+          83.29999999999927,
+          100,
+          83.29999999999927
+        ],
+        "p95": [
+          133.40000000000146,
+          216.60000000000218,
+          100.10000000000218
+        ],
+        "visual": {
+          "meanRGB": 0.23307330246913582,
+          "maxChannel": 13,
+          "changedOver2": 0.058397376543209874
+        }
+      },
+      "phone-4x:baseline": {
+        "p50": [
+          16.699999999999818,
+          16.700000000000728,
+          16.700000000000728
+        ],
+        "p95": [
+          50,
+          50,
+          66.59999999999854
+        ]
+      },
+      "phone-4x:echo-no-filter": {
+        "p50": [
+          16.700000000000728,
+          33.29999999999927,
+          16.799999999999272
+        ],
+        "p95": [
+          50,
+          66.60000000000036,
+          50
+        ],
+        "visual": {
+          "meanRGB": 0.04905618341637299,
+          "maxChannel": 9,
+          "changedOver2": 0.017049459229554018
+        }
+      }
+    },
+    "echoWarmScreenDecision": "No repeatable warmed-gesture gain; do not bake/ship new images. Cold-entry-only raster benefit was not evaluated, so no claim about first-reveal cost."
+  },
+  "seekCaveat": "Initial factor/grade-arm measurements were stationary frame-zero for paused arms: the original server did not support seeking. Baked parity and final baked comparison were repeated on media-serve.py with real 1/2/3-second frames and seek assertions. Do not cite old samples as frame-1/2/3 results.",
+  "prototypeParity": {
+    "control": "original H264 + live CSS",
+    "treatment": "H264 decoded to RGB, browser-generated 65-cube grade, AV1 CRF28, CSS filter:none",
+    "fullFrameMeanRGB": [
+      0.6984228395061729,
+      0.7046875,
+      0.6892224794238683
+    ],
+    "fullFrameMaxChannel": [
+      37,
+      37,
+      38
+    ],
+    "frame2SSIM": 0.994861,
+    "frame2ExposedVideoCropSSIM": 0.989285,
+    "rawAV1Bytes": 256686,
+    "prototypeAV1Bytes": 476954,
+    "notShipped": true,
+    "artifactSHA256": {
+      "helios-grade.cube": "48dfcdddee86809fc18981f79a1a6f5a59141032b34163bd1c78c66e3a637837",
+      "prototype-grade.av1.mp4": "e4c03b42bca16d9ca7e6ab7724032b2d5e3cf14bf61c6fd1d566150f73ad489c",
+      "original-2.png": "ab61b52224c0863045f6d805b0a54e95784c0eb12e02c35041557a04bc372072",
+      "av1-2.png": "400506537490a2d10972cf0b86e129f86542abeb1571bf32751c845915c35b8d"
+    },
+    "ffmpeg": "ffmpeg version n9.0.2 Copyright (c) 2000-2026 the FFmpeg developers"
+  },
+  "validation": {
+    "nodeTests": 89,
+    "nodeTestsNote": "first-iteration count; the current suite is 93 (see hero-hotpaths.json)",
+    "rangeServerTests": 3,
+    "compiledInkGate": "pass",
+    "jekyllBuild": "pass",
+    "playFillNativeAndFakeClock": "pass",
+    "scrollBudget": "pass",
+    "focusProgressiveEnhancement": "pass"
+  },
+  "retainedFillLimitations": [
+    "Small mechanism win, not an FPS result; real timeupdate frequency is far lower than the synthetic 120-write test.",
+    "Physical-left origin assumes current LTR page.",
+    "Browsers without transforms would show a full bar; modern transforms are a required platform capability."
+  ]
+}

@@ -1,0 +1,1797 @@
+{
+ "scope": "Second iteration hero-hotpath hunt on the frozen post-carousel build. Hero film grain runs at 2.5 Hz with larger offsets (helios-grain-hero), landscape at 5 Hz, both visibility-gated; the next step is baked grain.",
+ "date": "2026-10-21",
+ "browser": {
+  "product": "Chrome/154.0.8037.97",
+  "revision": "@b510e9d7cd3a2fbd78d0ddc42234103206c5f78d",
+  "userAgent": "HeadlessChrome/154.0.0.0",
+  "path": "/usr/bin/chromium",
+  "launch": "--headless=new --disable-gpu --remote-debugging-port=9247"
+ },
+ "baseline": {
+  "index.html": "da647bdd2e3977340490837a82e79307cc94fa1ad8a4630c9b89b88abbc9b95b",
+  "assets/css/app.css": "64d4ed77afff035a773da360df0685198213cc6318d537d97f890982ce16f74f",
+  "assets/css/mode-helios.css": "0e2b8fa0e0b54872a5ae31d53405dae9acb16f9b14d5d4544d35b7e4b56ee44a",
+  "assets/js/home/helios.js": "5e9caafe421e51ad5ca3599d19bfe91da80faf66a7547962f375a2d90367a989",
+  "assets/js/nav.js": "3ef553efef6eaa78a42eff18e6660d8568a4a2f1c14f6f588d54e97aaecaf005",
+  "assets/js/media-video.js": "f3a853be9383919851da32c1f35b208a5192021a946ede154cc3c17dd84c101c",
+  "assets/js/media-carousel.js": "150d86454d0df5c33cd3a145daebe98403dc673b468fd3a7154f8824a4b04218"
+ },
+ "fix": {
+  "files": [
+   "assets/css/components/helios.css",
+   "assets/css/components/helios-focus.css",
+   "assets/js/home/grain-motion.mjs",
+   "assets/js/media-video.js"
+  ],
+  "change": "restore the authored landscape animation (1.2 s = 5 Hz); give the hero its own larger-offset 2.4 s (2.5 Hz) animation so the film grain reads against the moving picture; keep the landscape join mask; add data-grain-idle pause rules; observe all four surfaces and pause offscreen; reveal video only after a presented frame and refuse to capture a black still",
+  "specificity": {
+   "hero": "0,4,1 (animation:none)",
+   "landscapeMask": "0,3,1 (mask only)",
+   "genericAnimation": "0,3,1 (helios-grain)",
+   "observer": "data-grain-idle attribute pauses the pseudo"
+  },
+  "compiled": {
+   "before": {
+    "path": "/tmp/helios-hotpaths/site/assets/css/mode-helios.css",
+    "sha256": "0e2b8fa0e0b54872a5ae31d53405dae9acb16f9b14d5d4544d35b7e4b56ee44a"
+   },
+   "after": {
+    "path": "_site/assets/css/mode-helios.css",
+    "sha256": "16a68ef096ea105481300998874fdb6dda12cee46b0302b52919c6e524053bd2",
+    "note": "current 2.5 Hz large-step visibility-gated build"
+   },
+   "note": "before is the frozen pre-fix build; after is the visibility-gated build. The compiled diff is not only the old body-prefix fix; the generic grain list and the focus mask rule are restored."
+  },
+  "source": {
+   "assets/css/components/helios.css": "520953b9ba8c016e98d5a515bb94ea4da0f3b92ff1919da22d66fc6cf2174d08",
+   "assets/css/components/helios-focus.css": "095bd60334a3a4bc0da5f47d8fc029f801777198ca7ee4e234d6ad8408590370",
+   "assets/js/home/grain-motion.mjs": "87e03b9dd9f7f25a11949c6d8cf088c7cb56aca63874c66a414b9090f01ab7cf",
+   "assets/js/media-video.js": "4ec28b45b159f41d6aae88ea06e53e66652f7ea09c0a169522136bb7a0a39ae5"
+  }
+ },
+ "phase1DecisiveControl": {
+  "design": "same encoded URL, same 1425x837 displayed box, scrollY 0, production JS on both sides; bare fixture has no hero CSS, grade, grain or carousel",
+  "arms": {
+   "bare": {
+    "untracedRafP50": [
+     16.7,
+     16.7,
+     16.7,
+     16.7
+    ],
+    "untracedRafN": [
+     180,
+     179,
+     180,
+     179
+    ],
+    "quality": [
+     {
+      "total": 75,
+      "dropped": 0
+     },
+     {
+      "total": 75,
+      "dropped": 0
+     },
+     {
+      "total": 74,
+      "dropped": 0
+     },
+     {
+      "total": 74,
+      "dropped": 0
+     },
+     {
+      "total": 74,
+      "dropped": 0
+     }
+    ],
+    "traced": [
+     {
+      "trial": "trace",
+      "raf": {
+       "n": 179,
+       "p50": 16.7,
+       "p95": 16.7,
+       "max": 16.8
+      },
+      "trace": {
+       "FunctionCall": {
+        "count": 254,
+        "totalMs": 21.7,
+        "p50": 0.074,
+        "p95": 0.16,
+        "max": 1.043
+       },
+       "WebFrameWidgetImpl::UpdateLifecycle": {
+        "count": 180,
+        "totalMs": 31.2,
+        "p50": 0.155,
+        "p95": 0.305,
+        "max": 0.659
+       },
+       "Display::DrawAndSwap": {
+        "count": 75,
+        "totalMs": 457.8,
+        "p50": 4.009,
+        "p95": 16.64,
+        "max": 21.045
+       },
+       "SoftwareRenderer::DoDrawQuad": {
+        "count": 75,
+        "totalMs": 430.9,
+        "p50": 3.724,
+        "p95": 15.338,
+        "max": 20.427
+       },
+       "Paint": {
+        "count": 4,
+        "totalMs": 0.2,
+        "p50": 0.069,
+        "p95": 0.095,
+        "max": 0.095
+       }
+      }
+     }
+    ]
+   },
+   "shipped": {
+    "untracedRafP50": [
+     33.3,
+     33.3,
+     33.3,
+     33.3
+    ],
+    "untracedRafN": [
+     105,
+     95,
+     110,
+     106
+    ],
+    "quality": [
+     {
+      "total": 74,
+      "dropped": 4
+     },
+     {
+      "total": 75,
+      "dropped": 5
+     },
+     {
+      "total": 75,
+      "dropped": 2
+     },
+     {
+      "total": 75,
+      "dropped": 5
+     },
+     {
+      "total": 74,
+      "dropped": 4
+     }
+    ],
+    "traced": [
+     {
+      "trial": "trace",
+      "raf": {
+       "n": 98,
+       "p50": 33.3,
+       "p95": 50,
+       "max": 66.7
+      },
+      "trace": {
+       "FunctionCall": {
+        "count": 176,
+        "totalMs": 13.1,
+        "p50": 0.061,
+        "p95": 0.15,
+        "max": 0.413
+       },
+       "WebFrameWidgetImpl::UpdateLifecycle": {
+        "count": 99,
+        "totalMs": 124.2,
+        "p50": 1.078,
+        "p95": 2.581,
+        "max": 4.472
+       },
+       "UpdateLayoutTree": {
+        "count": 99,
+        "totalMs": 60.8,
+        "p50": 0.56,
+        "p95": 1.171,
+        "max": 1.727
+       },
+       "Display::DrawAndSwap": {
+        "count": 105,
+        "totalMs": 2570.5,
+        "p50": 30.535,
+        "p95": 40.454,
+        "max": 71.542
+       },
+       "SoftwareRenderer::DoDrawQuad": {
+        "count": 2182,
+        "totalMs": 2488.2,
+        "p50": 0.115,
+        "p95": 5.598,
+        "max": 38.201
+       },
+       "Paint": {
+        "count": 152,
+        "totalMs": 39.0,
+        "p50": 0.178,
+        "p95": 0.862,
+        "max": 1.964
+       },
+       "RasterTask": {
+        "count": 120,
+        "totalMs": 675.0,
+        "p50": 5.942,
+        "p95": 12.418,
+        "max": 31.725
+       }
+      }
+     }
+    ]
+   }
+  },
+  "reading": "bare 16.7 ms p50 (60 fps) 4/4; shipped 33.3 ms p50 (30 fps) 4/4. Traced: DrawAndSwap p50 4.0 ms / 75 quads (bare) vs 30.5 ms / 2182 quads (shipped). Isolates the compositor, not JS or decode."
+ },
+ "phase2Grade": {
+  "shipped": {
+   "untracedRafP50": [
+    33.3,
+    33.3
+   ],
+   "untracedRafN": [
+    107,
+    105
+   ],
+   "quality": [
+    {
+     "total": 75,
+     "dropped": 2
+    },
+    {
+     "total": 75,
+     "dropped": 3
+    },
+    {
+     "total": 75,
+     "dropped": 4
+    }
+   ],
+   "traced": [
+    {
+     "trial": "trace",
+     "raf": {
+      "n": 106,
+      "p50": 33.3,
+      "p95": 49.9,
+      "max": 50
+     },
+     "trace": {
+      "SoftwareRenderer::DoDrawQuad": {
+       "count": 2243,
+       "totalMs": 2478.5,
+       "p50": 0.125,
+       "p95": 5.32,
+       "max": 20.489
+      },
+      "RasterTask": {
+       "count": 122,
+       "totalMs": 594.0,
+       "p50": 5.945,
+       "p95": 10.917,
+       "max": 14.006
+      },
+      "Display::DrawAndSwap": {
+       "count": 112,
+       "totalMs": 2536.9,
+       "p50": 29.342,
+       "p95": 39.733,
+       "max": 42.586
+      },
+      "FunctionCall": {
+       "count": 185,
+       "totalMs": 16.8,
+       "p50": 0.054,
+       "p95": 0.145,
+       "max": 2.88
+      },
+      "WebFrameWidgetImpl::UpdateLifecycle": {
+       "count": 107,
+       "totalMs": 130.4,
+       "p50": 1.018,
+       "p95": 3.025,
+       "max": 4.843
+      },
+      "UpdateLayoutTree": {
+       "count": 107,
+       "totalMs": 59.5,
+       "p50": 0.497,
+       "p95": 0.97,
+       "max": 1.803
+      },
+      "Paint": {
+       "count": 149,
+       "totalMs": 41.1,
+       "p50": 0.098,
+       "p95": 1.211,
+       "max": 2.237
+      }
+     }
+    }
+   ]
+  },
+  "no-grade": {
+   "untracedRafP50": [
+    16.7,
+    16.7
+   ],
+   "untracedRafN": [
+    165,
+    163
+   ],
+   "quality": [
+    {
+     "total": 76,
+     "dropped": 1
+    },
+    {
+     "total": 74,
+     "dropped": 1
+    },
+    {
+     "total": 74,
+     "dropped": 0
+    }
+   ],
+   "traced": [
+    {
+     "trial": "trace",
+     "raf": {
+      "n": 179,
+      "p50": 16.7,
+      "p95": 16.8,
+      "max": 16.8
+     },
+     "trace": {
+      "Display::DrawAndSwap": {
+       "count": 180,
+       "totalMs": 1510.1,
+       "p50": 0.28,
+       "p95": 21.941,
+       "max": 24.121
+      },
+      "SoftwareRenderer::DoDrawQuad": {
+       "count": 2405,
+       "totalMs": 1419.8,
+       "p50": 0.1,
+       "p95": 3.535,
+       "max": 7.159
+      },
+      "FunctionCall": {
+       "count": 266,
+       "totalMs": 16.0,
+       "p50": 0.05,
+       "p95": 0.098,
+       "max": 1.633
+      },
+      "WebFrameWidgetImpl::UpdateLifecycle": {
+       "count": 180,
+       "totalMs": 150.9,
+       "p50": 0.653,
+       "p95": 2.016,
+       "max": 2.854
+      },
+      "UpdateLayoutTree": {
+       "count": 180,
+       "totalMs": 74.7,
+       "p50": 0.374,
+       "p95": 0.72,
+       "max": 1.331
+      },
+      "Paint": {
+       "count": 154,
+       "totalMs": 41.8,
+       "p50": 0.187,
+       "p95": 1.016,
+       "max": 1.509
+      },
+      "RasterTask": {
+       "count": 120,
+       "totalMs": 674.8,
+       "p50": 6.468,
+       "p95": 14.317,
+       "max": 15.452
+      }
+     }
+    }
+   ]
+  }
+ },
+ "phase3Static": {
+  "arms": {
+   "shipped": {
+    "untracedRafP50": [
+     33.3,
+     33.3,
+     33.3
+    ],
+    "untracedRafN": [
+     102,
+     105,
+     105
+    ],
+    "quality": [
+     {
+      "total": 75,
+      "dropped": 2
+     },
+     {
+      "total": 74,
+      "dropped": 1
+     },
+     {
+      "total": 72,
+      "dropped": 1
+     },
+     {
+      "total": 74,
+      "dropped": 5
+     }
+    ],
+    "traced": [
+     {
+      "trial": "trace",
+      "raf": {
+       "n": 97,
+       "p50": 33.3,
+       "p95": 50.1,
+       "max": 83.3
+      },
+      "trace": {
+       "Display::DrawAndSwap": {
+        "count": 104,
+        "totalMs": 2593.0,
+        "p50": 31.468,
+        "p95": 40.061,
+        "max": 86.567
+       },
+       "SoftwareRenderer::DoDrawQuad": {
+        "count": 2187,
+        "totalMs": 2526.9,
+        "p50": 0.132,
+        "p95": 5.587,
+        "max": 52.133
+       },
+       "RasterTask": {
+        "count": 122,
+        "totalMs": 660.5,
+        "p50": 5.982,
+        "p95": 11.757,
+        "max": 14.306
+       },
+       "FunctionCall": {
+        "count": 173,
+        "totalMs": 12.5,
+        "p50": 0.064,
+        "p95": 0.159,
+        "max": 0.355
+       },
+       "WebFrameWidgetImpl::UpdateLifecycle": {
+        "count": 98,
+        "totalMs": 131.2,
+        "p50": 1.142,
+        "p95": 2.756,
+        "max": 6.583
+       },
+       "UpdateLayoutTree": {
+        "count": 98,
+        "totalMs": 59.3,
+        "p50": 0.527,
+        "p95": 1.179,
+        "max": 1.383
+       },
+       "Paint": {
+        "count": 147,
+        "totalMs": 48.9,
+        "p50": 0.077,
+        "p95": 1.439,
+        "max": 3.326
+       }
+      }
+     }
+    ]
+   },
+   "static-landscape": {
+    "untracedRafP50": [
+     33.3,
+     33.3,
+     33.3
+    ],
+    "untracedRafN": [
+     102,
+     98,
+     109
+    ],
+    "quality": [
+     {
+      "total": 74,
+      "dropped": 3
+     },
+     {
+      "total": 75,
+      "dropped": 8
+     },
+     {
+      "total": 74,
+      "dropped": 3
+     },
+     {
+      "total": 74,
+      "dropped": 3
+     }
+    ],
+    "traced": [
+     {
+      "trial": "trace",
+      "raf": {
+       "n": 103,
+       "p50": 33.3,
+       "p95": 50,
+       "max": 66.6
+      },
+      "trace": {
+       "RasterTask": {
+        "count": 192,
+        "totalMs": 609.1,
+        "p50": 1.096,
+        "p95": 9.387,
+        "max": 13.424
+       },
+       "SoftwareRenderer::DoDrawQuad": {
+        "count": 2293,
+        "totalMs": 2501.2,
+        "p50": 0.123,
+        "p95": 5.453,
+        "max": 20.402
+       },
+       "Display::DrawAndSwap": {
+        "count": 113,
+        "totalMs": 2556.4,
+        "p50": 29.08,
+        "p95": 39.695,
+        "max": 42.967
+       },
+       "FunctionCall": {
+        "count": 179,
+        "totalMs": 14.2,
+        "p50": 0.06,
+        "p95": 0.148,
+        "max": 1.826
+       },
+       "WebFrameWidgetImpl::UpdateLifecycle": {
+        "count": 104,
+        "totalMs": 119.4,
+        "p50": 0.996,
+        "p95": 2.423,
+        "max": 3.803
+       },
+       "UpdateLayoutTree": {
+        "count": 104,
+        "totalMs": 55.4,
+        "p50": 0.482,
+        "p95": 1.006,
+        "max": 1.567
+       },
+       "Paint": {
+        "count": 103,
+        "totalMs": 36.2,
+        "p50": 0.266,
+        "p95": 1.017,
+        "max": 1.274
+       }
+      }
+     }
+    ]
+   }
+  },
+  "paintByNode": {
+   "shipped": {
+    "#document": 26,
+    "H2": 31,
+    "DIV class='helios-ticker'": 15,
+    "DIV class='helios-possibility__stage'": 30,
+    "SECTION class='helios-possibilities'": 15,
+    "FOOTER class='helios-colophon'": 15,
+    "H1 class='helios-thesis'": 15,
+    "VIDEO class='media-clip-el'": 2
+   },
+   "static-landscape": {
+    "#document": 27,
+    "DIV class='helios-ticker'": 15,
+    "FOOTER class='helios-colophon'": 15,
+    "H2": 30,
+    "H1 class='helios-thesis'": 15,
+    "VIDEO class='media-clip-el'": 1
+   }
+  },
+  "removedPaints": 45,
+  "reading": "two stage pseudos and the invitation each emit 15 Paint events per 3 s; the static arm emits 0 on those nodes. Total Paint events 149 -> 103. rAF 33.3 both; DrawAndSwap ~2593 -> ~2556 ms. No frame gain."
+ },
+ "phase4Residual": {
+  "arms": {
+   "static-landscape": {
+    "untracedRafP50": [
+     33.3,
+     33.3
+    ],
+    "untracedRafN": [
+     114,
+     101
+    ],
+    "quality": [
+     {
+      "total": 74,
+      "dropped": 2
+     },
+     {
+      "total": 74,
+      "dropped": 4
+     },
+     {
+      "total": 75,
+      "dropped": 3
+     }
+    ],
+    "traced": [
+     {
+      "trial": "trace",
+      "raf": {
+       "n": 105,
+       "p50": 33.3,
+       "p95": 33.4,
+       "max": 66.6
+      },
+      "trace": {
+       "RasterTask": {
+        "count": 126,
+        "totalMs": 718.9,
+        "p50": 6.514,
+        "p95": 12.5,
+        "max": 15.426
+       },
+       "SoftwareRenderer::DoDrawQuad": {
+        "count": 2216,
+        "totalMs": 2451.4,
+        "p50": 0.125,
+        "p95": 5.438,
+        "max": 40.659
+       },
+       "Display::DrawAndSwap": {
+        "count": 109,
+        "totalMs": 2497.5,
+        "p50": 31.009,
+        "p95": 38.85,
+        "max": 69.12
+       },
+       "FunctionCall": {
+        "count": 187,
+        "totalMs": 13.7,
+        "p50": 0.06,
+        "p95": 0.148,
+        "max": 0.882
+       },
+       "WebFrameWidgetImpl::UpdateLifecycle": {
+        "count": 106,
+        "totalMs": 123.6,
+        "p50": 0.921,
+        "p95": 2.562,
+        "max": 4.826
+       },
+       "UpdateLayoutTree": {
+        "count": 106,
+        "totalMs": 54.0,
+        "p50": 0.444,
+        "p95": 1.024,
+        "max": 1.801
+       },
+       "Paint": {
+        "count": 108,
+        "totalMs": 41.2,
+        "p50": 0.315,
+        "p95": 1.062,
+        "max": 1.381
+       }
+      }
+     }
+    ]
+   },
+   "static-no-grain": {
+    "untracedRafP50": [
+     16.7,
+     16.7
+    ],
+    "untracedRafN": [
+     159,
+     157
+    ],
+    "quality": [
+     {
+      "total": 75,
+      "dropped": 0
+     },
+     {
+      "total": 74,
+      "dropped": 0
+     },
+     {
+      "total": 75,
+      "dropped": 1
+     }
+    ],
+    "traced": [
+     {
+      "trial": "trace",
+      "raf": {
+       "n": 158,
+       "p50": 16.7,
+       "p95": 33.3,
+       "max": 66.7
+      },
+      "trace": {
+       "RasterTask": {
+        "count": 123,
+        "totalMs": 695.4,
+        "p50": 6.019,
+        "p95": 12.347,
+        "max": 23.702
+       },
+       "SoftwareRenderer::DoDrawQuad": {
+        "count": 1591,
+        "totalMs": 1943.3,
+        "p50": 0.084,
+        "p95": 12.669,
+        "max": 54.343
+       },
+       "Display::DrawAndSwap": {
+        "count": 160,
+        "totalMs": 1998.7,
+        "p50": 16.565,
+        "p95": 30.021,
+        "max": 75.039
+       },
+       "FunctionCall": {
+        "count": 242,
+        "totalMs": 20.4,
+        "p50": 0.052,
+        "p95": 0.124,
+        "max": 2.826
+       },
+       "WebFrameWidgetImpl::UpdateLifecycle": {
+        "count": 159,
+        "totalMs": 147.5,
+        "p50": 0.752,
+        "p95": 2.033,
+        "max": 3.064
+       },
+       "UpdateLayoutTree": {
+        "count": 159,
+        "totalMs": 73.9,
+        "p50": 0.416,
+        "p95": 0.893,
+        "max": 1.363
+       },
+       "Paint": {
+        "count": 105,
+        "totalMs": 39.4,
+        "p50": 0.29,
+        "p95": 1.152,
+        "max": 1.621
+       }
+      }
+     }
+    ]
+   },
+   "static-no-landscape": {
+    "untracedRafP50": [
+     33.3,
+     33.3
+    ],
+    "untracedRafN": [
+     101,
+     110
+    ],
+    "quality": [
+     {
+      "total": 75,
+      "dropped": 6
+     },
+     {
+      "total": 75,
+      "dropped": 1
+     },
+     {
+      "total": 74,
+      "dropped": 2
+     }
+    ],
+    "traced": [
+     {
+      "trial": "trace",
+      "raf": {
+       "n": 100,
+       "p50": 33.3,
+       "p95": 50,
+       "max": 66.7
+      },
+      "trace": {
+       "SoftwareRenderer::DoDrawQuad": {
+        "count": 2243,
+        "totalMs": 2440.1,
+        "p50": 0.12,
+        "p95": 5.737,
+        "max": 26.685
+       },
+       "Display::DrawAndSwap": {
+        "count": 105,
+        "totalMs": 2507.6,
+        "p50": 30.179,
+        "p95": 43.931,
+        "max": 64.251
+       },
+       "FunctionCall": {
+        "count": 178,
+        "totalMs": 19.0,
+        "p50": 0.058,
+        "p95": 0.144,
+        "max": 4.345
+       },
+       "WebFrameWidgetImpl::UpdateLifecycle": {
+        "count": 101,
+        "totalMs": 117.6,
+        "p50": 0.871,
+        "p95": 2.819,
+        "max": 6.193
+       },
+       "UpdateLayoutTree": {
+        "count": 101,
+        "totalMs": 52.7,
+        "p50": 0.449,
+        "p95": 1.019,
+        "max": 1.338
+       },
+       "Paint": {
+        "count": 99,
+        "totalMs": 46.0,
+        "p50": 0.288,
+        "p95": 2.006,
+        "max": 4.248
+       },
+       "RasterTask": {
+        "count": 120,
+        "totalMs": 616.0,
+        "p50": 5.95,
+        "p95": 12.9,
+        "max": 16.137
+       }
+      }
+     }
+    ]
+   },
+   "static-no-wordmark": {
+    "untracedRafP50": [
+     33.3,
+     33.3
+    ],
+    "untracedRafN": [
+     105,
+     102
+    ],
+    "quality": [
+     {
+      "total": 74,
+      "dropped": 2
+     },
+     {
+      "total": 74,
+      "dropped": 2
+     },
+     {
+      "total": 74,
+      "dropped": 1
+     }
+    ],
+    "traced": [
+     {
+      "trial": "trace",
+      "raf": {
+       "n": 108,
+       "p50": 33.3,
+       "p95": 33.4,
+       "max": 66.7
+      },
+      "trace": {
+       "SoftwareRenderer::DoDrawQuad": {
+        "count": 2127,
+        "totalMs": 2466.0,
+        "p50": 0.128,
+        "p95": 5.761,
+        "max": 34.39
+       },
+       "RasterTask": {
+        "count": 124,
+        "totalMs": 661.8,
+        "p50": 6.031,
+        "p95": 12.306,
+        "max": 16.985
+       },
+       "Display::DrawAndSwap": {
+        "count": 112,
+        "totalMs": 2521.8,
+        "p50": 29.451,
+        "p95": 39.395,
+        "max": 62.343
+       },
+       "FunctionCall": {
+        "count": 190,
+        "totalMs": 15.0,
+        "p50": 0.054,
+        "p95": 0.136,
+        "max": 2.6
+       },
+       "WebFrameWidgetImpl::UpdateLifecycle": {
+        "count": 109,
+        "totalMs": 114.0,
+        "p50": 0.793,
+        "p95": 2.702,
+        "max": 4.779
+       },
+       "UpdateLayoutTree": {
+        "count": 109,
+        "totalMs": 54.2,
+        "p50": 0.415,
+        "p95": 0.99,
+        "max": 2.483
+       },
+       "Paint": {
+        "count": 97,
+        "totalMs": 36.1,
+        "p50": 0.238,
+        "p95": 1.468,
+        "max": 2.85
+       }
+      }
+     }
+    ]
+   },
+   "static-no-scrim": {
+    "untracedRafP50": [
+     33.3,
+     33.3
+    ],
+    "untracedRafN": [
+     113,
+     112
+    ],
+    "quality": [
+     {
+      "total": 75,
+      "dropped": 2
+     },
+     {
+      "total": 73,
+      "dropped": 1
+     },
+     {
+      "total": 74,
+      "dropped": 3
+     }
+    ],
+    "traced": [
+     {
+      "trial": "trace",
+      "raf": {
+       "n": 102,
+       "p50": 33.3,
+       "p95": 33.4,
+       "max": 66.7
+      },
+      "trace": {
+       "SoftwareRenderer::DoDrawQuad": {
+        "count": 1699,
+        "totalMs": 2423.1,
+        "p50": 0.128,
+        "p95": 6.493,
+        "max": 19.382
+       },
+       "Display::DrawAndSwap": {
+        "count": 109,
+        "totalMs": 2472.9,
+        "p50": 29.343,
+        "p95": 38.12,
+        "max": 40.575
+       },
+       "FunctionCall": {
+        "count": 183,
+        "totalMs": 12.3,
+        "p50": 0.057,
+        "p95": 0.134,
+        "max": 0.204
+       },
+       "WebFrameWidgetImpl::UpdateLifecycle": {
+        "count": 103,
+        "totalMs": 120.3,
+        "p50": 0.992,
+        "p95": 2.648,
+        "max": 4.567
+       },
+       "UpdateLayoutTree": {
+        "count": 103,
+        "totalMs": 53.6,
+        "p50": 0.464,
+        "p95": 0.961,
+        "max": 1.106
+       },
+       "Paint": {
+        "count": 108,
+        "totalMs": 46.3,
+        "p50": 0.343,
+        "p95": 1.205,
+        "max": 2.428
+       },
+       "RasterTask": {
+        "count": 119,
+        "totalMs": 598.9,
+        "p50": 5.872,
+        "p95": 11.407,
+        "max": 14.612
+       }
+      }
+     }
+    ]
+   }
+  },
+  "reading": "on the static-grain base: control 2/2 at 33.3; no-grain 2/2 at 16.7; no-grade 2/2 at 16.7; no-landscape, no-wordmark and no-scrim 2/2 at 33.3. Either removal alone is sufficient; neither ships because pixels change."
+ },
+ "compiledAfter": {
+  "rows": [
+   {
+    "arm": "shipped",
+    "trial": 0,
+    "traced": false,
+    "elapsedMs": 3005.4,
+    "raf": {
+     "n": 107,
+     "p50": 33.3,
+     "p95": 33.4,
+     "max": 50
+    },
+    "videoCallbacks": 63,
+    "frameProcessingDurationMs": {
+     "n": 63,
+     "p50": 110.5,
+     "p95": 172.5,
+     "max": 179.29999999999998
+    },
+    "quality": {
+     "total": 76,
+     "dropped": 5
+    }
+   },
+   {
+    "arm": "shipped",
+    "trial": "trace",
+    "traced": true,
+    "elapsedMs": 3000.8,
+    "raf": {
+     "n": 112,
+     "p50": 33.3,
+     "p95": 33.4,
+     "max": 50
+    },
+    "videoCallbacks": 68,
+    "frameProcessingDurationMs": {
+     "n": 68,
+     "p50": 130.1,
+     "p95": 170.5,
+     "max": 214.9
+    },
+    "quality": {
+     "total": 74,
+     "dropped": 0
+    },
+    "trace": {
+     "SoftwareRenderer::DoDrawQuad": {
+      "count": 2244,
+      "totalMs": 2405.7,
+      "p50": 0.117,
+      "p95": 5.6,
+      "max": 19.543
+     },
+     "RasterTask": {
+      "count": 122,
+      "totalMs": 634.0,
+      "p50": 6.062,
+      "p95": 11.541,
+      "max": 14.816
+     },
+     "Display::DrawAndSwap": {
+      "count": 117,
+      "totalMs": 2489.4,
+      "p50": 28.305,
+      "p95": 39.294,
+      "max": 41.18
+     },
+     "FunctionCall": {
+      "count": 193,
+      "totalMs": 17.4,
+      "p50": 0.064,
+      "p95": 0.157,
+      "max": 1.8
+     },
+     "WebFrameWidgetImpl::UpdateLifecycle": {
+      "count": 113,
+      "totalMs": 124.6,
+      "p50": 0.853,
+      "p95": 2.323,
+      "max": 3.344
+     },
+     "UpdateLayoutTree": {
+      "count": 113,
+      "totalMs": 54.0,
+      "p50": 0.41,
+      "p95": 1.006,
+      "max": 1.4
+     },
+     "Paint": {
+      "count": 109,
+      "totalMs": 44.5,
+      "p50": 0.329,
+      "p95": 1.056,
+      "max": 2.167
+     }
+    }
+   }
+  ],
+  "reading": "aggregate Paint 109 vs 147 (slice) / 149 (events) pre-fix. Per-node 0/0/0 is asserted by the TRACE static-grain gate on the compiled build, not inferred from this aggregate."
+ },
+ "staticGate": {
+  "widths": [
+   1440,
+   390
+  ],
+  "styles": [
+   {
+    "width": 1440,
+    "styles": {
+     "reduced": false,
+     "hero": {
+      "animation": "helios-grain-hero",
+      "duration": "2.4s",
+      "timing": "steps(1)",
+      "mask": "none",
+      "opacity": "0.22",
+      "blend": "overlay",
+      "size": "220px 220px",
+      "image": "url(\"/assets/lib/helios-grain.png\")"
+     },
+     "heroIdle": false,
+     "landscape": [
+      {
+       "animation": "helios-grain",
+       "duration": "1.2s",
+       "timing": "steps(2)",
+       "mask": "linear-gradient(rgba(0, 0, 0, 0), rgb(0, 0, 0) 24%, rgb(0, 0, 0) 76%, rgba(0, 0, 0, 0))",
+       "opacity": "0.22",
+       "blend": "overlay",
+       "size": "220px 220px",
+       "image": "url(\"/assets/lib/helios-grain.png\")"
+      },
+      {
+       "animation": "helios-grain",
+       "duration": "1.2s",
+       "timing": "steps(2)",
+       "mask": "linear-gradient(rgba(0, 0, 0, 0), rgb(0, 0, 0) 24%, rgb(0, 0, 0) 76%, rgba(0, 0, 0, 0))",
+       "opacity": "0.22",
+       "blend": "overlay",
+       "size": "220px 220px",
+       "image": "url(\"/assets/lib/helios-grain.png\")"
+      },
+      {
+       "animation": "helios-grain",
+       "duration": "1.2s",
+       "timing": "steps(2)",
+       "mask": "linear-gradient(rgba(0, 0, 0, 0), rgb(0, 0, 0) 24%, rgb(0, 0, 0) 76%, rgba(0, 0, 0, 0))",
+       "opacity": "0.22",
+       "blend": "overlay",
+       "size": "220px 220px",
+       "image": "url(\"/assets/lib/helios-grain.png\")"
+      }
+     ],
+     "landscapeIdle": [
+      true,
+      true,
+      true
+     ],
+     "ticker": {
+      "animation": "helios-grain",
+      "duration": "1.2s",
+      "timing": "steps(2)",
+      "mask": "none",
+      "opacity": "0.22",
+      "blend": "overlay",
+      "size": "220px 220px",
+      "image": "url(\"/assets/lib/helios-grain.png\")"
+     },
+     "colophon": {
+      "animation": "helios-grain",
+      "duration": "1.2s",
+      "timing": "steps(2)",
+      "mask": "none",
+      "opacity": "0.22",
+      "blend": "overlay",
+      "size": "220px 220px",
+      "image": "url(\"/assets/lib/helios-grain.png\")"
+     }
+    }
+   },
+   {
+    "width": 390,
+    "styles": {
+     "reduced": false,
+     "hero": {
+      "animation": "helios-grain-hero",
+      "duration": "2.4s",
+      "timing": "steps(1)",
+      "mask": "none",
+      "opacity": "0.22",
+      "blend": "overlay",
+      "size": "220px 220px",
+      "image": "url(\"/assets/lib/helios-grain.png\")"
+     },
+     "heroIdle": false,
+     "landscape": [
+      {
+       "animation": "helios-grain",
+       "duration": "1.2s",
+       "timing": "steps(2)",
+       "mask": "linear-gradient(rgba(0, 0, 0, 0), rgb(0, 0, 0) 24%, rgb(0, 0, 0) 76%, rgba(0, 0, 0, 0))",
+       "opacity": "0.22",
+       "blend": "overlay",
+       "size": "220px 220px",
+       "image": "url(\"/assets/lib/helios-grain.png\")"
+      },
+      {
+       "animation": "helios-grain",
+       "duration": "1.2s",
+       "timing": "steps(2)",
+       "mask": "linear-gradient(rgba(0, 0, 0, 0), rgb(0, 0, 0) 24%, rgb(0, 0, 0) 76%, rgba(0, 0, 0, 0))",
+       "opacity": "0.22",
+       "blend": "overlay",
+       "size": "220px 220px",
+       "image": "url(\"/assets/lib/helios-grain.png\")"
+      },
+      {
+       "animation": "helios-grain",
+       "duration": "1.2s",
+       "timing": "steps(2)",
+       "mask": "linear-gradient(rgba(0, 0, 0, 0), rgb(0, 0, 0) 24%, rgb(0, 0, 0) 76%, rgba(0, 0, 0, 0))",
+       "opacity": "0.22",
+       "blend": "overlay",
+       "size": "220px 220px",
+       "image": "url(\"/assets/lib/helios-grain.png\")"
+      }
+     ],
+     "landscapeIdle": [
+      true,
+      true,
+      true
+     ],
+     "ticker": {
+      "animation": "helios-grain",
+      "duration": "1.2s",
+      "timing": "steps(2)",
+      "mask": "none",
+      "opacity": "0.22",
+      "blend": "overlay",
+      "size": "220px 220px",
+      "image": "url(\"/assets/lib/helios-grain.png\")"
+     },
+     "colophon": {
+      "animation": "helios-grain",
+      "duration": "1.2s",
+      "timing": "steps(2)",
+      "mask": "none",
+      "opacity": "0.22",
+      "blend": "overlay",
+      "size": "220px 220px",
+      "image": "url(\"/assets/lib/helios-grain.png\")"
+     }
+    }
+   }
+  ],
+  "visual": [
+   {
+    "width": 1440,
+    "scene": "hero",
+    "meanRGB": 0,
+    "maxChannel": 0
+   },
+   {
+    "width": 1440,
+    "scene": "inquiry",
+    "meanRGB": 0,
+    "maxChannel": 0
+   },
+   {
+    "width": 1440,
+    "scene": "create",
+    "meanRGB": 0,
+    "maxChannel": 0
+   },
+   {
+    "width": 1440,
+    "scene": "invite",
+    "meanRGB": 0,
+    "maxChannel": 0
+   },
+   {
+    "width": 390,
+    "scene": "hero",
+    "meanRGB": 0,
+    "maxChannel": 0
+   },
+   {
+    "width": 390,
+    "scene": "inquiry",
+    "meanRGB": 0,
+    "maxChannel": 0
+   },
+   {
+    "width": 390,
+    "scene": "create",
+    "meanRGB": 0,
+    "maxChannel": 0
+   },
+   {
+    "width": 390,
+    "scene": "invite",
+    "meanRGB": 0,
+    "maxChannel": 0
+   }
+  ],
+  "pngPairs": [
+   {
+    "width": 1440,
+    "scene": "hero",
+    "identical": true,
+    "sha256": "a37a79b0b77fba6e475cd3f210674d6f81175a124b750f8bf72c723d6d143c03"
+   },
+   {
+    "width": 1440,
+    "scene": "inquiry",
+    "identical": true,
+    "sha256": "695321e14aafe0dbd707126fac8483a63ce876e7488861055200ee865e2f11c1"
+   },
+   {
+    "width": 1440,
+    "scene": "create",
+    "identical": true,
+    "sha256": "e884167d10f1cb01467d172259e0c5d721e633158d770c35b3111fe624d61b7d"
+   },
+   {
+    "width": 1440,
+    "scene": "invite",
+    "identical": true,
+    "sha256": "7ea348327425a3b8a4cbabeaa5f86f089f3b01df6a9a73c8a60227eec7c2c43f"
+   },
+   {
+    "width": 390,
+    "scene": "hero",
+    "identical": true,
+    "sha256": "f737cc07a375a8db6b010cd2ac782d0125ed4f22080ada8bfb7e9da2b8e6e376"
+   },
+   {
+    "width": 390,
+    "scene": "inquiry",
+    "identical": true,
+    "sha256": "a8192f92985e6e5cb0e838a3dfd597103f098c8364427aa446ea3e2ab5b54059"
+   },
+   {
+    "width": 390,
+    "scene": "create",
+    "identical": true,
+    "sha256": "4b7f5d92cb947fb980cdae90fb97d2ea1e67070c7dc38c042e5f205a30ea788c"
+   },
+   {
+    "width": 390,
+    "scene": "invite",
+    "identical": true,
+    "sha256": "8a37ec63f20178769d0800bac9d79b5c2c020553115e9a39e42330607b61298d"
+   }
+  ],
+  "trace": {
+   "windowMs": 3000,
+   "byNode": {
+    "#document": 27,
+    "H2": 30,
+    "DIV class='helios-ticker'": 15,
+    "FOOTER class='helios-colophon'": 15,
+    "H1 class='helios-thesis'": 15,
+    "SECTION": 7
+   },
+   "landscapePaints": 0,
+   "totalPaint": 109
+  },
+  "gate": "asserts hero animation:helios-grain-hero (2.4 s), landscape animation:helios-grain (1.2 s); hero not idle at scroll 0; three landscape surfaces idle; hero pauses offscreen and resumes on return; 8/8 time-zero surface pairs byte-identical after hiding stateful layers (carousel copy, hero video/play fill, scroll art, nav/wordmark); TRACE=1 zero Paint events for offscreen landscape pseudos; ticker/colophon still grain; reduced motion none",
+  "note": "the pairs are full-viewport screenshots with the stateful layers hidden; they compare the grain surface, not the art pose. The hero tile is 7 paints/3 s at 2.5 Hz."
+ },
+ "crossfade": {
+  "design": "two distinct decoded paused films (2 s and 1 s), shipped grade+grain, incoming cell opacity 0->1 over an opaque outgoing cell with the authored 1.2 s transition; all infinite CSS clocks paused; no writer/decoder/readback in the window",
+  "modes": {
+   "single": {
+    "elapsedMs": [
+     1200.5,
+     1200.2,
+     1201.8,
+     1200.3
+    ],
+    "rafP50": [
+     16.7,
+     16.7,
+     16.7,
+     16.7
+    ],
+    "rafN": [
+     71,
+     71,
+     71,
+     69
+    ],
+    "traced": [
+     {
+      "trial": "trace",
+      "trace": {
+       "SoftwareRenderer::DoDrawQuad": {
+        "count": 87,
+        "totalMs": 75.9,
+        "p50": 0.081,
+        "p95": 5.844,
+        "max": 16.616
+       },
+       "Display::DrawAndSwap": {
+        "count": 2,
+        "totalMs": 75.6,
+        "p50": 41.375,
+        "p95": 41.375,
+        "max": 41.375
+       },
+       "FunctionCall": {
+        "count": 71,
+        "totalMs": 5.4,
+        "p50": 0.064,
+        "p95": 0.145,
+        "max": 0.403
+       },
+       "WebFrameWidgetImpl::UpdateLifecycle": {
+        "count": 70,
+        "totalMs": 21.5,
+        "p50": 0.134,
+        "p95": 0.301,
+        "max": 11.161
+       },
+       "Paint": {
+        "count": 15,
+        "totalMs": 11.6,
+        "p50": 0.057,
+        "p95": 9.361,
+        "max": 9.361
+       },
+       "RasterTask": {
+        "count": 94,
+        "totalMs": 97.1,
+        "p50": 0.521,
+        "p95": 6.205,
+        "max": 8.765
+       }
+      }
+     }
+    ]
+   },
+   "held": {
+    "elapsedMs": [
+     1200.6,
+     1200.4,
+     1200.3,
+     1203.4
+    ],
+    "rafP50": [
+     16.7,
+     16.7,
+     16.7,
+     16.7
+    ],
+    "rafN": [
+     67,
+     68,
+     71,
+     69
+    ],
+    "traced": [
+     {
+      "trial": "trace",
+      "trace": {
+       "FunctionCall": {
+        "count": 71,
+        "totalMs": 5.0,
+        "p50": 0.063,
+        "p95": 0.122,
+        "max": 0.207
+       },
+       "WebFrameWidgetImpl::UpdateLifecycle": {
+        "count": 70,
+        "totalMs": 16.6,
+        "p50": 0.138,
+        "p95": 0.266,
+        "max": 6.544
+       },
+       "Paint": {
+        "count": 15,
+        "totalMs": 7.2,
+        "p50": 0.031,
+        "p95": 5.663,
+        "max": 5.663
+       },
+       "RasterTask": {
+        "count": 118,
+        "totalMs": 145.3,
+        "p50": 0.839,
+        "p95": 6.438,
+        "max": 8.191
+       },
+       "Display::DrawAndSwap": {
+        "count": 1,
+        "totalMs": 51.3,
+        "p50": 51.292,
+        "p95": 51.292,
+        "max": 51.292
+       },
+       "SoftwareRenderer::DoDrawQuad": {
+        "count": 33,
+        "totalMs": 50.0,
+        "p50": 0.126,
+        "p95": 12.746,
+        "max": 13.143
+       }
+      }
+     }
+    ]
+   },
+   "fade": {
+    "elapsedMs": [
+     1264.9,
+     1246.3,
+     1254.9,
+     1238.5
+    ],
+    "rafP50": [
+     50,
+     50,
+     50,
+     50
+    ],
+    "rafN": [
+     23,
+     22,
+     25,
+     23
+    ],
+    "traced": [
+     {
+      "trial": "trace",
+      "trace": {
+       "FunctionCall": {
+        "count": 25,
+        "totalMs": 1.5,
+        "p50": 0.054,
+        "p95": 0.09,
+        "max": 0.091
+       },
+       "WebFrameWidgetImpl::UpdateLifecycle": {
+        "count": 24,
+        "totalMs": 20.6,
+        "p50": 0.299,
+        "p95": 2.6,
+        "max": 10.613
+       },
+       "UpdateLayoutTree": {
+        "count": 23,
+        "totalMs": 4.6,
+        "p50": 0.152,
+        "p95": 0.633,
+        "max": 0.702
+       },
+       "Paint": {
+        "count": 17,
+        "totalMs": 12.5,
+        "p50": 0.059,
+        "p95": 9.304,
+        "max": 9.304
+       },
+       "RasterTask": {
+        "count": 142,
+        "totalMs": 162.8,
+        "p50": 0.73,
+        "p95": 3.722,
+        "max": 10.843
+       },
+       "Display::DrawAndSwap": {
+        "count": 22,
+        "totalMs": 1145.0,
+        "p50": 51.268,
+        "p95": 56.361,
+        "max": 70.341
+       },
+       "SoftwareRenderer::DoDrawQuad": {
+        "count": 726,
+        "totalMs": 1119.0,
+        "p50": 0.103,
+        "p95": 12.421,
+        "max": 18.514
+       }
+      }
+     }
+    ]
+   }
+  },
+  "state": {
+   "src": [
+    "http://127.0.0.1:4004/assets/lib/helios/tree_fractal-bd62c7.av1.mp4",
+    "http://127.0.0.1:4004/assets/lib/helios/polygon_fill-e68025.av1.mp4"
+   ],
+   "time": [
+    2,
+    1
+   ],
+   "ready": [
+    4,
+    4
+   ],
+   "transition": "opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1)",
+   "rect": {
+    "x": 0,
+    "y": 0,
+    "width": 1425,
+    "height": 837.4375,
+    "top": 0,
+    "right": 1425,
+    "bottom": 837.4375,
+    "left": 0
+   }
+  },
+  "cropSHA256": [
+   "74a8f9c9be8b67a0afa7bb47a272a54bd90f9255d0fc9164c132ed7c0fc09b1b",
+   "e29298879276707bc310029d964a3145e5ca479b2cc2407dc38573d25dbe5865"
+  ],
+  "writerSHA": "150d86454d0df5c33cd3a145daebe98403dc673b468fd3a7154f8824a4b04218",
+  "reading": "held 0.5 blend: one 51 ms draw then cache reuse. 1.2 s fade: 22 draws / 1145 ms DrawAndSwap, 726 quads / 1119 ms; rAF 16.7 held/single vs 50 fade. Trace sums n=1; the rAF split is replicated. This is a fade-in over an opaque outgoing cell, not a two-layer crossfade, and it does not price the production writer/decode path."
+ },
+ "validation": {
+  "nodeTests": 93,
+  "rangeServerTests": 3,
+  "compiledInkGate": "pass",
+  "jekyllBuild": "pass",
+  "staticGrainTrace": "pass (grain-film-herojump: 8/8 pairs 0/0, total Paint 109, hero 7, landscape 0); focus/scroll/play pass",
+  "playFillNativeAndFakeClock": "pass",
+  "scrollBudget": "pass",
+  "focusProgressiveEnhancement": "pass"
+ },
+ "artifacts": {
+  "temporary": "/tmp/helios-hotpaths/{site,after,phase1,phase2-grade,phase3-static,phase4-residual,crossfade,after-compiled,static-gate,static-gate-retrace}; /tmp/helios-hotpaths/{grain-gated4,grain-perf-gated3,grain-perf,grain-perf-gated2}; /tmp/helios-hotpaths/{grain-film,grain-film-perf}; /tmp/helios-hotpaths/{grain-film-25f,grain-film25-perf}; /tmp/helios-hotpaths/{grain-film-herojump,grain-film-herojump-perf}",
+  "fixture": "design/probe/bare-lab.html",
+  "warning": "raw artifacts are under /tmp and are not durable; this JSON is the durable summary",
+  "observer": "assets/js/home/grain-motion.mjs"
+ },
+ "limitations": [
+  "Headless Chromium with SwiftShader; not a real-device GPU/FPS measurement.",
+  "Hero film grain is a temporary 2.5 Hz CSS clock with larger offsets and still adds raster over the static hero; it is to be replaced by grain baked into the rendition.",
+  "Visible surfaces still paint: hero 7/3 s at 2.5 Hz, landscape 15/3 s at 5 Hz; the gate removes only offscreen paints.",
+  "The larger hero offsets are a noticeability trade: ~39.4 ms DrawAndSwap p50 versus 30.1 ms small-step and 49.7 ms at 5 Hz.",
+  "The media fallback fix is separate from the grain claim; it prevents a black video box on reattach and keeps the authored poster.",
+  "The phase-1 bare fixture is a synthetic same-video control, not the shipped page without CSS."
+ ],
+ "grainMotion": {
+  "retained": "visibility-gated hero film grain at 2.5 Hz with larger offsets (helios-grain-hero) + landscape at 5 Hz",
+  "why": "The old landscape animation painted 45 events/3 s while offscreen. Pausing it offscreen removes those paints. When visible, the old 5 Hz tile returns at the old cheap profile. The hero stays static because stepping the grain over the filtered video forces the blended group to re-raster and costs frame time.",
+  "transformExperiment": {
+   "grainPaints": 0,
+   "rasterTasks": 222,
+   "rasterMs": 1002.0,
+   "drawP50": 37.6,
+   "drawTotalMs": 2666.8,
+   "rafP50": [
+    66.6,
+    33.4,
+    33.3
+   ],
+   "verdict": "rejected: paint moved into raster/composite; frame cadence noisier"
+  },
+  "gatedFrameExperiment": {
+   "rafP50": [
+    50.0,
+    50.0,
+    33.3
+   ],
+   "drawP50": 50.3,
+   "drawTotalMs": 2760.6,
+   "rasterTasks": 520,
+   "rasterMs": 1188.1,
+   "verdict": "rejected: the separate blended frame group was measured with the hero animated and re-rastered; the simpler pseudo gate gave exact parity and the static profile"
+  },
+  "retainedVisibilityGate": {
+   "rafP50": [
+    33.3,
+    33.3,
+    50.0
+   ],
+   "drawP50": 39.4,
+   "drawTotalMs": 2637.3,
+   "rasterTasks": 343,
+   "rasterMs": 946.0,
+   "paint": 116,
+   "gateTrace": {
+    "totalPaint": 109,
+    "heroPaints": 7,
+    "landscapePaints": 0
+   },
+   "smallStepComparison": {
+    "rafP50": [
+     16.7,
+     33.3,
+     33.3
+    ],
+    "drawP50": 30.1,
+    "drawTotalMs": 2537.7,
+    "rasterTasks": 324,
+    "rasterMs": 730.1,
+    "paint": 113
+   },
+   "fiveHzComparison": {
+    "rafP50": [
+     50.0,
+     33.4,
+     50.0
+    ],
+    "drawP50": 49.7,
+    "drawTotalMs": 2696.9,
+    "rasterTasks": 577,
+    "rasterMs": 1426.8,
+    "paint": 123
+   },
+   "heroStaticComparison": {
+    "rafP50": [
+     33.3,
+     16.7,
+     33.3
+    ],
+    "drawP50": 26.2,
+    "drawTotalMs": 2281.7,
+    "rasterTasks": 122,
+    "rasterMs": 503.2,
+    "paint": 112
+   },
+   "verdict": "noticeability middle ground: larger 2.5 Hz steps cost ~9 ms DrawAndSwap and ~200 ms raster over the small-step clock, still cheaper than 5 Hz. The next move is baked grain."
+  },
+  "hero": "film grain steps at 2.5 Hz with larger offsets while visible and pauses offscreen; this is the temporary compromise until grain is baked into the rendition."
+ },
+ "mediaFallback": {
+  "file": "assets/js/media-video.js",
+  "change": "data-ready is set only from requestVideoFrameCallback; captureStill() refuses a near-black capture and keeps the authored poster",
+  "verification": "at 6x CPU, scroll away/return: poster at 120 ms, video ready at 920 ms; no black video box",
+  "gates": "focus, scroll and play-fill pass after the change"
+ }
+}

@@ -1,0 +1,173 @@
+#+title: The hatch — Dojo produces, PaperLand consumes
+#+subtitle: One pinned runtime, native acceptance, page-owned presentation
+#+options: toc:2 num:t ^:nil
+
+* Ownership
+:PROPERTIES:
+:ID: paperland-hatch-ownership
+:END:
+
+Dojo owns PaperLang, geometry, laws, readings, scheduling and acceptance.
+PaperLand owns layout, accessibility, visibility, fallbacks and the pin.
+There is no language fork, page-side angle solver or second geometry model.
+The browser imports one same-origin, content-addressed ESM artifact; it does
+not import runtime code from the Dojo origin or require a Phoenix server.
+Fourth Turn composes native canvases directly into its section: the drawing
+is the background, and the persistent light is a small interaction surface.
+There is no iframe, remote shell, cross-window handshake or canvas drawn by the page.
+
+* Update the pin
+:PROPERTIES:
+:ID: paperland-hatch-producer
+:MODULE: design/hatch-pull.sh
+:END:
+
+From this repository:
+
+#+begin_src sh
+bash design/hatch-pull.sh --dojo /path/to/dojo
+#+end_src
+
+This calls Dojo's =node scripts/release/host.mjs=, then consumes its output.
+The site no longer exports a commit or runs its own esbuild recipe.
+The producer includes working source changes; =dojo_revision= in
+=_data/hatch.yml= retains the full commit and, when needed, the dirty-source
+digest. =release: true= means Dojo-produced output, not a tag, semantic API
+version, signed attestation or registry publication. API and language versions
+remain =null= because the producer does not declare them.
+
+=design/host-release.mjs= verifies every declared artifact and source hash,
+source digest, revision, closure and factory export before installing anything.
+It refuses escaping paths, application machinery and executable imports/chunks.
+It never executes a command supplied by a manifest. Corrupt input leaves the
+previous pin and library intact. The staged installation retains:
+
+- the byte-identical ESM under its content-addressed name;
+- =release.json= and =host.meta.json=;
+- =LICENSE=, =NOTICE.txt=, linked legal comments and =licenses/=;
+- =LICENSE=, =NOTICE.txt=, linked legal comments and =licenses/=.
+
+DELIBERATELY NOT COMMITTED: =sources/=, the producer's build-input snapshot.
+It stays where the producer writes it, in the dojo checkout (=dist/host/sources=)
+and in the site's working tree, and is ignored by git (.gitignore). The site
+keeps the artifact and the pin; the pin's =dojo_commit= is the pointer to the
+exact inputs. Two consequences are accepted rather than hidden:
+
+- the per-source hashes in =release.json= can only be re-verified where a
+  snapshot is on disk; from a clone, the release gates cannot re-hash them;
+- the pointer is only worth what the commit is: it must be *pushed* to the
+  public dojo repository, and left reachable. A dirty build (the last two were)
+  has no such commit, and for those the snapshot is the only record — keep the
+  working-tree copy until the pin names a published, untouched revision.
+
+The snapshot overlays the commit named by the producer; it is not a waiver of
+AGPL corresponding-source obligations. The offer of corresponding source is the
+dojo repository at that commit, plus the shipped notices.
+Hashes identify bytes and detect inconsistency, not authorship or legal completeness.
+Build and import verification are not claims of general semantic compatibility.
+
+The pull command builds Jekyll before checking built-page references. =--no-check=
+installs without running site checks; =--no-build= checks the existing =_site=
+and may fail for stale references. =--keep= retains the temporary producer output.
+For an existing producer directory:
+
+#+begin_src sh
+node design/vendor.mjs --from-release /path/to/dojo/dist/host --install
+bundle exec jekyll build
+node design/vendor.mjs --check
+python3 design/probe/hatch.py
+#+end_src
+
+* Runtime contracts
+:PROPERTIES:
+:ID: paperland-hatch-runtime
+:MODULE: assets/js/home/fourth-turn/instrument.mjs
+:END:
+
+Built templates take the same-origin URL from =site.data.hatch.artifact_path=.
+The section loads its factory on arrival; unbuilt studies use =hatchFactory=
+and the same YAML. No source file carries a second literal artifact path.
+A failed ESM fetch needs a retry URL because browsers retain failed module loads;
+that URL still names the same pinned bytes. Successful loads reuse their factory.
+
+| Need                           | Mechanism                                      |
+|--------------------------------+------------------------------------------------|
+| Accept and start source         | =await hatch.play(source)=                     |
+| Run ends or suffers a late wound| =await run.finished=                           |
+| Current accepted value          | =hatch.interaction.read(name[, property])=     |
+| Changes including availability  | =subscribe(name[, property], fn) → stop=        |
+| Request a native free-point move| =propose(name, [x, y, z])=                      |
+| Walked source-line occurrences  | =onBeat(fn)=; repeated occurrences stay repeated |
+
+Acceptance is not completion; completion is not a paint fence.
+Always consume =run.finished= rejections, including obsolete runs. Replacement
+reports =superseded=, disposal reports =disposed=, and late wounds preserve
+=reason= and =wound.span= rather than becoming successful completion.
+Host caps are ceilings: source cannot raise them.
+
+Subscribe after successful play, without waiting for completion. Delivery starts
+synchronously with the current read, then follows coherent accepted changes.
+Answers may be =value=, =missing=, =unsupported= or =retired=; =null= is a real
+reading, not zero. Snapshots are frozen and equal readings are deduplicated.
+Cancellation is immediate and idempotent; new play attempts retire old readings.
+Observer failure cannot undo acceptance. Same-hatch proposals inside callbacks
+return =busy=: explicitly defer them and read their actual verdict.
+
+* Fourth Turn wiring
+:PROPERTIES:
+:ID: paperland-hatch-fourth-turn
+:MODULE: assets/js/home/fourth-turn/native.mjs
+:END:
+
+One persistent interactive control hatch supplies native =A.bearing= or =A.x=.
+A separate drawing-only hatch plays the selected recipe with those accepted
+inputs. Moving the held control never replays its declarations. Law projection
+wins over the submitted coordinates. No bounded slider range is invented for
+the unbounded =A.x= program; the circle constraint lives in PaperLang.
+
+Callbacks schedule one coherent reread and coalesce one drawing request. They
+never propose inside a delivery. Missing or null inputs are shown as unavailable,
+not converted to zero or used to start a new drawing. Rapid mode changes retire
+old subscriptions; obsolete completion and failure cannot overwrite the newer
+request. The visible recipe is generated from the accepted readings, and the
+parameterised recipe uses its native =turn= parameter.
+
+The drawing canvas fills the section, behind the manuscript and controls.
+Each runtime owns its relative container, overlay and explicitly sized canvas.
+The smaller light surface owns pointer input; the background drawing does not
+capture scrolling. Mobile opens the recipe as a sheet without resizing the scene.
+Responsive composition changes only the drawing's authored PaperLang placement;
+it never replaces the held control, reconstructs a bearing or invents a fitted path.
+The source inspector includes the actual optical prelude sent to the runtime.
+
+Both tools retain their accepted native point across switches. Coordinate entry
+is an accessible proposal, not an alternate solver; submitted values are replaced
+by the native accepted coordinates, including a focused field after Enter.
+Reduced motion and Save-Data fetch no runtime until explicit enable. =pagehide=
+disposes both hatches and cancels pending work; persisted =pageshow= opens new
+owners and proposes the retained native point instead of reviving disposed instances.
+
+=/helios-interval= is retired and redirects to =/#fourth-turn=. Historical studies
+remain separate from this production surface; the pin gate checks the live homepage.
+
+* Verification
+:PROPERTIES:
+:ID: paperland-hatch-verification
+:END:
+
+#+begin_src sh
+node --test design/probe/*.test.mjs
+bundle exec jekyll build
+node design/vendor.mjs --check
+python3 design/probe/hatch.py
+BASE=http://localhost:4002 node design/probe/hatch-parity.mjs
+#+end_src
+
+The browser probe needs a served built site, Chromium, and Dojo's locked browser
+tooling. Set =DOJO=, =CHROMIUM_PATH= or =PLAYWRIGHT_MODULE= for non-default paths.
+It checks semantic proposal acceptance AND a canvas-local pixel change, actual
+native touch dragging, rapid replacement, source/reading agreement, content-box
+overlays, DPR, reduced-motion/Save-Data consent, and the pinned runtime's delayed
+availability, motion, coherent dependencies, cancellation, replacement, frozen
+snapshots, reentrant busy verdict, late wounds, occurrence beats and disposal.
+These are bounded witnesses, not a universal observation or compatibility proof.

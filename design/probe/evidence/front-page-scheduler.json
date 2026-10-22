@@ -1,0 +1,905 @@
+{
+  "scope": "Local isolated headless Chromium diagnostics, not a production FPS promise",
+  "clockBaselineSHA256": "1e84f998069eb50ab230a0cf20823bb20a8548c175c16071203d42f99eb31249",
+  "clockAfterSHA256": "e9f0f905bc2047ed49e3d0867e7bbba51b070d875c5d738ba90f658ef5233210",
+  "contractTests": {
+    "baselinePass": 5,
+    "baselineFail": 12,
+    "afterPass": 17,
+    "afterFail": 0,
+    "fullSuitePass": 89
+  },
+  "runs": {
+    "before": {
+      "environment": {
+        "base": "http://127.0.0.1:4003",
+        "browser": {
+          "protocolVersion": "1.3",
+          "product": "Chrome/154.0.8037.97",
+          "revision": "@b510e9d7cd3a2fbd78d0ddc42234103206c5f78d",
+          "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+          "jsVersion": "15.4.80.20"
+        },
+        "categories": "devtools.timeline,blink,cc,gpu,viz",
+        "note": "Instrumented diagnostics; distributions include gesture waits. Not an FPS benchmark."
+      },
+      "reports": [
+        {
+          "device": "desktop",
+          "scene": "hero",
+          "variant": "normal",
+          "positions": [
+            [
+              0,
+              650
+            ],
+            [
+              650,
+              0
+            ]
+          ],
+          "frames": 81,
+          "p50": 50,
+          "p95": 100,
+          "max": 133.40000000000055,
+          "totals": {
+            "ScriptDuration": 76.95400000000001,
+            "TaskDuration": 520.277,
+            "LayoutDuration": 18.07900000000001,
+            "RecalcStyleDuration": 212.415
+          },
+          "maxConcurrentDecodes": 2,
+          "longTasks": [],
+          "longAnimationFrames": 44,
+          "inRafReadAfterWrite": {},
+          "outsideRafReads": {
+            "clientWidth:    at stillSize (http://127.0.0.1:4003/assets/js/media-video.js:89:21) |     at captureStill (http://127.0.0.1:4003/assets/js/media-video.js:109:15) |     at unbind (http://127.0.0.1:4003/assets/js/media-video.js:150:5)": 1,
+            "getComputedStyle:    at restart (http://127.0.0.1:4003/assets/js/home/helios.js:46:10) |     at HTMLDocument.<anonymous> (http://127.0.0.1:4003/assets/js/home/helios.js:82:5) |     at paint (http://127.0.0.1:4003/assets/js/media-carousel.js:75:12)": 2
+          }
+        },
+        {
+          "device": "desktop",
+          "scene": "hero",
+          "variant": "posters",
+          "positions": [
+            [
+              0,
+              650
+            ],
+            [
+              650,
+              0
+            ]
+          ],
+          "frames": 145,
+          "p50": 16.700000000000273,
+          "p95": 50,
+          "max": 100,
+          "totals": {
+            "ScriptDuration": 59.534,
+            "TaskDuration": 646.6110000000001,
+            "LayoutDuration": 17.999,
+            "RecalcStyleDuration": 345.078
+          },
+          "maxConcurrentDecodes": 2,
+          "longTasks": [],
+          "longAnimationFrames": 9,
+          "inRafReadAfterWrite": {},
+          "outsideRafReads": {
+            "getComputedStyle:    at restart (http://127.0.0.1:4003/assets/js/home/helios.js:46:10) |     at HTMLDocument.<anonymous> (http://127.0.0.1:4003/assets/js/home/helios.js:82:5) |     at paint (http://127.0.0.1:4003/assets/js/media-carousel.js:75:12)": 2
+          }
+        },
+        {
+          "device": "desktop",
+          "scene": "hero",
+          "variant": "static-banner",
+          "positions": [
+            [
+              0,
+              650
+            ],
+            [
+              650,
+              0
+            ]
+          ],
+          "frames": 83,
+          "p50": 50,
+          "p95": 100,
+          "max": 116.69999999999982,
+          "totals": {
+            "ScriptDuration": 39.154,
+            "TaskDuration": 326.976,
+            "LayoutDuration": 8.53,
+            "RecalcStyleDuration": 120.76400000000001
+          },
+          "maxConcurrentDecodes": 2,
+          "longTasks": [],
+          "longAnimationFrames": 45,
+          "inRafReadAfterWrite": {},
+          "outsideRafReads": {
+            "clientWidth:    at stillSize (http://127.0.0.1:4003/assets/js/media-video.js:89:21) |     at captureStill (http://127.0.0.1:4003/assets/js/media-video.js:109:15) |     at unbind (http://127.0.0.1:4003/assets/js/media-video.js:150:5)": 1
+          }
+        },
+        {
+          "device": "desktop",
+          "scene": "create",
+          "variant": "normal",
+          "positions": [
+            [
+              1377,
+              1627
+            ],
+            [
+              1627,
+              1377
+            ]
+          ],
+          "frames": 52,
+          "p50": 16.700000000000728,
+          "p95": 99.90000000000055,
+          "max": 100.10000000000036,
+          "totals": {
+            "ScriptDuration": 12.566,
+            "TaskDuration": 131.96200000000002,
+            "LayoutDuration": 7.488999999999999,
+            "RecalcStyleDuration": 42.962
+          },
+          "maxConcurrentDecodes": 2,
+          "longTasks": [],
+          "longAnimationFrames": 20,
+          "inRafReadAfterWrite": {},
+          "outsideRafReads": {}
+        },
+        {
+          "device": "desktop",
+          "scene": "create",
+          "variant": "static-ink",
+          "positions": [
+            [
+              1377,
+              1627
+            ],
+            [
+              1627,
+              1377
+            ]
+          ],
+          "frames": 57,
+          "p50": 16.700000000000728,
+          "p95": 83.39999999999964,
+          "max": 83.40000000000009,
+          "totals": {
+            "ScriptDuration": 4.574000000000002,
+            "TaskDuration": 75.65999999999995,
+            "LayoutDuration": 4.216000000000001,
+            "RecalcStyleDuration": 27.655999999999985
+          },
+          "maxConcurrentDecodes": 0,
+          "longTasks": [],
+          "longAnimationFrames": 20,
+          "inRafReadAfterWrite": {},
+          "outsideRafReads": {}
+        },
+        {
+          "device": "phone-4x",
+          "scene": "hero",
+          "variant": "normal",
+          "positions": [
+            [
+              0,
+              650
+            ],
+            [
+              650,
+              0
+            ]
+          ],
+          "frames": 131,
+          "p50": 33.30000000000018,
+          "p95": 50,
+          "max": 83.39999999999964,
+          "totals": {
+            "ScriptDuration": 229.86200000000002,
+            "TaskDuration": 2380.2570000000005,
+            "LayoutDuration": 86.734,
+            "RecalcStyleDuration": 1228.361
+          },
+          "maxConcurrentDecodes": 2,
+          "longTasks": [],
+          "longAnimationFrames": 3,
+          "inRafReadAfterWrite": {
+            "getComputedStyle:    at restart (http://127.0.0.1:4003/assets/js/home/helios.js:46:10) |     at sunrise (http://127.0.0.1:4003/assets/js/home/helios.js:131:7) |     at pose (http://127.0.0.1:4003/assets/js/home/helios.js:164:5)": 1
+          },
+          "outsideRafReads": {
+            "clientWidth:    at stillSize (http://127.0.0.1:4003/assets/js/media-video.js:89:21) |     at captureStill (http://127.0.0.1:4003/assets/js/media-video.js:109:15) |     at unbind (http://127.0.0.1:4003/assets/js/media-video.js:150:5)": 1,
+            "getComputedStyle:    at restart (http://127.0.0.1:4003/assets/js/home/helios.js:46:10) |     at HTMLDocument.<anonymous> (http://127.0.0.1:4003/assets/js/home/helios.js:82:5) |     at paint (http://127.0.0.1:4003/assets/js/media-carousel.js:75:12)": 2
+          }
+        },
+        {
+          "device": "phone-4x",
+          "scene": "hero",
+          "variant": "posters",
+          "positions": [
+            [
+              0,
+              650
+            ],
+            [
+              650,
+              0
+            ]
+          ],
+          "frames": 153,
+          "p50": 33.29999999999927,
+          "p95": 33.400000000000546,
+          "max": 50,
+          "totals": {
+            "ScriptDuration": 202.16899999999998,
+            "TaskDuration": 2145.5089999999996,
+            "LayoutDuration": 71.48899999999999,
+            "RecalcStyleDuration": 1141.499
+          },
+          "maxConcurrentDecodes": 2,
+          "longTasks": [],
+          "longAnimationFrames": 0,
+          "inRafReadAfterWrite": {
+            "getComputedStyle:    at restart (http://127.0.0.1:4003/assets/js/home/helios.js:46:10) |     at sunrise (http://127.0.0.1:4003/assets/js/home/helios.js:131:7) |     at pose (http://127.0.0.1:4003/assets/js/home/helios.js:164:5)": 1
+          },
+          "outsideRafReads": {
+            "getComputedStyle:    at restart (http://127.0.0.1:4003/assets/js/home/helios.js:46:10) |     at HTMLDocument.<anonymous> (http://127.0.0.1:4003/assets/js/home/helios.js:82:5) |     at paint (http://127.0.0.1:4003/assets/js/media-carousel.js:75:12)": 2
+          }
+        },
+        {
+          "device": "phone-4x",
+          "scene": "hero",
+          "variant": "static-banner",
+          "positions": [
+            [
+              0,
+              650
+            ],
+            [
+              650,
+              0
+            ]
+          ],
+          "frames": 184,
+          "p50": 16.699999999999818,
+          "p95": 33.40000000000009,
+          "max": 66.69999999999982,
+          "totals": {
+            "ScriptDuration": 175.16700000000003,
+            "TaskDuration": 1904.989,
+            "LayoutDuration": 83.62700000000001,
+            "RecalcStyleDuration": 819.596
+          },
+          "maxConcurrentDecodes": 2,
+          "longTasks": [],
+          "longAnimationFrames": 1,
+          "inRafReadAfterWrite": {},
+          "outsideRafReads": {
+            "clientWidth:    at stillSize (http://127.0.0.1:4003/assets/js/media-video.js:89:21) |     at captureStill (http://127.0.0.1:4003/assets/js/media-video.js:109:15) |     at unbind (http://127.0.0.1:4003/assets/js/media-video.js:150:5)": 1
+          }
+        },
+        {
+          "device": "phone-4x",
+          "scene": "create",
+          "variant": "normal",
+          "positions": [
+            [
+              1139,
+              1389
+            ],
+            [
+              1389,
+              1139
+            ]
+          ],
+          "frames": 86,
+          "p50": 16.700000000000728,
+          "p95": 33.40000000000009,
+          "max": 33.400000000000546,
+          "totals": {
+            "ScriptDuration": 71.05599999999998,
+            "TaskDuration": 725.3959999999997,
+            "LayoutDuration": 28.63600000000001,
+            "RecalcStyleDuration": 296.97200000000004
+          },
+          "maxConcurrentDecodes": 2,
+          "longTasks": [],
+          "longAnimationFrames": 0,
+          "inRafReadAfterWrite": {},
+          "outsideRafReads": {}
+        },
+        {
+          "device": "phone-4x",
+          "scene": "create",
+          "variant": "static-ink",
+          "positions": [
+            [
+              1139,
+              1389
+            ],
+            [
+              1389,
+              1139
+            ]
+          ],
+          "frames": 106,
+          "p50": 16.699999999999818,
+          "p95": 33.30000000000018,
+          "max": 49.90000000000009,
+          "totals": {
+            "ScriptDuration": 50.249999999999986,
+            "TaskDuration": 709.2759999999998,
+            "LayoutDuration": 31.297000000000004,
+            "RecalcStyleDuration": 287.98900000000003
+          },
+          "maxConcurrentDecodes": 0,
+          "longTasks": [],
+          "longAnimationFrames": 0,
+          "inRafReadAfterWrite": {},
+          "outsideRafReads": {}
+        }
+      ]
+    },
+    "after": {
+      "environment": {
+        "base": "http://127.0.0.1:4001",
+        "browser": {
+          "protocolVersion": "1.3",
+          "product": "Chrome/154.0.8037.97",
+          "revision": "@b510e9d7cd3a2fbd78d0ddc42234103206c5f78d",
+          "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+          "jsVersion": "15.4.80.20"
+        },
+        "categories": "devtools.timeline,blink,cc,gpu,viz",
+        "note": "Instrumented diagnostics; distributions include gesture waits. Not an FPS benchmark."
+      },
+      "reports": [
+        {
+          "device": "desktop",
+          "scene": "hero",
+          "variant": "normal",
+          "positions": [
+            [
+              0,
+              650
+            ],
+            [
+              650,
+              0
+            ]
+          ],
+          "frames": 79,
+          "p50": 50,
+          "p95": 116.70000000000027,
+          "max": 150,
+          "totals": {
+            "ScriptDuration": 70.327,
+            "TaskDuration": 517.8849999999999,
+            "LayoutDuration": 17.739000000000004,
+            "RecalcStyleDuration": 216.92199999999997
+          },
+          "maxConcurrentDecodes": 2,
+          "longTasks": [],
+          "longAnimationFrames": 46,
+          "inRafReadAfterWrite": {},
+          "outsideRafReads": {
+            "clientWidth:    at stillSize (http://127.0.0.1:4001/assets/js/media-video.js:89:21) |     at captureStill (http://127.0.0.1:4001/assets/js/media-video.js:109:15) |     at unbind (http://127.0.0.1:4001/assets/js/media-video.js:150:5)": 1,
+            "getComputedStyle:    at restart (http://127.0.0.1:4001/assets/js/home/helios.js:46:10) |     at HTMLDocument.<anonymous> (http://127.0.0.1:4001/assets/js/home/helios.js:82:5) |     at paint (http://127.0.0.1:4001/assets/js/media-carousel.js:75:12)": 2
+          }
+        },
+        {
+          "device": "desktop",
+          "scene": "hero",
+          "variant": "posters",
+          "positions": [
+            [
+              0,
+              650
+            ],
+            [
+              650,
+              0
+            ]
+          ],
+          "frames": 123,
+          "p50": 33.30000000000018,
+          "p95": 66.69999999999982,
+          "max": 116.59999999999945,
+          "totals": {
+            "ScriptDuration": 58.872,
+            "TaskDuration": 721.5289999999999,
+            "LayoutDuration": 19.768,
+            "RecalcStyleDuration": 379.622
+          },
+          "maxConcurrentDecodes": 2,
+          "longTasks": [],
+          "longAnimationFrames": 20,
+          "inRafReadAfterWrite": {},
+          "outsideRafReads": {
+            "getComputedStyle:    at restart (http://127.0.0.1:4001/assets/js/home/helios.js:46:10) |     at HTMLDocument.<anonymous> (http://127.0.0.1:4001/assets/js/home/helios.js:82:5) |     at paint (http://127.0.0.1:4001/assets/js/media-carousel.js:75:12)": 2
+          }
+        },
+        {
+          "device": "desktop",
+          "scene": "hero",
+          "variant": "static-banner",
+          "positions": [
+            [
+              0,
+              650
+            ],
+            [
+              650,
+              0
+            ]
+          ],
+          "frames": 71,
+          "p50": 50,
+          "p95": 116.70000000000073,
+          "max": 150,
+          "totals": {
+            "ScriptDuration": 44.782999999999994,
+            "TaskDuration": 372.833,
+            "LayoutDuration": 10.976000000000003,
+            "RecalcStyleDuration": 136.23000000000002
+          },
+          "maxConcurrentDecodes": 2,
+          "longTasks": [],
+          "longAnimationFrames": 40,
+          "inRafReadAfterWrite": {},
+          "outsideRafReads": {
+            "clientWidth:    at stillSize (http://127.0.0.1:4001/assets/js/media-video.js:89:21) |     at captureStill (http://127.0.0.1:4001/assets/js/media-video.js:109:15) |     at unbind (http://127.0.0.1:4001/assets/js/media-video.js:150:5)": 1
+          }
+        },
+        {
+          "device": "desktop",
+          "scene": "create",
+          "variant": "normal",
+          "positions": [
+            [
+              1377,
+              1627
+            ],
+            [
+              1627,
+              1377
+            ]
+          ],
+          "frames": 55,
+          "p50": 16.700000000000728,
+          "p95": 83.40000000000055,
+          "max": 100,
+          "totals": {
+            "ScriptDuration": 11.286999999999999,
+            "TaskDuration": 118.11099999999996,
+            "LayoutDuration": 5.7429999999999986,
+            "RecalcStyleDuration": 39.52799999999998
+          },
+          "maxConcurrentDecodes": 2,
+          "longTasks": [],
+          "longAnimationFrames": 21,
+          "inRafReadAfterWrite": {},
+          "outsideRafReads": {}
+        },
+        {
+          "device": "desktop",
+          "scene": "create",
+          "variant": "static-ink",
+          "positions": [
+            [
+              1377,
+              1627
+            ],
+            [
+              1627,
+              1377
+            ]
+          ],
+          "frames": 52,
+          "p50": 33.399999999999636,
+          "p95": 100.10000000000036,
+          "max": 150.10000000000036,
+          "totals": {
+            "ScriptDuration": 5.9689999999999985,
+            "TaskDuration": 101.41500000000003,
+            "LayoutDuration": 5.236999999999998,
+            "RecalcStyleDuration": 36.054
+          },
+          "maxConcurrentDecodes": 0,
+          "longTasks": [],
+          "longAnimationFrames": 20,
+          "inRafReadAfterWrite": {},
+          "outsideRafReads": {}
+        },
+        {
+          "device": "phone-4x",
+          "scene": "hero",
+          "variant": "normal",
+          "positions": [
+            [
+              0,
+              650
+            ],
+            [
+              650,
+              0
+            ]
+          ],
+          "frames": 108,
+          "p50": 33.30000000000018,
+          "p95": 66.69999999999982,
+          "max": 116.69999999999982,
+          "totals": {
+            "ScriptDuration": 309.93600000000004,
+            "TaskDuration": 2687.8280000000004,
+            "LayoutDuration": 88.23700000000001,
+            "RecalcStyleDuration": 1292.017
+          },
+          "maxConcurrentDecodes": 2,
+          "longTasks": [
+            53,
+            54,
+            77,
+            53
+          ],
+          "longAnimationFrames": 15,
+          "inRafReadAfterWrite": {
+            "getComputedStyle:    at restart (http://127.0.0.1:4001/assets/js/home/helios.js:46:10) |     at sunrise (http://127.0.0.1:4001/assets/js/home/helios.js:131:7) |     at pose (http://127.0.0.1:4001/assets/js/home/helios.js:164:5)": 1
+          },
+          "outsideRafReads": {
+            "clientWidth:    at stillSize (http://127.0.0.1:4001/assets/js/media-video.js:89:21) |     at captureStill (http://127.0.0.1:4001/assets/js/media-video.js:109:15) |     at unbind (http://127.0.0.1:4001/assets/js/media-video.js:150:5)": 1,
+            "getComputedStyle:    at restart (http://127.0.0.1:4001/assets/js/home/helios.js:46:10) |     at HTMLDocument.<anonymous> (http://127.0.0.1:4001/assets/js/home/helios.js:82:5) |     at paint (http://127.0.0.1:4001/assets/js/media-carousel.js:75:12)": 2
+          }
+        },
+        {
+          "device": "phone-4x",
+          "scene": "hero",
+          "variant": "posters",
+          "positions": [
+            [
+              0,
+              650
+            ],
+            [
+              650,
+              0
+            ]
+          ],
+          "frames": 146,
+          "p50": 33.30000000000018,
+          "p95": 33.400000000000546,
+          "max": 50,
+          "totals": {
+            "ScriptDuration": 201.243,
+            "TaskDuration": 2098.8689999999997,
+            "LayoutDuration": 74.637,
+            "RecalcStyleDuration": 1157.7250000000001
+          },
+          "maxConcurrentDecodes": 2,
+          "longTasks": [],
+          "longAnimationFrames": 0,
+          "inRafReadAfterWrite": {
+            "getComputedStyle:    at restart (http://127.0.0.1:4001/assets/js/home/helios.js:46:10) |     at sunrise (http://127.0.0.1:4001/assets/js/home/helios.js:131:7) |     at pose (http://127.0.0.1:4001/assets/js/home/helios.js:164:5)": 1
+          },
+          "outsideRafReads": {
+            "getComputedStyle:    at restart (http://127.0.0.1:4001/assets/js/home/helios.js:46:10) |     at HTMLDocument.<anonymous> (http://127.0.0.1:4001/assets/js/home/helios.js:82:5) |     at paint (http://127.0.0.1:4001/assets/js/media-carousel.js:75:12)": 2
+          }
+        },
+        {
+          "device": "phone-4x",
+          "scene": "hero",
+          "variant": "static-banner",
+          "positions": [
+            [
+              0,
+              650
+            ],
+            [
+              650,
+              0
+            ]
+          ],
+          "frames": 186,
+          "p50": 16.699999999999818,
+          "p95": 33.399999999999636,
+          "max": 50,
+          "totals": {
+            "ScriptDuration": 175.82600000000002,
+            "TaskDuration": 1859.608,
+            "LayoutDuration": 69.142,
+            "RecalcStyleDuration": 758.8579999999998
+          },
+          "maxConcurrentDecodes": 2,
+          "longTasks": [],
+          "longAnimationFrames": 1,
+          "inRafReadAfterWrite": {},
+          "outsideRafReads": {
+            "clientWidth:    at stillSize (http://127.0.0.1:4001/assets/js/media-video.js:89:21) |     at captureStill (http://127.0.0.1:4001/assets/js/media-video.js:109:15) |     at unbind (http://127.0.0.1:4001/assets/js/media-video.js:150:5)": 1
+          }
+        },
+        {
+          "device": "phone-4x",
+          "scene": "create",
+          "variant": "normal",
+          "positions": [
+            [
+              1139,
+              1389
+            ],
+            [
+              1389,
+              1139
+            ]
+          ],
+          "frames": 77,
+          "p50": 16.700000000000273,
+          "p95": 50,
+          "max": 83.30000000000018,
+          "totals": {
+            "ScriptDuration": 69.1,
+            "TaskDuration": 762.1239999999998,
+            "LayoutDuration": 32.8,
+            "RecalcStyleDuration": 323.032
+          },
+          "maxConcurrentDecodes": 2,
+          "longTasks": [],
+          "longAnimationFrames": 3,
+          "inRafReadAfterWrite": {},
+          "outsideRafReads": {}
+        },
+        {
+          "device": "phone-4x",
+          "scene": "create",
+          "variant": "static-ink",
+          "positions": [
+            [
+              1139,
+              1389
+            ],
+            [
+              1389,
+              1139
+            ]
+          ],
+          "frames": 101,
+          "p50": 16.699999999999818,
+          "p95": 33.30000000000018,
+          "max": 50.100000000000364,
+          "totals": {
+            "ScriptDuration": 56.221999999999994,
+            "TaskDuration": 748.5090000000001,
+            "LayoutDuration": 28.239,
+            "RecalcStyleDuration": 290.638
+          },
+          "maxConcurrentDecodes": 0,
+          "longTasks": [],
+          "longAnimationFrames": 0,
+          "inRafReadAfterWrite": {},
+          "outsideRafReads": {}
+        }
+      ]
+    }
+  },
+  "traceSummaries": [
+    {
+      "file": "/tmp/helios-front-v2-before/trace-hero.json",
+      "note": "Inclusive, potentially overlapping durations; do not sum rows.",
+      "events": [
+        {
+          "threadId": "155041:155064",
+          "thread": "VizCompositorThread",
+          "name": "Display::DrawAndSwap",
+          "count": 87,
+          "totalMs": 3933.0750000000003,
+          "maxMs": 96.79
+        },
+        {
+          "threadId": "155041:155064",
+          "thread": "VizCompositorThread",
+          "name": "SoftwareRenderer::DoDrawQuad",
+          "count": 10150,
+          "totalMs": 3658.0789999999924,
+          "maxMs": 20.237
+        },
+        {
+          "threadId": "155185:155185",
+          "thread": "CrRendererMain",
+          "name": "WebFrameWidgetImpl::UpdateLifecycle",
+          "count": 81,
+          "totalMs": 275.311,
+          "maxMs": 8.243
+        },
+        {
+          "threadId": "155185:155185",
+          "thread": "CrRendererMain",
+          "name": "FunctionCall",
+          "count": 456,
+          "totalMs": 146.32499999999982,
+          "maxMs": 30.968
+        },
+        {
+          "threadId": "155185:155185",
+          "thread": "CrRendererMain",
+          "name": "Paint",
+          "count": 433,
+          "totalMs": 66.33400000000009,
+          "maxMs": 1.502
+        },
+        {
+          "threadId": "155185:155185",
+          "thread": "CrRendererMain",
+          "name": "Layout",
+          "count": 78,
+          "totalMs": 16.717000000000002,
+          "maxMs": 0.685
+        }
+      ]
+    },
+    {
+      "file": "/tmp/helios-front-v2-before/trace-create.json",
+      "note": "Inclusive, potentially overlapping durations; do not sum rows.",
+      "events": [
+        {
+          "threadId": "155041:155064",
+          "thread": "VizCompositorThread",
+          "name": "Display::DrawAndSwap",
+          "count": 25,
+          "totalMs": 1737.2730000000006,
+          "maxMs": 93.928
+        },
+        {
+          "threadId": "155041:155064",
+          "thread": "VizCompositorThread",
+          "name": "SoftwareRenderer::DoDrawQuad",
+          "count": 6154,
+          "totalMs": 1621.854000000005,
+          "maxMs": 13.961
+        },
+        {
+          "threadId": "155185:155185",
+          "thread": "CrRendererMain",
+          "name": "WebFrameWidgetImpl::UpdateLifecycle",
+          "count": 52,
+          "totalMs": 74.89800000000001,
+          "maxMs": 5.076
+        },
+        {
+          "threadId": "155185:155185",
+          "thread": "CrRendererMain",
+          "name": "FunctionCall",
+          "count": 175,
+          "totalMs": 21.819000000000003,
+          "maxMs": 1.033
+        },
+        {
+          "threadId": "155185:155185",
+          "thread": "CrRendererMain",
+          "name": "Paint",
+          "count": 158,
+          "totalMs": 12.976999999999999,
+          "maxMs": 0.854
+        },
+        {
+          "threadId": "155185:155185",
+          "thread": "CrRendererMain",
+          "name": "Layout",
+          "count": 15,
+          "totalMs": 7.231,
+          "maxMs": 0.834
+        }
+      ]
+    },
+    {
+      "file": "/tmp/helios-front-v2-after/trace-hero.json",
+      "note": "Inclusive, potentially overlapping durations; do not sum rows.",
+      "events": [
+        {
+          "threadId": "156418:156439",
+          "thread": "VizCompositorThread",
+          "name": "Display::DrawAndSwap",
+          "count": 90,
+          "totalMs": 4021.259999999999,
+          "maxMs": 84.248
+        },
+        {
+          "threadId": "156418:156439",
+          "thread": "VizCompositorThread",
+          "name": "SoftwareRenderer::DoDrawQuad",
+          "count": 10545,
+          "totalMs": 3725.097999999995,
+          "maxMs": 15.07
+        },
+        {
+          "threadId": "156496:156496",
+          "thread": "CrRendererMain",
+          "name": "WebFrameWidgetImpl::UpdateLifecycle",
+          "count": 79,
+          "totalMs": 280.0770000000001,
+          "maxMs": 8.691
+        },
+        {
+          "threadId": "156496:156496",
+          "thread": "CrRendererMain",
+          "name": "FunctionCall",
+          "count": 449,
+          "totalMs": 138.5810000000001,
+          "maxMs": 23.82
+        },
+        {
+          "threadId": "156496:156496",
+          "thread": "CrRendererMain",
+          "name": "Paint",
+          "count": 427,
+          "totalMs": 65.81800000000007,
+          "maxMs": 1.566
+        },
+        {
+          "threadId": "156496:156496",
+          "thread": "CrRendererMain",
+          "name": "Layout",
+          "count": 76,
+          "totalMs": 16.331,
+          "maxMs": 0.639
+        }
+      ]
+    },
+    {
+      "file": "/tmp/helios-front-v2-after/trace-create.json",
+      "note": "Inclusive, potentially overlapping durations; do not sum rows.",
+      "events": [
+        {
+          "threadId": "156418:156439",
+          "thread": "VizCompositorThread",
+          "name": "Display::DrawAndSwap",
+          "count": 27,
+          "totalMs": 1768.4800000000005,
+          "maxMs": 96.862
+        },
+        {
+          "threadId": "156418:156439",
+          "thread": "VizCompositorThread",
+          "name": "SoftwareRenderer::DoDrawQuad",
+          "count": 6472,
+          "totalMs": 1661.9699999999962,
+          "maxMs": 12.753
+        },
+        {
+          "threadId": "156496:156496",
+          "thread": "CrRendererMain",
+          "name": "WebFrameWidgetImpl::UpdateLifecycle",
+          "count": 55,
+          "totalMs": 67.247,
+          "maxMs": 4.688
+        },
+        {
+          "threadId": "156496:156496",
+          "thread": "CrRendererMain",
+          "name": "FunctionCall",
+          "count": 173,
+          "totalMs": 19.14899999999999,
+          "maxMs": 0.788
+        },
+        {
+          "threadId": "156496:156496",
+          "thread": "CrRendererMain",
+          "name": "Paint",
+          "count": 158,
+          "totalMs": 10.758000000000001,
+          "maxMs": 0.518
+        },
+        {
+          "threadId": "156496:156496",
+          "thread": "CrRendererMain",
+          "name": "Layout",
+          "count": 17,
+          "totalMs": 5.511,
+          "maxMs": 0.681
+        }
+      ]
+    }
+  ]
+}

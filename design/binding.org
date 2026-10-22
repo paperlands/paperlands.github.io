@@ -1,0 +1,35 @@
+#+title: Bindings
+#+subtitle: One destination, two places it can be proposed
+#+options: toc:nil num:nil ^:nil
+
+A binding owns a name, a domain, and the current member of that domain. An instrument proposes a candidate or a step. It does not keep a second number.
+
+* Propose and step
+
+=propose= runs the domain's =project=. =step= runs the domain's =next= by a whole number of steps. A fraction is refused at the binding, before the domain is asked to leave its members. The same member comes back as a refusal: the binding reports that nothing changed. A non-finite candidate is refused before the domain sees it.
+
+The domain constructors live in =paperlang/domain.mjs=. Fourth Turn's angle is still a range and its count is still the finite family. Those two domains were moved, not rewritten.
+
+* An adjustment
+
+=begin= remembers the member under the pointer. =restore= puts that member back and forgets the adjustment. =end= forgets it and leaves the proposed member. Escape and a cancelled pointer are =restore=. A pointer-up of that same pointer is =end=. It is not the cancellation of a run, and a key step is not an adjustment.
+
+The gesture remembers one pointer id. Moves, release, and cancel from any other pointer do nothing. The manuscript updates an operand's text in place, so the focused node and its capture stay through the drag.
+
+* The writer
+
+=createWriter= records source text, row identity, the line map, and the operands the author placed as pieces of an instruction. A piece is either literal text or a name plus the text the author already decided. The writer does not search a sentence for a number. A missing row, a repeated row identity, a repeated operand name, a non-string operand, or a line that contains another physical line is refused.
+
+=finish= copies and seals the record. Writing another line afterwards does not change an earlier result's rows, map, or source.
+
+=build()= still walks Fourth Turn's parts, optics, rests, and spawn. It uses the writer for lines and returns =source=, =rows=, =idOfLine=, and the operands it placed. A loop's count and the turn in =left= are those operands. =left 360/side= is the rule read back out of the count, not a second numeral. The dial stays that study's instrument: the grip names the operand, and a turn operand names the arc.
+
+Handwritten source remains legitimate. A line can carry no operand. An operand cannot exist without its row.
+
+* Halfway
+
+The one-jump manuscript writes the halfway definition and the speck as plain lines. The call row is =call=. Its operands are =vx= and =vy=, each a binding on =DESTINATION=: −180 to 180, step 1. The opening members are 120 and 100.
+
+The manuscript token and the rail are two instruments on that binding. The token strides four pixels to a unit. The rail strides twenty-four. Both read the binding after every accepted proposal. =aria-controls= on the rail names the operand. That correspondence is authored. It is not an execution light, and this page does not draw the jump.
+
+The interval does not import the binding, the writer, or the halfway manuscript.
