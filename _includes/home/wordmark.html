@@ -21,7 +21,16 @@
   look reads, not decoration invented inline.
 {%- endcomment -%}
 {%- assign home_wm = '/assets/lib/helios-wordmark' | relative_url -%}
-<div class="helios-wordmark" id="wordmark" role="img" aria-label="{{ site.data.nav.brand.label }}">
+{%- assign wm_banner_meta = site.data.image_variants['/assets/bannerpaperlang.png'] -%}
+{%- assign wm_banner = '/assets/bannerpaperlang.png' -%}
+{%- if wm_banner_meta -%}
+{%- for variant in wm_banner_meta.variants -%}
+  {%- if variant.width == 768 -%}{%- assign wm_banner = variant.src -%}{%- endif -%}
+{%- endfor -%}
+{%- endif -%}
+<div class="helios-wordmark" id="wordmark" data-nav-light-source role="img" aria-label="{{ site.data.nav.brand.label }}">
+  <span class="helios-wordmark__light" data-nav-light-ink>
+  <span class="helios-wordmark__crop">
   <span class="helios-wordmark__in" aria-hidden="true">In</span>
   <svg class="helios-wordmark__art" viewBox="0 0 1280 250" width="1280" height="250" overflow="visible" aria-hidden="true" focusable="false">
     <defs>
@@ -73,7 +82,9 @@
       </g>
     </g>
 
-    <image data-helios-word href="{{ home_wm }}/word.png" x="249" y="16" width="1006" height="223"/>
-    <image data-helios-banner href="{{ '/assets/bannerpaperlang.png' | relative_url }}" width="1280" height="250"/>
+    <image data-helios-word href="{{ home_wm }}/word.webp" x="249" y="16" width="1006" height="223"/>
+    <image data-helios-banner href="{{ wm_banner | relative_url }}" width="1280" height="250"/>
   </svg>
+  </span>
+  </span>
 </div>

@@ -153,20 +153,29 @@
     mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
   }
   /* Both sides arrive at the same pigment, with the same absence of grain at
-     the join. Grain returns gradually inside each scene, never at a cut.
-     The body prefix beats the later generic grain list: :is() takes the
-     specificity of its hero arm, even when it matches a landscape stage. */
-  body[data-look="helios"] .helios-landscape .helios-possibility__stage::before,
-  body[data-look="helios"] .helios-landscape .helios-possibilities::before {
+     the join. This rule adds only the mask; the generic grain animation still
+     runs, gated by the visibility observer. */
+  [data-look="helios"] .helios-landscape .helios-possibility__stage::before,
+  [data-look="helios"] .helios-landscape .helios-possibilities::before {
     -webkit-mask-image: linear-gradient(180deg, transparent, #000 24%, #000 76%, transparent);
     mask-image: linear-gradient(180deg, transparent, #000 24%, #000 76%, transparent);
-    /* A still print, not a full-viewport repaint on an endless grain clock. */
-    animation: none;
   }
 
+  /* Match the landscape's grain cadence: six jumps per 1.2 seconds.
+     Keep the hero's existing texture and larger positional steps. */
   [data-look="helios"] .helios-act .helios-hero [data-media-surface="fill"]::before {
-    animation: none;
+    animation: helios-grain-hero 1.2s steps(1, end) infinite;
   }
+  @keyframes helios-grain-hero {
+    0% { background-position: 0 0; }
+    16.6% { background-position: -64px 37px; }
+    33.3% { background-position: 48px -71px; }
+    50% { background-position: -29px -58px; }
+    66.6% { background-position: 72px 22px; }
+    83.3% { background-position: -81px 49px; }
+    100% { background-position: 0 0; }
+  }
+
 
   /* Shared atmosphere carries the hue across the seam. Each scene retains its
      existing art, masking, depth and layout. These lights occupy no space. */

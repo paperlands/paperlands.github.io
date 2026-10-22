@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "artifact": "/assets/lib/hatch/hatch.c85dbf4284144dc0.mjs",
+  "compiler": "03e9998c54e2f8353a792d97be28133e4e63d327e55f154c6af3d5dd1fbd5bf6",
+  "model": "6e84b1214f933a79c367e8fc898a4660ed9f11a724393e29af72f45bea0fd589",
+  "scenes": {
+    "inquiry": {
+      "signature": "579c4a79365dd19c981bda3ba669677d7693b75eb5a689704206df9ccda48193",
+      "grows": {
+        "line": "tri 500 4",
+        "from": 2,
+        "to": 6
+      },
+      "layouts": {
+        "wide": {
+          "width": 570,
+          "height": 432,
+          "frames": {
+            "2": "/assets/lib/helios/ink/inquiry-wide-02c7e4c4746fbaf3.webp",
+            "3": "/assets/lib/helios/ink/inquiry-wide-faf10d36244a8603.webp",
+            "4": "/assets/lib/helios/ink/inquiry-wide-f6c0186c0ea297cf.webp",
+            "5": "/assets/lib/helios/ink/inquiry-wide-ff478875f71b38dc.webp",
+            "6": "/assets/lib/helios/ink/inquiry-wide-5a9082fa7c28d112.webp",
+            "settled": "/assets/lib/helios/ink/inquiry-wide-f6c0186c0ea297cf.webp"
+          }
+        },
+        "narrow": {
+          "width": 312,
+          "height": 318,
+          "frames": {
+            "2": "/assets/lib/helios/ink/inquiry-narrow-f7a3da713666bd47.webp",
+            "3": "/assets/lib/helios/ink/inquiry-narrow-786e34cf584be073.webp",
+            "4": "/assets/lib/helios/ink/inquiry-narrow-e029e7faad4311ba.webp",
+            "5": "/assets/lib/helios/ink/inquiry-narrow-a1a5a71c4ab0af54.webp",
+            "6": "/assets/lib/helios/ink/inquiry-narrow-5f06d75f97b290d3.webp",
+            "settled": "/assets/lib/helios/ink/inquiry-narrow-e029e7faad4311ba.webp"
+          }
+        }
+      }
+    },
+    "creators": {
+      "signature": "3dbfb3f882ab29ce92719c315562d3fccea4f51d78fc92eb59eff91e5b3b3508",
+      "grows": {
+        "line": "torus 100",
+        "from": 1,
+        "to": 100,
+        "ease": 2
+      },
+      "layouts": {
+        "wide": {
+          "width": 1083,
+          "height": 900,
+          "frames": {
+            "1": "/assets/lib/helios/ink/creators-wide-b32d412b790702c3.webp",
+            "6": "/assets/lib/helios/ink/creators-wide-cd277615c05630f7.webp",
+            "11": "/assets/lib/helios/ink/creators-wide-3d4d1fa91209ca60.webp",
+            "16": "/assets/lib/helios/ink/creators-wide-72b14231b62669d2.webp",
+            "21": "/assets/lib/helios/ink/creators-wide-7cc4fc4a789d5856.webp",
+            "26": "/assets/lib/helios/ink/creators-wide-b77c6ffaa3fe079f.webp",
+            "31": "/assets/lib/helios/ink/creators-wide-28932e72e8f20d38.webp",
+            "36": "/assets/lib/helios/ink/creators-wide-cf697bcad552ca74.webp",
+            "41": "/assets/lib/helios/ink/creators-wide-deeff4bc2f49a340.webp",
+            "46": "/assets/lib/helios/ink/creators-wide-fbf45dc455b0ed19.webp",
+            "51": "/assets/lib/helios/ink/creators-wide-70f20c6e6fe44eb3.webp",
+            "55": "/assets/lib/helios/ink/creators-wide-c7648f1dd0ecf268.webp",
+            "60": "/assets/lib/helios/ink/creators-wide-4f218b244c1c67f6.webp",
+            "65": "/assets/lib/helios/ink/creators-wide-075f1fd11c04ad67.webp",
+            "70": "/assets/lib/helios/ink/creators-wide-f0beee1c31a3db1c.webp",
+            "75": "/assets/lib/helios/ink/creators-wide-9c6e0efccd3cc058.webp",
+            "80": "/assets/lib/helios/ink/creators-wide-2103697daed83931.webp",
+            "85": "/assets/lib/helios/ink/creators-wide-5777e011d2cce1ef.webp",
+            "90": "/assets/lib/helios/ink/creators-wide-068db8702922b7a3.webp",
+            "95": "/assets/lib/helios/ink/creators-wide-721df80e8911bcd3.webp",
+            "100": "/assets/lib/helios/ink/creators-wide-b242e351226ad6bb.webp",
+            "settled": "/assets/lib/helios/ink/creators-wide-b242e351226ad6bb.webp"
+          }
+        },
+        "narrow": {
+          "width": 936,
+          "height": 730,
+          "frames": {
+            "1": "/assets/lib/helios/ink/creators-narrow-c27871106b6fddbf.webp",
+            "6": "/assets/lib/helios/ink/creators-narrow-59478c9eef24e1d7.webp",
+            "11": "/assets/lib/helios/ink/creators-narrow-5177c07168f82003.webp",
+            "16": "/assets/lib/helios/ink/creators-narrow-0ef5c5dbcde1e256.webp",
+            "21": "/assets/lib/helios/ink/creators-narrow-d2e27ae2a0dd8ff3.webp",
+            "26": "/assets/lib/helios/ink/creators-narrow-8234fa94f807234f.webp",
+            "31": "/assets/lib/helios/ink/creators-narrow-595b45fe67baedd8.webp",
+            "36": "/assets/lib/helios/ink/creators-narrow-2ee9f085ef7f3ed7.webp",
+            "41": "/assets/lib/helios/ink/creators-narrow-560abf302a3883aa.webp",
+            "46": "/assets/lib/helios/ink/creators-narrow-833cf824073b2356.webp",
+            "51": "/assets/lib/helios/ink/creators-narrow-04d7bb0a5ab77f8d.webp",
+            "55": "/assets/lib/helios/ink/creators-narrow-2aa912d26656a599.webp",
+            "60": "/assets/lib/helios/ink/creators-narrow-e089bd0a4b2c31ed.webp",
+            "65": "/assets/lib/helios/ink/creators-narrow-649473b815ce90db.webp",
+            "70": "/assets/lib/helios/ink/creators-narrow-8879b6ec72fa887e.webp",
+            "75": "/assets/lib/helios/ink/creators-narrow-9d02ccc6d2a5eefb.webp",
+            "80": "/assets/lib/helios/ink/creators-narrow-d38d8077ff957c32.webp",
+            "85": "/assets/lib/helios/ink/creators-narrow-8343f52d120ed288.webp",
+            "90": "/assets/lib/helios/ink/creators-narrow-f8c12c342ff4f706.webp",
+            "95": "/assets/lib/helios/ink/creators-narrow-93c517999c8f2435.webp",
+            "100": "/assets/lib/helios/ink/creators-narrow-77ab24e4d1271650.webp",
+            "settled": "/assets/lib/helios/ink/creators-narrow-77ab24e4d1271650.webp"
+          }
+        }
+      }
+    }
+  },
+  "renderer": "Chrome/154.0.8037.97",
+  "previous": []
+}

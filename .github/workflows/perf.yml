@@ -1,0 +1,58 @@
+name: Performance budget
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: perf-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  budget:
+    name: Front page budget
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Tailwind CSS
+        run: |
+          curl -sLo tailwindcss https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64
+          chmod +x tailwindcss
+          sudo mv tailwindcss /usr/bin/tailwindcss
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+          cache-version: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install the still encoder
+        run: npm ci
+
+      # The gate measures the first-party page. JEKYLL_ENV stays development so
+      # the async analytics script (production only) cannot make a budget flaky;
+      # the deployed build's own assets are the ones this job is protecting.
+      - name: Build
+        run: bundle exec jekyll build
+
+      - name: Verify generated media
+        run: node design/mint-media.mjs verify
+
+      - name: Lighthouse CI
+        run: npx --yes @lhci/cli@0.15 autorun
+
+      - name: Keep the reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouseci
+          path: .lighthouseci
+          if-no-files-found: warn

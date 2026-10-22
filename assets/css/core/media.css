@@ -102,6 +102,7 @@
     overflow: hidden;
     aspect-ratio: var(--media-ar, 16 / 9);
     background: #141210;
+    cursor: pointer;
   }
 
   [data-media-surface="film"][data-media-slot="frame"] .film-poster,
@@ -184,6 +185,7 @@
   }
 
   .film-stage.is-transitioning .film-wipe { animation: film-wipe 300ms ease-in-out both; }
+  .film-stage.is-playing { cursor: default; }
   .film-stage.is-playing .film-poster { opacity: 0; transform: scale(1.04); pointer-events: none; }
   .film-stage.is-playing .film-frame { z-index: 6; opacity: 1; pointer-events: auto; }
   .film-stage.is-playing .film-play,
@@ -220,8 +222,16 @@
     transition: opacity 0.6s ease;
   }
 
-  .media-stack [data-media-cell]:first-child,
-  .media-stack [data-media-cell]:has([data-media-active]) {
+  /* Two claims can be visible: the clip on screen (active) and the one the last
+     swap left underneath it (prev). Only the incoming cell animates; prev stays
+     fully opaque, so the composite never dips toward the stack's background and
+     no cell has to be pinned there to hide that dip. `:first-child` is only the
+     cold/no-JS still: it applies until the writer has spoken for the stack at
+     all, and never again (a pinned first cell used to bleed through every
+     cross-fade). */
+  .media-stack:not(:has([data-media-active], [data-media-prev])) [data-media-cell]:first-child,
+  .media-stack [data-media-cell]:has([data-media-active]),
+  .media-stack [data-media-cell]:has([data-media-prev]) {
     opacity: 1;
   }
 

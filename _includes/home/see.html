@@ -3,9 +3,10 @@
   Sierpinski named in _data/helios_possibilities.yml. Words are page.see.
 {%- endcomment -%}
 {%- assign scene = site.data.helios_possibilities.inquiry -%}
-<section id="see" class="helios-plate" data-scroll-scrub data-hatch="{{ site.data.hatch.artifact_path | relative_url }}" aria-labelledby="see-title"{% if scene.grows %} data-grows="{{ scene.grows.line | escape }}" data-grows-from="{{ scene.grows.from }}" data-grows-to="{{ scene.grows.to }}"{% endif %}>
+<section id="see" class="helios-plate" data-scroll-scrub data-ink-scene="inquiry" data-ink-base="{{ '/' | relative_url }}" data-ink-frame="settled" aria-labelledby="see-title"{% if scene.grows %} data-grows="{{ scene.grows.line | escape }}" data-grows-from="{{ scene.grows.from }}" data-grows-to="{{ scene.grows.to }}"{% endif %}{% if scene.grows.twist %} data-twist="{{ scene.grows.twist }}"{% endif %}>
   <div class="helios-plate__journey" data-scrub-journey>
-    {% include home/possibility-stage.html item=page.see scene=scene heading="see-title" %}
+    {% include home/possibility-stage.html item=page.see scene=scene heading="see-title" scene_id="inquiry" %}
   </div>
   <template data-scrub-program>{{ scene.program | escape }}</template>
+  <script type="application/json" data-scrub-frames>{{ site.data.helios_ink.scenes.inquiry | jsonify }}</script>
 </section>

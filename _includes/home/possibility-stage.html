@@ -1,24 +1,32 @@
 {%- assign item = include.item -%}
 {%- assign scene = include.scene -%}
-<div class="helios-possibility__stage">
+{%- assign ink = site.data.helios_ink.scenes[include.scene_id] -%}
+<div class="helios-possibility__stage"{% if ink %} data-drawing-active{% endif %}>
   {%- if item.focus -%}<div class="helios-atmosphere" aria-hidden="true"></div>{%- endif -%}
   <figure class="helios-possibility__art"{% if item.caption %} aria-label="{{ item.caption | escape }}"{% endif %}>
     <div class="helios-possibility__plane helios-possibility__echo">
-      <img src="{{ scene.echo | relative_url }}" alt="" width="{{ scene.echo_width }}" height="{{ scene.echo_height }}" loading="lazy" decoding="async">
+      {% include media/img.html src=scene.echo width=scene.echo_width height=scene.echo_height sizes="(max-width: 850px) 40vw, 24vw" alt="" fetchpriority="low" %}
     </div>
     {%- if scene.memory -%}
     <div class="helios-possibility__plane helios-possibility__memory" aria-hidden="true">
-      <img src="{{ scene.memory | relative_url }}" alt="" width="{{ scene.memory_width }}" height="{{ scene.memory_height }}" loading="lazy" decoding="async">
+      {% include media/img.html src=scene.memory width=scene.memory_width height=scene.memory_height sizes="(max-width: 850px) 30vw, 22vw" alt="" fetchpriority="low" %}
     </div>
     {%- endif -%}
     <div class="helios-possibility__plane helios-possibility__pool" aria-hidden="true"></div>
-    <div class="helios-possibility__plane helios-possibility__thought" aria-hidden="true"></div>
+    <div class="helios-possibility__plane helios-possibility__thought" aria-hidden="true">
+      {%- if ink -%}
+      <picture class="helios-possibility__ink" data-scrub-ink>
+        <source media="(max-width: 850px)" srcset="{{ ink.layouts.narrow.frames.settled | relative_url }}">
+        <img src="{{ ink.layouts.wide.frames.settled | relative_url }}" alt="" width="{{ ink.layouts.wide.width }}" height="{{ ink.layouts.wide.height }}" loading="lazy" decoding="async">
+      </picture>
+      {%- endif -%}
+    </div>
     <div class="helios-possibility__plane helios-possibility__body">
-      <img src="{{ scene.body | relative_url }}" alt="{{ scene.body_alt | escape }}" width="{{ scene.body_width }}" height="{{ scene.body_height }}" loading="lazy" decoding="async">
+      {% include media/img.html src=scene.body width=scene.body_width height=scene.body_height sizes="(max-width: 850px) 65vw, 35vw" alt=scene.body_alt fetchpriority="low" %}
     </div>
     {%- if scene.near -%}
     <div class="helios-possibility__plane helios-possibility__near" data-plane="near" aria-hidden="true">
-      <img src="{{ scene.near | relative_url }}" alt="" width="{{ scene.near_width }}" height="{{ scene.near_height }}" loading="lazy" decoding="async">
+      {% include media/img.html src=scene.near width=scene.near_width height=scene.near_height sizes="(max-width: 850px) 9vw, 6vw" alt="" fetchpriority="low" %}
     </div>
     {%- endif -%}
     <div class="helios-possibility__plane helios-possibility__light" aria-hidden="true"></div>

@@ -1,0 +1,33 @@
+{%- comment -%}
+  Responsive image. The build fills site.data.image_variants from
+  _data/image_sources.yml; this file only reads it. Pass the same site path
+  the page already names:
+
+    {% include media/img.html
+       src=scene.echo width=scene.echo_width height=scene.echo_height
+       sizes="(max-width: 850px) 68vw, 38vw" alt="" fetchpriority="low" %}
+
+  When the path has no manifest entry, this is the plain <img> it was before:
+  one src, one box, no srcset. The manifest always includes the source itself
+  as the largest candidate, so a page can pass only the small rungs and a 2x
+  display can still use the full file instead of upscaling a small one.
+
+  `loading` defaults to lazy and `decoding` to async. The hero still is the
+  exception the caller passes: loading=eager, fetchpriority=high.
+{%- endcomment -%}
+{%- assign media_img = site.data.image_variants[include.src] -%}
+{%- assign media_img_src = include.src | relative_url -%}
+{%- capture media_img_srcset -%}
+{%- for variant in media_img.variants -%}
+{{ variant.src | relative_url }} {{ variant.width }}w{% unless forloop.last %}, {% endunless %}
+{%- endfor -%}
+{%- endcapture -%}
+<img src="{{ media_img_src }}"
+  {%- if media_img %} srcset="{{ media_img_srcset | strip }}" sizes="{{ include.sizes | default: '100vw' }}"{% endif %}
+  alt="{{ include.alt | escape }}"
+  width="{{ include.width | default: media_img.width }}"
+  height="{{ include.height | default: media_img.height }}"
+  loading="{{ include.loading | default: 'lazy' }}"
+  decoding="async"
+  {%- if include.fetchpriority %} fetchpriority="{{ include.fetchpriority }}"{% endif %}
+  {%- if include.class %} class="{{ include.class }}"{% endif %}>

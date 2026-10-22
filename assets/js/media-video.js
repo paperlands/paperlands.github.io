@@ -13,6 +13,12 @@
   } catch (e) {}
   var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
   var poor = !!(saveData || (conn && (conn.saveData || conn.effectiveType === 'slow-2g' || conn.effectiveType === '2g')));
+  // A 4G estimate can still be a 1.5Mbps phone. There the active compact clip
+  // is 63KB; its neighbour is 152KB. Warming the neighbour before the reader
+  // has seen the active one puts the first frame behind it. Lean keeps the
+  // active clip only: the next attaches when the carousel makes it active.
+  var downlink = conn && typeof conn.downlink === 'number' ? conn.downlink : Infinity;
+  var lean = !poor && downlink < 2;
   if (reduced || poor) {
     // The priority clip carries its sources in the markup so its bytes start at
     // parse rather than after this script. A reader who has asked for reduced
@@ -60,13 +66,27 @@
     if (!src) return;
     video.preload = preload || 'auto';
     if (video.dataset.mediaAttached === '1') return;
-    if (video.dataset.srcAv1) {
-      addSource(video, video.dataset.srcAv1, 'video/mp4; codecs="av01.0.04M.08"');
+    // The compact pair is the phone portrait, not a device ladder. It is
+    // chosen once, when the decoder attaches: a live resize across 640px
+    // keeps the source it started with rather than interrupting playback.
+    var compact = video.dataset.srcCompact && window.matchMedia('(max-width: 640px)').matches;
+    if (compact) {
+      if (video.dataset.srcAv1Compact) {
+        addSource(video, video.dataset.srcAv1Compact, 'video/mp4; codecs="av01.0.04M.08"');
+      }
+      if (video.dataset.srcWebmCompact && video.dataset.srcWebmCompact !== video.dataset.srcCompact) {
+        addSource(video, video.dataset.srcWebmCompact, 'video/webm');
+      }
+      addSource(video, video.dataset.srcCompact, typeFor(video.dataset.srcCompact));
+    } else {
+      if (video.dataset.srcAv1) {
+        addSource(video, video.dataset.srcAv1, 'video/mp4; codecs="av01.0.04M.08"');
+      }
+      if (video.dataset.srcWebm && video.dataset.srcWebm !== src) {
+        addSource(video, video.dataset.srcWebm, 'video/webm');
+      }
+      addSource(video, src, typeFor(src));
     }
-    if (video.dataset.srcWebm && video.dataset.srcWebm !== src) {
-      addSource(video, video.dataset.srcWebm, 'video/webm');
-    }
-    addSource(video, src, typeFor(src));
     video.load();
     video.dataset.mediaAttached = '1';
   }
@@ -81,6 +101,7 @@
   // at the same currentTime).
   var capturedAt = new WeakMap();
   var stills = new WeakMap();
+  var revealWait = new WeakMap();
   var STILL_MAX = 960;
 
   function stillSize(video) {
@@ -110,11 +131,20 @@
     var canvas = document.createElement('canvas');
     canvas.width = box.width;
     canvas.height = box.height;
+    var context = canvas.getContext('2d');
     try {
-      canvas.getContext('2d').drawImage(video, 0, 0, box.width, box.height);
+      context.drawImage(video, 0, 0, box.width, box.height);
     } catch (e) {
       return;
     }
+    // A stalled or detached decoder can hand back a black frame. The authored
+    // still is a better fallback than a black one; keep it.
+    try {
+      var sample = context.getImageData(0, 0, Math.min(32, box.width), Math.min(18, box.height)).data;
+      var sum = 0;
+      for (var i = 0; i < sample.length; i += 4) sum += sample[i] + sample[i + 1] + sample[i + 2];
+      if (sum / (sample.length / 4 * 3) < 6) return;
+    } catch (e) {}
     capturedAt.set(video, video.currentTime);
     var img = poster;
     if (!img) {
@@ -147,6 +177,10 @@
       video.removeAttribute('data-ready');
       return;
     }
+    if (revealWait.has(video)) {
+      try { video.cancelVideoFrameCallback(revealWait.get(video)); } catch (e) {}
+      revealWait.delete(video);
+    }
     captureStill(video);
     bump(video);
     video.pause();
@@ -160,10 +194,23 @@
   }
 
   function reveal(video) {
-    var first = !video.hasAttribute('data-ready');
-    video.setAttribute('data-ready', '');
-    // ...and that is the moment warming may begin. See reconcileAll.
-    if (first) reconcileAll();
+    if (video.hasAttribute('data-ready')) return;
+    if (!video.requestVideoFrameCallback) {
+      video.setAttribute('data-ready', '');
+      reconcileAll();
+      return;
+    }
+    if (revealWait.has(video)) return;
+    var handle = video.requestVideoFrameCallback(function () {
+      revealWait.delete(video);
+      if (video.dataset.mediaAttached !== '1' || !video.isConnected) return;
+      if (video.hasAttribute('data-ready')) return;
+      // Reveal only after a frame has actually been presented, so a lagging
+      // decoder shows the authored still rather than a black video box.
+      video.setAttribute('data-ready', '');
+      reconcileAll();
+    });
+    revealWait.set(video, handle);
   }
 
   // play() can jump the document (Safari/iOS). Undo that jump only,
@@ -235,7 +282,7 @@
     var group = video.dataset.mediaGroup || '';
     if (!group) return 'io';
     if (video.hasAttribute('data-media-active')) return 'play';
-    if (video.hasAttribute('data-media-decode')) return 'warm';
+    if (video.hasAttribute('data-media-decode')) return lean ? 'drop' : 'warm';
     return marked[group] ? 'drop' : 'hold';
   }
   function score(video, p) {
@@ -364,7 +411,13 @@
     // parsed and laid out, which is most of the way to a first frame that the
     // reader is already looking at a still of. Attaching here starts the
     // request in the same task as this script, before either observer fires.
-    if (video.dataset.mediaPriority === '1') attach(video, 'auto');
+    if (video.dataset.mediaPriority === '1') {
+      attach(video, 'auto');
+      // The first clip is known, not discovered. Start it in the same task as
+      // the attach; the writer's first mark will agree a moment later, and the
+      // poster stays until reveal() has a presented frame.
+      play(video);
+    }
   }
 
   var near = new IntersectionObserver(function (entries) {

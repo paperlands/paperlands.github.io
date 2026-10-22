@@ -1,0 +1,31 @@
+{%- assign hero = include.hero -%}
+{%- assign gathering = site.data.helios_possibilities[hero.scene] -%}
+{%- assign gathering_ink = site.data.helios_ink.scenes[hero.scene] -%}
+<header class="experiences-overture" data-stage-passage aria-labelledby="experiences-title">
+  <div class="experiences-arcs" aria-hidden="true">
+    {% include experiences/arcs.svg %}
+    <canvas data-stage-arcs></canvas>
+  </div>
+  <div class="experiences-hero-inner experiences-wrap">
+    <div class="experiences-hero-text">
+      <p class="experiences-label">{{ hero.label | escape }}</p>
+      <h1 id="experiences-title">{{ hero.heading | markup }}</h1>
+    </div>
+    <figure class="experiences-gathering" role="img" aria-label="{{ hero.alt | escape }}">
+      <picture class="experiences-gathering-thought" aria-hidden="true" data-stage-torus>
+        <source media="(max-width: 850px)" srcset="{{ gathering_ink.layouts.narrow.frames.settled | relative_url }}">
+        <img src="{{ gathering_ink.layouts.wide.frames.settled | relative_url }}" alt="" width="{{ gathering_ink.layouts.wide.width }}" height="{{ gathering_ink.layouts.wide.height }}" loading="eager" decoding="async">
+      </picture>
+      <span class="experiences-gathering-window">
+        {% include media/img.html
+           src=gathering.body
+           class="experiences-gathering-creators"
+           alt=""
+           width=gathering.body_width height=gathering.body_height
+           sizes="(max-width: 850px) 65vw, 30vw"
+           loading="eager" fetchpriority="high"
+        %}
+      </span>
+    </figure>
+  </div>
+</header>

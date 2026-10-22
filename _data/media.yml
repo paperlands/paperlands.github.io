@@ -64,21 +64,21 @@ prime_numbers:
 shell:
   src: /assets/lib/helios/shell-2dfe4d.mp4
   poster: /assets/lib/helios/shell-start.webp
-  alt: Leaning in until the table is a council
+  alt: A student leader leaning into a circle of learners
   width: 720
   height: 1280
 
 benz:
   src: /assets/lib/helios/benz-ccbf06.mp4
   poster: /assets/lib/helios/benz-start.webp
-  alt: Looking up into a figure they just made
+  alt: Two students looking up at the torus they coded
   width: 720
   height: 1280
 
 star:
   src: /assets/lib/helios/star-126ed5.mp4
   poster: /assets/lib/helios/star-start.webp
-  alt: A voice, a tree of code on the wall
+  alt: A student presenting a recursive tree, microphone in hand
   width: 720
   height: 1280
 
@@ -113,6 +113,10 @@ polygon_fill:
   alt: Playing with randomness to form faces
   width: 1920
   height: 1080
+  compact_src: /assets/lib/helios/polygon_fill-fccf9154-compact.mp4
+  compact_width: 572
+  compact_height: 1080
+  compact_av1: /assets/lib/helios/polygon_fill-5012af22-compact.av1.mp4
 
 fibonacci_spiral:
   src: /assets/lib/helios/fibonacci_spiral-646e11.mp4
@@ -121,6 +125,10 @@ fibonacci_spiral:
   alt: Recreating a Fibonacci spiral in code
   width: 1920
   height: 1080
+  compact_src: /assets/lib/helios/fibonacci_spiral-4d6fe5c9-compact.mp4
+  compact_width: 572
+  compact_height: 1080
+  compact_av1: /assets/lib/helios/fibonacci_spiral-7e2dea8b-compact.av1.mp4
 
 tree_fractal:
   src: /assets/lib/helios/tree_fractal-aa0fe5.mp4
@@ -129,6 +137,10 @@ tree_fractal:
   alt: Exploring the hidden geometry of stars
   width: 1920
   height: 1080
+  compact_src: /assets/lib/helios/tree_fractal-1a04c5e4-compact.mp4
+  compact_width: 572
+  compact_height: 1080
+  compact_av1: /assets/lib/helios/tree_fractal-69955153-compact.av1.mp4
 
 prime_sequence:
   src: /assets/lib/helios/prime_sequence-dd5ba6.mp4
@@ -137,6 +149,10 @@ prime_sequence:
   alt: Modelling spider webs in nature
   width: 1920
   height: 1080
+  compact_src: /assets/lib/helios/prime_sequence-1dbc25d5-compact.mp4
+  compact_width: 572
+  compact_height: 1080
+  compact_av1: /assets/lib/helios/prime_sequence-af50602d-compact.av1.mp4
 
 creators:
   src: /assets/lib/helios/creators-6ac435.mp4

@@ -1,0 +1,32 @@
+{
+  "ci": {
+    "collect": {
+      "url": ["http://127.0.0.1:8090/"],
+      "startServerCommand": "node design/probe/perf-serve.mjs _site 8090",
+      "startServerReadyPattern": "perf-serve: serving",
+      "startServerReadyTimeout": 15000,
+      "numberOfRuns": 3,
+      "settings": {
+        "chromeFlags": "--headless=new --no-sandbox --disable-dev-shm-usage",
+        "throttlingMethod": "simulate"
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["warn", { "minScore": 0.88, "aggregationMethod": "median" }],
+        "largest-contentful-paint": ["error", { "maxNumericValue": 3200, "aggregationMethod": "median" }],
+        "total-blocking-time": ["error", { "maxNumericValue": 300, "aggregationMethod": "median" }],
+        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1, "aggregationMethod": "median" }],
+        "total-byte-weight": ["warn", { "maxNumericValue": 800000, "aggregationMethod": "median" }],
+        "uses-responsive-images": ["error", { "minScore": 1, "aggregationMethod": "median" }],
+        "modern-image-formats": "off",
+        "unsized-images": ["error", { "minScore": 1, "aggregationMethod": "median" }],
+        "font-display": ["error", { "minScore": 1, "aggregationMethod": "median" }]
+      }
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": ".lighthouseci"
+    }
+  }
+}

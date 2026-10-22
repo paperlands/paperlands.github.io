@@ -8,15 +8,19 @@
   Params:
     id       catalog key
     src poster av1 webm alt width height
+    compact_src compact_av1 compact_webm compact_width compact_height
+             the phone rendition. Emitted as media queries below 640px; the
+             player picks the same pair when it attaches a non-priority clip.
     mode     loop (default) | hover | hero (hero = no box wrap; fill supplies the still)
     group    carousel group. If any member has data-media-decode or
              data-media-active, only those attach. After changing marks,
              paperlandMedia.sync().
     class    extra classes
+    sizes    poster srcset sizes (media/img.html). Default 100vw.
+    loop     set to false to play once (carousels)
 
   Slot: box mode stamps data-media-slot="frame" on the clip box. A look
   binds that, not .media-clip — the class is this file's private business.
-    loop     set to false to play once (carousels)
   Locals are media_* so they do not leak into the next include on the page.
 {%- endcomment -%}
 {%- assign media_clip = site.data.media[include.id] -%}
@@ -29,6 +33,14 @@
 {%- if media_av1 == '' -%}{%- assign media_av1 = media_clip.av1 | default: '' | strip -%}{%- endif -%}
 {%- assign media_webm = include.webm | default: '' | strip -%}
 {%- if media_webm == '' -%}{%- assign media_webm = media_clip.webm | default: '' | strip -%}{%- endif -%}
+{%- assign media_compact_src = include.compact_src | default: '' | strip -%}
+{%- if media_compact_src == '' -%}{%- assign media_compact_src = media_clip.compact_src | default: '' | strip -%}{%- endif -%}
+{%- assign media_compact_av1 = include.compact_av1 | default: '' | strip -%}
+{%- if media_compact_av1 == '' -%}{%- assign media_compact_av1 = media_clip.compact_av1 | default: '' | strip -%}{%- endif -%}
+{%- assign media_compact_webm = include.compact_webm | default: '' | strip -%}
+{%- if media_compact_webm == '' -%}{%- assign media_compact_webm = media_clip.compact_webm | default: '' | strip -%}{%- endif -%}
+{%- assign media_compact_width = include.compact_width | default: media_clip.compact_width -%}
+{%- assign media_compact_height = include.compact_height | default: media_clip.compact_height -%}
 {%- assign media_alt = include.alt | default: '' | strip -%}
 {%- if media_alt == '' -%}{%- assign media_alt = media_clip.alt | default: '' | strip -%}{%- endif -%}
 {%- capture media_width -%}{{ include.width }}{%- endcapture -%}
@@ -68,6 +80,35 @@
     {%- assign media_webm_url = media_webm | relative_url -%}
   {%- endif -%}
 {%- endif -%}
+{%- assign media_compact_src_url = '' -%}
+{%- if media_compact_src != '' -%}
+  {%- if media_compact_src contains '://' -%}
+    {%- assign media_compact_src_url = media_compact_src -%}
+  {%- else -%}
+    {%- assign media_compact_src_url = media_compact_src | relative_url -%}
+  {%- endif -%}
+{%- endif -%}
+{%- assign media_compact_av1_url = '' -%}
+{%- if media_compact_av1 != '' -%}
+  {%- if media_compact_av1 contains '://' -%}
+    {%- assign media_compact_av1_url = media_compact_av1 -%}
+  {%- else -%}
+    {%- assign media_compact_av1_url = media_compact_av1 | relative_url -%}
+  {%- endif -%}
+{%- endif -%}
+{%- assign media_compact_webm_url = '' -%}
+{%- if media_compact_webm != '' -%}
+  {%- if media_compact_webm contains '://' -%}
+    {%- assign media_compact_webm_url = media_compact_webm -%}
+  {%- else -%}
+    {%- assign media_compact_webm_url = media_compact_webm | relative_url -%}
+  {%- endif -%}
+{%- endif -%}
+{%- assign media_compact_src_type = 'video/mp4' -%}
+{%- if media_compact_src_url contains '.webm' -%}{%- assign media_compact_src_type = 'video/webm' -%}{%- endif -%}
+{%- assign media_compact_query = '(prefers-reduced-motion: no-preference) and (max-width: 640px)' -%}
+{%- assign media_full_query = '(prefers-reduced-motion: no-preference)' -%}
+{%- if media_compact_src_url != '' -%}{%- assign media_full_query = '(prefers-reduced-motion: no-preference) and (min-width: 641px)' -%}{%- endif -%}
 {%- assign media_src_type = 'video/mp4' -%}
 {%- if media_src_url contains '.webm' -%}{%- assign media_src_type = 'video/webm' -%}{%- endif -%}
 {%- if media_src_url contains '.ogv' -%}{%- assign media_src_type = 'video/ogg' -%}{%- endif -%}
@@ -86,10 +127,41 @@
    hint means nothing. {%- endcomment -%}
 {%- assign media_priority = false -%}
 {%- if include.priority == true or include.priority == 'true' -%}{%- assign media_priority = true -%}{%- endif -%}
-{%- capture media_attrs -%}data-media="video" data-media-mode="{{ media_mode }}" data-src="{{ media_src_url }}"{% if media_av1_url != '' %} data-src-av1="{{ media_av1_url }}"{% endif %}{% if media_webm_url != '' %} data-src-webm="{{ media_webm_url }}"{% endif %}{% if media_poster_url != '' %} poster="{{ media_poster_url }}"{% endif %}{% if media_priority %} data-media-priority="1"{% endif %}{% if include.group %} data-media-group="{{ include.group }}"{% endif %}{% if media_width != '' %} width="{{ media_width }}"{% endif %}{% if media_height != '' %} height="{{ media_height }}"{% endif %}{% if include.loop == false or include.loop == 'false' %}{% else %} loop{% endif %} muted playsinline webkit-playsinline {% if media_priority %}preload="auto" data-media-attached="1" fetchpriority="high"{% else %}preload="none"{% endif %} disablepictureinpicture disableremoteplayback aria-label="{{ media_alt | escape }}"{%- endcapture -%}
+{%- if media_priority -%}
+  {%- assign media_poster_loading = 'eager' -%}
+  {%- assign media_poster_fetch = 'high' -%}
+{%- else -%}
+  {%- assign media_poster_loading = 'lazy' -%}
+  {%- assign media_poster_fetch = 'low' -%}
+{%- endif -%}
+{%- capture media_attrs -%}data-media="video" data-media-mode="{{ media_mode }}" data-src="{{ media_src_url }}"{% if media_av1_url != '' %} data-src-av1="{{ media_av1_url }}"{% endif %}{% if media_compact_src_url != '' %} data-src-compact="{{ media_compact_src_url }}"{% endif %}{% if media_compact_av1_url != '' %} data-src-av1-compact="{{ media_compact_av1_url }}"{% endif %}{% if media_compact_webm_url != '' %} data-src-webm-compact="{{ media_compact_webm_url }}"{% endif %}{% if media_webm_url != '' %} data-src-webm="{{ media_webm_url }}"{% endif %}{% if media_poster_url != '' %} poster="{{ media_poster_url }}"{% endif %}{% if media_priority %} data-media-priority="1"{% endif %}{% if include.group %} data-media-group="{{ include.group }}"{% endif %}{% if media_width != '' %} width="{{ media_width }}"{% endif %}{% if media_height != '' %} height="{{ media_height }}"{% endif %}{% if include.loop == false or include.loop == 'false' %}{% else %} loop{% endif %} muted playsinline webkit-playsinline {% if media_priority %}preload="auto" data-media-attached="1" fetchpriority="high"{% else %}preload="none"{% endif %} disablepictureinpicture disableremoteplayback aria-label="{{ media_alt | escape }}"{%- endcapture -%}
 {%- if media_mode == 'hero' -%}
 <video class="{{ include.class }}" {{ media_attrs }}></video>
 {%- else -%}
-<div class="media-clip {{ include.class }}" data-media-slot="frame" style="--media-ar: {{ media_ar_w }} / {{ media_ar_h }};">{% if media_poster_url != '' %}<img class="media-clip-poster" src="{{ media_poster_url }}" alt="" {% if media_priority %}fetchpriority="high"{% else %}loading="lazy"{% endif %} decoding="async" aria-hidden="true">{% endif %}<video class="media-clip-el" {{ media_attrs }}>{%- if media_priority -%}{%- comment -%} The sources, in the markup, for the one clip the reader is already looking at. Everything else waits for media-video.js to say the clip is near the viewport; this one cannot, because a deferred script runs only after the document has been parsed and laid out — measured on a throttled phone, the hero's own bytes were asked for 1.3s in. `media` is the whole policy: a reader who has asked for reduced motion matches no source, fetches no video, and keeps the still that is already there. media-video.js takes the same sources back if it finds a poor connection. {%- endcomment -%}{% if media_av1_url != '' %}<source src="{{ media_av1_url }}" type="video/mp4; codecs=&quot;av01.0.04M.08&quot;" media="(prefers-reduced-motion: no-preference)">{% endif %}{% if media_webm_url != '' and media_webm_url != media_src_url %}<source src="{{ media_webm_url }}" type="video/webm" media="(prefers-reduced-motion: no-preference)">{% endif %}<source src="{{ media_src_url }}" type="{{ media_src_type }}" media="(prefers-reduced-motion: no-preference)">{%- endif -%}</video></div>
+<div class="media-clip {{ include.class }}" data-media-slot="frame" style="--media-ar: {{ media_ar_w }} / {{ media_ar_h }};">
+  {%- if media_poster != '' -%}
+  {% include media/img.html
+     src=media_poster
+     class="media-clip-poster"
+     alt=""
+     width=media_width
+     height=media_height
+     sizes=include.sizes
+     loading=media_poster_loading
+     fetchpriority=media_poster_fetch %}
+  {%- endif -%}
+  <video class="media-clip-el" {{ media_attrs }}>
+{%- if media_priority -%}
+{%- comment -%} The sources, in the markup, for the one clip the reader is already looking at. Everything else waits for media-video.js to say the clip is near the viewport; this one cannot, because a deferred script runs only after the document has been parsed and laid out — measured on a throttled phone, the hero's own bytes were asked for 1.3s in. `media` is the whole policy: a reader who has asked for reduced motion matches no source, fetches no video, and keeps the still that is already there. media-video.js takes the same sources back if it finds a poor connection. The compact pair is the phone portrait: one extra rung, not a device ladder, and only below 640px. {%- endcomment -%}
+{%- if media_compact_src_url != '' -%}
+{%- if media_compact_av1_url != '' -%}<source src="{{ media_compact_av1_url }}" type="video/mp4; codecs=&quot;av01.0.04M.08&quot;" media="{{ media_compact_query }}">{%- endif -%}
+{%- if media_compact_webm_url != '' and media_compact_webm_url != media_compact_src_url -%}<source src="{{ media_compact_webm_url }}" type="video/webm" media="{{ media_compact_query }}">{%- endif -%}
+<source src="{{ media_compact_src_url }}" type="{{ media_compact_src_type }}" media="{{ media_compact_query }}">
+{%- endif -%}
+{%- if media_av1_url != '' -%}<source src="{{ media_av1_url }}" type="video/mp4; codecs=&quot;av01.0.04M.08&quot;" media="{{ media_full_query }}">{%- endif -%}
+{%- if media_webm_url != '' and media_webm_url != media_src_url -%}<source src="{{ media_webm_url }}" type="video/webm" media="{{ media_full_query }}">{%- endif -%}
+<source src="{{ media_src_url }}" type="{{ media_src_type }}" media="{{ media_full_query }}">
+{%- endif -%}
+</video></div>
 {%- endif -%}
 {%- endif -%}

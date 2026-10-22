@@ -36,6 +36,14 @@ jobs:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
           cache-version: 0 # Increment this number if you need to re-download cached gems
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install the still encoder
+        run: npm ci
+
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
@@ -44,11 +52,14 @@ jobs:
         env:
           JEKYLL_ENV: production
 
-      - name: setup node
-        uses: actions/setup-node@v2
-        with:
-          node-version: 18
-      - run: npm ci
+      - name: Verify generated media
+        run: node design/mint-media.mjs verify
+      - name: Verify compiled ink, stills, and bounded frame selection
+        run: |
+          node --test design/probe/ink-state.test.mjs
+          node --test design/probe/image-variants.test.mjs
+          ruby design/probe/compiled_ink_test.rb
+          ruby design/probe/image_sources_test.rb
 
       # Generates service worker
       - name: generate sw

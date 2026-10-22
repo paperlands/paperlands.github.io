@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" fill="none" focusable="false">
+  <!-- Twilight world 2 at rest. Circular sweeps, never piers or a firmament. -->
+  <g stroke="#f0a83d" stroke-width="1">
+    <path d="M1036.17 765.61A150.00 150.00 0 0 1 1203.83 765.61" opacity="0.40"/>
+    <rect x="1035.17" y="764.61" width="2" height="2" fill="#f1dba4" fill-opacity=".8" stroke="none"/>
+    <path d="M933.29 693.64A270.96 270.96 0 0 1 1370.63 787.02" opacity="0.36"/>
+    <rect x="987.23" y="652.24" width="2" height="2" fill="#f1dba4" fill-opacity=".8" stroke="none"/>
+    <path d="M891.05 575.64A388.90 388.90 0 0 1 1463.74 708.12" opacity="0.31" stroke-dasharray="3 5"/>
+    <rect x="1047.87" y="506.66" width="2" height="2" fill="#f1dba4" fill-opacity=".8" stroke="none"/>
+    <path d="M820.30 496.11A494.94 494.94 0 0 1 1446.72 518.22" opacity="0.27"/>
+    <rect x="1061.93" y="397.36" width="2" height="2" fill="#f1dba4" fill-opacity=".8" stroke="none"/>
+    <path d="M550.58 723.16A593.36 593.36 0 0 1 1587.50 524.60" opacity="0.23"/>
+    <rect x="1033.07" y="301.90" width="2" height="2" fill="#f1dba4" fill-opacity=".8" stroke="none"/>
+    <path d="M440.47 719.18A700.67 700.67 0 0 1 1644.11 424.97" opacity="0.19" stroke-dasharray="3 5"/>
+    <rect x="1178.98" y="190.90" width="2" height="2" fill="#f1dba4" fill-opacity=".8" stroke="none"/>
+    <path d="M438.62 418.32A828.71 828.71 0 0 1 1729.05 328.03" opacity="0.14"/>
+    <rect x="1465.66" y="136.28" width="2" height="2" fill="#f1dba4" fill-opacity=".8" stroke="none"/>
+    <path d="M751.64 -5.96A968.72 968.72 0 0 1 1757.71 160.79" opacity="0.10"/>
+    <rect x="1680.90" y="99.89" width="2" height="2" fill="#f1dba4" fill-opacity=".8" stroke="none"/>
+  </g>
+</svg>

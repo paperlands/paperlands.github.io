@@ -66,7 +66,7 @@ Over time, those questions grow, and deeper mathematics becomes something they *
 > “The role of the **teacher** is to create the **conditions** for **invention** rather than provide ready-made knowledge.”
 > *\-- Seymour Papert*
 
-A platform to play with math is just the [[Beginnings|beginning]]. A showcase gives students something to work towards: a chance to share what they’ve created, explain their thinking and invite others to see mathematics differently.{% include notes/side_link.html href="/experiences" title="Math Takes the Stage" invitation="Explore our showcases" %}
+A platform to play with math is just the [[Beginnings|beginning]]. A showcase gives students something to work towards: a chance to share what they’ve created, explain their thinking and invite others to see mathematics differently.{% include notes/side_link.html href="/experiences" title="Math Takes the Stage" invitation="Experience math differently" %}
 
 Imagine your students:
 
@@ -77,4 +77,4 @@ Imagine your students:
 We work with schools and mathematics organisations to make these showcases happen. Starting with what students will create and share, we shape a programme of inquiry, creative work and practice to help them get there.
 {: .showcase-partnership }
 
-[**Explore our showcases →**](/experiences)
+[**Experience math differently →**](/experiences)

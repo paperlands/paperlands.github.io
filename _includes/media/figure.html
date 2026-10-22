@@ -11,6 +11,7 @@
   Params:
     id        catalog key (required unless explicit src)
     src poster av1 webm alt width height   explicit override of the catalog
+    sizes     poster srcset sizes, passed through to the clip
     caption   markdown; the plate's figcaption
     class     extra classes on the figure
     video_class  extra classes on the clip box
@@ -27,6 +28,7 @@
     alt=media_fig_alt
     width=include.width
     height=include.height
+    sizes=include.sizes
     class=include.video_class
   %}
   {% if include.caption %}

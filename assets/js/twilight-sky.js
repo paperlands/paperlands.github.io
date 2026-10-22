@@ -1,3 +1,4 @@
+import { drawArcs as worldArcs } from './experiences/arcs.mjs';
 (function () {
   "use strict";
 
@@ -449,35 +450,6 @@
     }
   }
 
-  /* [2] variables -> arcs whose sweep and radius breathe,
-         each with a traveller riding its curve */
-  function worldArcs(c, w, h, t) {
-    c.clearRect(0, 0, w, h);
-    var cx = w * 0.5,
-      cy = h * 0.95;
-    for (var k = 0; k < 8; k++) {
-      var rr =
-        lerp(h * 0.15, h * 0.95, k / 7) * (1 + 0.03 * Math.sin(t * 0.7 + k));
-      var sweep =
-        lerp(0.4, 1, hash2(k, 7)) *
-        Math.PI *
-        (0.7 + 0.3 * Math.sin(t * 0.5 + k * 1.7));
-      var start =
-        Math.PI + (Math.PI - sweep) / 2 + Math.sin(t * 0.2 + k) * 0.25;
-      c.strokeStyle =
-        "rgba(" + PHOS + "," + lerp(0.4, 0.1, k / 7).toFixed(3) + ")";
-      c.lineWidth = 1;
-      if (k % 3 === 2) c.setLineDash([3, 5]);
-      else c.setLineDash([]);
-      c.beginPath();
-      c.arc(cx, cy, rr, start, start + sweep);
-      c.stroke();
-      var ta = start + sweep * ((t * 0.12 + k * 0.13) % 1);
-      c.fillStyle = "rgba(" + GOLD + ",0.8)";
-      c.fillRect(cx + Math.cos(ta) * rr - 1, cy + Math.sin(ta) * rr - 1, 2, 2);
-    }
-    c.setLineDash([]);
-  }
 
   /* [3] recursion -> branches branching: staggered growth from
          trunk to twig, buds glowing at the growing tips */

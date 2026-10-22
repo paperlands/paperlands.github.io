@@ -1,0 +1,228 @@
+/* One mobile navigation, every surface. The existing left mark is the lamp;
+   page content recedes beneath a shroud, then the left light reveals the words. */
+@layer components {
+  .folio-nav__atmosphere,
+  [data-nav-thread] { display: none; }
+
+  @media (max-width: 1023px) {
+    html:has([data-nav-root]) { overflow-x: clip; }
+    html:has(body[data-nav-state="open"]) { overflow-y: hidden; }
+    .site-nav .folio-nav__links { display: none; }
+    body { --nav-lamp-x: calc(var(--nav-logo-x) + .8rem); --nav-lamp-y: 2rem; }
+    body[data-nav-state="open"] { overflow: hidden; }
+
+    /* Keep the same corner on both documents and cinematic pages. Light pages
+       retain their in-flow header space; no layout shift when the menu opens. */
+    .site-nav[data-tone="light"] { min-height: var(--nav-bar-h); }
+    .site-nav[data-tone] [data-nav-chrome] {
+      position: fixed;
+      inset: 0 0 auto;
+      width: 100vw;
+      z-index: 90;
+      min-height: var(--nav-bar-h);
+      padding: var(--nav-pad-y) var(--nav-pad-x) 0 var(--nav-logo-x);
+      pointer-events: none;
+    }
+    .site-nav [data-nav-chrome] > * { pointer-events: auto; }
+    .site-nav [data-nav-mark] { z-index: 2; }
+    .site-nav [data-nav-mark],
+    [data-nav-light-ink] { transition: filter 400ms var(--nav-ease); }
+    body[data-nav-state="open"] [data-nav-mark],
+    body[data-nav-state="open"] [data-nav-light-ink] {
+      filter: drop-shadow(0 0 9px rgb(255 153 51 / .48));
+    }
+
+    .site-nav [data-nav-menu] {
+      --nav-menu-ink: #f6e6c4;
+      --nav-menu-accent: #ff9933;
+      position: fixed;
+      top: max(.7rem, env(safe-area-inset-top));
+      right: max(.7rem, env(safe-area-inset-right));
+      display: block;
+      width: 2.9rem;
+      height: 2.9rem;
+      overflow: visible;
+      transition: none;
+    }
+    .site-nav [data-nav-menu].is-open { width: 100vw; height: 100dvh; inset: 0; }
+    .site-nav [data-nav-open] {
+      position: absolute;
+      z-index: 2;
+      inset: 0 0 auto auto;
+      color: var(--nav-ink);
+      transition: color 200ms ease;
+    }
+    .site-nav .is-open [data-nav-open] {
+      top: max(.7rem, env(safe-area-inset-top));
+      right: max(.7rem, env(safe-area-inset-right));
+      color: var(--nav-menu-ink);
+    }
+    .site-nav [data-nav-bars] { width: 1.5rem; height: 1rem; }
+    .site-nav [data-nav-bars] span {
+      width: 100%;
+      height: 1px;
+      border-radius: 1px;
+      background: currentColor;
+    }
+    .site-nav [data-nav-bars] span:nth-child(2) { justify-self: end; width: 72%; }
+    .site-nav .is-open [data-nav-bars] span:first-child { transform: translateY(.46875rem) rotate(45deg); }
+    .site-nav .is-open [data-nav-bars] span:last-child { transform: translateY(-.46875rem) rotate(-45deg); }
+
+    .site-nav [data-nav-atmosphere] {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100dvh;
+      display: block;
+      overflow: hidden;
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      background: #140910;
+      transition: opacity 260ms ease 100ms, visibility 0s 360ms;
+    }
+    .site-nav .is-open [data-nav-atmosphere] {
+      visibility: visible;
+      opacity: 1;
+      transition: opacity 200ms ease, visibility 0s;
+    }
+    /* The pool has an origin, not a generic centre-screen spotlight. Its
+       geometry is measured from the existing emblem only when opening. */
+    .site-nav [data-nav-atmosphere]::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 26rem 44rem at var(--nav-lamp-x) var(--nav-lamp-y), rgb(247 170 85 / .2), rgb(247 170 85 / .06) 48%, transparent 100%),
+        radial-gradient(ellipse 4rem 5rem at var(--nav-lamp-x) var(--nav-lamp-y), rgb(255 196 116 / .14), transparent 100%);
+      opacity: 0;
+      transition: opacity 220ms ease;
+    }
+    .site-nav .is-open [data-nav-atmosphere]::before {
+      opacity: 1;
+      transition: opacity 650ms var(--nav-ease) 100ms;
+    }
+    .site-nav [data-nav-atmosphere]::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url("/assets/lib/helios-grain.png") repeat;
+      background-size: 220px;
+      opacity: .025;
+    }
+
+    .site-nav [data-nav-panel] {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: .6rem;
+      padding: max(7.5rem, 16svh) max(1.5rem, env(safe-area-inset-right)) max(3rem, env(safe-area-inset-bottom)) max(calc(var(--nav-logo-x) + 1.25rem), env(safe-area-inset-left));
+      overflow: auto;
+      overscroll-behavior: contain;
+      visibility: hidden;
+      pointer-events: none;
+      transition: visibility 0s 360ms;
+    }
+    .site-nav .is-open [data-nav-panel] { visibility: visible; pointer-events: auto; transition: none; }
+    .site-nav [data-nav-panel] > a {
+      --nav-word-order: 0;
+      position: relative;
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      gap: .6rem;
+      min-height: 2.9rem;
+      padding: .25rem .2rem;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: clamp(2rem, 9.2vw, 3.4rem);
+      font-weight: 500;
+      line-height: 1.2;
+      letter-spacing: -.016em;
+      color: var(--nav-menu-ink);
+      text-decoration: none;
+      opacity: 0;
+      pointer-events: auto;
+      transition: opacity 130ms ease, color 180ms ease;
+    }
+    .site-nav [data-nav-panel] > a:nth-child(2) { --nav-word-order: 1; }
+    .site-nav [data-nav-panel] > a:nth-child(3) { --nav-word-order: 2; }
+    .site-nav [data-nav-panel] > a:nth-child(4) { --nav-word-order: 3; }
+    .site-nav [data-nav-panel] > a:nth-child(5) { --nav-word-order: 4; }
+    .site-nav .is-open [data-nav-panel] > a {
+      opacity: 1;
+      transition: opacity 350ms ease calc(200ms + var(--nav-word-order) * 55ms), color 180ms ease;
+    }
+    .site-nav [data-nav-panel] > a:hover,
+    .site-nav [data-nav-panel] > a[aria-current="page"] {
+      color: var(--nav-menu-accent);
+      text-shadow: 0 0 .5em rgb(255 153 51 / .18);
+    }
+    .site-nav [data-nav-panel] > a[data-primary] {
+      margin-top: 1.3rem;
+      font-size: clamp(1.65rem, 7vw, 2.2rem);
+      color: var(--nav-menu-accent);
+    }
+    .site-nav [data-nav-panel] > a[data-primary]::after { content: "↗"; font-size: 1.1rem; }
+    .site-nav [data-nav-thread] {
+      position: absolute;
+      display: block;
+      left: -12%;
+      top: .15em;
+      width: 145%;
+      height: auto;
+      pointer-events: none;
+      stroke: var(--nav-menu-accent);
+      stroke-width: .8;
+      stroke-linecap: round;
+      opacity: .28;
+      mask-image: linear-gradient(90deg, transparent, #000 13%, #000 78%, transparent);
+    }
+    .site-nav [data-nav-thread] path { vector-effect: non-scaling-stroke; }
+    .site-nav [data-nav-open]:focus-visible,
+    .site-nav [data-nav-panel] > a:focus-visible { outline: 1px solid var(--nav-menu-accent); outline-offset: 5px; }
+
+    @media (max-height: 540px) {
+      .site-nav [data-nav-panel] { padding-top: 5rem; }
+    }
+  }
+
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-nav [data-nav-atmosphere],
+    .site-nav .is-open [data-nav-atmosphere],
+    .site-nav [data-nav-atmosphere]::before,
+    .site-nav .is-open [data-nav-atmosphere]::before,
+    .site-nav [data-nav-panel],
+    .site-nav .is-open [data-nav-panel],
+    .site-nav [data-nav-panel] > a,
+    .site-nav .is-open [data-nav-panel] > a,
+    .site-nav [data-nav-mark],
+    [data-nav-light-ink] { transition: none; }
+  }
+  @media (forced-colors: active) {
+    .site-nav [data-nav-thread],
+    .site-nav [data-nav-atmosphere]::before,
+    .site-nav [data-nav-atmosphere]::after { display: none; }
+    .site-nav [data-nav-atmosphere] { background: Canvas; }
+    .site-nav [data-nav-panel] > a { color: LinkText; text-shadow: none; }
+    .site-nav [data-nav-bars] span { background: ButtonText; }
+  }
+}
+
+/* Fade the page itself, rather than leaving blurred duplicate words behind.
+   JS marks whole content branches but never the logo, nav or native dialogs. */
+@layer utilities {
+  @media (max-width: 1023px) {
+    [data-nav-background] { transition: opacity 200ms ease 120ms; }
+    body[data-nav-state="open"] [data-nav-background] { opacity: 0; pointer-events: none; transition: opacity 140ms ease; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [data-nav-background], body[data-nav-state="open"] [data-nav-background] { transition: none; }
+  }
+}

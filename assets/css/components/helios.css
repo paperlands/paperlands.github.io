@@ -203,6 +203,13 @@
   [data-look="helios"] .helios-possibilities::before,
   [data-look="helios"] .helios-colophon::before { z-index: 0; }
 
+  /* Grain clocks stop stepping while their surface is out of view. */
+  [data-look="helios"] .helios-hero [data-media-surface="fill"][data-grain-idle]::before,
+  [data-look="helios"] .helios-landscape .helios-possibility__stage[data-grain-idle]::before,
+  [data-look="helios"] .helios-landscape .helios-possibilities[data-grain-idle]::before {
+    animation-play-state: paused;
+  }
+
   /* ---- the identity: the mark assembles ------------------------------- */
   /* At rest this is the banner. Inside the first act it is the pieces, carried
      from unbuilt to built on scroll distance. The look owns the choreography
@@ -245,11 +252,14 @@
     filter: blur(22px);
   }
 
+  [data-look="helios"] .helios-wordmark__light {
+    filter: drop-shadow(0 0 0.55rem rgb(255 153 51 / 0.3));
+  }
+
   [data-look="helios"] .helios-wordmark__art {
     position: relative;
     z-index: 1;
     transform-origin: 0 0;
-    filter: drop-shadow(0 0 0.55rem rgb(255 153 51 / 0.3));
   }
 
   /* "In" holds the identity while the mark is unbuilt, then lifts away. */
@@ -472,12 +482,16 @@
     text-decoration-color: color-mix(in srgb, var(--light-accent) 62%, var(--light-ink));
   }
 
+  /* The slate is the display serif's italic, not a second body italic. EB
+     Garamond italic is a 48KB face for this one line; the hero already loads
+     Cormorant italic for the title, so the slate reuses it. */
   [data-look="helios"] [data-media-carousel="stack"] [data-media-slot="slate"] {
     grid-area: 2 / 2;
     margin: 0.12rem 0 0;
     font-size: var(--helios-hero-slate);
     line-height: 1.2;
     letter-spacing: 0.012em;
+    font-family: var(--font-serif);
     font-style: italic;
     opacity: 1;
     color: color-mix(in srgb, var(--light-ink) 78%, transparent);
@@ -510,6 +524,14 @@
     transition: opacity 1.2s var(--helios-ease);
   }
 
+  /* One layer animates, and it is the one arriving. A cell that holds no claim
+     (neither the clip on screen nor the base under it) is already covered by an
+     opaque one, so it snaps instead of spending 1.2s dissolving where nobody
+     can see it — that half of the old cross-fade was pure overdraw. */
+  [data-look="helios"] [data-media-carousel="stack"] [data-media-cell]:not(:has([data-media-active], [data-media-prev])) {
+    transition: none;
+  }
+
   /* One flash, and the scroll fires it: `assets/js/home/helios.js` sets the
      state at the seam where the sun is up and the banner is whole. A clip
      swap never touches it. */
@@ -538,9 +560,10 @@
   [data-look="helios"] .helios-play i {
     display: block;
     height: 100%;
-    width: 0;
+    width: 100%;
     background: var(--light-ember);
-    transform: translateZ(0);
+    transform-origin: 0 50%;
+    transform: translateZ(0) scaleX(var(--helios-play, 0));
   }
 
   /* ---- the ticker ----------------------------------------------------- */
@@ -1243,7 +1266,6 @@
     background: linear-gradient(180deg, var(--parallel-ground), var(--parallel-ground) 75%, var(--light-ground));
   }
   [data-look="helios"] .helios-possibility__stage {
-    --ink-light: .94; --ember: .18; --spiral: 0deg;
     --thought-x: 48%; --thought-y: -8%; --thought-w: 76%; --thought-h: 100%; --thought-scale: 2.2;
     position: relative; display: grid; align-items: center;
     width: 100%; min-height: max(100svh, 720px);
@@ -1275,17 +1297,20 @@
   [data-look="helios"] .helios-possibility__memory { z-index: 2; }
   [data-look="helios"] .helios-possibility__memory img { right: 1%; top: 1%; width: 30%; height: 66%; opacity: .11; mix-blend-mode: screen; }
   [data-look="helios"] .helios-possibility__thought { z-index: 3; }
-  [data-look="helios"] .helios-possibility__thought canvas {
+  /* The compiler pays for pigment, glow and vignette once. Only these small
+     compositor inputs travel with the scroll; never style a host's canvases. */
+  [data-look="helios"] .helios-possibility__ink {
+    position: absolute; display: block; overflow: clip;
     left: var(--thought-x); top: var(--thought-y);
-    width: var(--thought-w) !important; height: var(--thought-h) !important;
-    opacity: 0;
-    transform: rotate(var(--spiral, 0deg)) scale(var(--thought-scale)); transform-origin: 50% 50%;
-    filter: saturate(.55) hue-rotate(8deg) brightness(var(--ink-light)) contrast(1.28)
-      drop-shadow(0 0 20px rgb(233 174 100 / var(--ember))) drop-shadow(0 0 60px #c96e281a);
-    mask-image: radial-gradient(ellipse 58% 60% at 52% 46%, #000 26%, #000b 61%, transparent 94%);
-    transition: opacity .35s ease;
+    width: var(--thought-w); height: var(--thought-h);
+    opacity: .87;
+    transform: scale(var(--thought-scale)); transform-origin: 50% 50%;
   }
-  [data-look="helios"] .helios-possibility__stage[data-drawing-active] .helios-possibility__thought canvas { opacity: 1; }
+  [data-look="helios"] .helios-possibility__ink img {
+    /* The host's camera scales with height. Keep that projection between
+       canonical aspect ratios: never stretch a mathematical circle into an ellipse. */
+    left: 50%; top: 0; width: auto; height: 100%; transform: translateX(-50%);
+  }
   [data-look="helios"] .helios-possibility__pool {
     z-index: 2; inset: auto;
     left: var(--thought-x); top: var(--thought-y);
@@ -1320,12 +1345,9 @@
   [data-look="helios"] .helios-plate .helios-possibility__stage {
     --thought-x: 66%; --thought-y: 10%; --thought-w: 40%; --thought-h: 48%; --thought-scale: 2.4;
   }
-  [data-look="helios"] .helios-plate .helios-possibility__thought canvas,
+  [data-look="helios"] .helios-plate .helios-possibility__ink,
   [data-look="helios"] .helios-plate .helios-possibility__pool {
     transform-origin: 50% 28%;
-  }
-  [data-look="helios"] .helios-plate .helios-possibility__thought canvas {
-    mask-image: radial-gradient(ellipse 72% 78% at 50% 30%, #000 42%, #000c 70%, transparent 96%);
   }
   [data-look="helios"] .helios-plate .helios-possibility__body img,
   [data-look="helios"] .helios-plate .helios-possibility__body::after {
@@ -1338,7 +1360,7 @@
     right: 2%; top: 36%; width: 6.5%;
   }
   [data-look="helios"] .helios-possibility__light {
-    z-index: 3; mix-blend-mode: screen; opacity: calc(var(--ember) + .12);
+    z-index: 3; mix-blend-mode: screen; opacity: .30;
     background: linear-gradient(177deg, transparent 42%, #e284321a 43%, #fff2d699 44%, #ffd69666 44.4%, transparent 46%);
     mask-image: linear-gradient(90deg, transparent 25%, #000 48%, transparent);
   }

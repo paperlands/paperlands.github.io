@@ -26,10 +26,9 @@ brand:
   logo: /assets/bannerpaperlang.png
   alt: PaperLand
 
-# The toggle's label, and the only word in this file that is not a link: the
-# button that opens the panel on a phone. It is read out, not shown, so it is
-# here with the rest of the nav's words rather than in the template.
+# The icon-only toggle's accessible names, kept with the navigation copy.
 menu_label: Menu
+close_label: Close
 
 links:
   home:

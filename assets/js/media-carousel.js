@@ -30,10 +30,26 @@
       });
     }
 
+    /* Two cells may be visible at once, and only these two:
+         active  the clip the reader is on (the one thing that animates)
+         prev    the clip the last swap left on screen, still fully opaque
+       prev is what keeps the cross-fade off the stack's background: the
+       incoming cell rises 0→1 OVER an opaque picture, so the composite never
+       dips toward #0b0b0b mid-fade, and no unrelated cell has to be pinned
+       underneath to paper over that dip (which is how the first clip used to
+       leak through every transition). Written from the index that was
+       actually on screen — a rail jump is not a neighbour, so i-1 would stamp
+       the wrong cell. */
     function mark(j, v) {
       v.removeAttribute('data-media-active');
       v.removeAttribute('data-media-decode');
-      if (!on) return;
+      v.removeAttribute('data-media-prev');
+      if (!on) {
+        /* Leaving the viewport: keep the clip the reader was looking at, not
+           the first one, so the hero's still is the last picture they saw. */
+        if (j === i) v.setAttribute('data-media-prev', '');
+        return;
+      }
       var n = list.length;
       if (j === i) {
         v.setAttribute('data-media-active', '');
@@ -56,11 +72,18 @@
     function paint(next, reason) {
       var n = list.length;
       if (!n) return;
+      var previous = i;
       i = ((next % n) + n) % n;
       list.forEach(function (cell, j) {
         var v = videoOf(cell);
         if (v) mark(j, v);
       });
+      /* Stamped after the marks, still in the same task, so no frame can
+         render between the outgoing cell losing `active` and gaining `prev`. */
+      if (on && previous !== i) {
+        var keeping = videoOf(list[previous]);
+        if (keeping) keeping.setAttribute('data-media-prev', '');
+      }
       copyFrom(list[i]);
       root.querySelectorAll('[data-media-to]').forEach(function (btn) {
         var hit = String(i) === btn.getAttribute('data-media-to');

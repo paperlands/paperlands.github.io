@@ -8,7 +8,7 @@
   markup, so the evening edition draws it like any other plate and no second
   owner of the shape exists. The stage publishes the media slots (surface
   `film`, slot `frame`); its parts are this file's private `.film-*` business,
-  drawn by core/media.css and driven by the small writer below.
+  drawn by core/media.css and driven by assets/js/media-film.js.
 
   Params:
     poster   required; the still (minted WebP under assets/)
@@ -17,15 +17,27 @@
     title    required; the film's own name — the frame's title, the button's label
     caption  markdown; the plate's figcaption
     class    extra classes on the figure
+    width height sizes  the still's box (media/img.html). Hero plates pass priority.
+    priority the still in the first viewport: eager + fetchpriority high
 {%- endcomment -%}
+{%- if include.priority == true or include.priority == 'true' -%}
+  {%- assign film_loading = 'eager' -%}
+  {%- assign film_fetch = 'high' -%}
+{%- else -%}
+  {%- assign film_loading = 'lazy' -%}
+  {%- assign film_fetch = 'low' -%}
+{%- endif -%}
 <figure{% if include.class %} class="{{ include.class }}"{% endif %}>
   <div class="film-stage" data-media-surface="film" data-media-slot="frame" style="--media-ar: 16 / 9;">
-    <img
-      class="film-poster"
-      src="{% if include.poster contains '://' %}{{ include.poster }}{% else %}{{ include.poster | relative_url }}{% endif %}"
-      alt="{{ include.alt }}"
-      decoding="async"
-    >
+    {% include media/img.html
+       src=include.poster
+       class="film-poster"
+       alt=include.alt
+       width=include.width
+       height=include.height
+       sizes=include.sizes
+       loading=film_loading
+       fetchpriority=film_fetch %}
     <iframe
       class="film-frame"
       data-film-frame
@@ -44,23 +56,3 @@
   <figcaption>{{ include.caption | markdownify | remove: "<p>" | remove: "</p>" }}</figcaption>
   {% endif %}
 </figure>
-<script>
-  (() => {
-    const stage = document.querySelector('[data-media-surface="film"]');
-    const frame = stage?.querySelector('[data-film-frame]');
-    const play = stage?.querySelector('[data-film-play]');
-    if (!stage || !frame || !play) return;
-
-    const startFilm = () => {
-      if (stage.classList.contains('is-playing') || stage.classList.contains('is-transitioning')) return;
-      stage.classList.add('is-transitioning');
-      window.setTimeout(() => {
-        frame.src = frame.dataset.src;
-        stage.classList.add('is-playing');
-        stage.classList.remove('is-transitioning');
-      }, 150);
-    };
-
-    play.addEventListener('click', startFilm);
-  })();
-</script>

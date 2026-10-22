@@ -33,7 +33,7 @@
 
 <div class="site-nav folio-nav" data-tone="{{ tone }}" data-nav-collapsed="false" data-nav-root>
 
-  <div class="folio-nav__chrome">
+  <div class="folio-nav__chrome" data-nav-chrome>
     <a class="folio-nav__mark" href="{{ nav.brand.href | relative_url }}" data-nav-mark>
       {%- comment -%} The crop box, not the image, decides how much of the banner
          shows. Clipping the ANCHOR instead would clip its `::after` too — the
@@ -42,23 +42,25 @@
          inside keeps its full width, so the emblem does not move as the box
          narrows; only the word is cut away. {%- endcomment -%}
       <span class="folio-nav__mark-box">
-        <img src="{{ nav.brand.logo | relative_url }}" alt="{{ nav.brand.alt }}" width="1280" height="250">
+        {% include media/img.html src=nav.brand.logo width=1280 height=250 alt=nav.brand.alt sizes="184px" loading="eager" fetchpriority="high" %}
       </span>
     </a>
 
     <div class="folio-nav__menu" data-nav-menu>
       <button type="button" class="folio-nav__burger" data-nav-open
+              data-nav-label="{{ nav.menu_label | escape }}" data-nav-close-label="{{ nav.close_label | escape }}"
               aria-controls="site-nav-menu" aria-expanded="false">
-        <span class="sr-only">{{ site.data.nav.menu_label }}</span>
-        <span class="folio-nav__burger-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="sr-only">{{ nav.menu_label }}</span>
+        <span class="folio-nav__burger-bars" data-nav-bars aria-hidden="true"><span></span><span></span><span></span></span>
       </button>
-      <nav class="folio-nav__menu-list" id="site-nav-menu" data-nav-panel aria-hidden="true" inert>
+      <div class="folio-nav__atmosphere" data-nav-atmosphere aria-hidden="true"></div>
+      <nav class="folio-nav__menu-list" id="site-nav-menu" aria-label="Primary" data-nav-panel aria-hidden="true" inert>
         {%- for key in nav.mobile_nav -%}
           {%- assign link = nav.links[key] -%}
           <a href="{{ link.href }}" class="site-nav__link"{% if page.url == link.href %} aria-current="page"{% endif %}>{{ link.label }}</a>
         {%- endfor -%}
         {%- for action in nav.folio.actions -%}
-          <a href="{{ action.href }}" class="site-nav__link"{% if action.primary %} data-primary{% endif %}>{{ action.label }}</a>
+          <a href="{{ action.href }}" class="site-nav__link"{% if action.primary %} data-primary{% endif %}>{{ action.label }}{% if action.primary %}<svg data-nav-thread viewBox="0 0 400 180" fill="none" aria-hidden="true" focusable="false"><path pathLength="1" d="M35 109C102 100 155 120 207 109S277 98 296 118 278 146 263 136 274 120 286 137 297 157 315 161"/></svg>{% endif %}</a>
         {%- endfor -%}
       </nav>
     </div>

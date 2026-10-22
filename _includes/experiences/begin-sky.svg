@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" preserveAspectRatio="xMidYMin meet" fill="none" focusable="false" aria-hidden="true">
+  <!-- The operator's reference: a quiet celestial vault, not a second stage. -->
+  <defs>
+    <path id="experiences-begin-star" d="M0-5 1.3-1.3 5 0 1.3 1.3 0 5-1.3 1.3-5 0-1.3-1.3Z"/>
+  </defs>
+  <g stroke="#dec89d" stroke-width=".65">
+    <path d="M20 620A580 580 0 0 1 1180 620" opacity=".13"/>
+    <path d="M30 620A570 570 0 0 1 1170 620" opacity=".09"/>
+    <path d="M42 620A558 558 0 0 1 1158 620" opacity=".06"/>
+  </g>
+  <g fill="#e3c490" opacity=".22">
+    <use href="#experiences-begin-star" transform="translate(1110.00 620.00) scale(1.10)" opacity=".5"/>
+    <use href="#experiences-begin-star" transform="translate(1106.79 562.90) scale(0.85)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(1097.21 506.51) scale(0.85)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(1081.38 451.56) scale(0.65)" opacity=".5"/>
+    <use href="#experiences-begin-star" transform="translate(1059.49 398.72) scale(1.10)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(1031.83 348.66) scale(0.85)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(998.73 302.02) scale(0.65)" opacity=".5"/>
+    <use href="#experiences-begin-star" transform="translate(960.62 259.38) scale(0.85)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(917.98 221.27) scale(1.10)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(871.34 188.17) scale(0.65)" opacity=".5"/>
+    <use href="#experiences-begin-star" transform="translate(821.28 160.51) scale(0.85)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(768.44 138.62) scale(0.85)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(713.49 122.79) scale(1.10)" opacity=".5"/>
+    <use href="#experiences-begin-star" transform="translate(657.10 113.21) scale(0.85)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(600.00 110.00) scale(0.85)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(542.90 113.21) scale(0.65)" opacity=".5"/>
+    <use href="#experiences-begin-star" transform="translate(486.51 122.79) scale(1.10)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(431.56 138.62) scale(0.85)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(378.72 160.51) scale(0.65)" opacity=".5"/>
+    <use href="#experiences-begin-star" transform="translate(328.66 188.17) scale(0.85)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(282.02 221.27) scale(1.10)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(239.38 259.38) scale(0.65)" opacity=".5"/>
+    <use href="#experiences-begin-star" transform="translate(201.27 302.02) scale(0.85)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(168.17 348.66) scale(0.85)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(140.51 398.72) scale(1.10)" opacity=".5"/>
+    <use href="#experiences-begin-star" transform="translate(118.62 451.56) scale(0.85)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(102.79 506.51) scale(0.85)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(93.21 562.90) scale(0.65)" opacity=".5"/>
+    <use href="#experiences-begin-star" transform="translate(90.00 620.00) scale(1.10)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(1038.00 620.00) scale(1.10)" opacity=".5"/>
+    <use href="#experiences-begin-star" transform="translate(1032.61 551.48) scale(0.85)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(1016.56 484.65) scale(0.85)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(990.26 421.15) scale(0.65)" opacity=".5"/>
+    <use href="#experiences-begin-star" transform="translate(954.35 362.55) scale(1.10)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(909.71 310.29) scale(0.85)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(290.29 310.29) scale(0.65)" opacity=".5"/>
+    <use href="#experiences-begin-star" transform="translate(245.65 362.55) scale(1.10)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(209.74 421.15) scale(0.85)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(183.44 484.65) scale(0.65)" opacity=".5"/>
+    <use href="#experiences-begin-star" transform="translate(167.39 551.48) scale(0.85)" opacity=".8"/>
+    <use href="#experiences-begin-star" transform="translate(162.00 620.00) scale(1.10)" opacity=".8"/>
+  </g>
+</svg>

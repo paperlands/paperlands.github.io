@@ -126,34 +126,34 @@
      and neither does the TOP LAYER: a <dialog> — the contact letter, which
      every layout places — carries its own ground and its own ink, so the
      Library's paper focus field and black hover chip never paint inside one.
-     `:not(dialog, dialog *)` is the whole of that exclusion: the dialog and
-     everything it holds. */
-  body:not([data-theme]):not([data-shell]) a:not(:has(*)):not(dialog, dialog *) {
+     Dialogs and the shared site navigation own their ink and focus treatment;
+     exclude their descendants as well as their roots. */
+  body:not([data-theme]):not([data-shell]) a:not(:has(*)):not(dialog, dialog *, [data-nav-root], [data-nav-root] *) {
     transition: background 300ms;
     padding: 0 0.1em;
     text-decoration: none;
     color: hsl(0deg 0% 10%);
   }
 
-  body:not([data-theme]):not([data-shell]) a:not(:has(*)):not(dialog, dialog *):hover {
+  body:not([data-theme]):not([data-shell]) a:not(:has(*)):not(dialog, dialog *, [data-nav-root], [data-nav-root] *):hover {
     color: white !important;
     background: #000000;
   }
 
-  body:not([data-theme]):not([data-shell]) a:not(:has(*)):not(dialog, dialog *)::after {
+  body:not([data-theme]):not([data-shell]) a:not(:has(*)):not(dialog, dialog *, [data-nav-root], [data-nav-root] *)::after {
     position: relative;
     top: -0.5em;
     font-size: 0.7em;
     color: #aaaaaa;
   }
 
-  body:not([data-theme]):not([data-shell]) a:not(:has(*)):not(dialog, dialog *).internal-link::after,
-  body:not([data-theme]):not([data-shell]) a:not(:has(*)):not(dialog, dialog *).footnote::after,
-  body:not([data-theme]):not([data-shell]) a:not(:has(*)):not(dialog, dialog *).reversefootnote::after {
+  body:not([data-theme]):not([data-shell]) a:not(:has(*)):not(dialog, dialog *, [data-nav-root], [data-nav-root] *).internal-link::after,
+  body:not([data-theme]):not([data-shell]) a:not(:has(*)):not(dialog, dialog *, [data-nav-root], [data-nav-root] *).footnote::after,
+  body:not([data-theme]):not([data-shell]) a:not(:has(*)):not(dialog, dialog *, [data-nav-root], [data-nav-root] *).reversefootnote::after {
     content: "";
   }
 
-  body:not([data-theme]):not([data-shell]) *:focus:not(dialog, dialog *) {
+  body:not([data-theme]):not([data-shell]) *:focus:not(dialog, dialog *, [data-nav-root], [data-nav-root] *) {
     background: #ffe8bc !important;
     color: black !important;
   }

@@ -1,0 +1,39 @@
+# Stills the build resizes. Commit the source. Do not commit the rungs.
+#
+# Widths are the boxes the layout uses, not a device ladder. The source's own
+# width is always a candidate: a WebP source is served as itself, and any other
+# type is emitted as a WebP of the same pixels, so a 2x display never upscales
+# a small rung. The build does not enlarge.
+#
+# The wordmark looks up the banner rung whose width is 768. That number is a
+# contract with _includes/home/wordmark.html.
+#
+# Encoder: sharp, pinned in package-lock.json. `npm ci` once (Node 20), then
+# `jekyll serve`. A missing sharp, a missing source, or an unsafe path fails
+# the build. There is no fallback that ships the full file for an entry here.
+/assets/lib/helios/parallel/feynman-echo.webp:
+  widths: [480, 540, 720]
+/assets/lib/helios/parallel/newton-echo.webp:
+  widths: [320, 480, 540]
+/assets/lib/helios/parallel/inquiry.webp:
+  widths: [360, 540]
+/assets/lib/helios/parallel/creators-smiling.webp:
+  widths: [240, 320]
+/assets/lib/helios/parallel/code-memory.webp:
+  widths: [180, 240]
+/assets/lib/helios/parallel/apple.png:
+  widths: [121]
+/assets/bannerpaperlang.png:
+  widths: [384, 768, 1280]
+/assets/lib/helios/star-start.webp:
+  widths: [360]
+/assets/lib/helios/benz-start.webp:
+  widths: [360]
+/assets/lib/helios/shell-start.webp:
+  widths: [360]
+/assets/lib/notes/experiences/gmff-film-still.webp:
+  widths: [480, 768]
+/assets/lib/notes/experiences/students-together.webp:
+  widths: [480]
+/assets/lib/notes/experiences/teacher-training.webp:
+  widths: [480, 800]

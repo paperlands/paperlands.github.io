@@ -6,7 +6,7 @@ nav_tone: dark
 look: helios
 description: PaperLand — we see math differently.
 excerpt: We designed an intuitive language so a mathematical idea becomes something you can see, play with, and breathe to life.
-image: /assets/lib/helios/see-helix-ccddfd.webp
+image: /assets/lib/beauty_first.png
 
 # Copy lives here. Change words in this block; the body only places acts, and an
 # include invents no word of its own — no filter default, no status line, and a
@@ -23,8 +23,8 @@ hero:
       title: Observe
       slate: the hidden geometry of stars
     - id: polygon_fill
-      title: Experiment
-      slate: on the play of randomness
+      title: Play
+      slate: with randomness and chaos
     - id: fibonacci_spiral
       title: Explore
       slate: the fibonacci sequence of old

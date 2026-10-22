@@ -104,8 +104,6 @@
        walks the identity's own box). */
     --mark-crop: 0%;
     --mark-feather: min(2%, calc(var(--mark-crop) * 0.25));
-    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - var(--mark-crop) - var(--mark-feather)), transparent calc(100% - var(--mark-crop)));
-    mask-image: linear-gradient(to right, #000 calc(100% - var(--mark-crop) - var(--mark-feather)), transparent calc(100% - var(--mark-crop)));
     /* Not `--nav-ease`, deliberately. That curve is the bar's: it is for
        hover and press, where the first 10% of the time covering half the
        distance is what makes a control feel immediate. A crop travelling
@@ -114,6 +112,20 @@
        duration — the crop still keeps up with the scroll (it has to: it is
        driven by a 96px threshold), it just arrives instead of pouncing. */
     transition: --mark-crop 320ms cubic-bezier(.4, 0, .2, 1);
+  }
+
+  /* Crop ink inside the glow, never the glow itself. Masking the outer logo
+     also clipped its light/veil to the banner rectangle, even at crop = 0. */
+  .helios-wordmark__light,
+  .helios-wordmark__crop {
+    --mark-crop: inherit;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .helios-wordmark__crop {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - var(--mark-crop) - var(--mark-feather)), transparent calc(100% - var(--mark-crop)));
+    mask-image: linear-gradient(to right, #000 calc(100% - var(--mark-crop) - var(--mark-feather)), transparent calc(100% - var(--mark-crop)));
   }
 
   [data-helios-collapsed="true"] .helios-wordmark {

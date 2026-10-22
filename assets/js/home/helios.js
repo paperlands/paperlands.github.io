@@ -50,13 +50,18 @@
   /* 3. Play fill. The player attaches, plays and releases; we only read the
         clock of whichever clip currently carries the active mark. */
   var active = null;
+  var lastPlay = -1;
   function paint() {
     if (!fill) return;
     var p = 0;
-    if (active && active.duration && isFinite(active.duration)) {
+    if (active && active.duration > 0 && isFinite(active.duration) && isFinite(active.currentTime)) {
       p = Math.min(1, Math.max(0, active.currentTime / active.duration));
     }
-    fill.style.width = (p * 100) + '%';
+    if (p === lastPlay) return;
+    lastPlay = p;
+    // The track's box stays fixed; only its cached solid ink scales.
+    // Unchanged progress needs no write, including repeated carousel notifications.
+    fill.style.setProperty('--helios-play', String(p));
   }
 
   function onTime() { paint(); }
@@ -107,6 +112,7 @@
   var clamp01 = function (n) { return Math.max(0, Math.min(1, n)); };
   var phase = function (p, a, b) { var t = clamp01((p - a) / (b - a)); return t * t * (3 - 2 * t); };
   var geometry = null;
+  var scrollPosition = window.scrollY || 0;
   var flashed = false;
   /* The pose writes --helios-wm-veil per scroll (0.12 at p 0). Priming it here
      means a deferred first pose cannot change the mark's glow when it runs. */
@@ -159,7 +165,7 @@
   function pose() {
     tick = 0;
     if (!wordmark || reduced || !geometry) return;
-    var p = clamp01((window.scrollY || 0) / geometry.distance);
+    var p = clamp01(scrollPosition / geometry.distance);
     sunrise(p);
     var writing = wordmark.getAttribute('data-helios-writing') === 'on';
     /* Hysteresis: do not flicker the banner at the 1.0 seam. */
@@ -214,6 +220,7 @@
      have a box, so this is also what turns the build on. */
   function measure() {
     if (!wordmark || !art || !intro || reduced) return;
+    scrollPosition = window.scrollY || 0;
     wordmark.setAttribute('data-helios-writing', 'on');
     /* `entering` first: the handover from the banner to the assembling mark is
        the one move in this choreography that is not driven by the scroll, so it
@@ -252,6 +259,7 @@
   }
 
   function schedule() {
+    scrollPosition = window.scrollY || 0;
     if (!tick) tick = window.requestAnimationFrame(pose);
   }
 

@@ -2,10 +2,15 @@ module.exports = {
 	globDirectory: '_site/',
 	globPatterns: [
 		'assets/js/turtling**/*.{js,css}',
-		'**/*.{css,svg,ttf,woff,woff2,js,png,jpg,webp,jpeg,gif,ico}',
+		// Precache code/fonts/icons. Raster artwork belongs to the bounded,
+		// demand-driven image route below, not every /turtle installation.
+		'**/*.{css,svg,ttf,woff,woff2,js,ico}',
 		'turtle.html'
 	],
 	swDest: '_site/sw.js',
+	// Compiled scroll states are demand-loaded, not an eager offline catalogue.
+	// The /turtle worker controls '/' too; visiting it must not fetch every frame.
+	globIgnores: ['assets/lib/helios/ink/**'],
 	ignoreURLParametersMatching: [
 		/^utm_/,
 		/^fbclid$/
@@ -17,7 +22,7 @@ module.exports = {
 		  handler: 'CacheFirst',
 		  options: {
 			cacheName: 'images-cache',
-			maxEntries: 48,
+			expiration: { maxEntries: 48 },
 		  },
 		},
 		{
@@ -25,7 +30,7 @@ module.exports = {
 		  handler: 'CacheFirst',
 		  options: {
 			cacheName: 'media-cache',
-			maxEntries: 3,
+			expiration: { maxEntries: 3 },
 		  },
 		},
 		{
