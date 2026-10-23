@@ -358,12 +358,10 @@
 }
 
 @layer utilities {
-  /* Motion is a privilege the player grants, never a default. These sit in
-     `utilities` so they outrank Tailwind's own animation utilities. */
+  /* Reduce decorative motion and fades without disabling video playback. */
   @media (prefers-reduced-motion: reduce) {
     .media-hero-video,
     .media-clip-el {
-      opacity: 0;
       transition: none;
     }
 
