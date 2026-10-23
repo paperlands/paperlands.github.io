@@ -1,6 +1,6 @@
 {
-  "dependencies": {
+  "devDependencies": {
     "sharp": "^0.35.5",
-    "workbox-cli": "^7.3.0"
+    "workbox-cli": "^7.4.1"
   }
 }

@@ -28,7 +28,7 @@ jobs:
     timeout-minutes: 25
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       # The stylesheet pipeline shells out to the CLI that ships inside the
       # `tailwindcss-ruby` gem (see _plugins/fast_styles.rb), so there is no
@@ -42,7 +42,7 @@ jobs:
           cache-version: 0
 
       - name: Setup Node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -118,10 +118,10 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: Setup Node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
