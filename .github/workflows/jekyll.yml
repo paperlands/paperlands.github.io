@@ -58,35 +58,57 @@ jobs:
       - name: Verify generated media
         run: node design/mint-media.mjs verify
 
-      - name: Verify compiled ink, stills, and bounded frame selection
-        run: |
-          node --test design/probe/ink-state.test.mjs
-          node --test design/probe/image-variants.test.mjs
-          ruby design/probe/compiled_ink_test.rb
-          ruby design/probe/image_sources_test.rb
+      # One contract per step. A gate that shares a step with eleven others can
+      # only shout "exit code 1" into a log nobody may read from an outside
+      # session; a gate with its own step names itself in the checks API.
+      - name: Verify compiled ink
+        run: ruby design/probe/compiled_ink_test.rb
 
-      - name: Verify page markup and edition contracts
-        run: |
-          ruby design/probe/site_markup_test.rb
-          ruby design/probe/notes_edition_test.rb
-          ruby design/probe/experiences_page_test.rb
-          python3 design/probe/media_serve_test.py
+      - name: Verify still variants
+        run: node --test design/probe/image-variants.test.mjs
 
-      - name: Verify runtime state machines
-        run: |
-          node --test design/probe/experiences-lifecycle.test.mjs
-          node --test design/probe/experiences-stage.test.mjs
-          node --test design/probe/host-release.test.mjs
-          node --test design/probe/open-garden-model.test.mjs
-          node --test design/probe/render-window.test.mjs
-          node --test design/probe/scroll-clock.test.mjs
+      - name: Verify the ink state machine
+        run: node --test design/probe/ink-state.test.mjs
+
+      - name: Verify image sources
+        run: ruby design/probe/image_sources_test.rb
+
+      - name: Verify site markup
+        run: ruby design/probe/site_markup_test.rb
+
+      - name: Verify the notes edition
+        run: ruby design/probe/notes_edition_test.rb
+
+      - name: Verify the experiences page
+        run: ruby design/probe/experiences_page_test.rb
+
+      - name: Verify the media server's byte ranges
+        run: python3 design/probe/media_serve_test.py
+
+      - name: Verify the experiences lifecycle
+        run: node --test design/probe/experiences-lifecycle.test.mjs
+
+      - name: Verify the experiences stage
+        run: node --test design/probe/experiences-stage.test.mjs
+
+      - name: Verify the host release
+        run: node --test design/probe/host-release.test.mjs
+
+      - name: Verify the open-garden model
+        run: node --test design/probe/open-garden-model.test.mjs
+
+      - name: Verify the render window
+        run: node --test design/probe/render-window.test.mjs
+
+      - name: Verify the scroll clock
+        run: node --test design/probe/scroll-clock.test.mjs
 
       # Generates service worker
       - name: generate sw
         run: npx workbox generateSW workbox-config.js
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
 
   deploy:
     name: To the Moon
@@ -108,4 +130,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
