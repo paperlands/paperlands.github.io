@@ -92,7 +92,13 @@ jobs:
     name: To the Moon
     # A pull request is not a release. Without this guard every same-repo PR
     # carrying `pages: write` could publish itself to the live site.
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    #
+    # `workflow_call` keeps the old contract for a caller that deploys on
+    # purpose; `workflow_dispatch` may redeploy master without an empty commit.
+    if: >-
+      github.event_name == 'workflow_call' ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/master') ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master')
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
