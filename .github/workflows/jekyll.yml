@@ -62,7 +62,7 @@ jobs:
       # only shout "exit code 1" into a log nobody may read from an outside
       # session; a gate with its own step names itself in the checks API.
       - name: Verify compiled ink
-        run: ruby design/probe/compiled_ink_test.rb
+        run: bundle exec ruby design/probe/compiled_ink_test.rb
 
       - name: Verify still variants
         run: node --test design/probe/image-variants.test.mjs
@@ -71,7 +71,7 @@ jobs:
         run: node --test design/probe/ink-state.test.mjs
 
       - name: Verify image sources
-        run: ruby design/probe/image_sources_test.rb
+        run: bundle exec ruby design/probe/image_sources_test.rb
 
       - name: Verify site markup
         run: bundle exec ruby design/probe/site_markup_test.rb

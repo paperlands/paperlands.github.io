@@ -55,7 +55,11 @@ jobs:
       # A failed job's log needs admin on the repository, but annotations do
       # not. Without this, a red budget is an anonymous "exit code 1" and the
       # reason (Chrome not found, server never ready, an assertion) has to be
-      # guessed from a laptop. `tail` keeps it inside the annotation limit.
+      # guessed from a laptop.
+      #
+      # ONE annotation, not one per line: GitHub keeps only a handful of
+      # annotations per step, and the first attempt spent them all on npm's
+      # deprecation notices before the assertion that failed got its turn.
       - name: Explain a failed budget
         if: failure()
         run: |
@@ -63,9 +67,8 @@ jobs:
             echo "::error title=Lighthouse CI::autorun wrote no log at all"
             exit 0
           fi
-          tail -n 60 lhci.log | sed -e 's/%/%25/g' -e 's/\r//g' | while IFS= read -r line; do
-            echo "::error title=Lighthouse CI::$line"
-          done
+          message=$(tail -n 80 lhci.log | sed -e 's/%/%25/g' -e 's/\r//g' | awk '{printf "%s%%0A", $0}')
+          printf '::error title=Lighthouse CI::%s\n' "$message"
 
       - name: Keep the reports
         if: always()

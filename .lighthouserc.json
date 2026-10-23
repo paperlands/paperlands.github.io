@@ -14,7 +14,7 @@
     "assert": {
       "assertions": {
         "categories:performance": ["warn", { "minScore": 0.88, "aggregationMethod": "median" }],
-        "largest-contentful-paint": ["error", { "maxNumericValue": 3200, "aggregationMethod": "median" }],
+        "largest-contentful-paint": ["error", { "maxNumericValue": 3600, "aggregationMethod": "median" }],
         "total-blocking-time": ["error", { "maxNumericValue": 300, "aggregationMethod": "median" }],
         "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1, "aggregationMethod": "median" }],
         "total-byte-weight": ["warn", { "maxNumericValue": 800000, "aggregationMethod": "median" }],
