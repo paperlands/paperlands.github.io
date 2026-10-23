@@ -74,13 +74,13 @@ jobs:
         run: ruby design/probe/image_sources_test.rb
 
       - name: Verify site markup
-        run: ruby design/probe/site_markup_test.rb
+        run: bundle exec ruby design/probe/site_markup_test.rb
 
       - name: Verify the notes edition
-        run: ruby design/probe/notes_edition_test.rb
+        run: bundle exec ruby design/probe/notes_edition_test.rb
 
       - name: Verify the experiences page
-        run: ruby design/probe/experiences_page_test.rb
+        run: bundle exec ruby design/probe/experiences_page_test.rb
 
       - name: Verify the media server's byte ranges
         run: python3 design/probe/media_serve_test.py
