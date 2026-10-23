@@ -29,12 +29,29 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.3'
+          ruby-version: '3.4'
           bundler-cache: true
           cache-version: 0
 
       - name: Install the still encoder
         run: npm ci --no-audit --no-fund
+
+      # The still variants are content-addressed: design/image-variants.mjs names
+      # each rung after a hash of the source bytes, the width and the encoder
+      # version. A stale entry therefore cannot be served wrong — the worst a miss
+      # costs is one re-encode, never a wrong image — which is what makes it safe to
+      # key on the recipe rather than on the output. Naming the sources in the key
+      # means a new or replaced source misses, and a miss is what makes the entry be
+      # saved again; it still restores the previous one through restore-keys, so only
+      # the missing rungs are encoded. The encode is 62.7s of a 63.2s cold build: a
+      # hit is the difference between that and 1.5s.
+      - name: Restore the encoded stills
+        uses: actions/cache@v6
+        with:
+          path: .jekyll-cache/image-variants
+          key: image-variants-${{ hashFiles('_data/image_sources.yml', 'design/image-variants.mjs', 'package-lock.json', 'assets/**/*.{webp,png,jpg,jpeg}') }}
+          restore-keys: |
+            image-variants-
 
       - name: Build
         run: bundle exec jekyll build

@@ -23,9 +23,16 @@ npx --no-install workbox generateSW workbox-config.js
 ```
 
 The tests cover compiled ink and its bounded decoder cache, image generation,
-markup, notes, experiences motion/lifecycle, release intake, trace arithmetic,
-scroll scheduling and the local media server. They do not need Chromium, Dojo,
-ignored prototype modules, private masters, or a mutable dependency download.
+markup and its template text steps, notes, the media player and experiences
+motion/lifecycle, release intake, trace arithmetic, scroll scheduling and the
+local media server. They do not need Chromium, Dojo, ignored prototype modules,
+private masters, or a mutable dependency download.
+
+Two contracts render templates rather than read `_site/`: the experiences page
+(mutating its data to prove the templates follow it) and the bracket resolver.
+Both ask `contract_site.rb`, which is the only file in this directory that names
+the generator — an engine swap means writing a second backend there, not the
+assertions.
 
 CI keeps each contract in a named step. Every PR builds once; the automatic
 Lighthouse job downloads that same Pages artifact instead of installing Ruby,

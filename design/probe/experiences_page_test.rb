@@ -1,29 +1,25 @@
 # frozen_string_literal: true
 
 # bundle exec ruby design/probe/experiences_page_test.rb
-# Render the actual page/includes with Jekyll; no destination or new test gems.
-require 'jekyll'
+#
+# Renders the actual page and includes from data this contract mutates:
+# reordered movements, an added fragment id, an extended FAQ. It is the one
+# gate whose question cannot be answered from `_site/` after the fact — it asks
+# whether the templates follow the data, so it needs the templates. The engine
+# is named in contract_site.rb and nowhere below it.
 require 'json'
 require 'nokogiri'
-require 'tmpdir'
+require_relative 'contract_site'
 
 source = File.expand_path('../..', __dir__)
-site = Jekyll::Site.new(Jekyll.configuration(
-  'source' => source,
-  'destination' => File.join(Dir.tmpdir, 'paperland-experiences-contract'),
-  'baseurl' => '/preview',
-  'quiet' => true
-))
-site.reset
-site.read
-site.generate
+site = ContractSite::Site.load(source: source)
 
 check = ->(condition, message) { raise message unless condition }
-original = site.pages.find { |page| page.path == '_pages/experiences.md' }
+original = site.page('_pages/experiences.md')
 check.call(original, 'Experiences must be a page, not a note')
 check.call(original.url == '/experiences', 'Public URL changed')
-check.call(site.collections.fetch('notes').docs.none? { |note| note.basename_without_ext == 'experiences' }, 'Experiences is still in the notes collection')
-check.call(site.data.fetch('notes_graph').fetch('nodes').none? { |node| node.fetch(:path).end_with?('/experiences') }, 'Experiences is still in the notes graph')
+check.call(site.notes.none? { |name| name == 'experiences' }, 'Experiences is still in the notes collection')
+check.call(site.notes_graph_paths.none? { |path| path.end_with?('/experiences') }, 'Experiences is still in the notes graph')
 original.data.fetch('possibilities').fetch('items').each do |item|
   %w[id jump identity invitation event title gesture clip caption body outcome].each do |field|
     check.call(item[field].is_a?(String) && !item[field].strip.empty?, "Missing movement field: #{field}")
@@ -33,14 +29,8 @@ original.data.fetch('possibilities').fetch('items').each do |item|
   check.call(site.data.fetch('media').key?(item['clip']), "Unknown media clip: #{item['clip']}")
 end
 
-render = lambda do |data, content = original.content|
-  # Jekyll caches parsed Liquid by filename; distinct compositions need distinct keys.
-  name = content == original.content ? 'experiences-contract.html' : 'experiences-component-contract.html'
-  page = Jekyll::PageWithoutAFile.new(site, source, '', name)
-  page.data = data
-  page.content = content.dup
-  Nokogiri::HTML.parse(Jekyll::Renderer.new(site, page, site.site_payload).run)
-end
+# A fresh composition per call, so no two data sets share a Liquid cache key.
+render = ->(data, content = original.content) { site.render(data: data, content: content) }
 
 doc = render.call(JSON.parse(JSON.generate(original.data)))
 root = doc.at_css('main > .experiences')
