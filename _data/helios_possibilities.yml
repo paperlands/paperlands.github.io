@@ -1,0 +1,109 @@
+# Art and Paperlang program for the To Create plate. Its copy lives in
+# _pages/helios.md's `create` block. The plate is not a torus player: `grows`
+# names one line, and scroll moves the last number on that line from `from`
+# to `to`. The programme as written is the settled figure.
+inquiry:
+  echo: /assets/lib/helios/parallel/newton-echo.webp
+  echo_width: 611
+  echo_height: 723
+  body: /assets/lib/helios/parallel/inquiry.webp
+  body_width: 684
+  body_height: 588
+  body_alt: A student reaching upward with a questioning hand
+  near: /assets/lib/helios/parallel/apple.png
+  near_width: 121
+  near_height: 136
+  # Baked radial vignette: centre x/y, radii x/y, opaque stop, soft stop/alpha, clear stop.
+  ink_mask: [0.5, 0.3, 0.72, 0.78, 0.42, 0.7, 0.8, 0.96]
+  # Settled depth is 4, the middle of the scroll. The last number is the only
+  # thing the plate moves; there is no wait, so scroll is the clock.
+  program: |
+    hd
+    beColour "e0663a"
+    jmp -250
+    rt 90
+    jmp 216.5
+    lt 90
+    def tri len n do
+      when n>0 do
+        loop 3 do
+          fw len
+          lt 120
+          tri len/2 n-1
+        end
+      end
+    end
+    tri 500 4
+  grows:
+    line: tri 500 4
+    from: 2
+    to: 6
+creators:
+  echo: /assets/lib/helios/parallel/feynman-echo.webp
+  echo_width: 914
+  echo_height: 955
+  # The smiling variant (design/cutouts/smiling.py): the same two students in a
+  # second frame of the same scene. Same 0.7925 aspect as creators.webp on
+  # purpose — the body plane's box, its object-fit: contain and its mobile
+  # width-bound case then keep every number they already have.
+  body: /assets/lib/helios/parallel/creators-smiling.webp
+  body_width: 427
+  body_height: 539
+  body_alt: Two students watching their own mathematical creation on the screen
+  memory: /assets/lib/helios/parallel/code-memory.webp
+  memory_width: 314
+  memory_height: 650
+  ink_mask: [0.52, 0.46, 0.58, 0.6, 0.26, 0.61, 0.7333333333333333, 0.94]
+  # 72 steps of 5 units, not 360 of 1: same radius, same turn — a step of theta
+  # with chord c gives r = c/(2 sin(theta/2)), and 5/(2 sin 2.5°) equals
+  # 1/(2 sin 0.5°) to three places. The rendered figure is pixel-identical at the
+  # host's 1094px drawing buffer (measured: 0 differing pixels, ink 45105 both
+  # ways) and the interpreter pass is ~18x cheaper (43ms against 761ms for the
+  # settled figure), because the command count drops five-fold. The outer loop
+  # still builds the same 100-circle torus.
+  program: |
+    hd
+    beColour "d6a8ee"
+    def circle size do
+      loop 72 do
+        fw 5*size
+        rt 5
+      end
+    end
+    def torus n do
+      loop n do
+        circle 1
+        rt 90
+        jmp 54
+        dive 90
+        jmp 25
+        rt 90
+        rt 90
+        jmp 25
+        dive 90
+        jmp 54
+        dive 90
+        rt 90
+        dive 40
+      end
+    end
+    torus 100
+  # The torus is a function of one number: `torus n` is the turn that builds n
+  # circles around the ring. The same scroll clock as the Sierpinski plate moves
+  # that argument: down winds from 1 toward 100, up unwinds. `ease` is the shared
+  # depth exponent: 2 spends the early circles longer than the Sierpinski plate's
+  # linear clock, and still finishes at the same end of the section. `torus 100`
+  # is the settled figure. The compiler substitutes the one token the call
+  # carries (`ink-state.mjs` → withCount); the page selects the decoded result.
+  # Rounding is the shared model's: 20 stops across the plate's depth, so the
+  # figure is a function of depth, not of a clock.
+  # `twist` is the compositor's one extra input: twenty degrees of turn across
+  # the same passage, centred so the figure is upright halfway through and at
+  # rest. The ink is unchanged; the ring winds and turns together instead of
+  # swapping stills.
+  grows:
+    line: torus 100
+    from: 1
+    to: 100
+    ease: 2
+    twist: 20

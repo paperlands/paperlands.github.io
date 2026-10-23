@@ -1,0 +1,48 @@
+{%- comment -%}
+  One opening into three (or more) movements. Words, art and gestures belong to
+  the page. The seam reveals actual PaperLand drawings; it is not another hero.
+{%- endcomment -%}
+{%- assign scene = include.possibilities -%}
+<section class="experiences-possibilities" id="possibilities" aria-labelledby="possibilities-title">
+  <div class="experiences-wrap">
+    <header class="experiences-seam" data-stage-passage>
+      <div class="experiences-seam-copy">
+        {%- capture seam_focus -%}*{{ scene.seam.experience }}*{%- endcapture -%}
+        <h2 id="possibilities-title"><span class="experiences-seam-lead">{{ scene.seam.lead | escape }}</span> {% include experiences/focus.html text=seam_focus gesture="gather" %}{% if scene.seam.fellowship or scene.seam.shared %}<br><span>{{ scene.seam.fellowship | escape }} <em>{{ scene.seam.shared | escape }}</em></span>{% endif %}</h2>
+      </div>
+      {%- if scene.seam.forms -%}
+      <div class="experiences-seam-field" aria-hidden="true">
+        {%- for form in scene.seam.forms -%}
+        <img class="experiences-seam-form experiences-seam-form-{{ form.shape | escape }}" src="{{ form.src | relative_url }}" width="{{ form.width }}" height="{{ form.height }}" alt="" loading="lazy" decoding="async" draggable="false">
+        {%- endfor -%}
+      </div>
+      {%- endif -%}
+    </header>
+    <nav class="experiences-jump" aria-label="On this page">
+      <span class="experiences-label">{{ scene.jump_label | escape }}</span>
+      {%- for item in scene.items -%}
+      {%- capture movement_number -%}{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}{%- endcapture -%}
+      <a class="internal-link" href="#{{ item.id | escape }}"><span class="experiences-jump-number" aria-hidden="true">{{ movement_number }}</span>{{ item.jump | escape }}<span aria-hidden="true">↗</span></a>
+      {%- endfor -%}
+    </nav>
+    {%- for item in scene.items -%}
+    {%- capture movement_number -%}{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}{%- endcapture -%}
+    <article class="experiences-movement{% if item.reverse %} experiences-movement-reverse{% endif %}" id="{{ item.id | escape }}" aria-labelledby="{{ item.id | escape }}-title" data-stage-passage>
+      <header class="experiences-movement-heading">
+        <p class="experiences-movement-identity"><span class="experiences-movement-number" aria-hidden="true">{{ movement_number }}</span>{{ item.identity | escape }}</p>
+        <p class="experiences-movement-invitation">{{ item.invitation | escape }}</p>
+      </header>
+      <div class="experiences-movement-copy">
+        <p class="experiences-label">{{ item.event | escape }}</p>
+        <h3 id="{{ item.id | escape }}-title">{% include experiences/focus.html text=item.title gesture=item.gesture %}</h3>
+        <p class="experiences-movement-body">{{ item.body | markup }}</p>
+        <p class="experiences-movement-outcome">{{ item.outcome | markup }}</p>
+      </div>
+      <figure class="experiences-movement-visual">
+        {% include media/video.html id=item.clip sizes="(max-width: 700px) 84vw, 32vw" %}
+        <figcaption><span aria-hidden="true">{{ movement_number }} / </span>{{ item.caption | markup }}</figcaption>
+      </figure>
+    </article>
+    {%- endfor -%}
+  </div>
+</section>

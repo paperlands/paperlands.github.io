@@ -1,0 +1,42 @@
+{%- assign item = include.item -%}
+{%- assign scene = include.scene -%}
+{%- assign ink = site.data.helios_ink.scenes[include.scene_id] -%}
+<div class="helios-possibility__stage"{% if ink %} data-drawing-active{% endif %}>
+  {%- if item.focus -%}<div class="helios-atmosphere" aria-hidden="true"></div>{%- endif -%}
+  <figure class="helios-possibility__art"{% if item.caption %} aria-label="{{ item.caption | escape }}"{% endif %}>
+    <div class="helios-possibility__plane helios-possibility__echo">
+      {% include media/img.html src=scene.echo width=scene.echo_width height=scene.echo_height sizes="(max-width: 850px) 40vw, 24vw" alt="" fetchpriority="low" %}
+    </div>
+    {%- if scene.memory -%}
+    <div class="helios-possibility__plane helios-possibility__memory" aria-hidden="true">
+      {% include media/img.html src=scene.memory width=scene.memory_width height=scene.memory_height sizes="(max-width: 850px) 30vw, 22vw" alt="" fetchpriority="low" %}
+    </div>
+    {%- endif -%}
+    <div class="helios-possibility__plane helios-possibility__pool" aria-hidden="true"></div>
+    <div class="helios-possibility__plane helios-possibility__thought" aria-hidden="true">
+      {%- if ink -%}
+      <picture class="helios-possibility__ink" data-scrub-ink>
+        <source media="(max-width: 850px)" srcset="{{ ink.layouts.narrow.frames.settled | relative_url }}">
+        <img src="{{ ink.layouts.wide.frames.settled | relative_url }}" alt="" width="{{ ink.layouts.wide.width }}" height="{{ ink.layouts.wide.height }}" loading="lazy" decoding="async">
+      </picture>
+      {%- endif -%}
+    </div>
+    <div class="helios-possibility__plane helios-possibility__body">
+      {% include media/img.html src=scene.body width=scene.body_width height=scene.body_height sizes="(max-width: 850px) 65vw, 35vw" alt=scene.body_alt fetchpriority="low" %}
+    </div>
+    {%- if scene.near -%}
+    <div class="helios-possibility__plane helios-possibility__near" data-plane="near" aria-hidden="true">
+      {% include media/img.html src=scene.near width=scene.near_width height=scene.near_height sizes="(max-width: 850px) 9vw, 6vw" alt="" fetchpriority="low" %}
+    </div>
+    {%- endif -%}
+    <div class="helios-possibility__plane helios-possibility__light" aria-hidden="true"></div>
+    <figcaption>{{ item.caption }}</figcaption>
+  </figure>
+  <div class="helios-possibility__copy">
+    <p class="helios-section__intro">{{ item.verse }}</p>
+    {%- assign stage_heading = item.title | default: item.thesis -%}
+    <h2 class="helios-section__heading" id="{{ include.heading | default: 'plate-title' }}">{% include home/focus.html text=stage_heading word=item.focus gesture=item.focus_gesture %}</h2>
+    <div class="helios-section__body">{{ item.body | markdownify }}</div>
+    <a class="helios-section__call internal-link" href="{{ item.href | default: '/experiences' | relative_url }}">{{ item.action }} {% include home/cta-arrow.html %}</a>
+  </div>
+</div>

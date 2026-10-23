@@ -1,0 +1,537 @@
+#+title: Video as a first-class page
+#+subtitle: A small language so Helios, and every later page, compose performantly with first class web experience
+
+* Aim
+
+Video is a page material, not a special case.
+
+A page names clips. Surfaces place them. One player attaches and
+releases decoders. Helios is the first full expression of that
+language, not a second runtime.
+
+The page must stay seamless when many clips exist, and cheap when
+they do not all need to run. Poster paints immediately. Motion is
+a privilege the player grants.
+
+If an author must mention =src=, =preload=, or =play()=, the language
+has failed for *flow*. Carousels may use one shared writer. Nothing
+else.
+
+* Vocabulary
+
+Three nouns. Two marks. One carousel. A global cap.
+
+** Clip
+
+A named asset in =_data/media.yml=.
+
+Required fields:
+
+- =src=     — H.264 MP4, faststart, silent, box-sized. This is coverage.
+- =poster=  — the still that *is* the page (own layer, not only the
+              video =poster= attribute)
+- =width=, =height= — of =src=, so the box cannot collapse
+- =alt=
+
+Optional: =av1= — same pixels as =src=, fewer bytes. Not a second size.
+Not required for any browser. Explicit include params override the
+catalog.
+
+Optional: =compact_src=, =compact_av1=, =compact_width=, =compact_height= —
+the phone portrait of the same clip. One extra rung for a full-bleed portrait
+surface, not a device ladder. Minted by =design/mint-media.mjs=; selected
+below 640px. A clip without a compact pair uses its desktop pair everywhere.
+
+A clip without a poster is not a clip.
+
+** Surface
+
+How a clip sits. Surfaces do not play.
+
+- *box*   — inline, aspect locked, still behind the video
+- *fill*  — full-bleed behind copy (masthead)
+- *plate* — stacked carousel cell (Helios "how we")
+- *pane*  — strip carousel cell (Helios "who we become")
+
+New looks are new surfaces over the same clip. They do not grow
+new players.
+
+** Carousel
+
+Stage and reel are not two runtimes. They are one behaviour in two
+surfaces.
+
+A carousel is a *group* of clips with one active member and decoded
+neighbours. It advances on =ended= (clips are not =loop=) or on
+control (rail, swipe). When the carousel's root leaves the viewport,
+it clears its marks so the cap can serve something else.
+
+| kind  | surface | layout                         | decode set            |
+|-------+---------+--------------------------------+-----------------------|
+| stack | plate   | overlapping, same viewport     | active + next         |
+| strip | pane    | horizontal sequence            | previous + active + next |
+
+Flow (grids, masthead) is not a carousel. No writer. Near attaches,
+far releases, under the same cap.
+
+The writer is the only extra JavaScript. It sets marks and calls
+=sync()=. It never opens a file. Wrap clones (infinite strip) mark
+*one* live node, not the clone.
+
+** Marks
+
+The scarce thing is a decoder. Speak that.
+
+| mark     | meaning                                       |
+|----------+-----------------------------------------------|
+| =decode= | this clip may hold a decoder (=src= attached) |
+| =active= | this clip is the one playing                  |
+
+=active= implies =decode=. Decode without active is the neighbour.
+Neither is poster only.
+
+Marks live on a *group*. After they change, =paperlandMedia.sync()=.
+
+Flow writes no marks.
+
+Do not add =keep=. Do not add =warm=. Do not add a mode per look.
+
+* Invariants
+
+1. *Poster first, as a layer.* A still sits *behind* the video
+   (image layer). The video is opacity 0 until it is actually playing.
+   Unbind must not reveal a black frame. Reduced motion, save-data, and
+   failed autoplay stay on the still.
+
+   After a clip has played, the still *is* its last decoded frame: the
+   player paints that frame onto the poster layer on =ended= and before
+   unbind, then drops ready. Next may start; this one keeps its picture.
+   The catalog poster is the still until a frame has been seen. A clip
+   without an opening poster is not a clip.
+
+2. *Few decoders, globally.* At most *three* attached videos on the
+   page. Carousel writers *and* flow share this cap. Visible + active
+   win; then decode neighbours; then flow that is near. When a
+   strip is in view it will usually hold the cap; the stack must
+   have cleared =active=. Writers still clear on leave — the cap is
+   the safety net, not the choreography.
+
+3. *Unbind is the release.* Pause is not enough. Capture the still,
+   remove sources, =load()=, drop ready. The still remains.
+4. *One player.* =assets/js/media-video.js= via =media/boot.html=.
+   One carousel writer later. Gallery, raw =<video autoplay>=, and
+   page-local players are dialects to retire.
+
+5. *Markup does not play.* Includes emit tags and data. Playback
+   lives in the player. Carousels only toggle marks.
+
+6. *The catalog is the type.* Pages pass =id=. Paths in pages are
+   overrides, not the norm.
+
+7. *Encode to the surface.* One H.264 file per clip, sized for how it
+   sits, not a device ladder. fps ≤ 30, silent, faststart. No file ≥
+   100 MB. No LFS. No HLS. One id, one box: do not reuse a hero file
+   as a pane.
+
+* Look
+
+A page declares a *look*. A look binds *slots*. Neither knows the other's
+classes.
+
+Four tiers, one direction of dependency:
+
+| tier    | artefact                      | owns                                 |
+|---------+-------------------------------+--------------------------------------|
+| tokens  | =core/tokens.css= (@theme)    | values, declared once                |
+| surface | =core/media.css= + =media/*=  | placement, behaviour, the slots      |
+| look    | =components/<look>.css=       | ink, type, air — bound to slots      |
+| act     | =_includes/home/*= + the page | copy and order                       |
+
+** Slots
+
+A surface publishes attributes. A look binds those, and nothing else. The
+carousel publishes:
+
+| attribute                                     | meaning                       |
+|-----------------------------------------------+-------------------------------|
+| =data-media-carousel="stack|strip"=            | the behaviour                 |
+| =data-media-surface="fill|plate|pane|box"=     | the placement                 |
+| =data-media-slot=                             | =frame copy kicker title slate rail= |
+| =data-media-to= =data-media-cell= =data-media-track= | the parts              |
+| =data-media-active= =data-media-decode=       | the marks the player reads    |
+
+=_includes/nav.html= publishes =data-nav-mark= the same way, so a look can draw its
+own identity over the nav's brand link and put the focus ring on something
+visible.
+
+A class name is *not* a slot. It is private to the file that emits it and may
+be renamed at any time; the slot is the promise.
+
+** =data-media-copy= is not a slot
+
+It is the writer's channel, and it appears only where the writer may write
+text — once, in the stack. A strip must never carry it, or the writer would
+set every pane's title to the active cell's. =design/probe/looks.py= refuses a
+look that binds it.
+
+** Laws
+
+1. A look binds published attributes, never another component's classes.
+2. A page declares a look; it never carries one. =_pages/helios.md= has no look
+   in it — =_layouts/folio.html= writes =data-look= from front matter.
+3. Look-owned runtime state is namespaced: =data-helios-copy=, not =.is-on=,
+   which the writer already uses for the rail.
+4. One axis, one writer. Nested axes opt in. JS never writes an axis the user
+   is driving.
+
+** Page motion
+
+Who may move the page is the same kind of contract as who may bind a slot.
+
+| axis | owner | may write | may only read |
+|------+-------+-----------+---------------|
+| document y | the page | the user | look clocks (the mark) |
+| document y interpolation | document frame (=core/document.css=) | opt-in on =body:not([data-theme]):not([data-shell])= | hash, footnotes |
+| nested x | surface (=core/media.css=) | the user; the writer, and only on rail | writer paints from geometry |
+| play() jump | player | synchronous undo of /its own/ jump | — |
+
+A look does not snap y. Height is not a scroll job: viewport-tall acts keep
+the ticker a seam without becoming snap targets. Native y is the default.
+A surface does not write =html=. Fill is 100% of its box; only inside
+=.wrapper= does it break out, and the document clips x. =overscroll-behavior=
+is the longhand on x only.
+
+DX: to change how the page scrolls, you are on the page (the look) or the
+document frame. To change how the reel rests, you are in =media.css=. To
+change what plays, you are in the player. If you are in the writer and about
+to =scrollTo= on y, stop.
+
+** Layering
+
+A look does not get its own =@layer= sub-layer. A nested layer is subordinate
+to its parent, so =@layer components.helios= loses to =@layer components=
+whatever the specificity (architecture.org T9). A look lives in =components=
+and carries its precedence in specificity. Motion overrides go in
+=utilities=, which is a sibling layer *after* =components=.
+
+* Coverage
+
+H.264 MP4 (yuv420p, =+faststart=) plays in every browser we care
+about: Safari iOS and macOS, Chrome, Firefox, Edge, Android.
+
+AV1 is an optional smaller sibling at the *same* width and height.
+Chrome, Firefox, Edge, and many Androids will take it. Safari
+without AV1 uses =src=. That pair is coverage + a gift, not a matrix.
+
+The compact pair is a *rendition*, not a codec: same clip, the portrait box
+the phone actually shows, selected by a media query below 640px. It is the
+one place where a second size is allowed, because the hero's 1920×1080 frame
+is mostly cropped away in a 412×777 box. Tablet and desktop keep the desktop
+pair.
+
+VP9 is not required. Do not mint a third codec.
+
+Source order in the player: AV1 (if present), then =src=.
+
+* Files
+
+The player can only be cheap if the files match the surface. A clip has one
+desktop pair and, only where the reader holds a portrait box, one phone
+rendition. That is not a device matrix: these are the boxes the site actually
+has.
+
+| key                          | box                                  | encode                 |
+|------------------------------+--------------------------------------+------------------------|
+| =src=                        | fill / stack / strip, desktop        | 1920×1080 or 1280×720  |
+| =av1=                        | same box, same pixels                | same width/height       |
+| =compact_src= / =compact_av1= | full-bleed phone portrait, cover     | 572×1080 from 1920×1080 |
+| =poster=                     | the still behind the clip            | long edge 720–1280      |
+
+Pick the larger desktop rung when the master is sharp and the surface is
+full-bleed; the smaller when the master is already soft or the pane is the
+only home. A strip pane is minted at its own portrait box and does not need a
+compact pair. The compact crop is the one =object-fit: cover= already shows,
+so mobile keeps the composition it had — it stops paying for the pixels the
+crop throws away.
+
+** Mint
+
+=design/mint-media.mjs= is the pipeline. It probes the master, encodes H.264
+and AV1, extracts the still, hashes the bytes into the filename, and writes
+the catalog fields. One command, no remembered ffmpeg incantations. The
+minting tools are local, not CI: ffmpeg with libx264 and libsvtav1, and
+ImageMagick for the poster still. CI does not encode clips. Responsive stills
+are not minted; the build emits them.
+
+#+begin_src sh
+node design/mint-media.mjs video \
+  --id tree_fractal \
+  --source design/assets/HOWSTAR.mp4 \
+  --compact 572x1080 \
+  --catalog _data/media.yml
+#+end_src
+
+=--compact-only= adds the phone pair to an existing desktop pair without
+re-encoding it. =--dry-run= prints the ffmpeg work. Desktop: H.264 / CRF 28 /
+slow / =+faststart= and AV1 / CRF 38 / preset 8. Compact: H.264 / CRF 28 and
+AV1 / CRF 46 — the smaller surface hides the difference; SSIM against the
+reference crop stayed above .984 on the tested clip. Audio is removed: the
+site's clips are silent. Names carry the first eight hex of the file hash, so
+a re-mint is idempotent and a catalog entry always names the bytes it ships.
+
+Images are a different contract. A still is one committed source plus the
+widths the layout needs, in =_data/image_sources.yml=. =_plugins/image_variants.rb=
+runs that recipe during =jekyll build= and =jekyll serve=: it encodes the rungs
+into =.jekyll-cache/image-variants/=, fills =site.data.image_variants= before
+render, and copies the files into the destination after Jekyll's cleaner.
+=_includes/media/img.html= reads that manifest, so a page asks for an image
+by the path it already names and gets =srcset= when the path is in the recipe.
+The source's own width is always the largest candidate, so a 2x display never
+upscales a small rung. A WebP source is that candidate itself; a PNG is emitted
+as a WebP of the same pixels. The helper defaults to =loading="lazy"=; callers
+mark the hero still =eager=/=high= and below-fold art =low=.
+
+The rung's name is the first eight hex of a hash of the source bytes, the
+width, and the encoder version. It is not a hash of the output. Output bytes
+are not stable across ImageMagick builds, which is why the build does not
+shell out to whatever =magick= the runner has. The encoder is =sharp=, pinned
+in =package-lock.json= (Node 20). A lockfile bump renames the rungs. A repeat
+build encodes nothing. =npm ci= once, then Jekyll. A missing =sharp=, a missing
+source, or an unsafe path fails the build. There is no fallback that ships
+the full file for a recipe entry. The resized files are not committed.
+
+Verify before push:
+
+#+begin_src sh
+node design/mint-media.mjs verify
+#+end_src
+
+It fails on a missing catalog path, a missing image source, a compact clip
+without its box, or two byte-identical =.woff2= files. The font generator
+(=design/probe/webfonts.py=) collapses identical weights onto one URL; verify
+is the tripwire if someone adds a duplicate by hand.
+* Host
+
+This site is Jekyll 4 on Actions (=deploy-pages=). =_plugins/= run.
+That does not mean we encode in Ruby.
+
+** How we ship a clip
+
+1. *Mint before push.* The commit contains the poster, the H.264, the
+   optional AV1 sibling and, when the surface is a phone portrait, the
+   compact pair. CI does not encode; it runs =node design/mint-media.mjs
+   verify=.
+
+2. *No LFS. No file at 100 MB.* Git's ceiling is a wall, not a budget.
+
+3. *Content-address the served file.* =waves-7f3a2c9d.mp4=. Re-encode
+   → new name → catalog id points at it. The name is the cache key.
+   =mint-media.mjs= writes eight hex characters from the file's SHA-256.
+
+4. *Cache what this visit fetched.* Workbox must not precache
+   =mp4=/=webm=. Precache shell + posters. Runtime may CacheFirst a
+   handful of hashed loops the player actually attached
+   (=maxEntries= at the cap).
+
+** Use from Jekyll / Tailwind
+
+- =_data/media.yml= is the catalog.
+- =_data/image_sources.yml= is the still recipe. The build fills
+  =site.data.image_variants=; pages use =media/img.html=, not a hand-written
+  srcset. The resized files are not committed.
+- =mint-media.mjs verify= runs in CI: a missing clip, a missing still source,
+  or a duplicate font byte fails the build. The image encoder failing closed
+  is the build itself.
+- Includes compose surfaces. A generator is for notes, not clips.
+- =relative_url= on every local src.
+- Include locals leak: =media_*= names only.
+- Fill height is a CSS slot (=--media-fill-h= / =--media-fill-h-md=),
+  written by Liquid as data, not composed as =h-[…]= classes.
+** Do not use
+
+- ffmpeg in the Jekyll build (clips stay minted)
+- ImageMagick, or any unpinned encoder, for stills
+- committing the resized WebP rungs
+- Git LFS
+- jekyll-youtube / embed plugins
+- jekyll-picture-tag as a video model
+- Workbox glob on video
+- VP9 as the spine
+- A second decoder script for "the carousel"
+
+** Limits
+
+Published site ≤ 1 GB; ~100 GB bandwidth / month (soft). =design/=
+must be =exclude=d or Helios masters ship. Byte-range works on
+Pages; faststart matters. =play()= on iOS can jump scroll — the
+player restores it.
+
+* What exists
+
+- Catalog: =_data/media.yml=. Helios how-ids have posters. Who-ids
+  =waves=, =spring=, =star=, =shell=, =benz=, =xsinx= have posters.
+  Many older rows still lack posters and a H.264 =src=.
+- Atom: =_includes/media/video.html= (poster layer + lazy =<video>=)
+- Fill: =data-media-surface="fill"= — hero adapter and stack share it.
+  Hero copy stays page composition. =media/hero.html= is the adapter.
+- Player: =assets/js/media-video.js= — attach / unbind, cap 3, marks,
+  last-frame still, =play()= scroll restore, AV1-then-src.
+- Writer: =assets/js/media-carousel.js= — =stack|strip=, one group.
+- Boot: =media/boot.html= on default and folio layouts.
+- Preview page: =/helios-media= composes two carousels; not the homepage.
+- Page: =/helios= (=_pages/helios.md=) is the full page — thesis, identity,
+  ticker, two carousels, colophon — composed from =home/*= includes and the
+  same catalog + writer. It declares =look: helios=; =components/helios.css=
+  binds the shared slots to the look. Probe: =design/probe/helios.mjs= for the
+  page, =design/probe/looks.py= for the contract.
+- Prototype: =design/iterations/04-helios.html= (not the runtime)
+
+* What Helios is
+
+Helios is a *page*: verse, wordmark, grain, ticker, plus two
+carousels.
+
+- Wordmark, grain, ticker, verse — not this language
+- *Stack carousel* — "In how we": five plates, no rail (the ticker names them),
+  the action lowercase on the verse's baseline
+- *Strip carousel* — "In who we become": six panes
+
+Express it by composing catalog + surfaces + the carousel writer.
+Do not port the 1.2k-line file. Look that is Helios lives beside the
+includes (folio theme binds; page CSS for verse), not inside =media/=.
+
+That is now realised. =_pages/helios.md= has no =<video>=, no =src=, no
+=preload= and no =play()=; it names copy in its front matter and ids from
+=_data/media.yml=, and calls one include per act. The look lives in
+=assets/css/components/helios.css=, bound by =data-look= on <body>; the
+page-local decoration is =assets/js/home/helios.js=, which reads the marks
+and the =media:carousel= event the writer already publishes and writes no
+mark and opens no file.
+
+The *expression* is the reference prototype's, and it is asserted rather than
+described: =design/probe/helios.mjs= checks that the mark builds by scroll
+distance, that the reel dissolves at its edges, that the plate is graded, that
+the title is masked rather than faded, and that the mark is whole once the act
+is past.
+
+| the reference does                                            | where it lives now |
+|---------------------------------------------------------------+--------------------|
+| grain, silk veil                                              | =home/air.html= + look |
+| the mark assembling — columns, roof, sun, rays — on scroll    | =home/wordmark.html= + look + page-local JS |
+| hero stage: still under film, cross-fade, scrim               | =media/carousel.html= + look |
+| the sun flash — once, when the sun is up and the mark stands  | =home/wordmark.html= + look + page-local JS |
+| the thesis, and a card lifted rather than faded               | =home/hero.html= + look |
+| the play fill — no rail; the ticker names the clips           | the writer's marks + look + JS |
+| the ember ticker                                              | =home/ticker.html= + look |
+| the reel: edge dissolve, pane frame and wash, pane meta       | =home/who.html= + look |
+| the close                                                     | =home/colophon.html= + look |
+
+One reference move is now realised without the reference's transform loop: the
+reel's infinite wrap with clone edge panes. The strip stays a native horizontal
+scroller with =scroll-snap-type: x mandatory= — which is what makes it work on a
+phone with no JavaScript at all — so the edge panes are still-only clones and
+the seam is a scroll reposition: resting on a clone lands on its identical
+original. The row opens on the middle identity and wraps in both directions
+(=assets/js/home/helios-who.js=). The contract anticipated it: a wrap clone
+"marks one live node, not the clone".
+
+The wordmark is the one place Helios ships raster art of its own: the reference's
+pieces, 92 kB, in =assets/lib/helios-wordmark/=. They are the brand; redrawing
+them as vectors would be inventing brand geometry.
+
+Three ergonomics worth keeping:
+
+- *The copy slot is the card.* =media/carousel.html= emits =data-media-slot=
+  ="kicker|title|slate"= and the writer writes through =data-media-copy=. Two
+  attributes, two owners: the slot is presentation, the channel is playback.
+  Helios binds the slot and never mentions the channel. A page that needs a
+  *different* copy shape still has no slot — the sanctioned escape hatch is
+  ={% capture %}= into a param, not new markup in =media/=.
+- *A page-level scrim cannot sit under the carousel's own copy.* The
+  carousel is an isolated stacking context, so an overlay authored in the
+  page paints above every slot inside it. The scrim is therefore scoped to
+  the look and applied to the fill box as =::after= at =z-index: 1=, below
+  =media.css='s =z-index: 2= copy and rail.
+- *A horizontal scroller is also a vertical one.* =overflow-x: auto= forces
+  =overflow-y= to compute to =auto=, so every strip is a vertical scroll
+  container with nothing to scroll — permanently at its boundary. The
+  =overscroll-behavior= *shorthand* therefore refuses the vertical axis, and the
+  page stops dead under the pointer with content still below. Use
+  =overscroll-behavior-x: contain=: it keeps the intent (a horizontal swipe must
+  not trigger browser back/forward) and lets the other axis through.
+  =design/probe/scroll.mjs= holds it.
+- *Library hover/focus ink is scoped to documents without a theme.* Folio does
+  not inherit it. The colophon seal does not need a span to escape it.
+* Remaining work
+
+Each item leaves the site shippable. Do not skip the still. Do not
+mint the whole catalog. Do not add a second player.
+
+** A. Catalog — Helios ids are minted
+
+Helios's eleven clips (=sine_curve_with_code=, =polygon_fill=, =fibonacci_spiral=,
+=tree_fractal=, =prime_sequence=, =waves=, =spring=, =star=, =shell=, =benz=,
+=creators=) are H.264 yuv420p =+faststart=, silent, boxed to the surface, with
+WebP posters. =design/probe/catalog.py= holds it.
+
+Landing-only ids without posters are not Helios's problem. When retouching a
+grid/masthead row: poster + H.264, then optional AV1 at the *same* width and
+height. Content-address new files. VP9 is not a spine.
+
+** B. Player — done enough to stop enlarging
+
+Cap, marks, unbind, last-frame capture, synchronous play() undo. Do not add
+
+** C. Hero adapter — retire by convergence, not by a new API
+
+=media/hero.html= already speaks fill + height slots. Callers keep their
+copy. When nothing needs the adapter's extra params, delete it. Do not
+turn a masthead into a carousel.
+
+** D. One dialect on the rest of the site
+
+- Mastheads through fill + catalog
+- Grids through box
+- Retire =gallery.html='s private video path, or point it at the atom
+- Remove raw autoplay tags
+- Pause control for autoplaying flow if more than one plays (WCAG 2.2.2)
+
+** E. Helios homepage
+
+A page that *uses* two carousels. Copy from =copy.org=. Motion,
+wordmark, ticker stay page-local. Success: no =<video src>=, no second
+decoder. That swap is architecture, not new media JavaScript.
+
+*Status.* The page IS the homepage: it declares =permalink: /= and the old
+homepage is parked at =_drafts/index.md=. Copy is front matter; clips are ids.
+Spines and posters are real. The permalink swap this paragraph used to describe
+as outstanding has happened.
+=design/probe/catalog.py= and =design/probe/helios.mjs= hold the consumer claims.
+* Out of scope
+
+- New player modes for each look
+- =keep= as a parameter
+- Porting grain, wordmark, or ticker into =media/=
+- Decoder work in Liquid
+- Teaching authors =play()=
+- HLS / DASH / three-rung ladders
+- ffmpeg in CI
+- Git LFS
+- Minting the entire old catalog before Helios
+- AV1 before a H.264 =src= exists for that id
+- Parameterizing =media.css= with Helios verse / scrim / reel
+
+* Acceptance
+
+1. Helios (preview or homepage) runs on the shared player and writer.
+2. A strip pane that has played stays on its last frame when the next
+   starts and after unbind. An unplayed pane shows the catalog poster.
+3. Off-screen clips unbind; the cap holds on a phone.
+4. Save-data and reduced motion show stills only, everywhere.
+5. A flow page adds a clip by catalog id and a surface, with no new
+   JavaScript. A carousel page uses the writer, not a new player.
+6. Safari plays =src= (H.264). Chrome may play AV1. Nobody needs VP9.
+
+Until (1) and (2), we have plumbing. Until Helios is a page of two
+carousels without a second decoder, we do not yet have the language
+on the homepage.

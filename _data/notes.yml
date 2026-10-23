@@ -1,0 +1,44 @@
+# =============================================================================
+# notes.yml — the edition's standing words
+# =============================================================================
+#
+# The notes edition is a document with prose in it, and the prose is the note's.
+# What lives here is everything the EDITION says around it: the rail's title, the
+# graph's eyebrow, the standing kicker, the skip link, the return mark's label.
+# Those are the same on every note — they are the frame, not the writing — so
+# they are one file, and a note that must speak differently writes a `kicker` or
+# a `kicker_subject` in its own front matter, which overrides the pair below
+# (see _includes/notes/header.html).
+#
+# WHY NOT IN THE INCLUDES: a word invented in _includes/notes/* is a word with no
+# owner — no page can change it, no probe can see it, and the next edition can
+# only find it by reading every template. The edition's own layout
+# (_layouts/note.html) reads these too, so the frame's words are in one place
+# whether they are drawn by the layout or by one of its includes.
+#
+# MARKUP: every string below is read with `| markup` where it carries any
+# (_plugins/site_markup.rb — the same resolver a note's prose goes through), so a
+# face is set the site's way and a `[[bracket]]` would resolve like any other.
+# An aria-label is an attribute, not prose, so it takes none — see the comment on
+# contact.yml's message_placeholder for the same rule.
+
+# The standing kicker: `kicker / kicker_subject`, the line above the title.
+# The edition's chrome words are _data/notes.yml's (the rail's title, the graph's
+# eyebrow, the skip link); the pair below is the standing kicker it may override.
+kicker: Notes
+kicker_subject: On learning
+
+# The contents rail — where the reader is.
+contents_title: In this note
+contents_label: Table of contents
+contents_aria: Reading navigation
+
+# The wider conversation — the notes graph.
+graph_eyebrow: from the desks at <span class="font-paperlang">PaperLand</span>
+graph_here: You are here.
+
+# The frame's own controls: the skip link, and the mark that returns the reader
+# to the masthead. The labels are words, so they are here; the glyph is the
+# element's design and stays in the markup.
+skip: Skip to the essay
+return_label: Back to the beginning

@@ -1,0 +1,8 @@
+{%- assign scene = site.data.helios_possibilities.creators -%}
+<section class="helios-create" data-scroll-scrub data-ink-scene="creators" data-ink-base="{{ '/' | relative_url }}" data-ink-frame="settled" aria-labelledby="create-title"{% if scene.grows %} data-grows="{{ scene.grows.line | escape }}" data-grows-from="{{ scene.grows.from }}" data-grows-to="{{ scene.grows.to }}"{% endif %}{% if scene.grows.twist %} data-twist="{{ scene.grows.twist }}"{% endif %}>
+  <div class="helios-create__journey" data-scrub-journey>
+    {% include home/possibility-stage.html item=page.create scene=scene heading="create-title" scene_id="creators" %}
+  </div>
+  <template data-scrub-program>{{ scene.program | escape }}</template>
+  <script type="application/json" data-scrub-frames>{{ site.data.helios_ink.scenes.creators | jsonify }}</script>
+</section>

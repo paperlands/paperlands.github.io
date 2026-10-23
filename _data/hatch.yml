@@ -1,0 +1,25 @@
+# Dojo-produced build, not a tag or a registry publication. Do not edit by hand.
+# Written by design/vendor.mjs --from-release; dirty sources remain explicit.
+schema: 1
+release: true
+producer: paperlang-host
+host_api: null
+language_revision: null
+dojo_commit: a55f8a63375327602a62d6568d5183f392137466
+dojo_revision: a55f8a63375327602a62d6568d5183f392137466
+source_dirty: false
+source_digest: 8ea4dba2a495805ea2651b3b09564c323b11080dd951027020273974e600af20
+artifact: hatch.c85dbf4284144dc0.mjs
+artifact_path: /assets/lib/hatch/hatch.c85dbf4284144dc0.mjs
+artifact_sha256: c85dbf4284144dc0e018ab3655afad677c755ad033b51510f605de018773abdf
+artifact_bytes: 1012746
+closure_inputs: 104
+closure_sha256: e4e20c71366732bac12eb1d586ff82b4afec3d2139c1e7036f7a4b0a5ef4809e
+licence: LICENSE
+licence_id: AGPL-3.0-only
+licence_sha256: 8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef
+notices: NOTICE.txt
+notices_sha256: 9b283c722c5033c78f4108b261fc0cea6b1b377d09a4554f344f64bba842f6d4
+release_manifest: release.json
+release_manifest_sha256: f299e3e6d5b8e94dbcaf9a0fe8d2142d8fae91594b6e75f9aebee61621adeca1
+vendored_at: 2026-10-19

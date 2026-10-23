@@ -1,0 +1,9 @@
+{%- assign prelude = include.prelude -%}
+<section class="experiences-prelude experiences-wrap" aria-label="{{ prelude.label | escape }}" data-stage-passage>
+  {% for paragraph in prelude.paragraphs %}
+  <p{% if forloop.first %} class="experiences-first-question"{% endif %}>{{ paragraph | markup }}</p>
+  {% endfor %}
+  <p class="experiences-hero-invitation">{{ prelude.invitation | markup }}
+  <br>{% include experiences/focus.html text=prelude.focus gesture="invite" %}</p>
+  <span class="experiences-letter-ember" aria-hidden="true">✧</span>
+</section>

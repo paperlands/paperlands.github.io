@@ -1,0 +1,19 @@
+/* ==========================================================================
+   utilities — the last layer
+   --------------------------------------------------------------------------
+   A utility belongs here only if it is genuinely orthogonal. Anything that
+   encodes a decision about the brand belongs in core/tokens.css; anything
+   reusable belongs in components/.
+   ========================================================================== */
+
+@layer utilities {
+  /* Hide scrollbar — Chrome/Safari/Opera, then IE/Edge, then Firefox. */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

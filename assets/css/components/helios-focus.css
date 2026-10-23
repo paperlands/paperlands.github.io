@@ -1,0 +1,270 @@
+/* Helios's golden thread: grow / gather / invite.
+   Scroll supplies two numbers, never a timer. The word is always present;
+   decorative ink and light do the travelling. No duplicate or outlined text. */
+@layer components {
+  /* Match the ink in each scene's Paperlang programme. The hero retains its
+     original accent; only this landscape's words, threads and light read these. */
+  /* Link colour deliberately stays on --light-accent across every scene. */
+  [data-look="helios"] { --helios-focus-ink: #f0bc78; }
+  [data-look="helios"] .helios-plate { --helios-focus-ink: #e0663a; }
+  [data-look="helios"] .helios-create { --helios-focus-ink: #d6a8ee; }
+
+  [data-look="helios"] .helios-landscape .helios-possibility__light {
+    background: linear-gradient(177deg, transparent 42%,
+      color-mix(in srgb, var(--helios-focus-ink) 10%, transparent) 43%,
+      color-mix(in srgb, color-mix(in srgb, var(--helios-focus-ink), #fff 40%) 60%, transparent) 44%,
+      color-mix(in srgb, var(--helios-focus-ink) 40%, transparent) 44.4%, transparent 46%);
+  }
+
+  [data-look="helios"] .helios-focus {
+    --focus-progress: .8;
+    --focus-heat: .24;
+    position: relative;
+    display: inline-block;
+    isolation: isolate;
+    white-space: nowrap;
+    color: var(--light-ink);
+    text-shadow: none;
+    vertical-align: baseline;
+  }
+
+  [data-look="helios"] .helios-focus__word {
+    position: relative;
+    z-index: 1;
+    color: color-mix(in srgb, var(--light-ink), var(--helios-focus-ink) calc(var(--focus-heat) * 82%));
+    text-shadow: 0 0 .45em color-mix(in srgb, var(--helios-focus-ink) calc(var(--focus-heat) * 24%), transparent);
+  }
+
+  /* The broad glow stops short of becoming a neon outline. It sits behind the
+     word; neither the glyphs nor the surrounding copy ever fade or blur. */
+  [data-look="helios"] .helios-focus::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: -1em -1.4em;
+    pointer-events: none;
+    /* Explicit half-box radii: the light is fully transparent at EVERY edge.
+       A farthest-corner ellipse at 64% left pigment at its bottom boundary. */
+    background: radial-gradient(ellipse 50% 50% at 50% 50%,
+      color-mix(in srgb, var(--helios-focus-ink) 16%, transparent),
+      color-mix(in srgb, var(--helios-focus-ink) 6%, transparent) 45%, transparent 100%);
+    opacity: var(--focus-heat);
+    transform: scale(calc(.85 + var(--focus-heat) * .15));
+  }
+
+  [data-look="helios"] .helios-focus__ink {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+    overflow: visible;
+    width: 165%;
+    height: auto;
+    max-width: none;
+    left: -12%;
+    top: -.13em;
+    stroke: var(--helios-focus-ink);
+    stroke-width: 1;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: calc(.12 + var(--focus-heat) * .64);
+    /* Retire the far end into atmosphere, not a visible rectangle. */
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 13%, #000 78%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 13%, #000 78%, transparent);
+  }
+  [data-look="helios"] .helios-focus__thread { stroke: var(--helios-focus-ink); }
+  [data-look="helios"] .helios-focus__ink path {
+    vector-effect: non-scaling-stroke;
+    stroke-dasharray: 1;
+    stroke-dashoffset: calc(1 - var(--focus-progress));
+  }
+  [data-look="helios"] .helios-focus__ink .helios-focus__echo {
+    stroke: color-mix(in srgb, var(--helios-focus-ink), var(--light-ink) 25%);
+    stroke-width: .65;
+    opacity: .48;
+    stroke-dashoffset: calc(1 - max(0, (var(--focus-progress) - .16) / .84));
+  }
+  [data-look="helios"] .helios-focus__seed {
+    stroke: color-mix(in srgb, var(--helios-focus-ink), var(--light-ink) 40%);
+    stroke-width: .65;
+    opacity: calc(var(--focus-heat) * .62);
+  }
+
+
+  /* LIFE. A single branching filament escapes toward the mathematical figure.
+     Its geometry is fixed: only the amount of ink changes. */
+  [data-look="helios"] [data-helios-focus="grow"] .helios-focus__ink {
+    width: 335%;
+    left: -26%;
+    top: -.86em;
+  }
+
+  /* STAGE. The loop gathers into a shallow pool of theatrical light. */
+  [data-look="helios"] [data-helios-focus="gather"]::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    left: -18%;
+    top: .9em;
+    width: 136%;
+    height: .38em;
+    pointer-events: none;
+    border-radius: 50%;
+    background: radial-gradient(ellipse 50% 50% at 50% 50%,
+      color-mix(in srgb, var(--helios-focus-ink) 25%, transparent),
+      color-mix(in srgb, var(--helios-focus-ink) 9%, transparent) 38%, transparent 100%);
+    opacity: var(--focus-heat);
+    transform: scaleX(calc(.65 + var(--focus-progress) * .35));
+  }
+  [data-look="helios"] [data-helios-focus="gather"] .helios-focus__ink {
+    width: 240%;
+    left: -33%;
+    top: -.23em;
+  }
+
+  /* The invitation is an afterglow, not a fourth crescendo. */
+  [data-look="helios"] [data-helios-focus="invite"] .helios-focus__ink {
+    width: 145%;
+    left: -12%;
+    top: -.38em;
+    opacity: calc(.07 + var(--focus-heat) * .32);
+  }
+  [data-look="helios"] [data-helios-focus="invite"]::before { opacity: calc(var(--focus-heat) * .5); }
+
+  /* One lightfield, not a lamp clipped to each section. It spans all three
+     acts so orange, lilac and gold light physically cross their boundaries.
+     Screen only adds light: it cannot dim the type or obscure a hit area. */
+  [data-look="helios"] .helios-landscape {
+    position: relative;
+    isolation: isolate;
+    background: #140910;
+  }
+  [data-look="helios"] .helios-landscape::after {
+    content: "";
+    position: absolute;
+    z-index: 10;
+    inset: 0;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    background:
+      radial-gradient(ellipse 56% 24% at 76% 25%, #e0663a16, transparent 100%),
+      radial-gradient(ellipse 48% 30% at 38% 53%, #bb86d820, transparent 100%),
+      radial-gradient(ellipse 60% 28% at 66% 77%, #d19e5718, transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
+    mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
+  }
+  /* Both sides arrive at the same pigment, with the same absence of grain at
+     the join. This rule adds only the mask; the generic grain animation still
+     runs, gated by the visibility observer. */
+  [data-look="helios"] .helios-landscape .helios-possibility__stage::before,
+  [data-look="helios"] .helios-landscape .helios-possibilities::before {
+    -webkit-mask-image: linear-gradient(180deg, transparent, #000 24%, #000 76%, transparent);
+    mask-image: linear-gradient(180deg, transparent, #000 24%, #000 76%, transparent);
+  }
+
+  /* Match the landscape's grain cadence: six jumps per 1.2 seconds.
+     Keep the hero's existing texture and larger positional steps. */
+  [data-look="helios"] .helios-act .helios-hero [data-media-surface="fill"]::before {
+    animation: helios-grain-hero 1.2s steps(1, end) infinite;
+  }
+  @keyframes helios-grain-hero {
+    0% { background-position: 0 0; }
+    16.6% { background-position: -64px 37px; }
+    33.3% { background-position: 48px -71px; }
+    50% { background-position: -29px -58px; }
+    66.6% { background-position: 72px 22px; }
+    83.3% { background-position: -81px 49px; }
+    100% { background-position: 0 0; }
+  }
+
+
+  /* Shared atmosphere carries the hue across the seam. Each scene retains its
+     existing art, masking, depth and layout. These lights occupy no space. */
+  [data-look="helios"] .helios-atmosphere {
+    position: absolute;
+    z-index: 8;
+    inset: 0;
+    overflow: clip;
+    pointer-events: none;
+    background:
+      linear-gradient(180deg, var(--parallel-ground) 0%, #1409109c 8%, transparent 25%, transparent 78%, #140910bf 94%, var(--parallel-ground) 100%),
+      radial-gradient(ellipse 70% 24% at 78% 8%, color-mix(in srgb, var(--helios-focus-ink) 10%, transparent), transparent 80%),
+      radial-gradient(ellipse 48% 46% at 6% 45%, color-mix(in srgb, var(--helios-focus-ink) 5%, transparent), transparent 72%);
+    opacity: 1;
+  }
+  [data-look="helios"] .helios-atmosphere::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 44% 36% at 47% 42%, color-mix(in srgb, var(--helios-focus-ink) 8%, transparent), transparent 100%);
+    opacity: var(--passage-heat, .18);
+  }
+  [data-look="helios"] .helios-possibilities > .helios-atmosphere {
+    z-index: 0;
+    background: radial-gradient(ellipse 60% 44% at 62% 46%, #ce843315, transparent 100%);
+  }
+
+  /* The last glint leaves the headline for the real next step. This is still
+     the existing contact link, with its own keyboard focus and hit area. */
+  [data-look="helios"] .helios-possibilities:has(.helios-focus) .helios-section__call {
+    position: relative;
+  }
+  [data-look="helios"] .helios-possibilities:has(.helios-focus) .helios-section__call::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 -.12em;
+    height: .35em;
+    pointer-events: none;
+    background: radial-gradient(ellipse .28em .12em at calc(12% + var(--passage-progress, .8) * 75%) 50%, #ffebbd, #f2ab5866 35%, transparent 75%);
+    opacity: calc(var(--passage-heat, .18) * .72);
+  }
+
+  /* The existing sun's cue becomes a low horizon, not a full-screen flash. */
+  [data-look="helios"] .helios-hero .helios-flash {
+    background: radial-gradient(ellipse 90% 36% at 65% 100%, #f3b64e, transparent 78%);
+  }
+
+  @media (max-width: 850px) {
+    /* The ink still reaches toward the art, but never pushes the viewport or
+       wanders through the body copy on the narrower reading column. */
+    [data-look="helios"] [data-helios-focus="grow"] .helios-focus__ink {
+      width: 250%;
+      left: -50%;
+      top: -.62em;
+    }
+    [data-look="helios"] [data-helios-focus="gather"] .helios-focus__ink {
+      width: 190%;
+      left: -36%;
+      top: .02em;
+    }
+    [data-look="helios"] [data-helios-focus="invite"] .helios-focus__ink {
+      width: 122%;
+      left: -12%;
+      top: -.2em;
+    }
+  }
+}
+
+@layer utilities {
+  @media (prefers-reduced-motion: reduce) {
+    [data-look="helios"] .helios-focus {
+      --focus-progress: 1 !important;
+      --focus-heat: .24 !important;
+    }
+    [data-look="helios"] .helios-focus::before,
+    [data-look="helios"] .helios-focus::after { transform: none; }
+  }
+  @media (forced-colors: active) {
+    [data-look="helios"] .helios-focus .helios-focus__word {
+      background: none;
+      color: CanvasText;
+      -webkit-text-fill-color: CanvasText;
+      text-shadow: none;
+    }
+    [data-look="helios"] .helios-focus__ink,
+    [data-look="helios"] .helios-landscape::after,
+    [data-look="helios"] .helios-possibilities:has(.helios-focus) .helios-section__call::after,
+    [data-look="helios"] .helios-atmosphere,
+    [data-look="helios"] .helios-focus::before,
+    [data-look="helios"] .helios-focus::after { display: none; }
+  }
+}

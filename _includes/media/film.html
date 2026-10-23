@@ -1,0 +1,58 @@
+{%- comment -%}
+  A hosted film in a plate — the still IS the page, and playback is a thing
+  the reader asks for. Adapted from the /gmff hero stage (the film festival's
+  poster → iframe facade): nothing is fetched from the host before that click,
+  so no cookies, no third-party bytes and no playback until intent.
+
+  The plate frame is _includes/figure's: this emits the same figure / figcaption
+  markup, so the evening edition draws it like any other plate and no second
+  owner of the shape exists. The stage publishes the media slots (surface
+  `film`, slot `frame`); its parts are this file's private `.film-*` business,
+  drawn by core/media.css and driven by assets/js/media-film.js.
+
+  Params:
+    poster   required; the still (minted WebP under assets/)
+    embed    required; the privacy-light embed URL (youtube-nocookie, …)
+    alt      required; what the still shows
+    title    required; the film's own name — the frame's title, the button's label
+    caption  markdown; the plate's figcaption
+    class    extra classes on the figure
+    width height sizes  the still's box (media/img.html). Hero plates pass priority.
+    priority the still in the first viewport: eager + fetchpriority high
+{%- endcomment -%}
+{%- if include.priority == true or include.priority == 'true' -%}
+  {%- assign film_loading = 'eager' -%}
+  {%- assign film_fetch = 'high' -%}
+{%- else -%}
+  {%- assign film_loading = 'lazy' -%}
+  {%- assign film_fetch = 'low' -%}
+{%- endif -%}
+<figure{% if include.class %} class="{{ include.class }}"{% endif %}>
+  <div class="film-stage" data-media-surface="film" data-media-slot="frame" style="--media-ar: 16 / 9;">
+    {% include media/img.html
+       src=include.poster
+       class="film-poster"
+       alt=include.alt
+       width=include.width
+       height=include.height
+       sizes=include.sizes
+       loading=film_loading
+       fetchpriority=film_fetch %}
+    <iframe
+      class="film-frame"
+      data-film-frame
+      data-src="{{ include.embed }}"
+      title="{{ include.title }}"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen
+    ></iframe>
+    <div class="film-wipe" aria-hidden="true"></div>
+    <button class="film-play" type="button" data-film-play aria-label="Play {{ include.title | escape }}">
+      {% include icon.html name="play" %}
+    </button>
+  </div>
+  {% if include.caption %}
+  <figcaption>{{ include.caption | markdownify | remove: "<p>" | remove: "</p>" }}</figcaption>
+  {% endif %}
+</figure>

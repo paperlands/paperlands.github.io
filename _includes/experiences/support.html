@@ -1,0 +1,32 @@
+{%- assign support = include.support -%}
+<section class="experiences-support" aria-labelledby="support-title" data-stage-passage>
+  <div class="experiences-begin-sky" aria-hidden="true">
+    {% include experiences/begin-sky.svg %}
+  </div>
+  <div class="experiences-wrap">
+    <header class="experiences-support-heading">
+      <span class="experiences-spark" aria-hidden="true">✧</span>
+      <h2 id="support-title">{{ support.title | markup }}</h2>
+      <p class="experiences-offer">{{ support.offer | markup }}</p>
+      <p class="experiences-practical">{{ support.practical | markup }}</p>
+    </header>
+    <div class="experiences-routes">
+      {% for route in support.routes %}
+      <article>
+        <figure>
+          {% include media/img.html
+             src=route.image.src alt=route.image.alt
+             width=route.image.width height=route.image.height
+             sizes="(max-width: 700px) 92vw, 40vw"
+          %}
+        </figure>
+        <h3>{{ route.title | markup }}</h3>
+        <p>{{ route.body | markup }}</p>
+      </article>
+      {% endfor %}
+    </div>
+    <p class="experiences-support-action">
+      <a class="experiences-support-cta internal-link" href="{{ site.data.contact.route | relative_url }}">{{ support.cta | escape }}<span aria-hidden="true">{% include icon.html name="arrow-up-right" %}</span></a>
+    </p>
+  </div>
+</section>

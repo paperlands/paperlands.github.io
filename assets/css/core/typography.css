@@ -1,0 +1,75 @@
+/* ==========================================================================
+   core/typography.css — the base heading scale
+   --------------------------------------------------------------------------
+   Why this file exists.
+
+   Headings had no size. Three stylesheets met and nobody chose the result:
+
+     Tailwind preflight   h1..h6 { font-size: inherit; font-weight: inherit }
+                          — deliberately strips the browser defaults
+     normalize.css v8     h1 { font-size: 2em } and nothing for h2..h6
+     core/document.css    h1..h6 { line-height: 1.3; margin-bottom: 0 }
+                          — line-height and margins, no size
+
+   So a heading only looked like a heading if the author remembered a Tailwind
+   text-size utility. Ten headings on the site did not, and rendered at body
+   size at weight 400 — literally indistinguishable from a paragraph. /stpat
+   was the worst: four section headings, none of them looking like one.
+
+   This is the same class of defect as the accidental orange headings recorded
+   as F1 — an appearance that came from an interaction nobody chose, and that
+   survived review because it reads as a deliberate minimal style.
+
+   WHERE IT APPLIES, AND WHERE IT DELIBERATELY DOES NOT.
+
+   This is the base theme. Core pages and the legacy campaign pages inherit it,
+   which is what they want: they are plain documents and rely on element
+   defaults.
+
+   Twilight does not need an exemption, and none is written. Every heading in
+   /tjc and /tjc/nationaldaychallenge carries an explicit size utility —
+   text-[clamp(1.7rem,3.4vw,2.5rem)] and similar — and utilities sit in a later
+   cascade layer than base, so they win. Twilight is a separate theme that
+   styles itself; the cascade already says so. Verified: /tjc measures 0 layout
+   and 0 style deltas after this change.
+
+   Sizes step from the type roles in core/tokens.css and are expressed in rem so
+   they track the document's own scale rather than fighting it.
+   ========================================================================== */
+
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: inherit;
+    text-wrap: balance;
+  }
+
+  /* Rhythm. The document reset in core/document.css zeroes the bottom margin,
+     which left headings welded to whatever followed them. */
+  h1, h2, h3, h4 { margin-block: 1.4em 0.5em; }
+  h5, h6          { margin-block: 1.2em 0.4em; }
+
+  h1 { font-size: clamp(2.4rem, 6vw, 4rem); }
+  h2 { font-size: clamp(1.75rem, 3.6vw, 2.6rem); }
+  h3 { font-size: clamp(1.35rem, 2.4vw, 1.8rem); }
+  h4 { font-size: 1.25rem; }
+  h5 { font-size: 1.1rem; font-weight: 500; }
+
+  /* h6 is the inscription role: not a smaller heading, a different kind of
+     label. Cinzel, letterspaced, uppercase — the same voice as .tw-kicker. */
+  h6 {
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* First heading after the page chrome should not push the page down. */
+  h1:first-child, h2:first-child, h3:first-child {
+    margin-block-start: 0;
+  }
+}

@@ -1,0 +1,15 @@
+{%- assign planning = include.planning -%}
+<section class="experiences-planning experiences-wrap" id="planning" aria-labelledby="planning-title">
+  <header>
+    <p class="experiences-label">{{ planning.label | escape }}</p>
+    <h2 id="planning-title">{{ planning.title | markup }}</h2>
+  </header>
+  <div class="experiences-faq">
+    {% for faq in planning.questions %}
+    <details name="experiences-planning">
+      <summary>{{ faq.question | escape }}</summary>
+      <p>{{ faq.answer | markup }}</p>
+    </details>
+    {% endfor %}
+  </div>
+</section>

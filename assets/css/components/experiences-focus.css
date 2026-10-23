@@ -1,0 +1,115 @@
+/* The Helios reading gesture, in the stage's single practical pigment.
+   A loaded stroke, a brief pool, a dry departure. No animated noise, duplicate
+   lettering, closed ornaments or idle clock. Geometry stays authored. */
+@layer components {
+  [data-look="experiences"] .stage-focus {
+    --focus-progress: 1;
+    --focus-heat: .12;
+    --focus-pool: 1;
+    --focus-dry: 1;
+    position: relative;
+    display: inline-block;
+    isolation: isolate;
+    white-space: nowrap;
+    vertical-align: baseline;
+  }
+  [data-look="experiences"] .stage-focus__word {
+    position: relative;
+    z-index: 1;
+    /* The word is the object; only the departing brush catches the light. */
+    color: var(--light-ink);
+  }
+  [data-look="experiences"] .stage-focus__ink {
+    position: absolute;
+    z-index: -1;
+    left: -12%;
+    top: .55em;
+    width: 165%;
+    height: auto;
+    max-width: none;
+    overflow: visible;
+    pointer-events: none;
+    color: color-mix(in oklab, var(--light-ink) 70%, var(--light-key, #f6c87e));
+    opacity: calc(.26 + var(--focus-heat) * 1.4);
+    mask-image: linear-gradient(90deg, transparent, #000 12%, #000 81%, transparent 99%);
+  }
+  [data-look="experiences"] .stage-focus__ink path {
+    vector-effect: non-scaling-stroke;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  [data-look="experiences"] .stage-focus__stroke {
+    stroke-width: .85;
+    stroke-dasharray: 1;
+    stroke-dashoffset: calc(1 - var(--focus-progress));
+  }
+  [data-look="experiences"] .stage-focus__ink .stage-focus__pool {
+    stroke: none;
+    fill: currentColor;
+    opacity: var(--focus-pool);
+  }
+  [data-look="experiences"] .stage-focus__ink .stage-focus__dry {
+    stroke-width: .65;
+    stroke: var(--light-key, #f6c87e);
+    opacity: .58;
+    clip-path: inset(0 calc((1 - var(--focus-dry)) * 100%) 0 0);
+  }
+  /* A tiny reflected rim, not a new sun or a luminous outline. */
+  [data-look="experiences"] .stage-focus::before {
+    content: "";
+    position: absolute;
+    z-index: -2;
+    inset: .64em -.3em -.22em;
+    pointer-events: none;
+    background: radial-gradient(ellipse 50% 50%,
+      color-mix(in oklab, var(--light-key, #f6c87e) 32%, transparent), transparent 100%);
+    opacity: var(--focus-heat);
+  }
+  [data-look="experiences"] [data-stage-focus="explore"] .stage-focus__ink {
+    width: 220%;
+    top: .45em;
+  }
+  [data-look="experiences"] [data-stage-focus="create"] .stage-focus__ink {
+    width: 110%;
+    left: 62%;
+    top: .38em;
+  }
+  [data-look="experiences"] [data-stage-focus="gather"] .stage-focus__ink {
+    width: 135%;
+    left: -9%;
+    top: .5em;
+  }
+  /* The seam is Cole's held breath: only a dry trace, no practical or bloom. */
+  [data-look="experiences"] .experiences-seam .stage-focus::before { display: none; }
+  [data-look="experiences"] .experiences-seam .stage-focus__ink {
+    opacity: calc(.16 + var(--focus-heat) * .7);
+  }
+  [data-look="experiences"] [data-stage-focus="invite"] .stage-focus__ink {
+    width: 240%;
+    left: -28%;
+    top: .28em;
+    opacity: calc(.18 + var(--focus-heat));
+  }
+  @media (max-width: 700px) {
+    [data-look="experiences"] .stage-focus__ink { width: 132%; }
+    [data-look="experiences"] [data-stage-focus="explore"] .stage-focus__ink { width: 175%; }
+    [data-look="experiences"] [data-stage-focus="gather"] .stage-focus__ink { width: 115%; left: -6%; }
+    [data-look="experiences"] [data-stage-focus="create"] .stage-focus__ink { width: 80%; left: 60%; }
+  }
+}
+@layer utilities {
+  @media (prefers-reduced-motion: reduce) {
+    [data-look="experiences"] .stage-focus {
+      --focus-progress: 1 !important;
+      --focus-heat: .12 !important;
+      --focus-pool: 1 !important;
+      --focus-dry: 1 !important;
+    }
+  }
+  @media (forced-colors: active) {
+    [data-look="experiences"] .stage-focus__word { color: CanvasText; }
+    [data-look="experiences"] .stage-focus__ink,
+    [data-look="experiences"] .stage-focus::before { display: none; }
+  }
+}

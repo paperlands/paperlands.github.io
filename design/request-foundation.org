@@ -1,0 +1,66 @@
+#+title: Request and result
+#+subtitle: What a run is allowed to remember
+#+options: toc:2 num:nil ^:nil
+
+The page asks for a drawing. The record of that ask, and the record of what came back, are owned by the run. They are not handles into the page, and they are not sentences to be parsed later.
+
+* Identity
+
+Two questions stay separate.
+
+- *Request id* answers which attempt produced an event. It is a positive integer, local to one controller, increasing by one at each submission.
+- *Sameness* answers whether another execution needs to happen. Within one performer lifetime it is exact source text, presentation (=commit= or =progressive=), and the pin path. It is not object identity and not a guess that two programs draw the same figure.
+
+At submission the controller takes a deep copy of plain data and freezes it. The copy holds the source text, the presentation, the pin path, the caller's input snapshot and any rows or line map that were supplied, the request id, and the time the controller's own clock read. Freezing the caller's object is not enough: a nested recipe would still be shared. A function, a class instance, a symbol, or a cycle is refused before a run starts.
+
+Latest-value coalescing stays. An instrument proposes. A paced submission builds its request from the captured snapshot. Releasing the gesture submits the final proposal.
+
+Replay is explicit. =replay()= stamps a one-shot nonce that sameness does not ignore. The nonce is not sticky: a later =want()= of the same source, presentation, and pin is the same request and does not draw again. The opening's replay button draws again because it asks for a new nonce, not because it allocated a new object.
+
+A failed commit does not become the presented result. The previous successful presentation stays. The failed attempt is =outcome= and =failure=. A progressive failure that had already presented reports its own visibility: =partial= when a beat was sent, =replaced-empty= when the canvas was cleared and no beat arrived, =previous= when the previous figure was left in front. =unknown= means the stage did not say. The controller does not invent =partial= from a boolean.
+
+* What is kept, and what is left missing
+
+Each boundary copies the fields it was given. A missing field stays missing. Nothing reconstructs a line number or a wound kind by reading a sentence.
+
+| Field | Where it is born | What an absent field means |
+|-------+------------------+----------------------------|
+| =accepted.commands= | the count returned when =play= accepts | this pin did not report an acceptance count |
+| =completion.commandCount= | the value =finished= resolved | this pin did not report a completion count |
+| =beat.time=, =line=, =lines=, =birthtime= | the beat object, key by key | that key was not on the beat |
+| =fault.message= | the rejection, or =String(error)= when the rejection had no message | a fault record always has a message |
+| =fault.reason= | =fatal=, =disposed=, =superseded=, =cancelled=, =transport=, or =unsupported= | the pin or the adapter did not name a reason |
+| =fault.kind=, =fault.span= | top-level fields on the rejection | this failure did not carry them there |
+| =fault.wound= | the structured wound, copied whole when it is plain data | the pin did not attach a wound |
+| =ready.artifact= | the frame's ready message | the frame is not ready; no request may borrow a remembered path |
+| =observedEndToEndMs= | the controller clock, from submission until that attempt settled | the attempt has not settled; this is not an execution time |
+
+=accepted.commands= and =completion.commandCount= stay two numbers. They are different moments. A pin may fill one, both, or neither. The record must not collapse them.
+
+=observedEndToEndMs= is the parent clock around the whole attempt: the message to a frame, hatch construction, and the draw. The field is named that way because the pinned runtime does not report an execution time. A future pin that does will use a different field. =executionMs= is not written.
+
+=reason: transport= is the adapter's own fact. =postMessage= threw, or the frame window was not there. It is not a wound, and it carries no span. A halt that fails to send still cancels the local run; the frame may keep drawing until its own =pagehide=. A play that fails to send rejects that attempt and releases the adapter so the next request can be delivered.
+
+* Visibility and stale events
+
+The stage says what it did to the buffers:
+
+- =presented: false= — a swap-mode run had not been moved to the front. The previous figure remains.
+- =presented: true= and =beatSent: false= — the canvas in front was cleared and no beat arrived.
+- =presented: true= and =beatSent: true= — some of the walk was shown.
+
+A fault is applied only when its id is the run in flight. An older fault, including one that races ahead of =halt=, does not cancel the next request and does not call the boot-fault path. A fault with no id is the frame failing to boot. That one may take the frame down.
+
+Stop and suspend are =cancel()=. Escape, undo, reset, and compare are not. Disposal is final: the controller accepts nothing further. Releasing two buffers is independent; one hatch that throws while disposing does not keep the other.
+
+* Who speaks which method
+
+The pinned artifact's public method is =onBeat=. There is no =onLine= compatibility. The direct performer listens when =onBeat= is a function. If it is absent, the run still plays and =accepted.capabilities.beats= is false.
+
+A fatal refusal keeps the wound's message unchanged. The line stays on the wound's span. The page renders that location separately and does not read it out of the sentence.
+
+The interval is the direct performer: one canvas, one controller, no iframe, no operand binding. Bindings live with the halfway manuscript; see [[file:binding.org][Bindings]]. A direct performer refuses =presentation: commit= before it disposes the resident hatch or clears the canvas. Progressive is the mode that draws on the canvas it was given. The fourth-turn frame is a singleton document with two buffers, and it presents the back buffer only after success. Several such documents are not a per-canvas factory. Routing, origin checks, request lifetime, and teardown stay in the adapter.
+
+* Inspector
+
+The ={ }= sheet shows the source the record is about, and a provenance block for the attempt: request id, pin, observed end-to-end milliseconds, the two counts, and the fault fields. Each line says =absent= when that field is not on the record. The fault line is the fault's own span, or the wound's span when the fault carries the wound and no span of its own. The block does not parse the fault message.

@@ -1,0 +1,127 @@
+{
+  "measured": "2026-10-21",
+  "browser": "Chromium 154.0.8037.97",
+  "lighthouse": "12.8.2",
+  "server": "design/probe/perf-serve.mjs, brotli, HTTP/1.1, cold cache",
+  "build": "bundle exec jekyll build (the production-only analytics script is not in this build)",
+  "note": "Lab measurements of the current tree. The deployed site was older than this build at measurement time.",
+  "baseline_mobile_simulate": {
+    "performance": [
+      81,
+      82,
+      85
+    ],
+    "fcp_ms": [
+      2621,
+      2258,
+      2300
+    ],
+    "lcp_ms": [
+      4162,
+      3983,
+      4200
+    ],
+    "tbt_ms": [
+      73,
+      0,
+      20
+    ],
+    "cls": [
+      0.024,
+      0.021,
+      0.023
+    ],
+    "total_bytes": 1804000
+  },
+  "after_mobile_simulate": {
+    "performance": [
+      92,
+      92,
+      93
+    ],
+    "fcp_ms": [
+      2120,
+      2110,
+      2109
+    ],
+    "lcp_ms": [
+      3052,
+      3017,
+      3012
+    ],
+    "tbt_ms": [
+      11,
+      0,
+      0
+    ],
+    "cls": [
+      0.021,
+      0.021,
+      0.021
+    ],
+    "total_bytes": [
+      674236,
+      674236,
+      674236
+    ]
+  },
+  "after_desktop": {
+    "performance": 100,
+    "fcp_ms": 500,
+    "lcp_ms": 600,
+    "tbt_ms": 0,
+    "cls": 0.014,
+    "total_bytes": 926000
+  },
+  "after_mobile_devtools_throttle": {
+    "performance": 74,
+    "fcp_ms": 1900,
+    "lcp_ms": 5500,
+    "tbt_ms": 20,
+    "cls": 0.003,
+    "total_bytes": 991000,
+    "note": "1.6 Mbps / 150 ms RTT / 4x CPU. The first compact clip is still the LCP; the simulated budget is the scoring model, this is the pessimistic real-pipe view."
+  },
+  "compact_clips": {
+    "tree_fractal": {
+      "av1_bytes": 62911,
+      "h264_bytes": 152734,
+      "box": "572x1080"
+    },
+    "polygon_fill": {
+      "av1_bytes": 152161,
+      "h264_bytes": 231872,
+      "box": "572x1080"
+    },
+    "fibonacci_spiral": {
+      "av1_bytes": 187820,
+      "h264_bytes": 390601,
+      "box": "572x1080"
+    },
+    "prime_sequence": {
+      "av1_bytes": 169654,
+      "h264_bytes": 251877,
+      "box": "572x1080"
+    }
+  },
+  "responsive_images": {
+    "feynman_echo_540": 54602,
+    "feynman_echo_914": 206256,
+    "newton_echo_320": 27248,
+    "newton_echo_611": 154102,
+    "banner_384": 8274,
+    "banner_1280_png": 44342
+  },
+  "fonts": {
+    "after_faces_loaded": 4,
+    "after_bytes": 148000,
+    "removed_duplicate_files": 5,
+    "removed_face": "EB Garamond 400 italic (48KB) was fetched for one hero slate line; the slate now uses the Cormorant italic already loaded"
+  },
+  "not_shipped": [
+    "font subsetting (would save about 48KB but drops accented glyphs from the display faces)",
+    "lossy grain WebP (26KB -> 15.6KB but changes the authored grain pixels)",
+    "hero video preload in <head> (neutral in three runs, competes with the render-blocking CSS on HTTP/1.1)",
+    "warming all carousel neighbours on a 1.6Mbps pipe (replaced by the lean policy)"
+  ]
+}

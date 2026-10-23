@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "host_api": 1,
+  "dojo_commit": "fixture",
+  "language_revision": "v0.5-fixture",
+  "artifact": {
+    "file": "hatch-v1.0000000000000000.mjs",
+    "sha256": "e2f28a9a9667bb547be83db90d3cdd11442d103c5c741e662ddfb5cf51bf4d6a",
+    "bytes": 398,
+    "format": "esm",
+    "browser_target": "es2022"
+  },
+  "fixtures": [
+    {
+      "file": "conformance/beat-score.json",
+      "sha256": "30ca25744636bd58d17d9c815b05bf8f2ebe8df12ee473700e26ddae6ab6ece0",
+      "score": "line, time per beat; see design/hatch.org G1"
+    }
+  ],
+  "licence": {
+    "file": "LICENSE",
+    "sha256": "8732a605813fac877db1cc67946560dcb35106cc3cbcca6b87119d7f4df9001e",
+    "id": "AGPL-3.0-only"
+  },
+  "notices": {
+    "file": "THIRD_PARTY_NOTICES.txt",
+    "sha256": "8de6885ddc4cc561c43a7653d0ef752f6cf9cf08eff45fe0855d7250684e3dd1"
+  },
+  "conformance": {
+    "command": "node conformance/run.mjs"
+  }
+}

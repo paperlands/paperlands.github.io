@@ -1,0 +1,27 @@
+{%- comment -%}
+  One word, one encounter. Copy and the selected word belong to the page.
+  The focus must be the final word/phrase; a suffix check keeps edits safe.
+  The text appears exactly once. All drawn ink is decorative, never a control.
+  Without JS the ink rests; without CSS this is still an ordinary heading.
+{%- endcomment -%}
+{%- assign focus_text = include.text -%}
+{%- assign focus_word = include.word -%}
+{%- assign focus_start = focus_text.size | minus: focus_word.size -%}
+{%- assign focus_suffix = focus_text | slice: focus_start, focus_word.size -%}
+{%- if focus_word and focus_word != empty and focus_suffix == focus_word -%}
+  {{- focus_text | slice: 0, focus_start -}}<span class="helios-focus" data-helios-focus="{{ include.gesture | escape }}"><span class="helios-focus__word">{{ focus_word }}</span><svg class="helios-focus__ink" viewBox="0 0 400 180" fill="none" aria-hidden="true" focusable="false">
+    {%- case include.gesture -%}
+    {%- when 'grow' -%}
+    <path class="helios-focus__thread" pathLength="1" d="M32 107C101 92 137 139 200 109S265 28 311 52 305 127 271 106 303 67 338 80 363 67 389 38"/>
+    <path class="helios-focus__echo" pathLength="1" d="M66 119C123 104 146 144 208 118S263 67 279 75 280 101 263 97M325 77C335 49 362 53 362 29M339 81C354 107 379 103 388 116"/>
+    <path class="helios-focus__seed" pathLength="1" d="M309 52L331 36 338 80 309 52 290 75 338 80 323 103 309 52"/>
+    {%- when 'gather' -%}
+    <path class="helios-focus__thread" pathLength="1" d="M24 87C88 67 190 69 229 91S196 130 114 122 49 85 115 83 241 103 292 82 310 38 346 51 368 77 392 62"/>
+    <path class="helios-focus__echo" pathLength="1" d="M55 96C85 78 187 78 213 97S174 121 119 114 78 90 125 90M271 91C314 71 308 53 334 59"/>
+    {%- when 'invite' -%}
+    <path class="helios-focus__thread" pathLength="1" d="M35 109C102 100 155 120 207 109S277 98 296 118 278 146 263 136 274 120 286 137 297 157 315 161"/>
+    {%- endcase -%}
+  </svg></span>
+{%- else -%}
+  {{- focus_text -}}
+{%- endif -%}

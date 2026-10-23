@@ -1,0 +1,119 @@
+/* One standing tree, rooted on the right, opens its crown toward the words.
+   It lives behind the passage and contributes no height to its reading order. */
+@layer components {
+  .experiences-seam,
+  .experiences-jump { --seam-indent: max(0px, calc((100% - 42rem) / 2)); }
+
+  .experiences-seam {
+    position: relative;
+    isolation: isolate;
+    padding-block: .25rem 1.75rem;
+    text-align: left;
+  }
+  .experiences-seam-copy {
+    position: relative;
+    z-index: 2;
+    margin-inline-start: var(--seam-indent);
+  }
+  .experiences-seam h2 {
+    max-width: none;
+    font-size: clamp(3rem, 4.8vw, 5rem);
+    font-weight: 400;
+    line-height: 1.14;
+  }
+  .experiences-seam-lead {
+    display: block;
+    margin-bottom: .6em;
+    color: color-mix(in oklab, var(--light-ink-dim), #f8dfad calc(var(--passage-heat, .4) * 36%));
+    font: 400 clamp(1.0625rem, 1.45vw, 1.375rem)/1.4 var(--font-serif);
+    letter-spacing: .01em;
+  }
+  .experiences-seam h2 > span:not(.experiences-seam-lead) { color: var(--light-ink-dim); }
+  .experiences-seam-field {
+    position: absolute;
+    z-index: 0;
+    inset-block: -24rem -.5rem;
+    right: -2rem;
+    width: min(60%, 40rem);
+    pointer-events: none;
+    overflow: hidden;
+    opacity: calc(.3 + var(--passage-heat, .4) * .12);
+    mask-image:
+      linear-gradient(90deg, transparent, #000 34%, #000 88%, transparent),
+      linear-gradient(180deg, transparent, #000 14%, #000 82%, transparent);
+    mask-composite: intersect;
+  }
+  .experiences-seam-form {
+    position: absolute;
+    display: block;
+    max-width: none;
+  }
+  /* Paired pen-up passes of one tree, with the same frame and root. */
+  .experiences-seam-form-branch,
+  .experiences-seam-form-canopy {
+    height: 86%;
+    width: auto;
+    right: -.5rem;
+    bottom: 0;
+    transform-origin: 56.7% 99.5%;
+    transform: rotate(-10deg) scale(calc(.82 + var(--tree-growth, 1) * .18));
+    mask-image: linear-gradient(to top,
+      #000 calc(var(--tree-growth, 1) * 110% - 10%),
+      transparent calc(var(--tree-growth, 1) * 110%));
+  }
+  .experiences-seam-form-canopy { opacity: var(--tree-canopy, 1); }
+  /* The phrase warms with the late canopy, not with an idle glow clock.
+     Solid pigment keeps italic overhangs and descenders free of paint clipping. */
+  [data-look="experiences"] .experiences-seam .stage-focus__word {
+    color: color-mix(in oklab, var(--light-ink), #ffe8ad calc(var(--focus-bloom, 1) * 100%));
+    text-shadow:
+      0 0 .08em rgb(255 242 190 / calc(var(--focus-bloom, 1) * .2)),
+      0 0 .32em rgb(227 174 87 / calc(var(--focus-bloom, 1) * .5)),
+      0 0 .85em rgb(184 117 36 / calc(var(--focus-bloom, 1) * .24));
+  }
+  [data-look="experiences"] .experiences-seam [data-stage-focus="gather"] .stage-focus__ink {
+    width: 145%;
+    left: -4%;
+    top: .2em;
+    opacity: calc(.12 + var(--focus-heat) * .5);
+  }
+
+  .experiences-jump {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: .15rem 1.75rem;
+    margin-inline-start: var(--seam-indent);
+    padding-block: 0 .5rem;
+  }
+  .experiences-jump .experiences-label { flex-basis: 100%; margin: 0 0 .5rem; }
+  .experiences .experiences-jump > a {
+    display: inline-flex;
+    gap: .6rem;
+    align-items: baseline;
+    min-height: 2.75rem;
+    padding-block: .5rem;
+    font-size: .9375rem;
+    color: var(--light-accent);
+  }
+  .experiences-jump-number { color: var(--light-ink-dim); font-size: .6875rem; }
+  .experiences .experiences-jump > a:hover { color: var(--light-high); }
+  .experiences-possibilities .experiences-movement:first-of-type { padding-top: clamp(2.5rem, 5vw, 4rem); }
+
+  @media (max-width: 700px) {
+    .experiences-seam h2 { font-size: clamp(2.75rem, 11vw, 3.75rem); }
+    .experiences-seam-field {
+      inset-block: -18rem -.5rem;
+      width: 110%;
+      right: -2rem;
+      opacity: calc(.16 + var(--passage-heat, .4) * .08);
+    }
+    .experiences-jump { gap: .1rem 1.25rem; }
+  }
+}
+@layer utilities {
+  @media (forced-colors: active) {
+    .experiences-seam-field { display: none; }
+    [data-look="experiences"] .experiences-seam .stage-focus__word { color: CanvasText; text-shadow: none; }
+  }
+}

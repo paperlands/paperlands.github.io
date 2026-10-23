@@ -1,0 +1,12 @@
+<!doctype html>
+<!-- Isolated same-video control for hero-hotpaths.mjs: no hero CSS, no grade,
+     no grain, no carousel. The probe sets the video's box and src to the pinned
+     hero values and keeps the page scrollable like the shipped page. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  html, body { margin: 0; padding: 0; background: #020102; }
+  body { height: 1900px; }
+  video { position: absolute; display: block; object-fit: cover; pointer-events: none; }
+</style>
+<video id="bare" muted playsinline loop preload="auto"></video>

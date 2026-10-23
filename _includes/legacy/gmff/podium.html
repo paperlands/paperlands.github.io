@@ -1,0 +1,55 @@
+{% comment %}
+  _includes/legacy/gmff/podium.html   (was _includes/gmff/… before the freeze)
+  ───────────────────────────────────────────────────────────────
+  Orchestrator — reads _data/festivals/gmff2026.yml, renders full section.
+  Usage: {% include legacy/gmff/podium.html %}
+  Requires: {% include legacy/gmff/podium_assets.html %} once in layout.
+  All four paths above were stale: this file's own name, the data file, and the
+  two include targets. The data file was renamed to _data/festivals/gmff2026.yml
+  and the page reads site.data.festivals.gmff2026 — the body was updated when
+  that happened and this header was not, which is how a comment starts lying
+  about the thing directly beneath it. The body is untouched; this file is
+  frozen (surfaces.yml, boundary.legacy_dirs).
+  ───────────────────────────────────────────────────────────────
+{% endcomment %}
+
+{% assign results   = site.data.festivals.gmff2026 %}
+{% assign fest      = results.festival %}
+{% assign podium    = results.films | where_exp: "f", "f.rank != nil"  | sort: "rank" %}
+{% assign finalists = results.films | where_exp: "f", "f.rank == nil" %}
+
+{% comment %} Visual order: 2nd left · 1st centre · 3rd right {% endcomment %}
+{% assign display_order = "2,1,3" | split: "," %}
+
+    <!-- ══ HEADER ══════════════════════════════════════════════ -->
+    <!-- ══ PODIUM: 2nd · 1st · 3rd ════════════════════════════ -->
+    <div class="gmff-results">
+      <h2 class="gmff-results__title">Award Winners</h2>
+      <div class="gmff-podium-row">
+        {% for pos in display_order %}
+          {% assign pos_int = pos | plus: 0 %}
+          {% assign film = podium | where: "rank", pos_int | first %}
+          {% if film %}
+            <div class="podium-position podium-position-{{ pos_int }} {% if pos_int == 1 %}podium-position--winner{% endif %}">{% include legacy/gmff/podium_card.html film=film %}</div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- ══ DIVIDER ════════════════════════════════════════════ -->
+    {% if finalists.size > 0 %}
+    <div class="my-14 flex items-center gap-4">
+      <div class="orange-line flex-1"></div>
+      <p class="font-display text-[10px] tracking-[0.28em] text-orange-500 opacity-55 uppercase shrink-0">
+        Official Finalists
+      </p>
+      <div class="orange-line flex-1"></div>
+    </div>
+
+    <!-- ══ FINALISTS GRID ═════════════════════════════════════ -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 mb-16">
+      {% for film in finalists %}
+        {% include legacy/gmff/finalist_card.html film=film %}
+      {% endfor %}
+    </div>
+    {% endif %}

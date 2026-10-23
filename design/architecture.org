@@ -1,0 +1,582 @@
+#+title: PaperLand — architecture and phases
+#+subtitle: The contract, the traps, and what happens next
+#+options: toc:2 num:t ^:nil
+
+#+begin_quote
+A specification states what is true and what happens next. It is not a diary.
+History lives in git. Reasoning that is still live lives in the code it governs.
+#+end_quote
+
+* Current state
+
+A Jekyll 4 static site on GitHub Pages. Four surfaces, declared once in
+=_data/surfaces.yml= and asserted by =design/probe/surfaces.py=:
+
+| surface   | what                                                        |
+|-----------+-------------------------------------------------------------|
+| core      | front page, the Library of notes, the standing pages         |
+| legacy    | four campaign pages, frozen — must render unchanged           |
+| sealed    | Twilight (=/tjc=), a self-contained theme                     |
+| redirects | URL preservation, in three kinds with different lifetimes     |
+
+=_data/surfaces.yml= is the source of truth for this table; it also records the
+kinds within each surface and why each removed route was removed. Do not
+duplicate it here.
+
+*Build*: one shared stylesheet (=assets/css/app.css=) plus a stylesheet per
+surface — the modes: =components/helios.css= (the landing's acts),
+=components/evening.css= (the edition) and =components/twilight.css= (sealed).
+=app.css= is the foundation every page loads (tokens, lights, faces, document,
+media, the bar, the drawn mark); a mode is linked only where the page is that
+surface, so no page ships another surface's composition. Count them in the
+tree, not here.
+
+*Lights*: =core/lights.css= names the roles (=--light-ground=, =--light-ink=,
+=--light-ember=…) and each surface answers them. The landing and the edition
+are two exposures of one fire: four values were literally shared under two
+names (=#ff9933=, =#d45a14=, =#8b2e0c=, =#291d57=) and the ramp positions
+between them had drifted. A role is what the light is FOR; the values are the
+surface's. Geometry, type scale and one-surface apparatus stay with their
+composition.
+
+*Toolchain*: Jekyll 4.4, Tailwind v4 via the =tailwindcss-ruby= gem. The gem
+passes =--config tailwind.config.js= to the v4 CLI, which ignores unknown flags;
+there is no JS config and re-adding one would not take effect.
+
+* The contract
+
+** One entry, explicit layers, nothing unlayered
+
+=assets/css/app.css= is the only stylesheet. It imports the rest and declares
+=@source=. Tailwind v4 emits =@layer properties, theme, base, components,
+utilities=; authored CSS picks a layer by wrapping its rules.
+
+#+begin_quote
+*Unlayered CSS outranks every layer.* A single unlayered rule silently beats the
+whole cascade. This has already happened twice here and cost a surface once.
+=design/probe/*.py= has an audit for it.
+#+end_quote
+
+** Tokens are the design contract
+
+=assets/css/core/tokens.css= declares every colour, font and duration as an
+=@theme= block. Components read roles, never raw hex.
+
+*Not yet true everywhere.* =core/document.css= still carries raw colours and
+=core/media.css= carries durations. That is phase 5's job, not a precondition
+for phase 3.
+
+** Type is four roles
+
+| role        | family             | used for                        |
+|-------------+--------------------+---------------------------------|
+| =display=   | Cinzel             | inscriptions, kickers, labels    |
+| =serif=     | Cormorant Garamond | display italic, headings, verse  |
+| =body=      | EB Garamond        | running text, UI, nav            |
+| =paperlang= | paperLang          | the hand-drawn brand face        |
+
+Declared in =tokens.css=, loaded by one Google Fonts request in
+=_includes/head.html=, with =paperLang= declared as an =@font-face= locally. Headings default
+to =serif= at 600 via =core/typography.css=. Twilight overrides all four for
+itself — see below.
+
+** Navigation is one data file
+
+=_data/nav.yml= holds a keyed dictionary of links plus the one ordered key list.
+=_includes/nav.html= is the nav, on every page. It used to be a dispatcher over
+=nav/site.html= (banner image, link list, mobile panel) and =nav/folio.html= (text
+mark, actions, no links) — and the second one's =links= list was empty, so the
+homepage and every note shipped a navbar with no destinations in it while
+everything else shipped five. Two navbars on one site is not a nav.
+Behaviour is =assets/js/nav.js=, scoped to =[data-nav-root]=. The one number the
+CSS and the JS share is the 1024px breakpoint; they must agree or a resize can
+leave the body scroll-locked with nothing visible to close.
+
+=Tone names the surface the nav sits on, not the ink=: =light= means the nav is
+over a light background. Pages set =nav_tone=; the default is in =nav.yml=.
+
+** The shape of a site-wide component
+
+Three components are placed on every page that carries the chrome, and they have
+one shape. Naming it is what makes the next one a copy rather than an invention:
+
+#+begin_src text
+  markup     _includes/<name>*.html            the dialog, the form, the nav
+  skin       assets/css/components/<name>.css  in the shared app.css entry
+  behaviour  assets/js/<name>*.js             loaded by the markup that needs
+                                              it, defer — not by a layout
+  data       _data/<name>.yml                 the words, the routes, the slots
+  placement  the layouts carrying the nav     one include line each
+  record     this file                        the invariants, and who holds them
+  probe      design/probe/<name>*.mjs         the assertions, run after a change
+#+end_src
+
+#+begin_src text
+nav      _data/nav.yml       _includes/nav.html         nav.js         nav.css
+media    _data/media.yml     _includes/media/boot.html  media-video.js media.css
+letter   _data/contact.yml   _includes/contact_modal.html  contact.js   contact.css
+#+end_src
+
+Three consequences worth keeping. =A component loads its own behaviour= (the
+nav's include loads nav.js, the letter's loads contact.js), so a page that does
+not place the markup pays nothing for it. =What a component knows about itself
+is data or markup, not code=: the letter's route and arrival are written once in
+_data/contact.yml and handed to the dialog as data attributes the script reads
+back. And =markup stays declarative=: a behaviour living inside an include is a
+behaviour nobody can find, test or cache (the letter's form had one, and now
+loads assets/js/contact-form.js instead).
+
+** One copy surface per page
+
+A word is DATA, wherever it is drawn. It was not always: =_includes/home/colophon.html=
+shipped ='See Math'=, ='Differently'= and ='Enter PaperLand'= as filter defaults, the
+letter's form wrote =Sent!= beside the receipt =_data/contact.yml= already said, and a
+figure's caption lived in the same file as the clip it was drawn over. In each case the
+word had no owner: no page could change it, no probe could see it, and the only way to
+find it was to read every template.
+
+THE RULE, one line: a template places words, it does not choose them. What follows is
+where the choosing happens — and it is four places, not one.
+
+#+begin_src text
+  the letter    _data/contact.yml        every page says the same thing, so the
+                                        words are the component's. This is the
+                                        only copy a page may NOT override.
+  the edition   _data/notes.yml         what the note layout and its includes
+                                        say AROUND a note: the rail's title, the
+                                        graph's eyebrow, the standing kicker, the
+                                        skip link.
+  the frame     _data/site.yml          what the standing frame says around any
+                                        document: the colophon line, and the two
+                                        words of a redirect stub.
+  a page        that page's front matter  what ONE page says. `copy:` for a page
+                                        that has no acts, or the named blocks the
+                                        acts read (page.hero, page.who,
+                                        page.possibilities, …) where the page is
+                                        composed of them.
+#+end_src
+
+=Two rules make it work.= =A default is a word=: when an include falls back to a
+literal, that literal is copy with no owner, so the fallback is deleted and the page
+is made to say it — the cost is one line of front matter per page, and the gain is
+that a page that says nothing renders nothing rather than borrowing someone else's
+sentence. And =a status line's vocabulary is the page's too=: words a runtime WRITES
+(=waiting=, =performing=, =the finished figure=) travel to the script as data
+attributes — see =_pages/helios-dojo.md= and =_pages/helios-interval.md= — because a
+status word hardcoded in JS is exactly the word no page can change.
+
+=What is deliberately not hoisted.= =design/assets/copy.org= stays the human source
+and the page stays the machine one; =_notes/*.md= prose is a document, not a copy
+surface, and stays where it is written; and a platform name on =/lan=
+(=x86_64=, =arm64=) names the artifact in the URL beside it, so it is data about the
+download rather than a sentence the page is saying. The distinction to hold: =if a
+reader reads it, it has an owner — and the owner is the surface that would have to
+change it.=
+** The letter is one component, and it declares its own addresses
+
+Six files, and nothing else knows they exist. Three of them are markup the
+layouts place, and two of those load the behaviour they need:
+
+#+begin_src text
+_includes/contact_modal.html        the markup — a native <dialog>
+_includes/contact_form.html         the form, in its two skins (paper, night)
+assets/css/components/contact.css   the skin, in the shared app.css entry
+assets/js/contact.js                the dialog's behaviour: opens it where the
+                                    reader is, lazy Turnstile, status line
+assets/js/contact-form.js           the form's behaviour: composing the return
+                                    address at submit, the paper skin's receipt
+_data/contact.yml                   the words, the route, and the arrival
+#+end_src
+
+Placement is the layouts': =default=, =folio= and =note= each include it once,
+because those are the three that carry the nav. Nothing else knows it exists —
+no page carries its copy, and no page carries its filenames.
+
+=The route is data, not code.= =contact.yml= declares =route= (=/contact=) and
+=arrival= (=/#contact=); the include writes them onto the dialog as
+=data-contact-route= and =data-contact-arrival=, and =contact.js= reads them
+back, so the script holds no address of its own. =_pages/contact.md= IS the
+route and declares no target — =_layouts/redirect.html= resolves one from the
+letter. A moved route is two lines in one file, and the four things that
+mention the letter (the nav's label, a note's prose link, the route page, the
+script) all follow it.
+
+=The words are the site's grammar, not one invented for a data file.= Every
+string in =_data/contact.yml= is read with =| markup=: =_plugins/site_markup.rb=
+resolves a =[[experiences|Experience]]= against the notes and the pages, and the
+result is read as kramdown, so the letter links and wears faces exactly as a
+note does — =To <span class="font-paperlang">PaperLand</span>= is how this file
+sets a face, and it is how every page sets one. ONE GRAMMAR, TWO SURFACES: the
+generator walks the documents, which Liquid cannot reach, and the filter hands
+a data string, which no generator walks, the SAME code. The brackets are
+asserted by =design/probe/site_markup_test.rb=; the letter's keyboard contract —
+how many stops the dialog has is the copy's decision, not the probe's — by
+=design/probe/contact.mjs=.
+
+=A link in the letter is the letter's colour.= It is the accent the panel
+exposes (=--contact-accent=), measured against the ground it is painted on —
+8.0–8.2:1 over four surfaces, and its underline 3.9:1, which is what a reader
+who does not see the orange still has. NOT the reading surface's blanket anchor
+ink: the edition's =a { color: inherit }= ties with the letter's own rule on
+specificity and wins on sheet order, so =components/evening.css= excludes the
+dialog exactly as =core/document.css= already does for the Library's paper field
+and hover chip, and =design/probe/contact.mjs= asserts the accent on both the
+note and the Library. A surface lights the letter; it does not paint it.
+
+=The receipt is a SECOND LETTER, not a decorated one.= What comes back when one
+is sent is the letterhead turned around — From PaperLand where it said To PaperLand
+— the invitation given way to the thank-you, the form gone (it is done with), the
+address gone with it (a footnote to a letter just written) and the desk it reached
+drawn under it, in the brand's own orange. Everything left shares ONE AXIS: a
+receipt is a card, and left-aligned in a wide panel the drawing floated in a
+half-empty column. The words are
+=_data/contact.yml='s (=sent_title=, =sent_message=, =error_message=) and marked up
+like every other word, which is how @PaperLand is a link. =contact.js= writes ONE
+class for the state (=.contact--received= / =.contact--failed=) and the skin swaps
+everything off it, including the live region: in the received state that region is
+out of sight, because the thank-you is the letter's own line and the region only
+announces it. A letter that FAILED keeps every one of those — letterhead,
+invitation, form and the reader's words in it — and is told so at the foot of the
+panel, in red (=#ff5340=, measured 6.3:1), at the end edge.
+
+=And none of it is spent until it is earned.= A letter that was never sent is the
+same panel it was before any of this existed: the second letterhead, the desk and
+the receipt are =display: none=; there is nothing to animate (the desk is a
+drawing, and it is STILL — an earlier version was two butterflies, and it was the
+motion that made them look dead); and nothing to download, because a monospace grid
+is not a face. Its escapes are checked by decoding them rather than by eye: `\a`
+eats one space, and a hand-counted drawing shears.
+
+=A failed send does not cost the reader their letter.= The proxy returns them to a
+fresh document; =assets/js/contact-form.js= takes a copy of the fields at submit
+(the last moment they are on the page) and hands them back when the return says
+=sent=false=, because a captcha that failed once should not cost a reader
+everything they wrote. A receipt SPENDS the copy, so nothing of theirs lingers in
+the tab. Storage can be denied outright — a private window, a locked-down browser —
+and then it does nothing at all: a form that asks the reader to retype is a form
+that works, which is the floor. The letter's three fields are =required= in the
+markup: the labels have claimed the asterisk all along, and the browser is where
+that can be said and announced.
+
+=The contract.= A link to =route= opens the letter WHERE THE READER IS, and the
+href is left alone, so a modifier-click, a middle-click and a reader with no
+JavaScript still resolve the route. Only the reader with no page to open it on
+— an external link, a bookmark, a share, no JavaScript — goes through the
+route, which redirects to =arrival= and the dialog opens there.
+
+The classes are =contact*= and not a look's: the letter belongs to no look, and
+=looks.py= requires every class a =[data-look]= rule names to be namespaced to
+that look. It is a singleton — one =<dialog id= per page — and its skin reads
+the surface's light roles where a surface answers one (see =core/lights.css=),
+falling back to the landing's values on a page with no exposure.
+
+=Known interactions, recorded rather than discovered.= Two forms on one page is
+the one that matters: /lesson-plans carries the paper form AND the letter, both
+post to the same proxy and both read =?sent=, so one submission answers twice —
+the paper skin's toast behind, the dialog in front. That is one endpoint and one
+receipt shown twice. Retiring the paper form, or marking which form was sent,
+are the two ways out; both are product decisions, so neither is taken here.
+
+Two limits are external and cannot be made relational: the proxy and the
+Turnstile key are the site's own services, and the challenge cannot verify on
+localhost.
+
+=Site-root serving is assumed=, as the nav assumes it: =nav.html= writes its link
+hrefs verbatim, the letter compares =location.pathname= to the route verbatim,
+and /contact's target is root-relative. A =baseurl= deploy would move those three
+together. The route is declared in one file precisely so that it can: the probe
+asserts the nav's link and the letter's route are the same address, which is the
+agreement that has to hold.
+
+** Surfaces: the directory is the boundary
+
+#+begin_src text
+_pages/legacy/      4 frozen campaign pages
+_pages/redirects/   20 stubs
+_layouts/legacy/    the two layouts those campaign pages chain through
+_includes/legacy/   their components
+#+end_src
+
+=surfaces.py= fails if anything outside those directories references a =legacy/=
+artefact. A comment is not a boundary.
+
+** Media
+
+=design/media.org= is the ratified contract and is authoritative: Clip, Surface,
+Carousel, Marks; one player (=assets/js/media-video.js=); one carousel writer;
+a global attached-decoder cap of three; who may write scroll (Page motion).
+Read it before touching video or page scroll.
+** Five assertions
+
+Run these after any change that touches layout, styles, assets, a page's copy or
+Helios copy.
+
+=catalog.py= asserts BOTH catalogs a Helios page names: the clip ids it places
+(_data/media.yml — H.264 spine, poster, box, alt) and the scene ids it refers to
+(_data/helios_possibilities.yml — art and program for an id whose words are the
+page's), and it fails a scene no page names. It used to read every =- id:= in the
+front matter as a CLIP id, which is a check that a page telling the truth cannot
+pass.
+
+=coverage.py= reads EVERY built sheet in =_site/assets/css/=. That is not a
+loosening: since =css_modes= a page links only the one sheet its surface needs
+(=mode-helios.css=, =mode-evening.css=, =mode-twilight.css=), so reading =app.css=
+alone reported every Helios and every edition class as unstyled — the failure the
+probe exists to catch, reported against the probe.
+
+#+begin_src sh
+python3 design/probe/surfaces.py    # routes classified, kinds partition, no leakage
+python3 design/probe/coverage.py    # every rendered class resolves to a selector
+python3 design/probe/assets.py      # every url() in the stylesheet resolves
+python3 design/probe/looks.py       # every look binds published slots, not classes
+python3 design/probe/catalog.py     # Helios names only real H.264+poster clips
+#+end_src
+
+=design/probe/= also holds =triage.mjs= (renders the old and new builds side by
+side and compares every element), =rules.mjs= (which rule actually wins),
+=eval.mjs=, =console.mjs=, =identity.mjs= and =scroll.mjs=. (This list named a
+=shot.mjs= that does not exist in the directory, which is a small thing that
+costs a reader real time: they go looking for a tool before doubting the index.)
+
+* Traps
+
+Things that will bite a change. Each is real, current, and not obvious from
+reading the code.
+
+** T1 — Classes composed at build time are invisible to Tailwind
+
+=_includes/media/hero.html= emits =h-[{{mobile}}] md:h-[{{desktop}}]= from
+Liquid params. The finished class appears in no source file, so the scanner
+cannot see it. The values in use are safelisted in =app.css= with =@source
+inline()=. *A new value must be added there or it will silently not apply.*
+
+This has already caused a live bug: the rule for =md:h-[56vh]= existed only
+because a deleted page happened to contain that string literally.
+
+** T2 — =space-y-*= and =space-x-*= reach the first child
+
+v3 used the sibling combinator, which skips the first child. v4 uses
+=:not(:last-child)= with =margin-block-start/end=, so it sets
+=margin-block-start: 0= on the first child and destroys whatever leading margin
+that element had. This silently removed a note heading's top margin.
+
+Use =gap= on flex and grid containers. It is equivalent spacing that does not
+touch the children.
+
+** T3 — =leading-*= now beats =text-*=
+
+v4 threads =var(--tw-leading, …)= through the font-size utilities, so an
+authored =leading-relaxed= takes effect where v3 let a later =text-xl= override
+it. Correct, but it moves line-heights written before the migration.
+
+** T4 — No wildcard in a =_config.yml= default scope path
+
+=FrontmatterDefaults#applies_path?= takes a =Dir.glob= branch whenever the scope
+path contains =*=. With =path: "**/*"= that globbed the whole source tree and
+ran roughly 86,000 =Pathname#relative_path_from= calls per build, inside
+=StaticFile#write?=, inside the CLEANUP phase.
+
+The scopes are =path: ""= and =path: "_notes/"=. An empty path matches
+everything without globbing; a plain prefix takes a cheap =start_with?=. *Keep
+it that way.* This was 2.4 s of every build.
+
+** T5 — Twilight is a theme and owns its tokens
+
+Twilight sets =data-theme="twilight"= on its body, and
+=components/twilight.css= declares its own =--font-display=, =--font-body=,
+=--font-sans=, =--font-paperlang= plus a heading scope that stands the base
+scale down. Without that scope, base-theme decisions leak into a sealed surface
+— which is exactly what happened when =--font-display= was retargeted and all
+fifteen Twilight headings silently changed family.
+
+Twilight's own headings all carry explicit size utilities, and utilities win
+over =@layer base=, so the base scale does not reach them. That is why no
+exemption marker is needed anywhere else.
+
+** T6 — Library hover/focus ink is scoped, not gone
+
+=core/document.css= link hover and =*:focus= with =!important= apply only to
+=body:not([data-theme]):not([data-shell])=. Folio and Twilight do not inherit
+them. They still cannot be beaten *inside* a Library page from a scoped layer:
+the rule carries =!important=. The measured column lives on =.wrapper=.
+
+=The escape is the rule's own scope.= It excludes the top layer —
+=*:focus:not(dialog, dialog *)=, and the same =:not()= on the =a:not(:has(*))=
+ink — because a =<dialog>= carries its own ground. Without that, the letter's
+focused field turns amber-on-black on every unthemed page, and the letter is
+on all of them.
+
+** T7 — The probe server must prefer =.html= over a directory
+
+=/tjc= and =/tjc/nationaldaychallenge= both exist, so the build contains both
+=_site/tjc/= and =_site/tjc.html=. Resolving the directory first serves Python's
+autoindex page — seven elements, no stylesheet. =serve.py= pins the order.
+
+** T8 — The probe must be torn down by process group
+
+Chromium forks utility and renderer children that do not die with the parent.
+=run.sh= launches with =setsid= and kills the group. Without it, one session
+leaked 121 browsers, drove load to 8.7, and roughly doubled every Jekyll phase —
+which reads as a code regression and is not one.
+
+** T9 — A nested =@layer= is subordinate to its parent
+
+=`@layer components.helios { … }` does NOT outrank `@layer components`.
+Measured in Chromium: a nested layer loses to declarations written directly in
+its parent, whatever the specificity or the source order — sub-layer before or
+after the parent's rules resolves the same way. A *sibling* layer does outrank
+by order, which is why =@layer utilities= beats =components= and why motion
+overrides belong there.
+
+The first Helios look used a sub-layer believing the opposite, and every
+binding whose surface had a competing declaration in =components= silently
+reverted: the card kicker came back uppercased, the rail fell to
+`font: inherit`, and on a phone the copy ran into the rail. The unbound ones —
+a colour nothing else set — still applied, which is what made it read as a
+partial failure instead of a layer failure.
+
+A look therefore lives in =components= and carries its precedence in
+specificity: `[data-look="x"] [data-media-carousel="stack"]
+[data-media-slot="title"]`. =design/probe/looks.py= checks the bindings; it
+cannot check which layer they land in. This one has to be read.
+* Phases
+
+Each phase leaves the site shippable. Gates are stated, not implied.
+
+** Phase 0 — Cull and repair  [DONE]
+
+Removed =_sass/_tufte.scss= (597 lines, importing three partials that do not
+exist), =_sass/_night-mode.scss=, =_includes/night-mode.html=, =_includes/card.html=,
+and four never-built pages. Fixed a =@font-face= whose =src= had a trailing
+comma, so =paperLang= had never loaded.
+
+** Phase 1 — Platform  [DONE]
+
+Tailwind v3 → v4. One stylesheet, explicit layers, zero unlayered authored rules.
+The 465-line JS config became =@theme= tokens.
+
+** Phase 2 — Cull, fence, seal  [DONE]
+
+Legacy moved into its own directories and the boundary made structural. Dead
+colour tokens, orphan pages and duplicated assets removed. =/dojo=, =/teachers=
+and =/workshop= retired as internal redirects. Assets deliberately removed from
+the repository were checked for inbound references first, and untracked files
+were left alone because they are not recoverable from history.
+
+** Phase 3 — Helios vertical slice  →  in progress
+
+The homepage, built as a consumer rather than guessed at.
+
+- =_pages/helios.md= front matter, populated from =design/assets/copy.org= (the copy source,
+  which already names the five hows and their clips) and from =design/iterations/04-helios.html=.
+- =_layouts/home.html= — a standalone document, like =twilight.html=, not a
+  consumer of =default.html=.
+- =_includes/home/*= and =assets/js/home/*=.
+- Media minted per =media.org= into =assets/=: posters to WebP at 720 on the
+  long edge, one H.264 file per clip at the surface box, content-addressed names.
+- Folio variables stay *local to the page*. Do not promote the folio palette to
+  site tokens; =--brand= is already =--primary= and the rest are folio-shaped.
+- One =carousel.js= parameterised by =data-media-carousel="stack|strip"=, not one
+  per surface.
+
+/Status./ The page landed at =/helios= (=_pages/helios.md=), composed from
+=_includes/home/*= and the shared catalog + writer, with =assets/js/home/*=
+for decoration. Copy lives in that page's front matter. In =_includes/home/=
+the acts are =air=, =wordmark=, =hero=, =ticker=, =who=, =colophon=, =boot=.
+
+/Deviation from this plan, recorded rather than quietly taken./ There is no
+=_layouts/home.html=. The folio layout already is a standalone document, so
+the page reuses it and names its look with =look: helios=; =folio.html= writes
+=data-look= on <body> and =components/helios.css= binds the shared media slots.
+The alternative — a =home.html= that differs from =folio.html= by one
+attribute — would have been two documents for one theme. The permalink swap
+to =/= is still the rollback, and still one line.
+
+/Gate met so far./ =design/probe/helios.mjs= holds at 1440, 390 and 320; both
+carousels run on the shared player under the cap of three; reduced motion
+attaches zero decoders and shows stills; the page contains no =<video src>=.
+=design/probe/looks.py= and =design/probe/catalog.py= hold the consumer contract.
+Catalog spines and posters are minted (H.264 + WebP, content-addressed). The
+permalink swap onto =/= is a product decision, not a mint.
+
+/Why this is first./ It is the only thing that can show whether the media
+contract fits, whether one carousel writer is credible, how much CSS is actually
+theme-specific, and what the semantic tokens should be. It also brings the frame
+that makes phase 5 possible.
+
+/Rollback./ Taken. =_drafts/index.md= is the old homepage, parked rather than
+deleted; moving it back and reverting =_pages/helios.md='s permalink undoes the
+swap. `_drafts/` is not built (`jekyll build` runs without `--drafts`), which is
+why parking it there retires it and a git revert does not.
+
+/Gate./ Both carousels run on the shared player under a decoder cap of three;
+reduced-motion and save-data show stills only; no =<video src>= in the page.
+
+** Phase 4 — Name the roles
+
+Core carries ~146 distinct type/colour utilities across ~720 uses, and ~58% of
+class strings are unique. Name them as components and semantic tokens (=prose=,
+=kicker=, =plate=, =seal=, =note-head=, =figure=, =action=) so re-theming is a
+token edit rather than a find-and-replace.
+
+/Informed by phase 3, not guessed./ Naming from a vocabulary with no consumer is
+how this codebase acquired a 75-token palette nobody chose.
+
+** Phase 5 — Document base and Library
+
+Rewrite the document surface: =default.html=, =page.html= and =core/document.css=
+as one pass. Scope the frame off the core pages, delete the four =!important=
+rules, move =document.css='s raw values into tokens, and rebuild the Library as
+Tufte structure on PaperLand material — measured column, sidenote and marginnote
+at reach, collapse below 60em.
+
+Resolve the =<content>= coupling while here: =_includes/link-previews.html= reads
+=iframe.contentWindow.document.querySelector('content')=, so a hover tooltip
+depends on a bare element existing in two layouts. Make it an explicit attribute
+or retire the feature — it serves every note.
+
+/Gate./ A2's palette review: the frozen Material values must be classified KEEP,
+REMAP or DELETE. They were carried through the v4 migration deliberately so that
+migration would change no pixels; they were never chosen.
+
+** Phase 6 — Retire the dialects
+
+Mastheads through =fill= + catalog; grids through =box=; retire =gallery.html='s
+private video path; remove raw autoplay tags; add a pause control if more than
+one clip autoplays (WCAG 2.2.2).
+
+** Out of scope until amended
+
+- =legacy= (4 routes): frozen. Not refactored, not deleted.
+- =sealed= (2 routes): Twilight. Not unified.
+- =campaign= redirects (2): retire when their campaigns end.
+
+* Live decisions
+
+** Does the folio palette become the site palette?
+
+=--brand= and =--primary= are both =#ff9933=; the rest of the folio palette
+(=--night=, =--cream=, =--verse=, =--glow=) is folio-shaped vocabulary that need
+not be global. Current position: keep it local to the page until a second
+consumer wants it. #ff9933 == #ff9933 is not evidence that two systems share a
+semantic model.
+
+** Does the Library keep the relationship graph and backlinks?
+
+DECIDED with the notes edition (=components/evening.css=, =_layouts/note.html=):
+yes, and server-rendered. The 310-line d3 widget (=_includes/notes_graph.html=,
+268 lines of script serving three notes) is retired; =_plugins/notes_edition.rb=
+draws the graph from the same =_includes/notes_graph.json= at build time, in
+two renditions — a constellation and a narrow thread — with real links and the
+current note distinguished. Backlinks and the all-notes list stand beside it in
+prose (=_includes/notes/connections.html=), so the graph is never the only way
+to find a note. The edition's filters are asserted by
+=design/probe/notes_edition_test.rb=, its style by the five probes.
+
+** Where does the folio language end?
+
+DECIDED, and it was decided the other way from how it was framed here. Helios
+is the theme: =/approach= and =/mlp= were retired and their content became
+notes, =/lan= took the folio document, and there is one nav serving every page.
+The question was "two themes or three"; the answer is one theme plus the two
+surfaces =surfaces.yml= already keeps out of scope (Twilight, legacy).

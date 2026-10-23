@@ -1,0 +1,36 @@
+/* ==========================================================================
+   core/app-shell.css — full-viewport interfaces, not documents
+   --------------------------------------------------------------------------
+   `_layouts/canvas.html` renders the Turtling IDE: a fixed canvas, a
+   CodeMirror pane, no document flow. It sets `data-shell="app"` on <body>.
+
+   Before this migration the shell escaped every authored rule by declaring
+   `onlytailwind: true`, which loaded only the Tailwind bundle and skipped
+   styles.css entirely. Collapsing to a single stylesheet removed that escape,
+   so two things leaked in and both are undone here:
+
+     1. the document frame        — guarded in core/document.css
+     2. the vendor reset's html   — restored below
+
+   (2) is the subtle one. normalize.css sets `html { line-height: 1.15 }`, and
+   because it is imported after Tailwind's preflight it wins inside @layer base.
+   Every page had that before too, so it is not drift for documents — but the
+   app shell previously never loaded normalize at all and got preflight's 1.5.
+   Net effect on the IDE was a 24px -> 18.4px body line-height, which resized
+   every CodeMirror line and moved the whole editor.
+
+   Delete this file when the document frame is scoped to the Library theme
+   (Step 2) and the shell no longer needs an escape.
+   ========================================================================== */
+
+@layer base {
+  /* Restores preflight's 1.5, which normalize's `html { line-height: 1.15 }`
+     had displaced for this page only. Applied to html, not body: the shell
+     must not acquire an explicit font-size, because an inherited `medium`
+     is what lets Chrome resolve monospace descendants to its fixed-width
+     default (13px). Pinning `font-size: 1rem` on body silently changed the
+     editor's text from 13px to 16px and resized every CodeMirror line. */
+  html:has(body[data-shell="app"]) {
+    line-height: 1.5;
+  }
+}
