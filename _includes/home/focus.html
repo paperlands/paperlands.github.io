@@ -6,10 +6,9 @@
 {%- endcomment -%}
 {%- assign focus_text = include.text -%}
 {%- assign focus_word = include.word -%}
-{%- assign focus_start = focus_text.size | minus: focus_word.size -%}
-{%- assign focus_suffix = focus_text | slice: focus_start, focus_word.size -%}
-{%- if focus_word and focus_word != empty and focus_suffix == focus_word -%}
-  {{- focus_text | slice: 0, focus_start -}}<span class="helios-focus" data-helios-focus="{{ include.gesture | escape }}"><span class="helios-focus__word">{{ focus_word }}</span><svg class="helios-focus__ink" viewBox="0 0 400 180" fill="none" aria-hidden="true" focusable="false">
+{%- assign focus_ok = focus_text | ends_with: focus_word -%}
+{%- if focus_word and focus_word != empty and focus_ok -%}
+  {{- focus_text | without_tail: focus_word -}}<span class="helios-focus" data-helios-focus="{{ include.gesture | escape }}"><span class="helios-focus__word">{{ focus_word }}</span><svg class="helios-focus__ink" viewBox="0 0 400 180" fill="none" aria-hidden="true" focusable="false">
     {%- case include.gesture -%}
     {%- when 'grow' -%}
     <path class="helios-focus__thread" pathLength="1" d="M32 107C101 92 137 139 200 109S265 28 311 52 305 127 271 106 303 67 338 80 363 67 389 38"/>

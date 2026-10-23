@@ -1,0 +1,57 @@
+version: 2
+
+# Every ecosystem here is build-time. Nothing in `node_modules` or the bundle
+# runs in a visitor's browser: the npm tree only encodes stills (`sharp`) and
+# writes `_site/sw.js` (`workbox-cli`), and the gems only run on the runner
+# that emits static HTML. So a deep transitive advisory is a CI concern, not a
+# site concern — keep the updates flowing and let the build gates judge them.
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+    # The default 3-day cooldown is too short for a tree this deep: a publish
+    # compromised at the source has no tell for ~a week.
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 3
+    groups:
+      npm:
+        patterns: ["*"]
+    ignore:
+      # `workbox-cli@7.4.1` still pins `inquirer ^7.3.3` -> `external-editor`
+      # -> `tmp@0.0.33`, and npm's only offered "fix" is downgrading the CLI
+      # to 2.1.3 (2018). Unfixable upstream, and unreachable here: the CLI
+      # reads workbox-config.js and never opens the inquirer editor prompt, so
+      # neither the tmp symlink write nor the editor spawn is ever reached.
+      - dependency-name: "tmp"
+      - dependency-name: "external-editor"
+      - dependency-name: "inquirer"
+
+  # Capped by Jekyll 4 itself: it pins `liquid ~> 4.0`, `json ~> 2.6`,
+  # `rouge < 5.0` and `terminal-table < 4.0`, so those four never move here no
+  # matter how often this job runs. Everything below them is current.
+  - package-ecosystem: bundler
+    directory: "/"
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 3
+    groups:
+      bundler:
+        patterns: ["*"]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    # An action major is a runtime swap (v6 -> v7 moved checkout and
+    # setup-node to ESM), so let one sit a month before the gates see it.
+    cooldown:
+      default-days: 7
+      semver-major-days: 30
+    open-pull-requests-limit: 3
+    groups:
+      github-actions:
+        patterns: ["*"]

@@ -106,9 +106,9 @@
 {%- endif -%}
 {%- assign media_compact_src_type = 'video/mp4' -%}
 {%- if media_compact_src_url contains '.webm' -%}{%- assign media_compact_src_type = 'video/webm' -%}{%- endif -%}
-{%- assign media_compact_query = '(prefers-reduced-motion: no-preference) and (max-width: 640px)' -%}
-{%- assign media_full_query = '(prefers-reduced-motion: no-preference)' -%}
-{%- if media_compact_src_url != '' -%}{%- assign media_full_query = '(prefers-reduced-motion: no-preference) and (min-width: 641px)' -%}{%- endif -%}
+{%- assign media_compact_query = '(max-width: 640px)' -%}
+{%- assign media_full_query = 'all' -%}
+{%- if media_compact_src_url != '' -%}{%- assign media_full_query = '(min-width: 641px)' -%}{%- endif -%}
 {%- assign media_src_type = 'video/mp4' -%}
 {%- if media_src_url contains '.webm' -%}{%- assign media_src_type = 'video/webm' -%}{%- endif -%}
 {%- if media_src_url contains '.ogv' -%}{%- assign media_src_type = 'video/ogg' -%}{%- endif -%}
@@ -122,7 +122,7 @@
 {%- comment -%} `priority` marks the one clip that is in the reader's first
    viewport. It is the still, not the clip, that gets the hint: the still is
    what paints — the clip is opacity 0 until media-video.js makes it ready,
-   and with no JavaScript, or reduced motion, or a poor connection, the still
+   and with no JavaScript, or a poor connection, the still
    is the whole picture. Exactly one clip per page should carry it, or the
    hint means nothing. {%- endcomment -%}
 {%- assign media_priority = false -%}
@@ -134,7 +134,7 @@
   {%- assign media_poster_loading = 'lazy' -%}
   {%- assign media_poster_fetch = 'low' -%}
 {%- endif -%}
-{%- capture media_attrs -%}data-media="video" data-media-mode="{{ media_mode }}" data-src="{{ media_src_url }}"{% if media_av1_url != '' %} data-src-av1="{{ media_av1_url }}"{% endif %}{% if media_compact_src_url != '' %} data-src-compact="{{ media_compact_src_url }}"{% endif %}{% if media_compact_av1_url != '' %} data-src-av1-compact="{{ media_compact_av1_url }}"{% endif %}{% if media_compact_webm_url != '' %} data-src-webm-compact="{{ media_compact_webm_url }}"{% endif %}{% if media_webm_url != '' %} data-src-webm="{{ media_webm_url }}"{% endif %}{% if media_poster_url != '' %} poster="{{ media_poster_url }}"{% endif %}{% if media_priority %} data-media-priority="1"{% endif %}{% if include.group %} data-media-group="{{ include.group }}"{% endif %}{% if media_width != '' %} width="{{ media_width }}"{% endif %}{% if media_height != '' %} height="{{ media_height }}"{% endif %}{% if include.loop == false or include.loop == 'false' %}{% else %} loop{% endif %} muted playsinline webkit-playsinline {% if media_priority %}preload="auto" data-media-attached="1" fetchpriority="high"{% else %}preload="none"{% endif %} disablepictureinpicture disableremoteplayback aria-label="{{ media_alt | escape }}"{%- endcapture -%}
+{%- capture media_attrs -%}data-media="video" data-media-mode="{{ media_mode }}" data-src="{{ media_src_url }}"{% if media_av1_url != '' %} data-src-av1="{{ media_av1_url }}"{% endif %}{% if media_compact_src_url != '' %} data-src-compact="{{ media_compact_src_url }}"{% endif %}{% if media_compact_av1_url != '' %} data-src-av1-compact="{{ media_compact_av1_url }}"{% endif %}{% if media_compact_webm_url != '' %} data-src-webm-compact="{{ media_compact_webm_url }}"{% endif %}{% if media_webm_url != '' %} data-src-webm="{{ media_webm_url }}"{% endif %}{% if media_poster_url != '' %} poster="{{ media_poster_url }}"{% endif %}{% if media_priority %} data-media-priority="1"{% endif %}{% if include.group %} data-media-group="{{ include.group }}"{% endif %}{% if media_width != '' %} width="{{ media_width }}"{% endif %}{% if media_height != '' %} height="{{ media_height }}"{% endif %}{% if include.loop == false or include.loop == 'false' %}{% else %} loop{% endif %} muted playsinline webkit-playsinline {% if media_priority %}autoplay preload="auto" data-media-attached="1" fetchpriority="high"{% else %}preload="none"{% endif %} disablepictureinpicture disableremoteplayback aria-label="{{ media_alt | escape }}"{%- endcapture -%}
 {%- if media_mode == 'hero' -%}
 <video class="{{ include.class }}" {{ media_attrs }}></video>
 {%- else -%}
@@ -152,7 +152,7 @@
   {%- endif -%}
   <video class="media-clip-el" {{ media_attrs }}>
 {%- if media_priority -%}
-{%- comment -%} The sources, in the markup, for the one clip the reader is already looking at. Everything else waits for media-video.js to say the clip is near the viewport; this one cannot, because a deferred script runs only after the document has been parsed and laid out — measured on a throttled phone, the hero's own bytes were asked for 1.3s in. `media` is the whole policy: a reader who has asked for reduced motion matches no source, fetches no video, and keeps the still that is already there. media-video.js takes the same sources back if it finds a poor connection. The compact pair is the phone portrait: one extra rung, not a device ladder, and only below 640px. {%- endcomment -%}
+{%- comment -%} The first visible clip starts fetching at parse time; other clips wait until near the viewport. Source media queries select the phone portrait, not motion preferences. The player reclaims these sources when data-saving is enabled. {%- endcomment -%}
 {%- if media_compact_src_url != '' -%}
 {%- if media_compact_av1_url != '' -%}<source src="{{ media_compact_av1_url }}" type="video/mp4; codecs=&quot;av01.0.04M.08&quot;" media="{{ media_compact_query }}">{%- endif -%}
 {%- if media_compact_webm_url != '' and media_compact_webm_url != media_compact_src_url -%}<source src="{{ media_compact_webm_url }}" type="video/webm" media="{{ media_compact_query }}">{%- endif -%}

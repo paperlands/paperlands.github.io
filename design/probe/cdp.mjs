@@ -1,6 +1,4 @@
-// Minimal CDP driver — Node 26 has global fetch + WebSocket, so no deps.
-// Usage: node cdp.mjs <script-file.mjs>   (script exports default async (cdp) => {})
-import { readFileSync } from 'node:fs';
+// Minimal CDP driver — Node 22+ provides global fetch + WebSocket; no deps.
 
 const PORT = process.env.CDP_PORT || 9222;
 const BASE = `http://127.0.0.1:${PORT}`;
@@ -97,7 +95,6 @@ export async function newPage(cdp) {
     if (msg.sessionId !== sessionId) return;
     if (msg.method === 'Network.requestWillBeSent') requests.push(msg.params.request.url);
     if (msg.method === 'Network.responseReceived') {
-      const e = requests.length ? requests[requests.length - 1] : null;
       // record status by url
       responses.set(msg.params.response.url, msg.params.response.status);
     }

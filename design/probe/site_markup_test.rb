@@ -16,8 +16,14 @@
 # regex, which then ate the `[[` of every bracket the document named. The
 # grammar has to leave such a bracket for the resolver that owns it.
 
-require 'jekyll'
+require 'liquid'
+require_relative 'contract_site'
 require_relative '../../_plugins/site_markup'
+
+# The filter asks its site for a markdown converter. In a build that is the
+# generator's; here it is kramdown directly (contract_site.rb), set once on the
+# resolver's seam so nothing below imports the generator.
+SiteMarkup.markdown_renderer = ->(_site, text) { ContractSite::Markdown.convert(text) }
 
 Doc = Struct.new(:basename, :url, :data)
 
@@ -44,10 +50,6 @@ class FakeSite
     { 'use_html_extension' => @html_extension }
   end
 
-  def find_converter_instance(_klass)
-    Jekyll::Converters::Markdown.new('markdown' => 'kramdown',
-                                     'kramdown' => { 'input' => 'GFM' })
-  end
 end
 
 site = FakeSite.new('', false)
