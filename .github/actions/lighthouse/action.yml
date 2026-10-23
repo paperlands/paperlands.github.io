@@ -1,0 +1,34 @@
+name: Lighthouse budget
+description: Audit the built site and retain actionable failure reports
+runs:
+  using: composite
+  steps:
+    - name: Lighthouse CI
+      id: lighthouse
+      shell: bash
+      run: |
+        set -o pipefail
+        npx --yes @lhci/cli@0.15.1 autorun 2>&1 | tee lhci.log
+
+    - name: Explain a failed budget
+      if: failure() && steps.lighthouse.outcome == 'failure'
+      shell: bash
+      run: |
+        if [ ! -s lhci.log ]; then
+          echo "::error title=Lighthouse CI::autorun wrote no log at all"
+          exit 0
+        fi
+        message=$(tail -n 80 lhci.log | sed -e 's/%/%25/g' -e 's/\r//g' | awk '{printf "%s%%0A", $0}')
+        printf '::error title=Lighthouse CI::%s\n' "$message"
+
+    - name: Keep the reports
+      if: always() && steps.lighthouse.outcome != 'skipped' && steps.lighthouse.outcome != ''
+      uses: actions/upload-artifact@v7
+      with:
+        name: lighthouseci
+        path: |
+          .lighthouseci
+          lhci.log
+        include-hidden-files: true
+        retention-days: 7
+        if-no-files-found: warn

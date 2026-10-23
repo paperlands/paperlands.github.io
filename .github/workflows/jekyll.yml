@@ -48,7 +48,7 @@ jobs:
           cache: npm
 
       - name: Install the still encoder
-        run: npm ci
+        run: npm ci --no-audit --no-fund
 
       - name: Build with Jekyll
         run: bundle exec jekyll build
@@ -94,9 +94,6 @@ jobs:
       - name: Verify the host release
         run: node --test design/probe/host-release.test.mjs
 
-      - name: Verify the open-garden model
-        run: node --test design/probe/open-garden-model.test.mjs
-
       - name: Verify the render window
         run: node --test design/probe/render-window.test.mjs
 
@@ -105,10 +102,50 @@ jobs:
 
       # Generates service worker
       - name: generate sw
-        run: npx workbox generateSW workbox-config.js
+        run: npx --no-install workbox generateSW workbox-config.js
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
+
+  # Audit the artifact already built and gated above; no second Ruby/npm build.
+  budget:
+    name: Front page budget
+    if: github.event_name == 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Download built site
+        uses: actions/download-artifact@v8
+        with:
+          name: github-pages
+          path: ${{ runner.temp }}/pages-budget
+
+      - name: Unpack built site
+        run: |
+          mkdir -p _site
+          # upload-pages-artifact tars the site as artifact.tar; accept a plain
+          # tree too, so a change in the action is not a broken budget job.
+          if [ -f "$RUNNER_TEMP/pages-budget/artifact.tar" ]; then
+            tar -xf "$RUNNER_TEMP/pages-budget/artifact.tar" -C _site
+          else
+            cp -a "$RUNNER_TEMP/pages-budget/." _site/
+          fi
+          test -f _site/index.html && echo "auditing $(du -sh _site | cut -f1) of built site"
+
+      - name: Audit the production artifact
+        uses: ./.github/actions/lighthouse
 
   deploy:
     name: To the Moon

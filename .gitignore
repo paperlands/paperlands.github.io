@@ -24,8 +24,7 @@ assets/lib/hatch/sources/
 # The still encoder (sharp) is installed from package-lock.json. Not committed.
 node_modules/
 
-# Dormant fourth-turn / interval runtime. Kept in the working tree for the
-# design probes, but not part of the site or the repository.
+# Dormant runtime and prototypes are local-only, not maintained test inputs.
 _includes/home/fourth-turn.html
 assets/css/components/fourth-turn.css
 assets/js/home/fourth-turn.mjs
@@ -40,13 +39,11 @@ assets/js/home/paperlang/
 # (design/assets) and the superseded hifi/prototype pages they were studied in
 # (iterations, cutouts, prior, rapiditer, stage). ~155MB, and no build input
 # reads them — what the gates read is design/*.mjs, design/probe,
-# design/fixtures and the doc set, which are committed. The one file kept out
-# of iterations/ is the open-garden model, because a committed probe imports
-# it. Re-minting a still or clip needs the masters back from the producer's
+# design/fixtures and the doc set, which are committed. Re-minting a still
+# or clip needs the masters back from the producer's
 # archive, the same trade as the hatch sources above.
 design/assets/
 design/iterations/*
-!design/iterations/15-open-garden-model.mjs
 design/cutouts/
 design/prior/
 design/rapiditer/
