@@ -10,9 +10,11 @@ const out = process.env.PROBE_OUTPUT || '/tmp/nav-lantern-shots';
 mkdirSync(out, { recursive: true });
 const cdp = await connect();
 const page = await newPage(cdp);
+await page.s('Page.bringToFront');
 // Exercise the local dialog handoff, not production CAPTCHA domains.
 await page.s('Network.setBlockedURLs', { urls: ['https://challenges.cloudflare.com/*'] });
 await page.s('Network.setCacheDisabled', { cacheDisabled: true });
+await page.s('Network.setBypassServiceWorker', { bypass: true });
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 const evaluate = fn => page.evaluate(`(${fn})()`);
 const key = async (key, modifiers = 0) => {
@@ -20,7 +22,10 @@ const key = async (key, modifiers = 0) => {
   await page.s('Input.dispatchKeyEvent', { type: 'keyDown', key, code: key, windowsVirtualKeyCode, modifiers });
   await page.s('Input.dispatchKeyEvent', { type: 'keyUp', key, code: key, windowsVirtualKeyCode, modifiers });
 };
-const size = (width, height) => page.s('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: width < 1024 });
+const size = async (width, height) => {
+  await page.s('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: width < 1024 });
+  await page.s('Emulation.setTouchEmulationEnabled', { enabled: width < 1024 });
+};
 const shot = async name => {
   const { data } = await page.s('Page.captureScreenshot', { format: 'png' });
   writeFileSync(`${out}/${name}.png`, Buffer.from(data, 'base64'));
@@ -30,7 +35,7 @@ async function click(selector) {
   await page.s('Input.dispatchMouseEvent', { type: 'mousePressed', ...point, button: 'left', clickCount: 1 });
   await page.s('Input.dispatchMouseEvent', { type: 'mouseReleased', ...point, button: 'left', clickCount: 1 });
 }
-async function open() { await click('[data-nav-open]'); await wait(1350); }
+async function open() { await click('[data-nav-open]'); await wait(2500); }
 async function close() { await key('Escape'); await wait(400); }
 async function visit(route = '/') {
   await page.goto(new URL(route, base).href, 1100);
@@ -55,7 +60,15 @@ const state = () => evaluate(() => {
     bars: [...document.querySelectorAll('[data-nav-bars] span')].map(el => el.getBoundingClientRect().width),
     visibleCaption: !!button.querySelector('[data-nav-caption], [data-nav-sun]'),
     buttonBackground: getComputedStyle(button).backgroundColor,
-    thread: getComputedStyle(document.querySelector('[data-nav-thread]')).display,
+    window: {
+      display: getComputedStyle(panel.querySelector('[data-nav-window]')).display,
+      width: panel.querySelector('[data-nav-window]').getBoundingClientRect().width,
+      height: panel.querySelector('[data-nav-window]').getBoundingClientRect().height,
+      clip: getComputedStyle(panel.querySelector('[data-nav-window-pane]')).clipPath,
+      mask: getComputedStyle(panel.querySelector('[data-nav-window-pane]')).maskImage,
+      worldMask: getComputedStyle(panel.querySelector('[data-nav-window-pane] svg')).maskImage,
+      worldFilter: getComputedStyle(panel.querySelector('[data-nav-window-pane] svg')).filter,
+    },
     lamp: { x: parseFloat(document.body.style.getPropertyValue('--nav-lamp-x')), y: parseFloat(document.body.style.getPropertyValue('--nav-lamp-y')) },
     source: source.getBoundingClientRect().toJSON(),
     sourceMask: getComputedStyle(source).maskImage,
@@ -90,13 +103,18 @@ function checkOpen(s, width, height) {
   assert.equal(s.sourceMask, 'none', 'no rectangular mask around the logo veil');
   assert.equal(s.haloMask, 'none', 'glow must bleed outside the glyph crop');
   assert.equal(s.inkCrop, s.rootCrop, 'scroll crop still reaches the inner ink layer');
-  assert.deepEqual(s.links.map(a => a.text), ['Home', 'Our Approach', 'Experiences', 'Join Us', 'Enter Now']);
+  assert.deepEqual(s.links.map(a => a.text), ['Home', 'Our Approach', 'Experiences', 'Contact Us', 'Enter PaperLand']);
   assert.ok(s.links.every(a => a.height >= 44 && a.right <= width && a.opacity === '1'));
   assert.equal(s.particles, 0, 'no starfall or particle layer');
   assert.equal(s.lightTransform, 'none', 'light fades in without scaling a rectangle');
   assert.equal(s.wordTransform, 'none', 'words emerge without falling');
   assert.ok(s.wordLeft >= s.source.x + 20, 'words are indented inward from the mark');
   assert.ok(parseFloat(s.links[4].delay) > parseFloat(s.links[0].delay), 'words cascade beneath the logo');
+  assert.ok(s.window.width > s.window.height, 'touch invitation has a horizontal window');
+  assert.ok(s.window.width >= 200 && s.window.height >= 72, 'the world is large enough to see on a phone');
+  assert.equal(s.window.clip, 'inset(0px)', 'menu opening reveals it without hover');
+  assert.ok(s.window.mask.includes('linear-gradient') && s.window.worldMask.includes('linear-gradient'), 'aperture edges dissolve into the page');
+  assert.equal(s.window.worldFilter, 'none', 'geometry stays crisp, never blurred');
 }
 
 // Every built page that owns site navigation receives the very same markup.
@@ -138,6 +156,40 @@ try {
     assert.ok(shut.background.every(e => e.opacity === '1' && !e.inert));
     console.log(`PASS ${width}x${height}: identity/light, collision-free page, cascade, targets, keyboard and return`);
   }
+
+  // Sample the actual CSS timeline, not just its final static appearance.
+  // Touch has no approach; the menu tap must create a fresh reveal each time.
+  await size(390, 844);
+  await visit();
+  assert.equal(await evaluate(() => matchMedia('(hover: none)').matches), true);
+  for (let opening = 0; opening < 2; opening++) {
+    await click('[data-nav-open]');
+    const reveal = await evaluate(() => {
+      const window = document.querySelector('[data-nav-panel] [data-nav-window]');
+      const pane = window.querySelector('[data-nav-window-pane]');
+      const world = pane.querySelector('svg');
+      const animations = window.getAnimations({ subtree: true });
+      const aperture = animations.find(a => a.transitionProperty === 'clip-path');
+      if (!aperture) return null;
+      const { delay, duration } = aperture.effect.getTiming();
+      const sample = time => {
+        animations.forEach(a => { a.pause(); a.currentTime = time; });
+        return { crop: parseFloat(getComputedStyle(pane).clipPath.slice(6)), world: getComputedStyle(world).transform };
+      };
+      const samples = [sample(delay), sample(delay + duration * .35), sample(delay + duration + 500)];
+      animations.forEach(a => a.finish());
+      return { delay, samples };
+    });
+    assert.ok(reveal, 'menu tap starts the slit animation');
+    assert.ok(reveal.delay >= 500, 'the invitation is visible before its seam parts');
+    const [seam, parting, world] = reveal.samples;
+    assert.ok(seam.crop >= 30 && parting.crop > 0 && parting.crop < seam.crop, 'sunlit seam visibly opens');
+    assert.equal(world.crop, 0);
+    assert.notEqual(seam.world, parting.world, 'geometry moves beyond the opening');
+    assert.notEqual(parting.world, world.world);
+    await close();
+  }
+  console.log('PASS touch slit: seam, opening, world parallax and replay');
 
   // Representative surfaces: evening note, experiences composition, folio,
   // cream Library, legacy long-form. No Helios-only branch or palette leak.
@@ -196,6 +248,32 @@ try {
   assert.ok((await state()).background.every(e => !e.inert && e.opacity === '1'));
   await evaluate(() => scrollTo(0, 0));
   await wait(300);
+  const underline = () => evaluate(() => {
+    const label = document.querySelector('.folio-nav__enter [data-nav-enter-label]');
+    return { color: getComputedStyle(label).borderBottomColor, box: label.getBoundingClientRect().toJSON() };
+  });
+  const restingLabel = await underline();
+  assert.equal(restingLabel.color, 'rgba(0, 0, 0, 0)', 'desktop invitation is quiet at rest');
+  if (await evaluate(() => matchMedia('(hover: hover)').matches)) {
+    const point = await evaluate(() => {
+      const r = document.querySelector('.folio-nav__enter').getBoundingClientRect();
+      return { x: r.x + r.width / 2, y: r.y + r.height / 2 };
+    });
+    await page.s('Input.dispatchMouseEvent', { type: 'mouseMoved', ...point });
+    await wait(600);
+    assert.notEqual((await underline()).color, restingLabel.color, 'hover reveals the underline');
+    assert.deepEqual((await underline()).box, restingLabel.box, 'no layout shift on hover');
+  }
+  await page.s('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 600, y: 600 });
+  await evaluate(() => document.querySelector('.folio-nav__enter').previousElementSibling.focus());
+  await key('Tab');
+  await wait(600);
+  assert.equal(await evaluate(() => document.querySelector('.folio-nav__enter').matches(':focus-visible')), true);
+  assert.notEqual((await underline()).color, restingLabel.color, 'keyboard focus reveals the underline');
+  assert.deepEqual((await underline()).box, restingLabel.box, 'no layout shift on focus');
+  await evaluate(() => document.activeElement.blur());
+  await wait(300);
+  console.log('PASS desktop invitation: quiet at rest, underline on approach, stable layout');
   await shot('desktop');
   console.log('PASS rapid reopen and desktop resize release every lock');
 
@@ -204,11 +282,14 @@ try {
   await open();
   assert.equal(await evaluate(() => getComputedStyle(document.querySelector('[data-nav-atmosphere]'), '::before').transitionDuration), '0s');
   assert.equal(await evaluate(() => getComputedStyle(document.querySelector('[data-nav-panel] a')).transitionDuration), '0s');
+  assert.equal((await state()).window.clip, 'inset(0px)', 'reduced motion shows the world immediately');
+  assert.equal(await evaluate(() => getComputedStyle(document.querySelector('[data-nav-panel] [data-nav-window-pane]')).transitionDuration), '0s');
+  assert.equal(await evaluate(() => getComputedStyle(document.querySelector('[data-nav-panel] [data-nav-window-pane] svg')).transitionDuration), '0s');
   await shot('reduced-motion');
   await close();
   await page.s('Emulation.setEmulatedMedia', { features: [{ name: 'forced-colors', value: 'active' }] });
   await open();
-  assert.equal((await state()).thread, 'none');
+  assert.equal((await state()).window.display, 'none');
   assert.equal(await evaluate(() => getComputedStyle(document.querySelector('[data-nav-atmosphere]'), '::before').display), 'none');
   await shot('forced-colors');
   await close();

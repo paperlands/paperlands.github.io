@@ -1,8 +1,7 @@
 /* One mobile navigation, every surface. The existing left mark is the lamp;
    page content recedes beneath a shroud, then the left light reveals the words. */
 @layer components {
-  .folio-nav__atmosphere,
-  [data-nav-thread] { display: none; }
+  .folio-nav__atmosphere { display: none; }
 
   @media (max-width: 1023px) {
     html:has([data-nav-root]) { overflow-x: clip; }
@@ -164,26 +163,81 @@
       text-shadow: 0 0 .5em rgb(255 153 51 / .18);
     }
     .site-nav [data-nav-panel] > a[data-primary] {
+      display: grid;
+      grid-template-columns: auto auto;
+      column-gap: .6rem;
+      row-gap: .25rem;
       margin-top: 1.3rem;
       font-size: clamp(1.65rem, 7vw, 2.2rem);
       color: var(--nav-menu-accent);
     }
-    .site-nav [data-nav-panel] > a[data-primary]::after { content: "↗"; font-size: 1.1rem; }
-    .site-nav [data-nav-thread] {
-      position: absolute;
-      display: block;
-      left: -12%;
-      top: .15em;
-      width: 145%;
-      height: auto;
-      pointer-events: none;
-      stroke: var(--nav-menu-accent);
-      stroke-width: .8;
-      stroke-linecap: round;
-      opacity: .28;
-      mask-image: linear-gradient(90deg, transparent, #000 13%, #000 78%, transparent);
+    .site-nav [data-nav-panel] [data-nav-enter-label] { grid-area: 2 / 1; }
+    .site-nav [data-nav-panel] > a[data-primary]::after {
+      content: "↗";
+      grid-area: 2 / 2;
+      font-size: 1.1rem;
     }
-    .site-nav [data-nav-thread] path { vector-effect: non-scaling-stroke; }
+    /* Touch has no hover. Let the invitation arrive as a seam first, then
+       part the page into a sunlit world. Replay on every menu opening. */
+    .site-nav [data-nav-panel] [data-nav-window] {
+      --nav-slit-ease: cubic-bezier(.2, .7, .2, 1);
+      grid-area: 1 / 1 / 2 / -1;
+      width: 216px;
+      height: 80px;
+      margin-bottom: .45rem;
+    }
+    .site-nav [data-nav-panel] [data-nav-window]::before {
+      inset: -30px -24px;
+      background: radial-gradient(ellipse, rgb(239 171 83 / .32), rgb(216 121 63 / .08) 45%, transparent 72%);
+      opacity: .12;
+      transform: scale(.85, .3);
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+    .site-nav [data-nav-panel] [data-nav-window-pane] {
+      inset: 4px 1px;
+      background: linear-gradient(180deg, #ffe3a0, #d49552 4%, #43251b 24%, rgb(25 16 20 / .65) 70%, transparent);
+      /* Feather the cut into the page, not the geometry beyond it. */
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+      mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+      clip-path: inset(35px 0);
+      transition: clip-path 180ms ease;
+    }
+    .site-nav [data-nav-panel] [data-nav-window-pane] svg {
+      -webkit-mask-image: linear-gradient(#000 65%, transparent);
+      mask-image: linear-gradient(#000 65%, transparent);
+      opacity: .35;
+      transform: translateY(8px) scale(1.12) rotate(-8deg);
+      transition: transform 180ms ease, opacity 180ms ease;
+    }
+    .site-nav [data-nav-panel] [data-nav-window]::after {
+      top: 39px;
+      right: 1px;
+      bottom: auto;
+      left: 1px;
+      width: auto;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #b67a3e 16%, #fff0bc 45%, #b67a3e 84%, transparent);
+      transform: translateY(0);
+      transition: transform 180ms ease;
+    }
+    .site-nav .is-open [data-nav-panel] [data-nav-window-pane] {
+      clip-path: inset(0);
+      transition: clip-path 1400ms var(--nav-slit-ease) 650ms;
+    }
+    .site-nav .is-open [data-nav-panel] [data-nav-window-pane] svg {
+      opacity: .9;
+      transform: translateY(0) scale(1) rotate(0deg);
+      transition: transform 1800ms var(--nav-slit-ease) 650ms, opacity 1400ms ease 650ms;
+    }
+    .site-nav .is-open [data-nav-panel] [data-nav-window]::after {
+      transform: translateY(-35px);
+      transition: transform 1400ms var(--nav-slit-ease) 650ms;
+    }
+    .site-nav .is-open [data-nav-panel] [data-nav-window]::before {
+      opacity: .85;
+      transform: scale(1);
+      transition: opacity 1600ms var(--nav-slit-ease) 650ms, transform 1800ms var(--nav-slit-ease) 650ms;
+    }
     .site-nav [data-nav-open]:focus-visible,
     .site-nav [data-nav-panel] > a:focus-visible { outline: 1px solid var(--nav-menu-accent); outline-offset: 5px; }
 
@@ -194,6 +248,14 @@
 
 
   @media (prefers-reduced-motion: reduce) {
+    .site-nav [data-nav-panel] [data-nav-window-pane],
+    .site-nav [data-nav-panel] [data-nav-window-pane] svg,
+    .site-nav .is-open [data-nav-panel] [data-nav-window-pane] svg,
+    .site-nav .is-open [data-nav-panel] [data-nav-window-pane],
+    .site-nav [data-nav-panel] [data-nav-window]::before,
+    .site-nav .is-open [data-nav-panel] [data-nav-window]::before,
+    .site-nav [data-nav-panel] [data-nav-window]::after,
+    .site-nav .is-open [data-nav-panel] [data-nav-window]::after,
     .site-nav [data-nav-atmosphere],
     .site-nav .is-open [data-nav-atmosphere],
     .site-nav [data-nav-atmosphere]::before,
@@ -206,7 +268,6 @@
     [data-nav-light-ink] { transition: none; }
   }
   @media (forced-colors: active) {
-    .site-nav [data-nav-thread],
     .site-nav [data-nav-atmosphere]::before,
     .site-nav [data-nav-atmosphere]::after { display: none; }
     .site-nav [data-nav-atmosphere] { background: Canvas; }
