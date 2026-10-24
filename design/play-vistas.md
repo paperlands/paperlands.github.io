@@ -230,7 +230,7 @@ No runtime loads until the visitor explicitly invokes a spell. Reduced-motion vi
 Serve the repository root rather than `_site`:
 
 ```sh
-python3 design/probe/serve.py 8810 "$PWD"
+python3 toolchain/serve.py 8810 "$PWD"
 ```
 
 Open `/design/iterations/16-play-vistas.html`. Direct entries: `#halfway`, `#dance`, `#room`, `#word`.

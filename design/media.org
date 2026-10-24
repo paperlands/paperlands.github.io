@@ -39,7 +39,7 @@ catalog.
 
 Optional: =compact_src=, =compact_av1=, =compact_width=, =compact_height= —
 the phone portrait of the same clip. One extra rung for a full-bleed portrait
-surface, not a device ladder. Minted by =design/mint-media.mjs=; selected
+surface, not a device ladder. Minted by =toolchain/mint-media.mjs=; selected
 below 640px. A clip without a compact pair uses its desktop pair everywhere.
 
 A clip without a poster is not a clip.
@@ -256,7 +256,7 @@ crop throws away.
 
 ** Mint
 
-=design/mint-media.mjs= is the pipeline. It probes the master, encodes H.264
+=toolchain/mint-media.mjs= is the pipeline. It probes the master, encodes H.264
 and AV1, extracts the still, hashes the bytes into the filename, and writes
 the catalog fields. One command, no remembered ffmpeg incantations. The
 minting tools are local, not CI: ffmpeg with libx264 and libsvtav1, and
@@ -264,7 +264,7 @@ ImageMagick for the poster still. CI does not encode clips. Responsive stills
 are not minted; the build emits them.
 
 #+begin_src sh
-node design/mint-media.mjs video \
+node toolchain/mint-media.mjs video \
   --id tree_fractal \
   --source design/assets/HOWSTAR.mp4 \
   --compact 572x1080 \
@@ -303,7 +303,7 @@ the full file for a recipe entry. The resized files are not committed.
 Verify before push:
 
 #+begin_src sh
-node design/mint-media.mjs verify
+node toolchain/mint-media.mjs verify
 #+end_src
 
 It fails on a missing catalog path, a missing image source, a compact clip
@@ -319,7 +319,7 @@ That does not mean we encode in Ruby.
 
 1. *Mint before push.* The commit contains the poster, the H.264, the
    optional AV1 sibling and, when the surface is a phone portrait, the
-   compact pair. CI does not encode; it runs =node design/mint-media.mjs
+   compact pair. CI does not encode; it runs =node toolchain/mint-media.mjs
    verify=.
 
 2. *No LFS. No file at 100 MB.* Git's ceiling is a wall, not a budget.

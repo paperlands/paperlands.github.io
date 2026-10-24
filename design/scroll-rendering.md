@@ -36,7 +36,7 @@ Priors informing the implementation:
 _data/helios_possibilities.yml       author: programme, numeric range, vignette, twist
 _data/hatch.yml                     exact interpreter pin
             |
-node design/compile-ink.mjs         authoring machine; bounded browser renders
+node toolchain/compile-ink.mjs         authoring machine; bounded browser renders
             |
 assets/lib/helios/ink/*.webp         content-addressed transparent ink
 _data/helios_ink.json               source/pin/compiler/model signatures + layouts
@@ -95,7 +95,7 @@ showed roughly 1–2 RGB levels of mean absolute difference, including grain pha
 With the existing site served on port 4001:
 
 ```sh
-BASE=http://127.0.0.1:4001 node design/compile-ink.mjs
+BASE=http://127.0.0.1:4001 node toolchain/compile-ink.mjs
 bundle exec jekyll build
 ```
 
@@ -119,7 +119,7 @@ that cannot be served while the freshness gate is failing:
 ```sh
 PL_COMPILE_INK=1 bundle exec jekyll serve --port 4001
 # In another terminal:
-BASE=http://127.0.0.1:4001 node design/compile-ink.mjs
+BASE=http://127.0.0.1:4001 node toolchain/compile-ink.mjs
 # Stop the bootstrap server; then validate normally:
 bundle exec jekyll build
 ```
@@ -132,8 +132,8 @@ replacement for this DOM-coupled pinned host.
 ## Gates and evidence
 
 ```sh
-node --test design/probe/*.test.mjs
-ruby design/probe/compiled_ink_test.rb
+node --test toolchain/test/*.test.mjs
+ruby toolchain/test/compiled_ink_test.rb
 bundle exec jekyll build
 
 # Start an isolated Chromium debugger, then:

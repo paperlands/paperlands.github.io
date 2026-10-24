@@ -203,8 +203,98 @@
   }
 
   .folio-nav__enter {
-    border-bottom: 1px solid currentColor;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    min-height: 2.75rem;
+    margin-block: -.25rem;
+  }
+  .folio-nav__enter [data-nav-enter-label] {
+    border-bottom: 1px solid transparent;
     padding-bottom: 1px;
+    transition: border-color 200ms ease;
+  }
+  .folio-nav__enter:focus-visible [data-nav-enter-label] {
+    border-bottom-color: currentColor;
+  }
+  @media (hover: hover) {
+    .folio-nav__enter:hover [data-nav-enter-label] {
+      border-bottom-color: currentColor;
+    }
+  }
+
+  .site-nav [data-nav-enter-word] {
+    font-family: var(--font-paperlang);
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: normal;
+    text-transform: none;
+  }
+
+  /* A prepared opening, not a second lamp. Only its crop and edge move. */
+  .site-nav [data-nav-window] {
+    position: relative;
+    display: block;
+    flex: none;
+    width: 24px;
+    height: 24px;
+    pointer-events: none;
+  }
+  .site-nav [data-nav-window]::before {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    background: radial-gradient(ellipse, rgb(239 171 83 / .3), transparent 70%);
+    opacity: .2;
+    transition: opacity 650ms var(--nav-ease);
+  }
+  .site-nav [data-nav-window-pane] {
+    position: absolute;
+    display: block;
+    inset: 1px;
+    overflow: hidden;
+    background: linear-gradient(90deg, #ffe3a0 5px, #ad6f35 7px, #2d1816 14px);
+    clip-path: inset(0 10px);
+    transition: clip-path 650ms var(--nav-ease);
+  }
+  .site-nav [data-nav-window-pane] svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    stroke: #ffcf8a;
+    stroke-width: .9;
+  }
+  .site-nav [data-nav-window-pane] path { vector-effect: non-scaling-stroke; }
+  .site-nav [data-nav-window]::after {
+    content: "";
+    position: absolute;
+    top: 1px;
+    bottom: 1px;
+    left: 11px;
+    width: 1px;
+    background: linear-gradient(#b67a3e, #ffe8b2 45%, #b67a3e);
+    transition: transform 650ms var(--nav-ease);
+  }
+  .site-nav .folio-nav__enter:focus-visible [data-nav-window-pane] { clip-path: inset(0 5px); }
+  .site-nav .folio-nav__enter:focus-visible [data-nav-window]::after { transform: translateX(-5px); }
+  .site-nav .folio-nav__enter:focus-visible [data-nav-window]::before { opacity: .85; }
+  @media (hover: hover) {
+    .site-nav .folio-nav__enter:hover [data-nav-window-pane] { clip-path: inset(0 5px); }
+    .site-nav .folio-nav__enter:hover [data-nav-window]::after { transform: translateX(-5px); }
+    .site-nav .folio-nav__enter:hover [data-nav-window]::before { opacity: .85; }
+  }
+  @media (hover: none) {
+    .site-nav .folio-nav__enter [data-nav-window-pane] { clip-path: inset(0 5px); }
+    .site-nav .folio-nav__enter [data-nav-window]::after { transform: translateX(-5px); }
+    .site-nav .folio-nav__enter [data-nav-window]::before { opacity: .85; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .site-nav [data-nav-window-pane],
+    .site-nav [data-nav-window]::before,
+    .site-nav [data-nav-window]::after { transition: none; }
+  }
+  @media (forced-colors: active) {
+    .site-nav [data-nav-window] { display: none; }
   }
 
   /* The links stand down with the word. A bar that follows the reader through a
@@ -346,6 +436,9 @@
   }
 
   @media (min-width: 1024px) {
+    .site-nav [data-nav-enter-word] {
+      font-size: 1.2em;
+    }
     .folio-nav__menu {
       display: none;
     }
@@ -354,6 +447,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .site-nav__link,
+    .folio-nav__enter [data-nav-enter-label],
     .folio-nav__plates a,
     .folio-nav__mark-box,
     .folio-nav__burger-bars span,

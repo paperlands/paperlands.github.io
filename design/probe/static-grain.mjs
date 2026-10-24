@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { mkdirSync,writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { connect,newPage } from './cdp.mjs';
-import { finishTrace } from './render-window.mjs';
+import { finishTrace } from '../../toolchain/test/render-window.mjs';
 const base=process.env.BASE||'http://127.0.0.1:4005',before=process.env.BEFORE,out=process.env.PROBE_OUTPUT||'/tmp/helios-hotpaths/static-gate';
 mkdirSync(out,{recursive:true});const cdp=await connect(),page=await newPage(cdp),reports=[];
 const wait=ms=>new Promise(r=>setTimeout(r,ms));

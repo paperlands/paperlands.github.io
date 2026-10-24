@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Responsive stills. The recipe is _data/image_sources.yml; the bytes are not
-# committed. Video stays minted by design/mint-media.mjs and is not touched here.
+# committed. Video stays minted by toolchain/mint-media.mjs and is not touched here.
 #
 # Two hooks, because the two moments are different:
 #
@@ -37,7 +37,7 @@ module ImageVariants
       self.pending = nil
       root = File.expand_path(site.source)
       cache = cache_dir(site)
-      script = File.join(root, "design", "image-variants.mjs")
+      script = File.join(root, "toolchain", "image-variants.mjs")
       stdout, stderr, status = Open3.capture3(
         "node", script, "prepare", "--root", root, "--cache", cache,
         chdir: root,
@@ -62,7 +62,7 @@ module ImageVariants
       raise Jekyll::Errors::FatalException, "Image variants: encoder did not return JSON.\n#{stdout}\n#{stderr}"
     rescue Errno::ENOENT
       raise Jekyll::Errors::FatalException,
-        "Image variants: node is not on PATH. Stills are encoded by design/image-variants.mjs (npm ci, Node 20)."
+        "Image variants: node is not on PATH. Stills are encoded by toolchain/image-variants.mjs (npm ci, Node 20)."
     end
 
     def publish(site)

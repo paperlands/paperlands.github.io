@@ -1,7 +1,7 @@
 name: Performance budget
 
 on:
-  pull_request:
+  # PR budgets run in jekyll.yml using the already-built Pages artifact.
   workflow_dispatch:
 
 permissions:
@@ -15,67 +15,56 @@ jobs:
   budget:
     name: Front page budget
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
-
-      # No `curl releases/latest`: the stylesheet pipeline uses the CLI inside
-      # the `tailwindcss-ruby` gem (_plugins/fast_styles.rb).
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
+        uses: actions/checkout@v7
+        # This job builds too: preserve per-path dates without old media blobs.
         with:
-          ruby-version: '3.3'
-          bundler-cache: true
-          cache-version: 0
+          fetch-depth: 0
+          filter: blob:none
 
       - name: Setup Node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
 
-      - name: Install the still encoder
-        run: npm ci
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+          bundler-cache: true
+          cache-version: 0
 
-      # The gate measures the first-party page. JEKYLL_ENV stays development so
-      # the async analytics script (production only) cannot make a budget flaky;
-      # the deployed build's own assets are the ones this job is protecting.
+      - name: Install the still encoder
+        run: npm ci --no-audit --no-fund
+
+      # The still variants are content-addressed: toolchain/image-variants.mjs names
+      # each rung after a hash of the source bytes, the width and the encoder
+      # version. A stale entry therefore cannot be served wrong — the worst a miss
+      # costs is one re-encode, never a wrong image — which is what makes it safe to
+      # key on the recipe rather than on the output. Naming the sources in the key
+      # means a new or replaced source misses, and a miss is what makes the entry be
+      # saved again; it still restores the previous one through restore-keys, so only
+      # the missing rungs are encoded. The encode is 62.7s of a 63.2s cold build: a
+      # hit is the difference between that and 1.5s.
+      - name: Restore the encoded stills
+        uses: actions/cache@v6
+        with:
+          path: .jekyll-cache/image-variants
+          key: image-variants-${{ hashFiles('_data/image_sources.yml', 'toolchain/image-variants.mjs', 'package-lock.json', 'assets/**/*.{webp,png,jpg,jpeg}') }}
+          restore-keys: |
+            image-variants-
+
       - name: Build
         run: bundle exec jekyll build
+        env:
+          JEKYLL_ENV: production
 
       - name: Verify generated media
-        run: node design/mint-media.mjs verify
+        run: node toolchain/mint-media.mjs verify
 
-      - name: Lighthouse CI
-        run: |
-          set -o pipefail
-          npx --yes @lhci/cli@0.15 autorun 2>&1 | tee lhci.log
-
-      # A failed job's log needs admin on the repository, but annotations do
-      # not. Without this, a red budget is an anonymous "exit code 1" and the
-      # reason (Chrome not found, server never ready, an assertion) has to be
-      # guessed from a laptop.
-      #
-      # ONE annotation, not one per line: GitHub keeps only a handful of
-      # annotations per step, and the first attempt spent them all on npm's
-      # deprecation notices before the assertion that failed got its turn.
-      - name: Explain a failed budget
-        if: failure()
-        run: |
-          if [ ! -s lhci.log ]; then
-            echo "::error title=Lighthouse CI::autorun wrote no log at all"
-            exit 0
-          fi
-          message=$(tail -n 80 lhci.log | sed -e 's/%/%25/g' -e 's/\r//g' | awk '{printf "%s%%0A", $0}')
-          printf '::error title=Lighthouse CI::%s\n' "$message"
-
-      - name: Keep the reports
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: lighthouseci
-          path: |
-            .lighthouseci
-            lhci.log
-          if-no-files-found: warn
+      # Analytics are blocked by .lighthouserc.json, keeping this first-party.
+      - name: Audit the production build
+        uses: ./.github/actions/lighthouse

@@ -60,7 +60,7 @@
           <a href="{{ link.href }}" class="site-nav__link"{% if page.url == link.href %} aria-current="page"{% endif %}>{{ link.label }}</a>
         {%- endfor -%}
         {%- for action in nav.folio.actions -%}
-          <a href="{{ action.href }}" class="site-nav__link"{% if action.primary %} data-primary{% endif %}>{{ action.label }}{% if action.primary %}<svg data-nav-thread viewBox="0 0 400 180" fill="none" aria-hidden="true" focusable="false"><path pathLength="1" d="M35 109C102 100 155 120 207 109S277 98 296 118 278 146 263 136 274 120 286 137 297 157 315 161"/></svg>{% endif %}</a>
+          <a href="{{ action.href }}" class="site-nav__link"{% if action.primary %} data-primary{% endif %}>{% if action.primary %}{% include nav/window.html %}<span data-nav-enter-label>{{ action.label | replace: 'PaperLand', '<span data-nav-enter-word>PaperLand</span>' }}</span>{% else %}{{ action.label }}{% endif %}</a>
         {%- endfor -%}
       </nav>
     </div>
@@ -73,7 +73,7 @@
         <a href="{{ link.href }}"{% if page.url == link.href %} aria-current="page"{% endif %}>{{ link.label }}</a>
       {%- endfor -%}
       {%- for action in nav.folio.actions -%}
-        <a href="{{ action.href }}"{% if action.primary %} class="folio-nav__enter"{% endif %}>{{ action.label }}</a>
+        <a href="{{ action.href }}"{% if action.primary %} class="folio-nav__enter"{% endif %}>{% if action.primary %}{% include nav/window.html %}<span data-nav-enter-label>{{ action.label | replace: 'PaperLand', '<span data-nav-enter-word>PaperLand</span>' }}</span>{% else %}{{ action.label }}{% endif %}</a>
       {%- endfor -%}
     </div>
   </nav>

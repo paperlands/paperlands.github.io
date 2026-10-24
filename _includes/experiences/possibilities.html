@@ -21,12 +21,12 @@
     <nav class="experiences-jump" aria-label="On this page">
       <span class="experiences-label">{{ scene.jump_label | escape }}</span>
       {%- for item in scene.items -%}
-      {%- capture movement_number -%}{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}{%- endcapture -%}
+      {%- assign movement_number = forloop.index | zero_pad: 2 -%}
       <a class="internal-link" href="#{{ item.id | escape }}"><span class="experiences-jump-number" aria-hidden="true">{{ movement_number }}</span>{{ item.jump | escape }}<span aria-hidden="true">↗</span></a>
       {%- endfor -%}
     </nav>
     {%- for item in scene.items -%}
-    {%- capture movement_number -%}{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}{%- endcapture -%}
+    {%- assign movement_number = forloop.index | zero_pad: 2 -%}
     <article class="experiences-movement{% if item.reverse %} experiences-movement-reverse{% endif %}" id="{{ item.id | escape }}" aria-labelledby="{{ item.id | escape }}-title" data-stage-passage>
       <header class="experiences-movement-heading">
         <p class="experiences-movement-identity"><span class="experiences-movement-number" aria-hidden="true">{{ movement_number }}</span>{{ item.identity | escape }}</p>

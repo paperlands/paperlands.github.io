@@ -53,6 +53,21 @@ module SiteMarkup
     <span title='There is no note that matches this link.' class='invalid-link'><span class='invalid-link-brackets'>[[</span>\\1<span class='invalid-link-brackets'>]]</span></span>
   HTML
 
+  class << self
+    # How a resolved string becomes HTML. A build never touches this: the site
+    # owns its markdown converter, and the default asks it. toolchain/test sets it
+    # instead, so the grammar can be checked without a generator loaded — which
+    # is why Jekyll's converter is named *inside* the default and resolved when
+    # the default is first used, not when this file is read.
+    attr_writer :markdown_renderer
+
+    def markdown_renderer
+      @markdown_renderer ||= lambda do |site, text|
+        site.find_converter_instance(Jekyll::Converters::Markdown).convert(text)
+      end
+    end
+  end
+
   module_function
 
   # Every [[bracket]] in `text`, resolved against the site's notes and pages.
@@ -122,8 +137,7 @@ module SiteMarkupFilters
     return text if text.nil?
 
     site = @context.registers[:site]
-    markdown = site.find_converter_instance(Jekyll::Converters::Markdown)
-    SiteMarkup.inline(markdown.convert(SiteMarkup.resolve(site, text.to_s)))
+    SiteMarkup.inline(SiteMarkup.markdown_renderer.call(site, SiteMarkup.resolve(site, text.to_s)))
   end
 end
 

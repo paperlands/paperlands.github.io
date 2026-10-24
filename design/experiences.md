@@ -119,8 +119,8 @@ six widths, timing, reversal, resting behaviour, shared frames and live fallback
 changes. Evidence: `/tmp/experiences-tree/`.
 
 ```sh
-bundle exec ruby design/probe/experiences_page_test.rb
-node --test design/probe/experiences-stage.test.mjs
+bundle exec ruby toolchain/test/experiences_page_test.rb
+node --test toolchain/test/experiences-stage.test.mjs
 bundle exec jekyll build --destination /tmp/paperland-experiences-build
 # With that destination served, and an existing Chromium CDP endpoint:
 BASE_URL=http://127.0.0.1:4026 node design/probe/experiences.mjs

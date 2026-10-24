@@ -28,7 +28,7 @@
         body, so it jumped 300 -> 600.
 
    Both were invisible because /tjc was being measured against a directory
-   listing rather than the page (see design/probe/serve.py). That is fixed.
+   listing rather than the page (see toolchain/serve.py). That is fixed.
 
    The scope below restores Twilight's own vocabulary. It is deliberately blunt:
    inside [data-theme="twilight"] the base heading scale stands down entirely and

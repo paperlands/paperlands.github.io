@@ -19,13 +19,13 @@ There is no iframe, remote shell, cross-window handshake or canvas drawn by the 
 * Update the pin
 :PROPERTIES:
 :ID: paperland-hatch-producer
-:MODULE: design/hatch-pull.sh
+:MODULE: toolchain/hatch-pull.sh
 :END:
 
 From this repository:
 
 #+begin_src sh
-bash design/hatch-pull.sh --dojo /path/to/dojo
+bash toolchain/hatch-pull.sh --dojo /path/to/dojo
 #+end_src
 
 This calls Dojo's =node scripts/release/host.mjs=, then consumes its output.
@@ -36,7 +36,7 @@ digest. =release: true= means Dojo-produced output, not a tag, semantic API
 version, signed attestation or registry publication. API and language versions
 remain =null= because the producer does not declare them.
 
-=design/host-release.mjs= verifies every declared artifact and source hash,
+=toolchain/host-release.mjs= verifies every declared artifact and source hash,
 source digest, revision, closure and factory export before installing anything.
 It refuses escaping paths, application machinery and executable imports/chunks.
 It never executes a command supplied by a manifest. Corrupt input leaves the
@@ -72,9 +72,9 @@ and may fail for stale references. =--keep= retains the temporary producer outpu
 For an existing producer directory:
 
 #+begin_src sh
-node design/vendor.mjs --from-release /path/to/dojo/dist/host --install
+node toolchain/vendor.mjs --from-release /path/to/dojo/dist/host --install
 bundle exec jekyll build
-node design/vendor.mjs --check
+node toolchain/vendor.mjs --check
 python3 design/probe/hatch.py
 #+end_src
 
@@ -156,9 +156,9 @@ remain separate from this production surface; the pin gate checks the live homep
 :END:
 
 #+begin_src sh
-node --test design/probe/*.test.mjs
+node --test toolchain/test/*.test.mjs
 bundle exec jekyll build
-node design/vendor.mjs --check
+node toolchain/vendor.mjs --check
 python3 design/probe/hatch.py
 BASE=http://localhost:4002 node design/probe/hatch-parity.mjs
 #+end_src

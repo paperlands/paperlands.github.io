@@ -10,7 +10,7 @@ require 'json'
 # This is production, promoted from the evening-ink design study (06) that
 # lives in the reimage worktree. The study called it `reading_edition`; the
 # filters are renamed for the surface they serve. Their contract is asserted
-# by design/probe/notes_edition_test.rb.
+# by toolchain/test/notes_edition_test.rb.
 #
 #   note_edition(html)      annotations -> edition sidenotes
 #   note_contents(html)     the contents rail from RENDERED heading ids

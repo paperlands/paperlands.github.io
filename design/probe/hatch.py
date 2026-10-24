@@ -2,7 +2,7 @@
 """Assert the pinned hatch is the hatch the site actually imports.
 
 design/hatch.org G2 says the site imports only a same-origin, content-addressed
-copy, and that the pin is one machine-readable file. design/vendor.mjs *writes*
+copy, and that the pin is one machine-readable file. toolchain/vendor.mjs *writes*
 that state; this file *checks* it, with its own code, because a writer that
 verifies itself proves only that it is self-consistent.
 

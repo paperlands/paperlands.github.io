@@ -41,7 +41,7 @@
      ORDER IS LOAD-BEARING: app.css first. Layer order is settled by first
      appearance — `@layer theme, base, components, utilities` — and a mode
      sheet linked ahead of it would put its own `components` before `base`.
-     See _plugins/css_modes.rb. {%- endcomment -%}
+     See _plugins/fast_styles.rb. {%- endcomment -%}
   {%- assign css_mode = page.look | default: layout.css_mode -%}
   {%- if css_mode -%}
   <link rel="stylesheet" href="{{ "/assets/css/mode-" | append: css_mode | append: ".css" | relative_url }}">

@@ -2,12 +2,13 @@
   "ci": {
     "collect": {
       "url": ["http://127.0.0.1:8090/"],
-      "startServerCommand": "node design/probe/perf-serve.mjs _site 8090",
+      "startServerCommand": "node toolchain/perf-serve.mjs _site 8090",
       "startServerReadyPattern": "perf-serve: serving",
       "startServerReadyTimeout": 15000,
       "numberOfRuns": 3,
       "settings": {
         "chromeFlags": "--headless=new --no-sandbox --disable-dev-shm-usage",
+        "blockedUrlPatterns": ["*://odin.paperland.sg/*"],
         "throttlingMethod": "simulate"
       }
     },

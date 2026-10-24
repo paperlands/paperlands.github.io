@@ -1,49 +1,10 @@
-/* ==========================================================================
-   app.css — the shared stylesheet, and the entry for the modes
-   --------------------------------------------------------------------------
-   This is the CSS every surface loads: tokens, lights, faces, the base
-   document, media, the bar and the drawn mark. It is compiled by the Tailwind
-   v4 CLI into the destination's `assets/css/app.css` — by _plugins/fast_styles.rb,
-   which owns this sheet and the three modes as one batch and retires the
-   jekyll-tailwind gem's own hook so that only one of them compiles it.
-
-   The three COMPOSITIONS are not here. `components/helios.css`,
-   `evening.css` and `twilight.css` are modes: each builds to its own sheet
-   and is linked only on the surface that is one — _config.yml `css_modes`,
-   _plugins/css_modes.rb, and the link in _includes/head.html. A page wanted
-   one of them and was paying for all three (measured: 690ms of first paint on
-   a throttled phone when the compositions were trimmed out entirely; the
-   split itself takes the dark surfaces from 31.6KB gzipped to 25.5-26.4KB,
-   and the Library from 31.6KB to 19.8KB).
-
-   Order is the architecture. Tailwind v4 emits
-       @layer theme, base, components, utilities;
-   so authored CSS declares its own intent by picking a layer:
-
-     core/tokens.css      @theme      the design contract — values only
-     core/webfonts.css    @font-face  the faces the type roles name, self-hosted
-     core/document.css    @layer base/components  long-form reading surface
-     core/media.css       @layer components/utilities  video + image surfaces
-     core/typography.css  @layer base  heading scale (base theme)
-     core/app-shell.css   @layer base  full-viewport shells opt out
-     core/passage.css     unlayered  @view-transition + root cross-fade; the
-                                      crossing between documents, and the one
-                                      rule that cannot live in a layer
-     components/nav.css   @layer components  navigation (light + dark tones)
-     components/identity.css  @layer components  the drawn mark, styled once
-     components/contact.css @layer components  the contact modal, on every surface
-     components/folio.css @layer components  cinematic theme (binds media slots)
-     components/utils.css @layer utilities   one-off helpers
-
-   Nothing here should be unlayered. Unlayered CSS silently outranks every
-   layer, which is exactly how the previous two-stylesheet arrangement ended
-   up with the blog's `!important` rules governing cinematic pages.
-
-   Tailwind v3's tailwind.config.js is retired: tokens live in core/tokens.css
-   as `@theme`. The gem still passes `--config tailwind.config.js`; the v4 CLI
-   ignores unknown flags, so no build plumbing had to change. Do not re-add a
-   JS config without rewriting that assumption.
-   ========================================================================== */
+/* Shared foundation: tokens, lights, faces, document, media and site chrome.
+   _plugins/fast_styles.rb compiles this entry and the surface mode sheets from
+   _config.yml. _includes/head.html links app.css BEFORE a page's one mode.
+   First appearance fixes layer order: theme, base, components, utilities.
+   Author rules in a layer; unlayered declarations outrank them all.
+   Surface compositions stay out of this entry so unrelated pages do not pay
+   for them. Tailwind v4 tokens and plugins are declared below, not in JS. */
 
 /* Automatic source detection, with one exclusion.
 
@@ -96,12 +57,7 @@
 @import "./core/passage.css";
 
 /* ---- components --------------------------------------------------------- */
-/* The three compositions are NOT here. `components/helios.css` (63KB),
-   `evening.css` (56KB) and `twilight.css` (6KB) are modes: each builds to its
-   own sheet and ships only on the surface that is one, because a page wanted
-   one of them and was paying for three (measured: 690ms of first paint on a
-   throttled phone — design/probe/README.md). What is left here is what every
-   surface shares. See _config.yml `css_modes` and _plugins/css_modes.rb. */
+/* Surface compositions are separate css_modes; only shared components below. */
 @import "./components/nav.css";
 @import "./components/identity.css";
 /* The contact modal is opened from the nav on every page, so it is shared here

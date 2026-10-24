@@ -37,7 +37,7 @@ Cormorant Garamond 500/600 and Cinzel 400/600 from byte-identical files. Two
 @font-face rules with two URLs would download the same face twice, so the
 generator writes one file and points every alias at it. It also deletes the
 stale duplicate when it runs; a weight that is genuinely a different file still
-gets its own slug. `node design/mint-media.mjs verify` fails the build if a
+gets its own slug. `node toolchain/mint-media.mjs verify` fails the build if a
 duplicate byte-for-byte `.woff2` is committed again.
 
 **To add or change a weight:** edit the query strings in

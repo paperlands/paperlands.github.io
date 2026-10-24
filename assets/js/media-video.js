@@ -6,7 +6,6 @@
   var api = { sync: function () {} };
   window.paperlandMedia = api;
 
-  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var saveData = false;
   try {
     saveData = window.matchMedia('(prefers-reduced-data: reduce)').matches;
@@ -19,16 +18,14 @@
   // active clip only: the next attaches when the carousel makes it active.
   var downlink = conn && typeof conn.downlink === 'number' ? conn.downlink : Infinity;
   var lean = !poor && downlink < 2;
-  if (reduced || poor) {
-    // The priority clip carries its sources in the markup so its bytes start at
-    // parse rather than after this script. A reader who has asked for reduced
-    // motion matches no <source> (the `media` attribute sees to that) — but a
-    // reader on a poor connection cannot be seen from CSS, so the sources the
-    // markup started are taken back here. A still is the whole picture either
-    // way; there is no reason to spend their data on a clip that will not play.
+  if (poor) {
+    // Data-saving remains a still-only mode. Reduce Motion affects decoration
+    // and transitions, not video playback. Reclaim any priority fetch here.
     Array.prototype.slice.call(document.querySelectorAll('[data-media-priority]')).forEach(function (video) {
       Array.prototype.slice.call(video.querySelectorAll('source')).forEach(function (s) { s.remove(); });
       video.removeAttribute('data-media-attached');
+      video.autoplay = false;
+      video.pause();
       video.preload = 'none';
       try { video.load(); } catch (e) {}
     });
@@ -38,6 +35,35 @@
   var nearOf = new WeakMap();
   var visOf = new WeakMap();
   var genOf = new WeakMap();
+  var playback = new WeakMap();
+  var suspended = false;
+
+  function stateOf(video) {
+    if (!playback.has(video)) playback.set(video, { pending: null, timer: null, blocked: false, retries: 0 });
+    return playback.get(video);
+  }
+
+  function clearAttempt(video) {
+    var state = stateOf(video);
+    clearTimeout(state.timer);
+    state.timer = null;
+    state.pending = null;
+  }
+
+  function resetPlayback(video) {
+    var state = stateOf(video);
+    state.blocked = false;
+    state.retries = 0;
+    delete video.dataset.mediaPlayback;
+  }
+
+  function pause(video) {
+    bump(video);
+    clearAttempt(video);
+    resetPlayback(video);
+    video.autoplay = false;
+    video.pause();
+  }
 
   function nodes() {
     return Array.prototype.slice.call(document.querySelectorAll('[data-media="video"]'));
@@ -173,6 +199,9 @@
   }
 
   function unbind(video) {
+    clearAttempt(video);
+    resetPlayback(video);
+    video.autoplay = false;
     if (video.dataset.mediaAttached !== '1' && !video.getAttribute('src') && !video.querySelector('source')) {
       video.removeAttribute('data-ready');
       return;
@@ -190,7 +219,6 @@
     video.preload = 'none';
     video.removeAttribute('data-ready');
     video.dataset.mediaAttached = '0';
-    video.dataset.mediaPlayWait = '0';
   }
 
   function reveal(video) {
@@ -228,40 +256,67 @@
     }
   }
 
+  function canPlay(video) {
+    if (document.hidden || suspended || video.dataset.mediaAttached !== '1' || !video.isConnected) return false;
+    if ((video.dataset.mediaMode || 'loop') === 'hover') return true;
+    var p = policy(video, markedGroups());
+    return p === 'play' || (p === 'io' && !!visOf.get(video));
+  }
+
   function play(video) {
+    if (!canPlay(video)) return;
+    var state = stateOf(video);
+    if (state.blocked || state.pending) return;
+    video.autoplay = true;
+    if (!video.paused && !video.ended) {
+      if (video.readyState >= 2) reveal(video);
+      return;
+    }
+    clearAttempt(video);
+    var attempt = {};
     var gen = genOf.get(video) || 0;
-    var go = function () {
-      if ((genOf.get(video) || 0) !== gen) return;
-      if (video.dataset.mediaAttached !== '1') return;
-      if ((video.dataset.mediaMode || 'loop') !== 'hover') {
-        if (document.hidden) return;
-        var p = policy(video, markedGroups());
-        if (p === 'drop' || p === 'warm' || p === 'hold') return;
-        if (p === 'io' && visOf.has(video) && !visOf.get(video)) return;
-      }
-      if (!video.paused && !video.ended) {
-        reveal(video);
-        return;
-      }
+    state.pending = attempt;
+    video.dataset.mediaPlayback = 'loading';
+    function current() {
+      return state.pending === attempt && (genOf.get(video) || 0) === gen;
+    }
+    function failed(error) {
+      if (!current()) return;
+      clearAttempt(video);
+      state.blocked = true;
+      var denied = error && error.name === 'NotAllowedError';
+      video.dataset.mediaPlayback = denied ? 'blocked' : 'error';
+      // A browser policy denial cannot be overridden by script. Do not spin
+      // on it. A transient load/abort gets one retry, never an endless timer.
+      if (denied || state.retries >= 1 || !canPlay(video)) return;
+      state.retries += 1;
+      state.timer = setTimeout(function () {
+        state.timer = null;
+        if ((genOf.get(video) || 0) !== gen || !canPlay(video)) return;
+        state.blocked = false;
+        play(video);
+      }, 1000);
+    }
+    function started() {
+      if (!current()) return;
+      clearAttempt(video);
+      if (!canPlay(video) || video.paused) return;
+      resetPlayback(video);
+      video.dataset.mediaPlayback = 'playing';
+      reveal(video);
+    }
+    try {
+      // Request playback even at HAVE_NOTHING. Mobile preload is only a hint;
+      // waiting for canplay before play can leave it waiting on itself forever.
+      video.muted = true;
+      video.playsInline = true;
       pinScroll(function () {
         var playing = video.play();
-        if (playing && playing.then) {
-          playing.then(function () {
-            if ((genOf.get(video) || 0) !== gen) return;
-            reveal(video);
-          }).catch(function () {});
-        } else {
-          reveal(video);
-        }
+        if (playing && playing.then) playing.then(started, failed);
+        // Older players without a promise are handled by the playing event.
       });
-    };
-    if (video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) go();
-    else if (video.dataset.mediaPlayWait !== '1') {
-      video.dataset.mediaPlayWait = '1';
-      video.addEventListener('canplay', function () {
-        video.dataset.mediaPlayWait = '0';
-        go();
-      }, { once: true });
+    } catch (e) {
+      failed(e);
     }
   }
 
@@ -354,7 +409,13 @@
         // A warm clip that is already attached still holds a decoder, so it
         // counts against the cap even while the bet is not worth placing. It
         // used to return without counting, which let the cap leak to four.
-        if (video.dataset.mediaAttached === '1') attached += 1;
+        if (video.dataset.mediaAttached === '1') {
+          if (attached >= MAX_ATTACH) unbind(video);
+          else {
+            attached += 1;
+            pause(video);
+          }
+        }
         return;
       }
       if (!row.want || attached >= MAX_ATTACH) {
@@ -362,9 +423,9 @@
         return;
       }
       attached += 1;
-      if (p === 'warm' || document.hidden || (p === 'io' && !visOf.get(video))) {
+      if (p === 'warm' || document.hidden || suspended || (p === 'io' && !visOf.get(video))) {
         attach(video, p === 'play' || visOf.get(video) ? 'auto' : 'metadata');
-        video.pause();
+        pause(video);
         if (video.ended) {
           captureStill(video);
           video.removeAttribute('data-ready');
@@ -384,6 +445,17 @@
     video.setAttribute('webkit-playsinline', '');
     if (video.dataset.mediaAttached !== '1') video.preload = 'none';
     var mode = video.dataset.mediaMode || 'loop';
+
+    video.addEventListener('playing', function () {
+      if (!canPlay(video)) return;
+      clearAttempt(video);
+      resetPlayback(video);
+      video.dataset.mediaPlayback = 'playing';
+      reveal(video);
+    });
+    video.addEventListener('pause', function () {
+      if (!video.ended) play(video);
+    });
 
     if (mode === 'hover') {
       var host = video.closest('[data-media-hover]') || video;
@@ -437,5 +509,28 @@
   nodes().forEach(bind);
   api.sync = reconcileAll;
   document.addEventListener('media:sync', reconcileAll);
-  document.addEventListener('visibilitychange', reconcileAll);
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) nodes().forEach(pause);
+    else reconcileAll();
+  });
+  window.addEventListener('pagehide', function () {
+    suspended = true;
+    nodes().forEach(pause);
+  });
+  window.addEventListener('pageshow', function () {
+    suspended = false;
+    reconcileAll();
+  });
+  window.addEventListener('online', function () {
+    nodes().forEach(function (video) {
+      if (!canPlay(video)) return;
+      clearAttempt(video);
+      resetPlayback(video);
+      if (video.error) {
+        unbind(video);
+        attach(video, 'auto');
+      }
+    });
+    reconcileAll();
+  });
 })();
