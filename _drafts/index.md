@@ -187,7 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
   <h2 class="my-8 text-4xl font-bold tracking-tight text-center lg:text-5xl text-secondary">Our <span class="text-primary font-paperlang">Library.</span></h2>
   
   <div class="grid grid-cols-1 gap-8 my-12 sm:grid-cols-2">
-    {% assign recent_notes = site.notes | sort: "last_date" %}
+    {% assign recent_notes = site.notes | sort: "date" %}
     {% for note in recent_notes limit: 5 %}
       <div class="relative overflow-hidden transition-all duration-300 rounded-lg group hover:shadow-md">
       <a href="{{ site.baseurl }}{{ note.url }}" data-tooltip="true" >
@@ -204,7 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="absolute bottom-0 left-0 right-0 p-6 transition-transform duration-300 transform translate-y-8 group-hover:translate-y-0">
           <!-- Date with minimal styling -->
           <p class="mb-2 text-xs font-light transition-opacity duration-300 opacity-0 text-white/80 group-hover:opacity-100">
-            {{ note.last_date | date: "%B %d, %Y" }}
+            {{ note.date | date: "%B %d, %Y" }}
           </p>
           <!-- Title with emphasis -->
           <div 

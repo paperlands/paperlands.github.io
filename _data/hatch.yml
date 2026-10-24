@@ -1,5 +1,5 @@
 # Dojo-produced build, not a tag or a registry publication. Do not edit by hand.
-# Written by design/vendor.mjs --from-release; dirty sources remain explicit.
+# Written by toolchain/vendor.mjs --from-release; dirty sources remain explicit.
 schema: 1
 release: true
 producer: paperlang-host

@@ -137,7 +137,7 @@ alone moved the score to 87–98 depending on the throttling model.
 
 The retained work is the pipeline, not four hand-encoded files:
 
-- `design/mint-media.mjs` mints desktop H.264 + AV1 + poster and a compact
+- `toolchain/mint-media.mjs` mints desktop H.264 + AV1 + poster and a compact
   572×1080 cover crop, names every file by the first eight hex of its SHA-256,
   and writes the catalog fields. `--compact-only` adds the phone pair to an
   existing desktop pair; `verify` fails a missing path or a duplicate font.
@@ -157,7 +157,7 @@ The retained work is the pipeline, not four hand-encoded files:
   EB Garamond italic (48 KB) is no longer fetched by this page. Four faces,
   ~148 KB, remain.
 
-Median of three LHCI runs (simulate mobile, `design/probe/perf-serve.mjs`):
+Median of three LHCI runs (simulate mobile, `toolchain/perf-serve.mjs`):
 performance **92** (92/92/93), FCP 2.1 s, LCP 3.0 s (3.01/3.02/3.05), TBT 0–11 ms,
 CLS 0.021, **674 KB**. Desktop **100**, LCP 0.6 s, 926 KB. The same page
 under DevTools throttling (1.6 Mbps/150 ms/4× CPU) is 74–75 with LCP 5.5–6.4 s:
@@ -239,13 +239,13 @@ from raw fallback pixels or apply a grade twice to a captured still.
 
 ## Measurement defect found and corrected
 
-`design/probe/serve.py` lacks byte-range support. Chromium reported `buffered [0,5]`
+`toolchain/serve.py` lacks byte-range support. Chromium reported `buffered [0,5]`
 but `seekable [0,0]`, and silently returned to frame zero after seeks to 1/2/3.
 Identical screenshot hashes exposed the flaw. Initial paused factorial/matrix
 samples were therefore frame-zero diagnostics, **not** valid t=1/2/3 comparisons.
 They must not be cited as multi-frame parity evidence.
 
-`design/probe/media-serve.py` adds bounded single-range HTTP responses, 206 and
+`toolchain/media-serve.py` adds bounded single-range HTTP responses, 206 and
 Content-Range, while retaining pretty permalink resolution. Three standard-library
 HTTP tests cover ranges/suffixes, unsatisfiable requests, HEAD and pretty routes.
 The hero video probe now asserts actual seeking beyond .9 s. Final video parity
@@ -275,13 +275,13 @@ Requires Node with global WebSocket, Chromium, Python 3 and Pillow for pixel gat
 Prototype transcoding/SSIM used FFmpeg; no new visitor dependency was added.
 
 ```sh
-node --test design/probe/*.test.mjs          # 93 pass
-python3 design/probe/media_serve_test.py     # 3 pass
-ruby design/probe/compiled_ink_test.rb
+node --test toolchain/test/*.test.mjs          # 93 pass
+python3 toolchain/test/media_serve_test.py     # 3 pass
+ruby toolchain/test/compiled_ink_test.rb
 bundle exec jekyll build
 
 # Separate process within the same shell lifetime as the isolated browser:
-python3 design/probe/media-serve.py 4005 _site
+python3 toolchain/media-serve.py 4005 _site
 # With an isolated Chromium debugger on 9247:
 CDP_PORT=9247 BASE=http://127.0.0.1:4005 CHECK_RUNTIME=1 node design/probe/play-fill.mjs
 CDP_PORT=9247 BASE=http://127.0.0.1:4005 node design/probe/scroll-budget.mjs
@@ -295,8 +295,8 @@ CDP_PORT=9247 BASE=http://127.0.0.1:4004 REPEATS=3 \
 
 # Second iteration: frozen pre-fix (4004) and fixed (4005) builds.
 cp design/probe/bare-lab.html /tmp/helios-hotpaths/site/
-python3 design/probe/media-serve.py 4004 /tmp/helios-hotpaths/site
-python3 design/probe/media-serve.py 4005 /tmp/helios-hotpaths/after
+python3 toolchain/media-serve.py 4004 /tmp/helios-hotpaths/site
+python3 toolchain/media-serve.py 4005 /tmp/helios-hotpaths/after
 CDP_PORT=9247 BASE=http://127.0.0.1:4004 REPEATS=4 node design/probe/hero-hotpaths.mjs
 CDP_PORT=9247 BASE=http://127.0.0.1:4005 BEFORE=http://127.0.0.1:4004 TRACE=1 \
   node design/probe/static-grain.mjs

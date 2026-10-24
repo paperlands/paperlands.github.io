@@ -8,7 +8,7 @@ from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 from http.server import ThreadingHTTPServer
 
-spec = importlib.util.spec_from_file_location('media_serve', Path(__file__).with_name('media-serve.py'))
+spec = importlib.util.spec_from_file_location('media_serve', Path(__file__).resolve().parents[1] / 'media-serve.py')
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 

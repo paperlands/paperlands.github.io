@@ -5,7 +5,7 @@
 # data string through it. Run after any change to the plugin, to the generator
 # that calls it, or to a data file that relies on it:
 #
-#   bundle exec ruby design/probe/site_markup_test.rb
+#   bundle exec ruby toolchain/test/site_markup_test.rb
 #
 # The site is stood in for by three answers — what it links to, where they are,
 # and whether links carry a `.html` — because the check is about the grammar and

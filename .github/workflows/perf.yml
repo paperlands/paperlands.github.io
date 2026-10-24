@@ -19,6 +19,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        # This job builds too: preserve per-path dates without old media blobs.
+        with:
+          fetch-depth: 0
+          filter: blob:none
 
       - name: Setup Node
         uses: actions/setup-node@v7
@@ -36,7 +40,7 @@ jobs:
       - name: Install the still encoder
         run: npm ci --no-audit --no-fund
 
-      # The still variants are content-addressed: design/image-variants.mjs names
+      # The still variants are content-addressed: toolchain/image-variants.mjs names
       # each rung after a hash of the source bytes, the width and the encoder
       # version. A stale entry therefore cannot be served wrong — the worst a miss
       # costs is one re-encode, never a wrong image — which is what makes it safe to
@@ -49,7 +53,7 @@ jobs:
         uses: actions/cache@v6
         with:
           path: .jekyll-cache/image-variants
-          key: image-variants-${{ hashFiles('_data/image_sources.yml', 'design/image-variants.mjs', 'package-lock.json', 'assets/**/*.{webp,png,jpg,jpeg}') }}
+          key: image-variants-${{ hashFiles('_data/image_sources.yml', 'toolchain/image-variants.mjs', 'package-lock.json', 'assets/**/*.{webp,png,jpg,jpeg}') }}
           restore-keys: |
             image-variants-
 
@@ -59,7 +63,7 @@ jobs:
           JEKYLL_ENV: production
 
       - name: Verify generated media
-        run: node design/mint-media.mjs verify
+        run: node toolchain/mint-media.mjs verify
 
       # Analytics are blocked by .lighthouserc.json, keeping this first-party.
       - name: Audit the production build

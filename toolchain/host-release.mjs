@@ -69,7 +69,7 @@ export function installHostRelease(directory, root) {
   const previous = library + '-previous';
   const pin = [
     '# Dojo-produced build, not a tag or a registry publication. Do not edit by hand.',
-    '# Written by design/vendor.mjs --from-release; dirty sources remain explicit.',
+    '# Written by toolchain/vendor.mjs --from-release; dirty sources remain explicit.',
     'schema: 1', 'release: true', 'producer: paperlang-host', 'host_api: null', 'language_revision: null',
     `dojo_commit: ${manifest.commit}`, `dojo_revision: ${manifest.revision}`,
     `source_dirty: ${manifest.sourceDirty}`, `source_digest: ${manifest.sourceDigest}`,

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# The one file in design/probe that is allowed to know which generator built
+# The one file in toolchain/test that is allowed to know which generator built
 # the site.
 #
 # Two contracts need more than the written HTML. `experiences_page_test.rb`

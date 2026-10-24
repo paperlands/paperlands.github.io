@@ -2,7 +2,7 @@
 title: Why Must I Learn This?
 excerpt: I always asked this question as a kid.
 author: princeton
-last_date: 25-09-2024
+date: 2024-09-25
 heroimgurl: /assets/lib/apprenticeship.jpg
 ---
 

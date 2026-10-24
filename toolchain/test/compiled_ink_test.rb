@@ -1,4 +1,4 @@
-# ruby design/probe/compiled_ink_test.rb — no browser, gems or generated mutations.
+# ruby toolchain/test/compiled_ink_test.rb — no browser, gems or generated mutations.
 require 'yaml'
 require 'json'
 require 'date'

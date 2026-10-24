@@ -8,7 +8,7 @@
   silently measures frame zero; without compression every CSS/font budget is
   wrong. No cache, so each audit run is cold.
 
-  usage: node design/probe/perf-serve.mjs [root] [port]
+  usage: node toolchain/perf-serve.mjs [root] [port]
 */
 import http from 'node:http';
 import fs from 'node:fs';

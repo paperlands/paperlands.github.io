@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Frozen-build probe server with single byte ranges (required for video seeking).
 
-Usage matches serve.py: python3 design/probe/media-serve.py PORT BUILD_ROOT
+Usage matches serve.py: python3 toolchain/media-serve.py PORT BUILD_ROOT
 A buffered video is not necessarily seekable in Chromium when HTTP advertises no
 range support; silently measuring frame zero invalidates paused-frame comparisons.
 """
@@ -9,6 +9,7 @@ import os
 import re
 import sys
 from http.server import ThreadingHTTPServer
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from serve import PrettyHandler
 
 

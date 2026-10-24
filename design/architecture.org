@@ -209,7 +209,7 @@ note does — =To <span class="font-paperlang">PaperLand</span>= is how this fil
 sets a face, and it is how every page sets one. ONE GRAMMAR, TWO SURFACES: the
 generator walks the documents, which Liquid cannot reach, and the filter hands
 a data string, which no generator walks, the SAME code. The brackets are
-asserted by =design/probe/site_markup_test.rb=; the letter's keyboard contract —
+asserted by =toolchain/test/site_markup_test.rb=; the letter's keyboard contract —
 how many stops the dialog has is the copy's decision, not the probe's — by
 =design/probe/contact.mjs=.
 
@@ -571,7 +571,7 @@ two renditions — a constellation and a narrow thread — with real links and t
 current note distinguished. Backlinks and the all-notes list stand beside it in
 prose (=_includes/notes/connections.html=), so the graph is never the only way
 to find a note. The edition's filters are asserted by
-=design/probe/notes_edition_test.rb=, its style by the five probes.
+=toolchain/test/notes_edition_test.rb=, its style by the five probes.
 
 ** Where does the folio language end?
 

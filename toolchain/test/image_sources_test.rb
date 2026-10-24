@@ -1,4 +1,4 @@
-# ruby design/probe/image_sources_test.rb — the still recipe matches the pages
+# ruby toolchain/test/image_sources_test.rb — the still recipe matches the pages
 # that ask for srcset. No encode, no gems.
 require 'yaml'
 

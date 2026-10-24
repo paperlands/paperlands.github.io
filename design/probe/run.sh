@@ -33,8 +33,8 @@ for port in 8801 8802 "$CDP_PORT"; do
     exit 1
   fi
 done
-setsid python3 "$PROBE_DIR/media-serve.py" 8801 "$NEW_SITE" >"$WORK/new.log" 2>&1 & pids+=("$!")
-setsid python3 "$PROBE_DIR/media-serve.py" 8802 "$OLD_SITE" >"$WORK/old.log" 2>&1 & pids+=("$!")
+setsid python3 "$PROBE_DIR/../../toolchain/media-serve.py" 8801 "$NEW_SITE" >"$WORK/new.log" 2>&1 & pids+=("$!")
+setsid python3 "$PROBE_DIR/../../toolchain/media-serve.py" 8802 "$OLD_SITE" >"$WORK/old.log" 2>&1 & pids+=("$!")
 setsid "$CHROMIUM_PATH" --headless --remote-debugging-port="$CDP_PORT" --no-sandbox --disable-gpu \
   --disable-dev-shm-usage --hide-scrollbars --no-first-run --disable-sync \
   --disable-background-networking --disable-component-update \

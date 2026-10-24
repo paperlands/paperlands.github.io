@@ -1,4 +1,6 @@
-# Maintained checks and opt-in browser tools
+# Opt-in browser tools
+
+The gates and the producers they call live in `toolchain/`. This directory is the bench, not a build input.
 
 Keep checks for shipped code, not every experiment ever run. Retired Fourth Turn,
 interval, open-garden and morphology studies, ignored-runtime tests, duplicate
@@ -15,24 +17,41 @@ From a clean checkout (Ruby/Bundler, Node 22+, Python 3):
 bundle install
 npm ci --no-audit --no-fund
 JEKYLL_ENV=production bundle exec jekyll build
-node design/mint-media.mjs verify
-node --test design/probe/*.test.mjs
-for test in design/probe/*_test.rb; do bundle exec ruby "$test" || exit; done
-python3 design/probe/media_serve_test.py
+node toolchain/mint-media.mjs verify
+node --test toolchain/test/*.test.mjs
+for test in toolchain/test/*_test.rb; do bundle exec ruby "$test" || exit; done
+python3 toolchain/test/media_serve_test.py
 npx --no-install workbox generateSW workbox-config.js
 ```
 
 The tests cover compiled ink and its bounded decoder cache, image generation,
 markup and its template text steps, notes, the media player and experiences
 motion/lifecycle, release intake, trace arithmetic, scroll scheduling and the
-local media server. They do not need Chromium, Dojo, ignored prototype modules,
-private masters, or a mutable dependency download.
+local media server. `fast_styles_test.rb` exercises the build pipeline with a
+controlled subprocess; `styles_artifact_test.rb` verifies the actual sheets and
+every local stylesheet URL in the built HTML (`SITE_DEST` selects another build).
+`metadata_test.rb` builds a tiny Git fixture and a filtered clone: publication,
+visible datelines and per-file modification dates must survive a later unrelated
+commit, a different build time and a different host timezone.
 
-Two contracts render templates rather than read `_site/`: the experiences page
-(mutating its data to prove the templates follow it) and the bracket resolver.
-Both ask `contract_site.rb`, which is the only file in this directory that names
-the generator — an engine swap means writing a second backend there, not the
-assertions.
+No check needs Chromium, Dojo, ignored prototype modules, private masters, or a
+mutable dependency download.
+
+The content contracts that re-render templates use `toolchain/test/contract_site.rb` as their
+engine adapter. Build integration tests deliberately name Jekyll: metadata tests
+the generator's Git/date behavior, and styles tests its compilation boundary.
+
+Notes declare publication once as `date: YYYY-MM-DD`; the dateline, metadata and
+Library ordering read it. `_config.yml` fixes the timezone to Asia/Singapore.
+Modification dates come from Git via `jekyll-last-modified-at`, not publication.
+Build checkouts use full history with `filter: blob:none`: dates need commit/tree
+history, not the historical media blobs.
+
+Styles have one owner (`_plugins/fast_styles.rb`), not competing plugin hooks.
+Each destination has a locked manifest; each invocation has private temporary
+files. `fast_styles: false` or `PL_FAST_STYLES=0` disables caching and parallelism,
+not compilation. For diagnosis, the uncached serial path must produce the same
+sheets. A warm build verifies output digests as well as input fingerprints.
 
 CI keeps each contract in a named step. Every PR builds once; the automatic
 Lighthouse job downloads that same Pages artifact instead of installing Ruby,
@@ -54,7 +73,7 @@ for every edit. CDP tools require Chromium and Node 22+; no npm browser library.
 | `experiences.mjs` | Current experiences page: responsive layout, readable content, accessibility states and media |
 | `front-page-performance.mjs`, `experiences-performance.mjs` | Bounded, opt-in cold-load/scroll attribution; environment and arm controls are documented in each file |
 | `static-grain.mjs` | Grain visibility lifecycle and paired snapshots (`TRACE=1` for paint attribution; pixel comparison needs Pillow) |
-| `render-window.mjs` | Shared trace-window arithmetic, covered by a unit test |
+| `toolchain/test/render-window.mjs` | Shared trace-window arithmetic, covered by a unit test |
 
 Compare builds with the repo-local runner (Linux `setsid`, `timeout`, curl):
 
@@ -74,9 +93,9 @@ no port-wide `pkill`. Set `CHROMIUM_PATH` or `CDP_PORT` if needed.
 For single-build diagnostics, serve a frozen snapshot with either:
 
 ```sh
-python3 design/probe/media-serve.py 4001 /tmp/snapshot/site
+python3 toolchain/media-serve.py 4001 /tmp/snapshot/site
 # Production-like text compression, used by Lighthouse:
-node design/probe/perf-serve.mjs /tmp/snapshot/site 8090
+node toolchain/perf-serve.mjs /tmp/snapshot/site 8090
 ```
 
 Both resolve pretty permalinks and support media byte ranges. Start a dedicated
@@ -89,7 +108,7 @@ headless attribution from actual device/field performance.
 
 `assets.py`, `catalog.py`, `coverage.py`, `looks.py`, `surfaces.py` inspect built
 assets and surface declarations. `webfonts.py` is the self-hosted-font intake
-tool. `hatch.py` is called by `design/hatch-pull.sh` for release intake; full
+tool. `hatch.py` is called by `toolchain/hatch-pull.sh` for release intake; full
 source verification requires the producer's uncommitted source snapshot. These
 are opt-in maintenance tools, not additional per-PR jobs.
 

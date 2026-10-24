@@ -147,7 +147,7 @@ never rewrites, and the classes it asserts on them are =--done=, =--lit=, =--res
 and =--pair= (plus =--afterglow= at the end). So a highlighter attaches by adding
 children inside those spans, and nothing in the driver has to change. The
 scaffolding that stays is the rest:
-=design/vendor.mjs= and =design/probe/hatch.py= for the pin, =design/probe/interval.mjs=
+=toolchain/vendor.mjs= and =design/probe/hatch.py= for the pin, =design/probe/interval.mjs=
 for this page's contract, and the checks in =design/probe/= for the site.
 
 * The section
@@ -180,7 +180,7 @@ Composition, already tried and kept:
   terminal arrives through the imports.
 - Replacing =/turtle=. It is a standing IDE on the old runtime.
 - Putting the performance on the landing before the probe matches the shell.
-- Vendoring by hand. =design/vendor.mjs= is the only writer of the pin, and it
+- Vendoring by hand. =toolchain/vendor.mjs= is the only writer of the pin, and it
   refuses a release the seven checks do not pass; a hand-copied bundle is what
   =release: false= exists to mark, not a way to ship. See =design/hatch.org=.
 
@@ -193,7 +193,7 @@ Composition, already tried and kept:
    one finished figure under reduced motion. It proves the content and the clock.
    It cannot prove the chase.
 2. *Publish, pin, vendor the host.* — half-built. The site side exists and is
-   exercised against a fixture: =design/vendor.mjs= writes =_data/hatch.yml= and
+   exercised against a fixture: =toolchain/vendor.mjs= writes =_data/hatch.yml= and
    =design/probe/hatch.py= checks it. The dojo side does not: no =host-v1= entry,
    no manifest, no conformance fixture, no =v0.5= tag. Until it exists the page
    runs a spike pin (=release: false=) and the path is =design/hatch.org=.

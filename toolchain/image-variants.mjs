@@ -10,8 +10,8 @@
   It is not a hash of the output. Output bytes move when libwebp moves; the
   pinned sharp version is what makes a rebuild name the same files.
 
-    node design/image-variants.mjs check
-    node design/image-variants.mjs prepare --root . --cache .jekyll-cache/image-variants
+    node toolchain/image-variants.mjs check
+    node toolchain/image-variants.mjs prepare --root . --cache .jekyll-cache/image-variants
 
   The Jekyll hook is _plugins/image_variants.rb. See design/media.org.
 */
@@ -29,11 +29,28 @@ const EFFORT = 6;
 const ALPHA_QUALITY = 100;
 const RECIPE = '_data/image_sources.yml';
 
+// The pool is bounded, not "one per rung". These encodes are INDEPENDENT jobs,
+// not stages of one job: libvips already threads inside a single encode, and
+// forcing it to one thread still leaves the pool a win. Measured on 4 pinned
+// cores, 24 rungs: cap 1 = 99.7s, cap 2 = 51.6s, cap 4 = 34.2-37.5s, and cap 4
+// with VIPS_CONCURRENCY=1 = 41.3s (design/probe/evidence/image-encode-concurrency.json).
+const DEFAULT_CONCURRENCY = 4;
+
 export class ImageVariantError extends Error {
   constructor(message) {
     super(message);
     this.name = 'ImageVariantError';
   }
+}
+
+// A cap that is not a positive integer is a caller mistake, not something to
+// round into shape: silently running at 1 — or at 4 — makes a typo look like a
+// performance result.
+export function requireConcurrency(value) {
+  if (!Number.isInteger(value) || value < 1) {
+    throw new ImageVariantError('concurrency must be a positive integer, got ' + JSON.stringify(value));
+  }
+  return value;
 }
 
 export function rungHash(sourceBytes, width, encoder) {
@@ -147,9 +164,11 @@ function walkWebp(dir, found) {
   }
 }
 
-async function encodeRung(sharp, source, dest, width) {
+async function encodeRung(sharp, source, dest, width, tag) {
   mkdirSync(path.dirname(dest), { recursive: true });
-  const tmp = dest + '.' + process.pid + '.tmp';
+  // Unique per job as well as per process: two recipe keys can resolve to the
+  // same output name (see the duplicate-output check in prepare).
+  const tmp = dest + '.' + process.pid + '.' + tag + '.tmp';
   try {
     const info = await sharp(source, { failOn: 'error' })
       .resize({ width, withoutEnlargement: true })
@@ -166,7 +185,46 @@ async function encodeRung(sharp, source, dest, width) {
   }
 }
 
-export async function prepare({ root, cache, recipe }) {
+// A bounded pool that keeps the caller's index order. Results land in
+// results[i], never in completion order, which is what lets the manifest and
+// the publish list stay byte-identical to a sequential run.
+//
+// On the first failure it stops DISPATCHING but waits for every in-flight
+// worker before rejecting, and it rethrows the lowest-index error rather than
+// whichever lost the race. Two reasons: the message a build prints stays the
+// same as the sequential one, and a worker can never still be writing into the
+// cache directory while the caller decides what to sweep.
+export async function runPool(items, cap, worker) {
+  const results = new Array(items.length);
+  // A wrapper, not the thrown value: `throw null` must still count as a
+  // failure, and the caller must get the thrown value back untouched.
+  const failures = new Array(items.length);
+  const limit = Math.min(requireConcurrency(cap), items.length);
+  let next = 0;
+
+  const runners = Array.from({ length: limit }, async () => {
+    for (;;) {
+      const index = next;
+      if (index >= items.length) return;
+      next += 1;
+      try {
+        results[index] = await worker(items[index], index);
+      } catch (error) {
+        failures[index] = { error };
+        next = items.length;
+      }
+    }
+  });
+
+  await Promise.all(runners);
+  const failed = failures.findIndex(Boolean);
+  if (failed >= 0) throw failures[failed].error;
+  return results;
+}
+
+export async function prepare({ root, cache, recipe, concurrency = DEFAULT_CONCURRENCY }) {
+  // Before any source is read: a bad cap is not a slow build.
+  requireConcurrency(concurrency);
   const data = recipe || loadRecipe(root);
   const problems = recipeProblems(data, root);
   if (problems.length) throw new ImageVariantError(problems.join('\n'));
@@ -181,6 +239,18 @@ export async function prepare({ root, cache, recipe }) {
   let encoded = 0;
   let cached = 0;
   let kept = 0;
+
+  // Phase 0 — validate every source, then lay the work out in recipe order and
+  // width order. A job remembers its index, so nothing below depends on which
+  // encode finishes first.
+  // Two recipe keys can resolve to one output file: same directory, same base
+  // name, different extension, identical bytes (sharp reads the signature, not
+  // the extension). Sequentially the second one found the first one's cache
+  // entry; in parallel they would share a destination and a temp name. The
+  // second therefore shares the first's job instead of racing it.
+  const byOutput = new Map();
+  const sources = [];
+  const jobs = [];
 
   for (const sitePath of Object.keys(data)) {
     const located = resolveSitePath(root, sitePath);
@@ -203,15 +273,12 @@ export async function prepare({ root, cache, recipe }) {
     const ext = path.posix.extname(located.rel).toLowerCase();
     const base = path.posix.basename(located.rel, path.posix.extname(located.rel));
     const dir = path.posix.dirname(located.rel);
-    const variants = [];
+    const source = { sitePath, meta, slots: [] };
 
     for (const width of widths) {
       if (width === meta.width && ext === '.webp') {
-        variants.push({
-          src: sitePath,
-          width: meta.width,
-          height: meta.height,
-          bytes: sourceBytes.length,
+        source.slots.push({
+          kept: { src: sitePath, width: meta.width, height: meta.height, bytes: sourceBytes.length },
         });
         kept += 1;
         continue;
@@ -222,30 +289,74 @@ export async function prepare({ root, cache, recipe }) {
       if (existsSync(shadow)) {
         throw new ImageVariantError('refusing to shadow a source-tree file: ' + publicRel);
       }
-      const cacheFile = path.join(cache, ...publicRel.split('/'));
-      let info;
-      if (existsSync(cacheFile) && statSync(cacheFile).size > 0) {
-        info = await sharp(cacheFile).metadata();
-        if (info.width !== width) {
-          rmSync(cacheFile, { force: true });
-          info = null;
-        } else {
-          cached += 1;
-        }
+      if (byOutput.has(publicRel)) {
+        // Counted as a hit, which is what the sequential run reported for it.
+        source.slots.push({ job: byOutput.get(publicRel), shared: true });
+        cached += 1;
+        continue;
       }
-      if (!info) {
-        info = await encodeRung(sharp, located.abs, cacheFile, width);
+      byOutput.set(publicRel, jobs.length);
+      source.slots.push({ job: jobs.length });
+      jobs.push({
+        sourceAbs: located.abs,
+        cacheFile: path.join(cache, ...publicRel.split('/')),
+        publicRel,
+        width,
+      });
+    }
+    sources.push(source);
+  }
+
+  // Phase 1 — the pool. Cache verification runs inside it too: a warm run is
+  // 24 metadata reads, and those are the whole warm cost.
+  const rungs = await runPool(
+    jobs,
+    concurrency,
+    async (job, index) => {
+      let info;
+      try {
+        if (existsSync(job.cacheFile) && statSync(job.cacheFile).size > 0) {
+          info = await sharp(job.cacheFile).metadata();
+        }
+      } catch {
+        // A cache entry that cannot even be read is a miss, not a build
+        // failure: the cache is disposable and the source is the authority.
+        info = null;
+      }
+      if (info && info.width !== job.width) {
+        rmSync(job.cacheFile, { force: true });
+        info = null;
+      }
+      if (info) {
+        cached += 1;
+      } else {
+        info = await encodeRung(sharp, job.sourceAbs, job.cacheFile, job.width, index);
         encoded += 1;
       }
-      variants.push({
-        src: '/' + publicRel,
+      return {
+        src: '/' + job.publicRel,
         width: info.width,
         height: info.height,
-        bytes: existsSync(cacheFile) ? statSync(cacheFile).size : info.size,
-      });
-      publish.push({ from: cacheFile, to: publicRel });
+        bytes: existsSync(job.cacheFile) ? statSync(job.cacheFile).size : info.size,
+      };
+    },
+  );
+
+  // Phase 2 — assemble from indices, so the manifest bytes and the publish
+  // order are identical to a sequential run.
+  for (const source of sources) {
+    const variants = [];
+    for (const slot of source.slots) {
+      if (slot.kept) {
+        variants.push(slot.kept);
+        continue;
+      }
+      const job = jobs[slot.job];
+      variants.push(rungs[slot.job]);
+      // A shared rung is copied once: the owner's publish entry already names it.
+      if (!slot.shared) publish.push({ from: job.cacheFile, to: job.publicRel });
     }
-    manifest[sitePath] = { width: meta.width, height: meta.height, variants };
+    manifest[source.sitePath] = { width: source.meta.width, height: source.meta.height, variants };
   }
 
   const keep = new Set(publish.map(item => item.from));
@@ -288,7 +399,12 @@ if (isMain) {
       return;
     }
     if (command === 'prepare') {
-      const result = await prepare({ root: flag('root'), cache: flag('cache') });
+      const concurrency = process.argv.includes('--concurrency')
+        ? Number(flag('concurrency'))
+        : DEFAULT_CONCURRENCY;
+      const result = await prepare({
+        root: flag('root'), cache: flag('cache'), concurrency,
+      });
       console.error(
         'image-variants: ' + result.sources + ' sources, '
         + result.encoded + ' encoded, ' + result.cached + ' cached, '
@@ -305,7 +421,7 @@ if (isMain) {
       }));
       return;
     }
-    console.error('usage: node design/image-variants.mjs check|prepare [--root DIR] [--cache DIR]');
+    console.error('usage: node toolchain/image-variants.mjs check|prepare [--root DIR] [--cache DIR] [--concurrency N]');
     process.exit(1);
   };
   run().catch(error => {

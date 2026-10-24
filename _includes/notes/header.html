@@ -13,7 +13,7 @@
 
   There is no byline. The author signs in at the right — a CRT login line, no
   "By", no reading time; the tilde is the prompt. Date and author come from the
-  note's own front matter (`last_date`, `author`), never from a second source.
+  note's own front matter (`date`, `author`), never from a second source.
 {%- endcomment -%}
 {%- assign deck = include.note.deck | default: include.note.excerpt -%}
 <header class="essay-header">
@@ -21,7 +21,7 @@
   <div class="essay-header__top">
   {%- assign edition = site.data.notes -%}
     <p class="eyebrow"><span class="ember">{{ include.note.kicker | default: edition.kicker }}</span><span class="eyebrow-divider">/</span>{{ include.note.kicker_subject | default: edition.kicker_subject }}</p>
-    <time class="dateline" datetime="{{ include.note.last_date | date: '%Y-%m-%d' }}">{{ include.note.last_date | date: "%B %-d, %Y" }}</time>
+    <time class="dateline" datetime="{{ include.note.date | date: '%Y-%m-%d' }}">{{ include.note.date | date: "%B %-d, %Y" }}</time>
   </div>
   <h1 id="note-title">{{ include.note.title }}</h1>
   {% if deck %}<p class="deck">{{ deck }}</p>{% endif %}

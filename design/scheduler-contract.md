@@ -58,7 +58,7 @@ listeners and observation ownership; no separate factory implementation is neede
 The harness verifies its three exports rather than silently rewriting any module.
 
 ```sh
-node --test design/probe/scroll-clock.test.mjs
+node --test toolchain/test/scroll-clock.test.mjs
 ```
 
 17 deterministic tests pass. Against the saved original 43-line module, the same
@@ -72,7 +72,7 @@ Local red-state reproduction (the archive is temporary, not a repository fixture
 
 ```sh
 SCROLL_CLOCK_SOURCE=/tmp/helios-scheduler-baseline/assets/js/home/scroll-clock.mjs \
-  node --test design/probe/scroll-clock.test.mjs
+  node --test toolchain/test/scroll-clock.test.mjs
 ```
 
 Original module SHA-256:
@@ -143,8 +143,8 @@ Build first; use an isolated Chromium debugger, not a personal browser profile.
 Keep browser/server processes within the shell lifetime and clean them up afterward.
 
 ```sh
-node --test design/probe/*.test.mjs           # 89 pass at this milestone
-ruby design/probe/compiled_ink_test.rb
+node --test toolchain/test/*.test.mjs           # 89 pass at this milestone
+ruby toolchain/test/compiled_ink_test.rb
 bundle exec jekyll build
 
 # With Chromium's isolated debugger running at 9247 and the site at 4001:

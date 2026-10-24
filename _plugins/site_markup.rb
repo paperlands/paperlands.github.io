@@ -55,7 +55,7 @@ module SiteMarkup
 
   class << self
     # How a resolved string becomes HTML. A build never touches this: the site
-    # owns its markdown converter, and the default asks it. design/probe sets it
+    # owns its markdown converter, and the default asks it. toolchain/test sets it
     # instead, so the grammar can be checked without a generator loaded — which
     # is why Jekyll's converter is named *inside* the default and resolved when
     # the default is first used, not when this file is read.

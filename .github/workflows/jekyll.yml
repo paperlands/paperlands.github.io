@@ -29,6 +29,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        # Per-path modification dates need history, not historical media blobs.
+        with:
+          fetch-depth: 0
+          filter: blob:none
 
       # The stylesheet pipeline shells out to the CLI that ships inside the
       # `tailwindcss-ruby` gem (see _plugins/fast_styles.rb), so there is no
@@ -50,7 +54,7 @@ jobs:
       - name: Install the still encoder
         run: npm ci --no-audit --no-fund
 
-      # The still variants are content-addressed: design/image-variants.mjs names
+      # The still variants are content-addressed: toolchain/image-variants.mjs names
       # each rung after a hash of the source bytes, the width and the encoder
       # version. A stale entry therefore cannot be served wrong — the worst a miss
       # costs is one re-encode, never a wrong image — which is what makes it safe to
@@ -63,7 +67,7 @@ jobs:
         uses: actions/cache@v6
         with:
           path: .jekyll-cache/image-variants
-          key: image-variants-${{ hashFiles('_data/image_sources.yml', 'design/image-variants.mjs', 'package-lock.json', 'assets/**/*.{webp,png,jpg,jpeg}') }}
+          key: image-variants-${{ hashFiles('_data/image_sources.yml', 'toolchain/image-variants.mjs', 'package-lock.json', 'assets/**/*.{webp,png,jpg,jpeg}') }}
           restore-keys: |
             image-variants-
 
@@ -73,55 +77,64 @@ jobs:
           JEKYLL_ENV: production
 
 
+      - name: Verify stylesheet pipeline
+        run: bundle exec ruby toolchain/test/fast_styles_test.rb
+
+      - name: Verify shipped stylesheets
+        run: bundle exec ruby toolchain/test/styles_artifact_test.rb
+
+      - name: Verify publication and modification dates
+        run: bundle exec ruby toolchain/test/metadata_test.rb
+
       - name: Verify the media player
-        run: node --test design/probe/media-video.test.mjs
+        run: node --test toolchain/test/media-video.test.mjs
       - name: Verify generated media
-        run: node design/mint-media.mjs verify
+        run: node toolchain/mint-media.mjs verify
 
       # One contract per step. A gate that shares a step with eleven others can
       # only shout "exit code 1" into a log nobody may read from an outside
       # session; a gate with its own step names itself in the checks API.
       - name: Verify compiled ink
-        run: bundle exec ruby design/probe/compiled_ink_test.rb
+        run: bundle exec ruby toolchain/test/compiled_ink_test.rb
 
       - name: Verify still variants
-        run: node --test design/probe/image-variants.test.mjs
+        run: node --test toolchain/test/image-variants.test.mjs
 
       - name: Verify the ink state machine
-        run: node --test design/probe/ink-state.test.mjs
+        run: node --test toolchain/test/ink-state.test.mjs
 
       - name: Verify image sources
-        run: bundle exec ruby design/probe/image_sources_test.rb
+        run: bundle exec ruby toolchain/test/image_sources_test.rb
 
       - name: Verify site markup
-        run: bundle exec ruby design/probe/site_markup_test.rb
+        run: bundle exec ruby toolchain/test/site_markup_test.rb
 
       - name: Verify the template text steps
-        run: bundle exec ruby design/probe/text_steps_test.rb
+        run: bundle exec ruby toolchain/test/text_steps_test.rb
 
       - name: Verify the notes edition
-        run: bundle exec ruby design/probe/notes_edition_test.rb
+        run: bundle exec ruby toolchain/test/notes_edition_test.rb
 
       - name: Verify the experiences page
-        run: bundle exec ruby design/probe/experiences_page_test.rb
+        run: bundle exec ruby toolchain/test/experiences_page_test.rb
 
       - name: Verify the media server's byte ranges
-        run: python3 design/probe/media_serve_test.py
+        run: python3 toolchain/test/media_serve_test.py
 
       - name: Verify the experiences lifecycle
-        run: node --test design/probe/experiences-lifecycle.test.mjs
+        run: node --test toolchain/test/experiences-lifecycle.test.mjs
 
       - name: Verify the experiences stage
-        run: node --test design/probe/experiences-stage.test.mjs
+        run: node --test toolchain/test/experiences-stage.test.mjs
 
       - name: Verify the host release
-        run: node --test design/probe/host-release.test.mjs
+        run: node --test toolchain/test/host-release.test.mjs
 
       - name: Verify the render window
-        run: node --test design/probe/render-window.test.mjs
+        run: node --test toolchain/test/render-window.test.mjs
 
       - name: Verify the scroll clock
-        run: node --test design/probe/scroll-clock.test.mjs
+        run: node --test toolchain/test/scroll-clock.test.mjs
 
       # Generates service worker
       - name: generate sw

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# bundle exec ruby design/probe/text_steps_test.rb
+# bundle exec ruby toolchain/test/text_steps_test.rb
 #
 # Contract for _plugins/text_steps.rb. The three steps exist because two
 # templates were doing the arithmetic themselves — one over character counts,

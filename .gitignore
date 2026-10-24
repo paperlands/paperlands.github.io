@@ -38,8 +38,8 @@ assets/js/home/paperlang/
 # The design workbench's raw material: the video masters clips are minted from
 # (design/assets) and the superseded hifi/prototype pages they were studied in
 # (iterations, cutouts, prior, rapiditer, stage). ~155MB, and no build input
-# reads them — what the gates read is design/*.mjs, design/probe,
-# design/fixtures and the doc set, which are committed. Re-minting a still
+# reads them. Producers and gates live in toolchain/, which is committed.
+# design/ holds the notes and the opt-in probes. Re-minting a still
 # or clip needs the masters back from the producer's
 # archive, the same trade as the hatch sources above.
 design/assets/

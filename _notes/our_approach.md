@@ -1,7 +1,7 @@
 ---
 title: Creation First
 author: princeton
-last_date: 28-09-2026
+date: 2026-09-28
 heroimgurl: /assets/lib/notes/our-approach/student-flower.webp
 excerpt: Visual and dynamic way to engage with math through animations
 ---

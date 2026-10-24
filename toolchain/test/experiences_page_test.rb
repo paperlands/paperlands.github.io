@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# bundle exec ruby design/probe/experiences_page_test.rb
+# bundle exec ruby toolchain/test/experiences_page_test.rb
 #
 # Renders the actual page and includes from data this contract mutates:
 # reordered movements, an added fragment id, an extended FAQ. It is the one

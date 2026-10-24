@@ -9,7 +9,7 @@
   the catalog fields the player already reads.
 
   VIDEO
-    node design/mint-media.mjs video \
+    node toolchain/mint-media.mjs video \
       --id tree_fractal \
       --source design/assets/HOWSTAR.mp4 \
       --compact 572x1080 \
@@ -28,11 +28,11 @@
   STILLS
 
     Not this script. Widths live in _data/image_sources.yml. The Jekyll build
-    emits the rungs (design/image-variants.mjs). `image` fails on purpose, so
+    emits the rungs (toolchain/image-variants.mjs). `image` fails on purpose, so
     a resized WebP is not committed by habit.
 
   VERIFY
-    node design/mint-media.mjs verify
+    node toolchain/mint-media.mjs verify
 
     Fails if a catalog path is missing, an image recipe source is missing, a
     compact video lacks its box dimensions, or two byte-identical .woff2 files
@@ -415,7 +415,7 @@ if (command === 'video') mintVideo(flags);
 else if (command === 'image') fail('stills are not minted. Add the source and its widths to _data/image_sources.yml; the Jekyll build emits the rungs.');
 else if (command === 'verify') verify();
 else {
-  console.error('usage: node design/mint-media.mjs video|verify [flags]');
-  console.error('see the header of design/mint-media.mjs and design/media.org');
+  console.error('usage: node toolchain/mint-media.mjs video|verify [flags]');
+  console.error('see the header of toolchain/mint-media.mjs and design/media.org');
   process.exit(1);
 }

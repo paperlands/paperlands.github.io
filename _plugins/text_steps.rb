@@ -25,7 +25,7 @@
 # data lookups. Those are what a template language is for; moving them into
 # Ruby would mean holding HTML in strings to escape from a language that is
 # already only rendering HTML. The contract is
-# design/probe/text_steps_test.rb.
+# toolchain/test/text_steps_test.rb.
 require 'liquid'
 
 module TextSteps

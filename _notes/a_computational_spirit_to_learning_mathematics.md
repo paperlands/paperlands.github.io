@@ -1,7 +1,7 @@
 ---
 title: A Computational Spirit to Learning Mathematics
 author: vivekbala
-last_date: 02-02-2025
+date: 2025-02-02
 heroimgurl: /assets/lib/turtlekanagawawave.png
 ---
 

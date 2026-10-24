@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Consume Dojo's release producer, including its actual working source revision.
-# Usage: design/hatch-pull.sh [--dojo <dir>] [--no-build] [--no-check] [--keep]
+# Usage: toolchain/hatch-pull.sh [--dojo <dir>] [--no-build] [--no-check] [--keep]
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 DOJO="${DOJO:-$HOME/dojo}"
@@ -23,7 +23,7 @@ TMP="$(mktemp -d "${TMPDIR:-/tmp}/hatch-pull.XXXXXX")"
 cleanup() { [ -n "$KEEP" ] || rm -rf "$TMP"; }
 trap cleanup EXIT
 node "$DOJO/scripts/release/host.mjs" "$TMP/release"
-node "$ROOT/design/vendor.mjs" --from-release "$TMP/release" --install
+node "$ROOT/toolchain/vendor.mjs" --from-release "$TMP/release" --install
 if [ -n "$RUN_CHECK" ]; then
     if [ -n "$BUILD_SITE" ]; then
         if ! (cd "$ROOT" && bundle exec jekyll build >"$TMP/jekyll.log" 2>&1); then
@@ -33,7 +33,7 @@ if [ -n "$RUN_CHECK" ]; then
     else
         printf 'hatch-pull: --no-build checks the existing _site; stale references will fail\n'
     fi
-    node "$ROOT/design/vendor.mjs" --check
+    node "$ROOT/toolchain/vendor.mjs" --check
     python3 "$ROOT/design/probe/hatch.py"
 fi
 printf 'hatch-pull: Dojo-produced artifact installed; _data/hatch.yml records the exact source revision\n'

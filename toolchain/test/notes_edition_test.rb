@@ -3,7 +3,7 @@
 # Contract checks for _plugins/notes_edition.rb — the filters the note layout
 # depends on. Run after any change to the plugin or the note layout:
 #
-#   bundle exec ruby design/probe/notes_edition_test.rb
+#   bundle exec ruby toolchain/test/notes_edition_test.rb
 #
 # Promoted with the plugin from the evening-ink study, where it was
 # design/probe/reading_edition_test.rb. The figure assertions are inverted on
@@ -12,6 +12,7 @@
 
 require 'liquid'
 require 'yaml'
+require 'date'
 require_relative '../../_plugins/notes_edition'
 
 filter = Object.new.extend(NotesEdition)
@@ -90,7 +91,7 @@ graph = JSON.parse(File.read(File.expand_path('../../_includes/notes_graph.json'
 # nodes it carries.
 note_titles = Dir[File.expand_path('../../_notes/*.md', __dir__)].map do |path|
   front_matter = File.read(path)[/\A---\s*\n(.*?)\n---/m, 1]
-  YAML.safe_load(front_matter)['title']
+  YAML.safe_load(front_matter, permitted_classes: [Date, Time])['title']
 end.compact.sort
 raise 'Stale graph fixture: node set does not match _notes/' unless graph['nodes'].map { |node| node['label'] }.sort == note_titles
 node_ids = graph['nodes'].map { |node| node['id'] }

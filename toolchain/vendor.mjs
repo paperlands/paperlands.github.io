@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Vendor Dojo's producer output; legacy spike pins remain readable.
-// node design/vendor.mjs --from-release /path/to/dojo/dist/host --install
-// node design/vendor.mjs --check
+// node toolchain/vendor.mjs --from-release /path/to/dojo/dist/host --install
+// node toolchain/vendor.mjs --check
 import { createHash } from "node:crypto"
 import { verifyHostRelease, installHostRelease } from './host-release.mjs'
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs"
@@ -84,7 +84,7 @@ function noticesFor(found, { dojoCommit, artifactSha }) {
     lines.push("")
     lines.push("This bundle is a single esbuild artifact. It contains code from the")
     lines.push("components listed below. The list is derived from the build's esbuild")
-    lines.push("metafile by design/vendor.mjs, not maintained by hand.")
+    lines.push("metafile by toolchain/vendor.mjs, not maintained by hand.")
     lines.push("")
     lines.push(`artifact sha256: ${artifactSha}`)
     lines.push("")
@@ -184,7 +184,7 @@ function fromSpike(argv) {
         cpSync(licence, join(LIB, "LICENSE"))
         writeFileSync(join(LIB, "THIRD_PARTY_NOTICES.txt"), notices)
         const pin = [
-            "# Written by design/vendor.mjs --from-spike. A SPIKE PIN, NOT A RELEASE:",
+            "# Written by toolchain/vendor.mjs --from-spike. A SPIKE PIN, NOT A RELEASE:",
             "# there is no dojo manifest, no host-v1 entry, no tag and no conformance",
             "# fixture behind these bytes. Do not edit by hand — re-run the command.",
             "# Checked by design/probe/hatch.py.",
@@ -270,7 +270,7 @@ console.log(`vendor  : pin schema ${PIN_SCHEMA}`)
 if (argv["from-release"]) fromRelease(argv)
 else if (argv["from-spike"]) fromSpike(argv)
 else if (argv.check) checkInstalled()
-else { console.log('Usage: node design/vendor.mjs --from-release <dir> [--install] | --check'); process.exit(0) }
+else { console.log('Usage: node toolchain/vendor.mjs --from-release <dir> [--install] | --check'); process.exit(0) }
 
 if (failures) { console.log(`\n${failures} check(s) failed.`); process.exit(1) }
 console.log("\nvendor ok")

@@ -1,7 +1,7 @@
 ---
 title: Beginnings
 author: vivekbala
-last_date: 21-07-2024
+date: 2024-07-21
 heroimgurl: /assets/lib/kids.jpg
 deck: On the tools we think with,<br>and the worlds we build together.
 ---

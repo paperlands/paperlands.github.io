@@ -50,7 +50,7 @@ links:
     # the letter in _data/contact.yml and opened in place on every page by
     # assets/js/contact.js. Not a page: a <dialog>, so there is no destination
     # for a nav to jump to.
-    label: Join Us
+    label: Contact Us
     href: /contact
 
 # The links. In this order, on every page. The only thing that varies is the
@@ -76,7 +76,7 @@ mobile_nav:
 # the panel on narrow ones. `primary: true` underlines its label.
 folio:
   actions:
-    - label: Enter Now
+    - label: Enter PaperLand
       href: https://dojo.paperland.sg/welcome
       primary: true
     
