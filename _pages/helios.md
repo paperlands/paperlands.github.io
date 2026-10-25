@@ -19,15 +19,15 @@ hero:
   kicker: In how we
   label: In how we
   items:
+    - id: fibonacci_spiral
+      title: Explore
+      slate: the fibonacci sequence of old
     - id: tree_fractal
       title: Observe
       slate: the hidden geometry of stars
     - id: polygon_fill
       title: Play
       slate: with randomness and chaos
-    - id: fibonacci_spiral
-      title: Explore
-      slate: the fibonacci sequence of old
     - id: prime_sequence
       title: Question
       slate: the tangled webs of nature

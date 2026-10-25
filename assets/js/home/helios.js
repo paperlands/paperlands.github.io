@@ -3,14 +3,15 @@
    --------------------------------------------------------------------------
    The shared player (assets/js/media-video.js) owns attach/release and the
    shared writer (assets/js/media-carousel.js) owns the marks. This file owns
-   three things the look wants and neither of those should learn:
+   four things the look wants and neither of those should learn:
 
      1. the card rises when the writer swaps the copy (it listens for the
         `media:carousel` event the writer already dispatches);
      2. the sun flash — once, on scroll, when the build is whole (the sun up,
         the banner back at the size the hero measured for it), never on a swap;
      3. the play fill, read from `[data-media-active]` — the mark the writer
-        already sets.
+        already sets;
+     4. the ticker starts only once its font metrics have settled.
 
    The state it adds is namespaced (data-helios-copy, data-helios-flash) so it
    cannot be confused with the marks and ARIA states the player and writer
@@ -31,6 +32,17 @@
   var fill = hero ? hero.querySelector('[data-helios-play]') : null;
   var wordmark = root.querySelector('.helios-wordmark');
 
+  /* The crawl's -50% is relative to the track width. Starting on a fallback
+     face makes a late font swap move the whole strip sideways mid-flight.
+     CSS holds it at the origin until fonts settle; there is no scroll/resize
+     restart. Without JavaScript (or with reduced motion) the words stay still. */
+  var ticker = root.querySelector('.helios-ticker__track');
+  if (ticker && !reduced) {
+    var startTicker = function () { ticker.setAttribute('data-helios-ticker-ready', ''); };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(startTicker);
+    else startTicker();
+  }
+
   /* 1 + 2. The writer says the copy changed; the look makes it arrive. State is
         look-owned and namespaced (data-helios-*) so it cannot collide with
         the marks and ARIA states the shared player and writer publish. */
@@ -47,35 +59,84 @@
     el.setAttribute(attr, value);
   }
 
-  /* 3. Play fill. The player attaches, plays and releases; we only read the
-        clock of whichever clip currently carries the active mark. */
+  /* 3. Play fill. timeupdate is a sparse media clock, not a frame clock.
+     Animate only the transform on the compositor; media events anchor it to
+     the real clock. No rAF loop, layout reads, width animation or eased lag. */
   var active = null;
   var lastPlay = -1;
-  function paint() {
-    if (!fill) return;
-    var p = 0;
-    if (active && active.duration > 0 && isFinite(active.duration) && isFinite(active.currentTime)) {
-      p = Math.min(1, Math.max(0, active.currentTime / active.duration));
-    }
-    if (p === lastPlay) return;
-    lastPlay = p;
-    // The track's box stays fixed; only its cached solid ink scales.
-    // Unchanged progress needs no write, including repeated carousel notifications.
-    fill.style.setProperty('--helios-play', String(p));
+  var playAnimation = null;
+  var playDuration = 0;
+  var buffering = false;
+  var playMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var playEvents = ['timeupdate', 'playing', 'pause', 'waiting', 'seeking',
+    'seeked', 'ratechange', 'loadedmetadata', 'durationchange', 'emptied', 'ended'];
+
+  function clearPlayAnimation() {
+    if (playAnimation) playAnimation.cancel();
+    playAnimation = null;
+    playDuration = 0;
   }
 
-  function onTime() { paint(); }
+  function paint(event) {
+    if (!fill) return;
+    var duration = active && active.duration;
+    var time = active && active.currentTime;
+    var valid = duration > 0 && isFinite(duration) && isFinite(time);
+    var p = valid ? Math.min(1, Math.max(0, time / duration)) : 0;
+    if (p !== lastPlay) {
+      lastPlay = p;
+      // Also the static/reduced-motion and older-browser fallback.
+      fill.style.setProperty('--helios-play', String(p));
+    }
+    if (!valid || playMotion.matches || !fill.animate) {
+      clearPlayAnimation();
+      return;
+    }
+    if (playAnimation && playDuration !== duration) clearPlayAnimation();
+    if (!playAnimation) {
+      playDuration = duration;
+      playAnimation = fill.animate([
+        { transform: 'translateZ(0) scaleX(0)' },
+        { transform: 'translateZ(0) scaleX(1)' }
+      ], { duration: duration * 1000, easing: 'linear', fill: 'both' });
+      playAnimation.pause();
+    }
+    var rate = active.playbackRate;
+    var running = !document.hidden && !active.paused && !active.ended &&
+      !active.seeking && !buffering && p < 1 && active.readyState >= 3 && rate > 0 && isFinite(rate);
+    // Ordinary timeupdates only correct meaningful drift (100 ms). Repeated
+    // carousel notifications must not keep restarting a healthy animation.
+    if (!running || playAnimation.playState !== 'running' ||
+        (event && event.type !== 'timeupdate') ||
+        Math.abs(playAnimation.currentTime - time * 1000) > 100) {
+      playAnimation.currentTime = p * duration * 1000;
+    }
+    if (running) {
+      if (playAnimation.playbackRate !== rate) playAnimation.playbackRate = rate;
+      if (playAnimation.playState !== 'running') playAnimation.play();
+    } else if (playAnimation.playState !== 'paused') {
+      playAnimation.pause();
+    }
+  }
+
+  function onPlayEvent(event) {
+    if (event.type === 'waiting') buffering = true;
+    else if (event.type === 'playing' || event.type === 'emptied') buffering = false;
+    paint(event);
+  }
 
   function bindPlay() {
     var next = hero ? hero.querySelector('[data-media-active]') : null;
     if (next === active) return;
-    if (active) active.removeEventListener('timeupdate', onTime);
+    if (active) playEvents.forEach(function (type) { active.removeEventListener(type, onPlayEvent); });
+    clearPlayAnimation();
     active = next;
-    if (active) {
-      active.addEventListener('timeupdate', onTime);
-    }
+    buffering = false;
+    if (active) playEvents.forEach(function (type) { active.addEventListener(type, onPlayEvent); });
     paint();
   }
+
+  if (playMotion.addEventListener) playMotion.addEventListener('change', paint);
 
   /* A swap is a cross-fade (the look times it) and the card lifts. No flash
      here: the flash belongs to the scroll, below. */
@@ -267,7 +328,8 @@
   window.addEventListener('resize', measure);
   if (window.visualViewport) window.visualViewport.addEventListener('resize', measure);
   document.addEventListener('visibilitychange', function () {
-    if (!document.hidden) { bindPlay(); paint(); }
+    if (!document.hidden) bindPlay();
+    paint();
   });
 
   if (!reduced) restart(copy, 'data-helios-copy', 'in');

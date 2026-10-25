@@ -39,6 +39,10 @@ check.call(doc.css('main').size == 1 && doc.css('h1').size == 1, 'Page needs one
 order = root.element_children.reject { |node| node.name == 'a' }.map(&:name)
 check.call(order == %w[header section section section section footer], "Reading order changed: #{order}")
 check.call(root.css('.experiences-movement').size == original.data.dig('possibilities', 'items').size, 'Missing movements')
+root.css('.experiences-movement-copy').each do |copy|
+  check.call(copy.element_children.first.name == 'h3', 'Main thought must lead the movement copy')
+  check.call(copy.at_css('h3').next_element['class'] == 'experiences-label', 'Event type must follow the main thought, not precede it')
+end
 check.call(root.css('.experiences-routes article').size == original.data.dig('support', 'routes').size, 'Missing training routes')
 check.call(root.css('details').size == original.data.dig('planning', 'questions').size, 'Missing questions')
 ids = doc.css('[id]').map { |node| node['id'] }
@@ -50,6 +54,8 @@ end
 check.call(root.css('content, iframe, p p').empty?, 'Invalid wrapper, nested paragraph or unrequested embed')
 check.call(!root.text.include?('[[') && !root.text.include?('{{'), 'Unrendered content syntax')
 check.call(doc.at_css('h1 span em')&.text == 'Stage.', 'Lost hero emphasis/line composition')
+check.call(doc.at_css('.experiences-hero-brand')&.text == original.data.dig('hero', 'brand'), 'Hero brand must remain page-owned')
+check.call(doc.at_css('.experiences-hero-text .experiences-label').text.strip == [original.data.dig('hero', 'brand'), original.data.dig('hero', 'label')].join(' '), 'Brand and descriptor must read as one line')
 check.call(doc.css('.experiences-routes h3 em').map(&:text) == %w[students. teachers.], 'Lost route emphasis')
 check.call(doc.css('.experiences-practical strong').map(&:text) == %w[online in-person], 'Lost rich copy')
 check.call(doc.at_css('.experiences-faq a')&.[]('href') == '/preview/lesson-plans', 'FAQ link ignores baseurl')

@@ -139,3 +139,30 @@ offscreen pausing and readable no-JavaScript output.
 The preparation FAQ and support offer share the same **as few as 3 sessions**
 commitment. Preparation and sharing are planned with each school; the FAQ does
 not promise a separate fixed number of training or sharing sessions.
+
+### Mobile reading rhythm
+
+At 700px and below, the page uses one bounded reading column. Each movement
+opens with one small amber identity, followed immediately by its main thought.
+The event type is a subtitle **after** the headline in DOM and visual order, not
+another preamble. The longer invitation remains on wide layouts; mobile omits
+that redundant introductory line while retaining the explanatory body.
+Headlines share a 38–60px scale against 18px/1.65 body text. Authored line breaks
+retain the sense of the phrases; no extra glow is added to secondary headings.
+Portrait films are centred rather than retaining the desktop alternation.
+The opening photograph clears the first question by 16px; the thought still
+fits at 320×568. Section padding is 48px, so adjoining sections make a 96px
+pause instead of accumulating 144px of empty space. Jump links form a vertical
+list with 44px targets; an absent optional label renders no empty row.
+Wide layouts retain their alternating grid. Page-owned strings, media framing,
+and motion/accessibility fallbacks are unchanged.
+
+```sh
+CDP_PORT=9341 BASE_URL=http://127.0.0.1:4028 node design/probe/experiences-mobile.mjs
+```
+
+Run against a served Jekyll build and your Chromium CDP port. This checks seven
+widths (320–1440px), reading overflow, heading consistency, introductory and
+film alignment, section pauses, link targets, the short-screen opening and
+native FAQ operation. Screenshots and measurements go to
+`/tmp/experiences-mobile/` for visual review.

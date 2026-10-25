@@ -178,8 +178,9 @@
     position: relative;
     display: flex;
     align-items: center;
-    min-height: clamp(42rem, 52vw, 54rem);
-    padding-block: 11rem 6rem;
+    /* Trim the lower apron by 2rem without shifting the headline's centre. */
+    min-height: clamp(40rem, calc(52vw - 2rem), 52rem);
+    padding-block: 11rem 4rem;
   }
   .experiences-arcs {
     position: absolute;
@@ -208,7 +209,16 @@
     width: 53%;
     text-align: left;
   }
-  .experiences-hero-text .experiences-label { margin-bottom: 2rem; }
+  .experiences-hero-text .experiences-label {
+    margin-bottom: 2rem;
+    font-family: var(--font-serif);
+    font-size: clamp(1.375rem, 2vw, 1.75rem);
+    line-height: 1;
+    letter-spacing: .01em;
+    text-transform: none;
+  }
+  /* Paperlang has a larger x-height: match the faces optically, not numerically. */
+  .experiences-hero-brand { font-family: var(--font-paperlang); font-size: .8em; }
   .experiences h1 {
     font-size: clamp(4.25rem, 8.8vw, 8.5rem);
     line-height: 0.88;
@@ -324,10 +334,14 @@
     position: relative;
     isolation: isolate;
   }
+  /* One recurring spark: ivory core, amber rim, warm falloff at every size. */
+  :is(.experiences-spark, .experiences-letter-ember) {
+    color: #fff1d3;
+    text-shadow: 0 0 .12em #fff1b8, 0 0 .65em #e6a04c99, 0 0 1.8em #b97a3c55;
+  }
   .experiences-spark {
     display: block;
     margin-bottom: 2.5rem;
-    color: var(--light-ink-dim);
     font-family: var(--font-serif);
     font-size: 2.5rem;
     line-height: 1;
@@ -350,18 +364,7 @@
     left: -2rem;
     width: 1rem;
     font: 400 1rem/1 var(--font-serif);
-    color: #fff1d3;
     pointer-events: none;
-    opacity: calc(.72 + var(--passage-heat, .4) * .28);
-    text-shadow: 0 0 .15em #f2c46a, 0 0 .7em #e6a04c99, 0 0 1.8em #b97a3c66;
-  }
-  .experiences-letter-ember::before {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    inset: -1.7rem;
-    background: radial-gradient(ellipse 50% 50%,
-      #fff0ae18, #e6a04c14 22%, #b97a3c08 48%, transparent 100%);
   }
   .experiences-prelude .experiences-first-question {
     color: var(--light-high);
@@ -458,7 +461,7 @@
   .experiences-movement-number { font-family: var(--font-display); font-size: 0.75rem; color: var(--light-ink-dim); }
   .experiences-movement-invitation { color: var(--light-ink-dim); font: 400 1.0625rem/1.4 var(--font-serif); }
   .experiences-movement-copy { grid-column: 1 / 7; grid-row: 2; padding-right: 1.5rem; }
-  .experiences-movement-copy .experiences-label { margin-bottom: 1.5rem; }
+  .experiences-movement-copy .experiences-label { margin-top: 1.25rem; }
   .experiences-movement h3 {
     max-width: none;
     margin-left: -0.025em;
@@ -554,8 +557,6 @@
   .experiences-support .experiences-spark {
     margin-bottom: 1.5rem;
     font-size: 1.125rem;
-    color: #fff1d3;
-    text-shadow: 0 0 .12em #fff1b8, 0 0 .65em #e6a04c99, 0 0 1.8em #b97a3c55;
   }
   .experiences-support-heading h2 {
     font-size: clamp(2.5rem, 5.2vw, 4.5rem);
@@ -631,7 +632,7 @@
     .experiences-begin-sky,
     .experiences-support-heading::before,
     .experiences-routes figure::before { display: none; }
-    .experiences-support .experiences-spark { color: CanvasText; text-shadow: none; }
+    .experiences-spark { color: CanvasText; text-shadow: none; }
     .experiences-routes img { filter: none; }
     .experiences-offer-life { color: CanvasText; text-shadow: none; }
     .experiences-offer strong { text-decoration-color: currentColor; }
@@ -755,7 +756,7 @@
     .experiences .experiences-hero-inner { display: block; min-height: 0; padding-block: 9rem 0; }
     .experiences-hero-text { width: 100%; }
     .experiences-arcs { opacity: 0.38; }
-    .experiences-hero-text .experiences-label { margin-bottom: 1.75rem; }
+    .experiences-hero-text .experiences-label { margin-bottom: 1.5rem; }
     .experiences h1 { font-size: clamp(3.6rem, 17vw, 6rem); }
     .experiences .experiences-gathering {
       position: relative;
@@ -774,31 +775,41 @@
     .experiences .experiences-gathering {
       height: clamp(15rem, min(90vw, calc(100svh - 23rem)), 34rem);
     }
-    .experiences-letter-ember { left: 0; top: -.9rem; font-size: .85rem; width: .85rem; }
+    [data-look="experiences"] .experiences { font-size: 1.125rem; line-height: 1.65; }
+    /* One reading column: decoration may spill, but prose keeps a shared edge. */
+    .experiences .experiences-prelude { padding-top: 1rem; }
+    .experiences-letter-ember { left: 0; top: .1rem; font-size: .85rem; width: .85rem; }
     .experiences-finale { --experiences-hearth-x: 0%; }
-    .experiences .experiences-wrap { width: calc(100% - 2.5rem); }
+    .experiences .experiences-wrap { width: min(34rem, calc(100% - 2.5rem)); }
     .experiences-film .film-play { width: 3.5rem; height: 3.5rem; }
     .experiences figcaption { font-size: 0.8125rem; }
-    .experiences-movement { display: flex; flex-direction: column; align-items: stretch; padding-block: 4rem; }
-    .experiences-movement-heading { margin-bottom: 2.5rem; }
-    .experiences-movement-identity { gap: 0.75rem; font-size: 0.875rem; white-space: nowrap; }
-    .experiences-movement-invitation { font-size: 0.9375rem; max-width: 18ch; }
+    .experiences-movement { display: flex; flex-direction: column; align-items: stretch; padding-block: 3rem; }
+    /* One eyebrow, then the thought. The event is a subtitle, not a third preamble.
+       The longer invitation belongs to the wide composition; the body carries it
+       on phones without repeating another introductory line. */
+    .experiences-movement-heading { margin-bottom: 1rem; }
+    .experiences-movement-identity { gap: .75rem; color: var(--light-accent); font-size: .75rem; letter-spacing: .12em; white-space: nowrap; }
+    .experiences-movement-number { font-size: .6875rem; }
+    .experiences-movement-invitation { display: none; }
     .experiences-movement-copy,
     .experiences-movement-reverse .experiences-movement-copy { padding: 0; }
-    .experiences-movement-copy .experiences-label { margin-bottom: 1.25rem; }
-    .experiences-movement h3 { font-size: clamp(2.75rem, 10.8vw, 4rem); }
-    .experiences-movement-reverse h3 { font-size: clamp(1.875rem, 8.4vw, 3.5rem); }
-    .experiences .experiences-movement-body { max-width: 36ch; margin-top: 1.5rem; }
-    .experiences .experiences-movement-outcome { margin-top: 1.5rem; }
-    .experiences-movement .experiences-movement-visual { width: min(76%, 23rem); margin: 3rem 0 0 auto; }
-    .experiences-movement-reverse .experiences-movement-visual { margin-inline: 0 auto; }
-    .experiences-support-heading { margin-bottom: 3rem; }
-    .experiences-routes { grid-template-columns: 1fr; gap: 3.5rem; }
-    .experiences-routes figure { margin-bottom: 1.5rem; }
-    .experiences .experiences-planning { grid-template-columns: 1fr; gap: 2.5rem; }
+    .experiences-movement h3,
+    .experiences-movement-reverse h3 { font-size: clamp(2.375rem, 10.4vw, 3.75rem); line-height: 1.08; }
+    .experiences-movement-copy .experiences-label { margin-top: 1rem; font-size: .75rem; line-height: 1.5; letter-spacing: .08em; }
+    .experiences .experiences-movement-body { max-width: 38ch; margin-top: 1.5rem; }
+    .experiences .experiences-movement-outcome { margin-top: 1.25rem; font-size: 1.125rem; }
+    /* A quiet, consistent centre for portrait films; no desktop zigzag. */
+    .experiences-movement .experiences-movement-visual { width: min(84%, 18rem); margin: 2rem auto 0; }
+    .experiences-movement-visual figcaption { padding-top: 1rem; }
+    .experiences-support { padding-block: 3rem; }
+    .experiences-support-heading { margin-bottom: 2.5rem; }
+    .experiences-routes { grid-template-columns: 1fr; gap: 3rem; }
+    .experiences-routes figure { margin-bottom: 1.25rem; }
+    .experiences-routes p { margin-top: 1rem; }
+    .experiences .experiences-planning { grid-template-columns: 1fr; gap: 2rem; padding-block: 3rem; }
     .experiences-faq summary { padding-block: 1.25rem; }
-    .experiences-finale { padding-top: 4rem; }
+    .experiences-finale { padding-top: 3rem; }
     .experiences .experiences-cta { font-size: clamp(3rem, 10vw, 4.75rem); }
-    .experiences .experiences-return { margin-top: 3rem; }
+    .experiences .experiences-return { margin-top: 2.5rem; }
   }
 }

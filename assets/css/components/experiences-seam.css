@@ -108,7 +108,9 @@
       right: -2rem;
       opacity: calc(.16 + var(--passage-heat, .4) * .08);
     }
-    .experiences-jump { gap: .1rem 1.25rem; }
+    /* A short contents list is easier to scan than a two-plus-one link wrap. */
+    .experiences-jump { flex-direction: column; align-items: flex-start; gap: 0; }
+    .experiences-jump .experiences-label { flex-basis: auto; }
   }
 }
 @layer utilities {

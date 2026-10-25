@@ -70,6 +70,7 @@ for every edit. CDP tools require Chromium and Node 22+; no npm browser library.
 | --- | --- |
 | `triage.mjs`, `rules.mjs`, `eval.mjs`, `console.mjs` | Compare two frozen builds: rendered styles/geometry, winning declarations, arbitrary expressions, console/network errors |
 | `contact.mjs`, `identity.mjs`, `nav-lantern.mjs`, `scroll.mjs` | Contact, navigation hit areas, keyboard interaction and native scroll |
+| `helios-ticker.mjs` | Scrolling words: delayed fonts, responsive loop seams, viewport changes, reduced motion and no-JS fallback |
 | `experiences.mjs` | Current experiences page: responsive layout, readable content, accessibility states and media |
 | `front-page-performance.mjs`, `experiences-performance.mjs` | Bounded, opt-in cold-load/scroll attribution; environment and arm controls are documented in each file |
 | `static-grain.mjs` | Grain visibility lifecycle and paired snapshots (`TRACE=1` for paint attribution; pixel comparison needs Pillow) |

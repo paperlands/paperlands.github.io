@@ -13,7 +13,8 @@ excerpt: Give students a stage to share their mathematical creations, discoverie
 # See design/experiences.md for the component contract and extension checks.
 skip_label: Skip to ways to share
 hero:
-  label: PaperLand experiences
+  brand: PaperLand
+  label: experiences
   heading: Math Takes<br><span>the <em>Stage.</em></span>
   scene: creators
   alt: Two students watching their own mathematical creation, a glowing torus
@@ -44,7 +45,7 @@ possibilities:
       clip: creators
       caption: Storytelling that brings math to life.
       body: Bridge art and nature through mathematics. Turn a pattern into a story, an idea into a movie. Build something for yourself and suddenly, others can see it too.
-      outcome: Mathematics made to be felt.
+      outcome: Mathematics meant to be felt.
     - id: symposium
       jump: Symposium
       identity: To Explore
@@ -53,7 +54,7 @@ possibilities:
       title: Find your own <br>*Why.*
       gesture: explore
       clip: star
-      caption: Branching math to nature to an auditorium.
+      caption: Branching nature into mathematics.
       body: Seek patterns and questions that lead you down your own conjectures. Share them with others and start a conversation few would have thought to have.
       outcome: Mathematics for you to question.
     - id: workshops

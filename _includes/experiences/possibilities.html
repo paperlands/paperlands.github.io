@@ -19,7 +19,9 @@
       {%- endif -%}
     </header>
     <nav class="experiences-jump" aria-label="On this page">
+      {%- if scene.jump_label and scene.jump_label != empty -%}
       <span class="experiences-label">{{ scene.jump_label | escape }}</span>
+      {%- endif -%}
       {%- for item in scene.items -%}
       {%- assign movement_number = forloop.index | zero_pad: 2 -%}
       <a class="internal-link" href="#{{ item.id | escape }}"><span class="experiences-jump-number" aria-hidden="true">{{ movement_number }}</span>{{ item.jump | escape }}<span aria-hidden="true">↗</span></a>
@@ -33,8 +35,8 @@
         <p class="experiences-movement-invitation">{{ item.invitation | escape }}</p>
       </header>
       <div class="experiences-movement-copy">
-        <p class="experiences-label">{{ item.event | escape }}</p>
         <h3 id="{{ item.id | escape }}-title">{% include experiences/focus.html text=item.title gesture=item.gesture %}</h3>
+        <p class="experiences-label">{{ item.event | escape }}</p>
         <p class="experiences-movement-body">{{ item.body | markup }}</p>
         <p class="experiences-movement-outcome">{{ item.outcome | markup }}</p>
       </div>

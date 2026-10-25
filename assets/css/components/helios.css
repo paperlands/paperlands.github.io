@@ -573,6 +573,9 @@
     border-block: 2px solid var(--light-ridge);
     overflow: hidden;
     white-space: nowrap;
+    /* Keep mobile text inflation from changing the crawl's measured period. */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
     padding: 0.45rem 0;
     background: var(--light-ember);
     color: var(--light-ground);
@@ -583,6 +586,11 @@
     z-index: 1;
     display: inline-block;
     animation: helios-crawl 28s linear infinite;
+    animation-play-state: paused;
+  }
+
+  [data-look="helios"] .helios-ticker__track[data-helios-ticker-ready] {
+    animation-play-state: running;
   }
 
   [data-look="helios"] .helios-ticker b {

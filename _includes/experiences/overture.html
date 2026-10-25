@@ -8,7 +8,7 @@
   </div>
   <div class="experiences-hero-inner experiences-wrap">
     <div class="experiences-hero-text">
-      <p class="experiences-label">{{ hero.label | escape }}</p>
+      <p class="experiences-label">{% if hero.brand %}<span class="experiences-hero-brand">{{ hero.brand | escape }}</span> {% endif %}{{ hero.label | escape }}</p>
       <h1 id="experiences-title">{{ hero.heading | markup }}</h1>
     </div>
     <figure class="experiences-gathering" role="img" aria-label="{{ hero.alt | escape }}">

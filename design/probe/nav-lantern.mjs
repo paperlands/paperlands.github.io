@@ -276,6 +276,33 @@ try {
   console.log('PASS desktop invitation: quiet at rest, underline on approach, stable layout');
   await shot('desktop');
   console.log('PASS rapid reopen and desktop resize release every lock');
+  for (const width of [1024, 1280, 1440, 1920]) {
+    await size(width, 900);
+    const composition = await evaluate(() => {
+      const plates = document.querySelector('.folio-nav__plates');
+      const enter = plates.querySelector('.folio-nav__enter');
+      const label = enter.querySelector('[data-nav-enter-label]');
+      const word = enter.querySelector('[data-nav-enter-word]');
+      const p = getComputedStyle(plates), e = getComputedStyle(enter);
+      return {
+        plateSize: parseFloat(p.fontSize),
+        gap: parseFloat(e.columnGap), outerGap: parseFloat(p.columnGap), pause: parseFloat(e.marginInlineStart),
+        tracking: parseFloat(getComputedStyle(label).letterSpacing), plateTracking: parseFloat(p.letterSpacing),
+        wordSize: parseFloat(getComputedStyle(word).fontSize), labelSize: parseFloat(getComputedStyle(label).fontSize),
+        targets: [...plates.querySelectorAll('a')].map(a => { const r = a.getBoundingClientRect(); return { left: r.left, right: r.right, top: r.top, bottom: r.bottom }; }),
+        markRight: document.querySelector('[data-nav-mark]').getBoundingClientRect().right,
+        viewport: innerWidth
+      };
+    });
+    assert.equal(composition.plateSize, 15, 'desktop navigation is approximately 130% of its former size');
+    assert.ok(composition.gap < composition.outerGap && composition.pause > 0, 'invitation groups tightly, with a pause before it');
+    assert.ok(composition.tracking < composition.plateTracking, 'ENTER is quieter than the navigation plates');
+    assert.ok(Math.abs(composition.wordSize / composition.labelSize - 1.2) < .01, 'wordmark scale stays unchanged');
+    assert.ok(composition.targets.every((r, i, all) => r.left >= composition.markRight && r.right <= composition.viewport && (!i || r.left > all[i - 1].right)), `no nav collisions at ${width}`);
+    assert.ok(composition.targets.every(r => Math.abs(r.top - composition.targets[0].top) < 16), 'invitation stays on the nav line');
+    await shot(`desktop-${width}`);
+  }
+  console.log('PASS desktop grouping and collision-free composition at 1024–1920px');
 
   await size(390, 844);
   await page.s('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });

@@ -176,15 +176,14 @@
     color: var(--nav-ink);
   }
 
-  /* Cinzel 600 at 0.72rem keeps the links present over photographs. The
-     tracking buys back the width spent on size and weight; all six plates
-     still clear the banner at the 1024px breakpoint. */
+  /* Cinzel 600 at 15px gives desktop routes presence without browser zoom.
+     The four plates still clear the banner at the 1024px breakpoint. */
   .folio-nav__plates {
     display: flex;
     align-items: center;
     gap: 1.1rem;
     font-family: var(--font-display);
-    font-size: 0.72rem;
+    font-size: 0.9375rem;
     font-weight: 600;
     letter-spacing: 0.22em;
     text-transform: uppercase;
@@ -436,6 +435,16 @@
   }
 
   @media (min-width: 1024px) {
+    /* One invitation, not three plates: a pause before the group, then a
+       close symbol/verb/wordmark rhythm. Mobile keeps its playful lettering. */
+    .folio-nav__enter {
+      gap: .125rem;
+      margin-inline-start: .5rem;
+    }
+    .folio-nav__enter [data-nav-enter-label] {
+      letter-spacing: .08em;
+      white-space: nowrap;
+    }
     .site-nav [data-nav-enter-word] {
       font-size: 1.2em;
     }
