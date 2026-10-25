@@ -65,7 +65,7 @@ possibilities:
     If you believe in bringing your stage 
     for mathematics to life.
     
-  action: Don't hesitate to <u>contact us</u>
+  action: <u>Talk to us!</u>
 
 ticker:
   - In PaperLand

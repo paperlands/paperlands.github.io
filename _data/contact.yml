@@ -58,7 +58,7 @@ arrival: /#contact
 
 title: <span class="font-paperlang not-italic">To <span class="text-primary" >PaperLand</span></span>
 title_em: ","
-lede: Bring your questions, your boldest ideas, or your hopes for a [[experiences|showcase]] you’d like to create. There is a place for all of it here at <span class="font-paperlang text-primary not-italic">PaperLand</span>.
+lede: Bring your questions, your boldest ideas, or your hopes for a [[experiences|experience]] you’d like to create. There is a place for all of it here at <span class="font-paperlang text-primary not-italic">PaperLand</span>.
 message_placeholder: What's on your mind?
 button_text: Send
 # The line under the form. It is words, so it lives here with the rest of
