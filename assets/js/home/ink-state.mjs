@@ -1,5 +1,6 @@
 // The authored range is finite. Share its arithmetic between the compiler,
 // the visitor's frame selector, and the tests; never reimplement the figures.
+// Scroll timing (when a frame shows) is not hashed: see ./scroll-timing.mjs.
 export const STEPS = 20;
 export const clamp = (value) => Math.max(0, Math.min(1, value));
 
@@ -35,26 +36,6 @@ export function statesFor({ program, grows }) {
   return [...states]
     .map(([key, source]) => ({ key, source }))
     .concat({ key: "settled", source });
-}
-
-export function depthAt(top, height, viewportHeight, scrollPosition, viewportWidth) {
-  // Start progressing when the section's top reaches 40% of screen height on
-  // mobile (<=850px wide), or 55% on desktop. Smaller values start later.
-  // This entire file is hashed: even timing/comment edits require regenerating
-  // the ink manifest and images. See design/scroll-rendering.md for commands.
-  const start = viewportWidth <= 850 ? 0.4 : 0.55;
-  return clamp(
-    (viewportHeight * start - (top - scrollPosition)) / Math.max(height, 1),
-  );
-}
-
-// Optional exponent on the shared depth. 1 is linear. Above 1 spends the start
-// longer and still meets the same end. Scrolling up reverses it.
-export function curve(progress, ease = 1) {
-  const t = clamp(progress);
-  const k = Number(ease);
-  if (!Number.isFinite(k) || k <= 0 || k === 1) return t;
-  return t ** k;
 }
 
 export function frameKey(grows, progress, still = false) {

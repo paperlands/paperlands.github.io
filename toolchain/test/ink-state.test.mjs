@@ -4,7 +4,8 @@ import { readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
-import { sample, withCount, statesFor, depthAt, frameKey, curve } from '../../assets/js/home/ink-state.mjs';
+import { sample, withCount, statesFor, frameKey } from '../../assets/js/home/ink-state.mjs';
+import { curve, depthAt, LAYOUT_BREAKPOINT } from '../../assets/js/home/scroll-timing.mjs';
 import { createInkCache } from '../../assets/js/home/ink-cache.mjs';
 
 const scenes = JSON.parse(execFileSync('ruby', ['-ryaml', '-rjson', '-e',
@@ -44,19 +45,21 @@ test('substitution changes only the final literal and rejects an invalid authori
 });
 
 test('cached geometry uses the mobile and desktop start lines, including the layout breakpoint', () => {
-  for (const width of [390, 850]) {
+  for (const width of [390, LAYOUT_BREAKPOINT]) {
     assert.equal(depthAt(1000, 1000, 1000, 0, width), 0);
     assert.equal(depthAt(1000, 1000, 1000, 600, width), 0);
     assert.equal(depthAt(1000, 1000, 1000, 1100, width), .5);
     assert.equal(depthAt(1000, 1000, 1000, 1600, width), 1);
   }
-  for (const width of [851, 1440]) {
+  for (const width of [LAYOUT_BREAKPOINT + 1, 1440]) {
     assert.equal(depthAt(1000, 1000, 1000, 0, width), 0);
     assert.equal(depthAt(1000, 1000, 1000, 450, width), 0);
     assert.equal(depthAt(1000, 1000, 1000, 950, width), .5);
     assert.equal(depthAt(1000, 1000, 1000, 1450, width), 1);
   }
+  // An omitted width falls back to the desktop line, never to NaN.
   assert.equal(depthAt(1000, 0, 900, 9999, 390), 1);
+  assert.equal(depthAt(1000, 1000, 1000, 950), .5);
 });
 
 test('an ease above 1 slows the start of the same depth and still meets both ends', () => {

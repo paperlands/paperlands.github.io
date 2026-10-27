@@ -22,7 +22,9 @@ no new ink.
 
 Both drawings start progressing when the section's top reaches 40% of viewport
 height on mobile (width <=850px), or 55% on desktop. Resizing updates this timing
-with the ink layout.
+with the ink layout. Those figures live in `assets/js/home/scroll-timing.mjs`
+(`START_MOBILE`, `START_DESKTOP`, `LAYOUT_BREAKPOINT`), which sits outside the
+hashed model, so the feel of the scrub is retuned without recompiling stills.
 
 Priors informing the implementation:
 
@@ -112,9 +114,12 @@ requires regeneration. A normal build **fails closed** with the regeneration
 instruction instead of shipping misleading old ink. Commit the catalogue,
 manifest and source changes together. No browser is needed in CI or deployment.
 
-The freshness check hashes all of `assets/js/home/ink-state.mjs`, including
-runtime-only scroll timing and comments. Editing those still requires running
-the compiler to refresh the manifest, even when the drawing pixels are unchanged.
+The freshness check hashes all of `assets/js/home/ink-state.mjs`, comments
+included, so any edit there — even a reformat — requires running the compiler.
+Keep that file to the figures that actually choose a frame: `STEPS`, `clamp`,
+`sample`, `withCount`, `statesFor`, `frameKey`. Scroll timing (`depthAt`,
+`curve`) and its constants belong in `assets/js/home/scroll-timing.mjs`, which is
+deliberately not hashed.
 
 One distinct prior catalogue is retained for cached HTML during normal rolling
 updates; older unreferenced generations are culled. Unchanged recompiles preserve

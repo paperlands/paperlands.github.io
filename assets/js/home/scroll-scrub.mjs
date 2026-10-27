@@ -3,7 +3,8 @@
 // asks for the shallower figure. The page scroll is never written, pinned, or
 // prevented. Paperlang stays the authoring language: a gesture selects a
 // decoded frame and changes compositor-only properties.
-import { curve, depthAt, frameKey, sample, STEPS } from './ink-state.mjs';
+import { frameKey, sample, STEPS } from './ink-state.mjs';
+import { curve, depthAt, LAYOUT_BREAKPOINT } from './scroll-timing.mjs';
 import { createInkCache } from './ink-cache.mjs';
 import { subscribe, schedule } from './scroll-clock.mjs';
 
@@ -51,7 +52,7 @@ function boot(root) {
     stageHeight = stage.clientHeight;
     scale = parseFloat(getComputedStyle(stage).getPropertyValue('--thought-scale')) || 1;
     lastPose = '';
-    const next = width <= 850 ? 'narrow' : 'wide';
+    const next = width <= LAYOUT_BREAKPOINT ? 'narrow' : 'wide';
     if (layout === next) return;
     layout = next; frames = {}; ordered = [];
     const ink = scene.layouts[layout];
