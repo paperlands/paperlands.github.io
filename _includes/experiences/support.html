@@ -7,7 +7,7 @@
     <header class="experiences-support-heading">
       <span class="experiences-spark" aria-hidden="true">✧</span>
       <h2 id="support-title">{{ support.title | markup }}</h2>
-      <p class="experiences-offer">{{ support.offer | markup }}</p>
+      <p class="experiences-offer">{% if support.invitation %}{{ support.invitation | markup }} {% endif %}{{ support.offer | markup }}</p>
       <p class="experiences-practical">{{ support.practical | markup }}</p>
     </header>
     <div class="experiences-routes">

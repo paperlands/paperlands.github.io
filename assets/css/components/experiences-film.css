@@ -1,0 +1,57 @@
+/* A quiet window in the festival's copy. The warm still carries the light;
+   its softened edges and surrounding air belong to the rest of the page. */
+@layer components {
+  .experiences .experiences-film {
+    display: grid;
+    grid-template-columns: 9rem minmax(0, 1fr);
+    align-items: center;
+    gap: 1.125rem;
+    max-width: 29rem;
+    min-height: 44px;
+    margin-top: 2rem;
+    text-decoration: none;
+  }
+  .experiences-film__still {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 9;
+    mask-image:
+      linear-gradient(180deg, transparent, #000 8%, #000 84%, transparent),
+      linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+    mask-composite: intersect;
+  }
+  .experiences-film__still img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .experiences-film__play {
+    position: absolute;
+    bottom: .375rem;
+    left: .625rem;
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+  .experiences-film__play svg { width: .75rem; height: .75rem; margin-left: .125rem; }
+  .experiences-film__words { display: block; }
+  .experiences-film__label {
+    display: block;
+    color: var(--light-ink);
+    font: 400 1.0625rem/1.4 var(--font-serif);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+    text-underline-offset: .25em;
+  }
+  .experiences-film__caption {
+    display: block;
+    margin-top: .5rem;
+    color: var(--light-ink-dim);
+    font: 400 .9375rem/1.45 var(--font-serif);
+  }
+  .experiences-film:hover .experiences-film__label { color: var(--light-accent); text-decoration-color: currentColor; }
+
+  @media (max-width: 700px) {
+    .experiences .experiences-film { grid-template-columns: 7rem minmax(0, 1fr); gap: .875rem; margin-top: 1.75rem; }
+    .experiences-film__label { font-size: 1rem; }
+    .experiences-film__caption { font-size: .875rem; }
+  }
+  @media (forced-colors: active) {
+    .experiences-film__still { mask-image: none; }
+  }
+}

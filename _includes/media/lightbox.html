@@ -1,0 +1,27 @@
+{%- comment -%}
+  Shared media viewer. Native dialog owns focus and the top layer.
+  id, kind (image/film), title; film also accepts embed, poster and href.
+  Optional gallery/caption_selector progressively turns existing images into
+  named buttons. No-JS images and ordinary film links remain untouched.
+{%- endcomment -%}
+{%- assign lightbox_kind = include.kind | default: 'image' -%}
+<dialog class="media-lightbox" id="{{ include.id | escape }}" aria-label="{{ include.title | escape }}" data-lightbox="{{ lightbox_kind }}"{% if include.embed %} data-lightbox-embed="{{ include.embed | escape }}"{% endif %}{% if include.poster %} data-lightbox-poster="{{ include.poster | relative_url }}"{% endif %}{% if include.gallery %} data-lightbox-gallery="{{ include.gallery | escape }}" data-lightbox-caption-selector="{{ include.caption_selector | escape }}"{% endif %}>
+  <button class="media-lightbox__close" type="button" data-lightbox-close autofocus>
+    <span>Close</span><span class="media-lightbox-mark">{% include icon.html name="close" %}</span>
+  </button>
+  <figure class="media-lightbox__frame">
+    <div class="media-lightbox__screen" data-lightbox-screen>
+      <img class="media-lightbox__image" data-lightbox-image alt="">
+      {%- if lightbox_kind == 'film' -%}
+      <div class="media-lightbox__player" data-lightbox-player></div>
+      {%- endif -%}
+    </div>
+    <figcaption class="media-lightbox__caption" data-lightbox-caption hidden></figcaption>
+    {%- if include.href -%}
+    <a class="media-lightbox__fallback" href="{{ include.href | escape }}" target="_blank" rel="noopener">Watch on YouTube {% include icon.html name="arrow-up-right" %}</a>
+    {%- endif -%}
+  </figure>
+  {%- if include.gallery -%}
+  <template data-lightbox-expand-mark><span class="media-lightbox-mark" aria-hidden="true">{% include icon.html name="expand" %}</span></template>
+  {%- endif -%}
+</dialog>

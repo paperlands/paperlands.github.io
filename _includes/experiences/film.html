@@ -1,0 +1,17 @@
+{%- comment -%}
+  A still-led invitation attached to the festival passage, not another stage.
+  The ordinary link works without JS; the shared viewer owns the film handoff.
+{%- endcomment -%}
+{%- assign film = include.film -%}
+{%- assign film_id = include.id | append: '-film' -%}
+<a class="experiences-film" href="{{ film.href | escape }}" data-lightbox-open="{{ film_id | escape }}" aria-labelledby="{{ film_id | escape }}-label" aria-describedby="{{ film_id | escape }}-caption">
+  <span class="experiences-film__still">
+    {% include media/img.html src=film.poster alt=film.alt width=film.width height=film.height sizes="(max-width: 700px) 112px, 144px" %}
+    <span class="experiences-film__play media-lightbox-mark" aria-hidden="true">{% include icon.html name="play" %}</span>
+  </span>
+  <span class="experiences-film__words">
+    <span class="experiences-film__label" id="{{ film_id | escape }}-label">{{ film.label | escape }}</span>
+    <span class="experiences-film__caption" id="{{ film_id | escape }}-caption">{{ film.caption | escape }}</span>
+  </span>
+</a>
+{% include media/lightbox.html id=film_id kind="film" title=film.title embed=film.embed poster=film.poster href=film.href %}

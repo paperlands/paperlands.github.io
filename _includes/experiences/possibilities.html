@@ -24,26 +24,28 @@
       {%- endif -%}
       {%- for item in scene.items -%}
       {%- assign movement_number = forloop.index | zero_pad: 2 -%}
-      <a class="internal-link" href="#{{ item.id | escape }}"><span class="experiences-jump-number" aria-hidden="true">{{ movement_number }}</span>{{ item.jump | escape }}<span aria-hidden="true">↗</span></a>
+      <a class="internal-link" href="#{{ item.id | escape }}"><span class="experiences-jump-number" aria-hidden="true">{{ movement_number }}</span>{{ item.jump | escape }}<span class="experiences-jump-arrow" aria-hidden="true">{% include icon.html name="arrow-up-right" %}</span></a>
       {%- endfor -%}
     </nav>
     {%- for item in scene.items -%}
-    {%- assign movement_number = forloop.index | zero_pad: 2 -%}
-    <article class="experiences-movement{% if item.reverse %} experiences-movement-reverse{% endif %}" id="{{ item.id | escape }}" aria-labelledby="{{ item.id | escape }}-title" data-stage-passage>
+    <article class="experiences-movement{% if item.reverse %} experiences-movement-reverse{% endif %}" id="{{ item.id | escape }}" aria-labelledby="{{ item.id | escape }}-title" aria-describedby="{{ item.id | escape }}-event" data-stage-passage>
       <header class="experiences-movement-heading">
-        <p class="experiences-movement-identity"><span class="experiences-movement-number" aria-hidden="true">{{ movement_number }}</span>{{ item.identity | escape }}</p>
-        <p class="experiences-movement-invitation">{{ item.invitation | escape }}</p>
-      </header>
-      <div class="experiences-movement-copy">
+        <p class="experiences-movement-event" id="{{ item.id | escape }}-event">{{ item.event | escape }}</p>
         <h3 id="{{ item.id | escape }}-title">{% include experiences/focus.html text=item.title gesture=item.gesture %}</h3>
-        <p class="experiences-label">{{ item.event | escape }}</p>
-        <p class="experiences-movement-body">{{ item.body | markup }}</p>
-        <p class="experiences-movement-outcome">{{ item.outcome | markup }}</p>
-      </div>
-      <figure class="experiences-movement-visual">
-        {% include media/video.html id=item.clip sizes="(max-width: 700px) 84vw, 32vw" %}
-        <figcaption><span aria-hidden="true">{{ movement_number }} / </span>{{ item.caption | markup }}</figcaption>
+      </header>
+      {%- assign experience_scene_sizes = '(max-width: 900px) min(100vw - 32px, 512px, 80svh), 384px' -%}
+      {%- if item.framing == 'gathering' -%}
+      {%- assign experience_scene_sizes = '(max-width: 900px) min(100vw - 32px, 512px, 80svh), 512px' -%}
+      {%- endif -%}
+      <figure class="experiences-movement-visual{% if item.framing == 'gathering' %} experiences-movement-visual-gathering{% endif %}" aria-labelledby="{{ item.id | escape }}-event" style="--scene-position: {{ item.position | default: 'center' | escape }};">
+        {% include media/video.html id=item.clip poster=item.poster sizes=experience_scene_sizes %}
       </figure>
+      <div class="experiences-movement-copy">
+        <p class="experiences-movement-body">{{ item.body | markup }}</p>
+        {%- if item.film -%}
+        {% include experiences/film.html film=item.film id=item.id %}
+        {%- endif -%}
+      </div>
     </article>
     {%- endfor -%}
   </div>

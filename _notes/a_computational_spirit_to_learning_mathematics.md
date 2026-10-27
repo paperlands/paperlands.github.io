@@ -1,5 +1,6 @@
 ---
 title: A Computational Spirit to Learning Mathematics
+deck: we are maker of patterns
 author: vivekbala
 date: 2025-02-02
 heroimgurl: /assets/lib/turtlekanagawawave.png

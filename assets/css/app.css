@@ -64,5 +64,6 @@
    and not a look's: components/contact.css carries its own exposure, reading
    the surface's light roles where the surface answers one. */
 @import "./components/contact.css";
+@import "./components/media-lightbox.css";
 @import "./components/folio.css";
 @import "./components/utils.css";

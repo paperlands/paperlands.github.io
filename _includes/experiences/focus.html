@@ -1,22 +1,49 @@
 {%- comment -%}
-  The page keeps its own words and Markdown emphasis. Only that emphasis takes
-  the light; the SVG is silent, open-ended ink, never a second copy of the text.
+  Authored relationships, not interchangeable underlines: encounter, yearning,
+  fellowship. The page owns the words; the silent ink never duplicates them.
 {%- endcomment -%}
 {%- capture stage_ink -%}
-<svg class="stage-focus__ink" viewBox="0 0 400 100" fill="none" aria-hidden="true" focusable="false">
+<svg class="stage-focus__ink" viewBox="0 0 400 100" fill="none" preserveAspectRatio="none" aria-hidden="true" focusable="false">
   {%- case include.gesture -%}
   {%- when 'explore' -%}
-  <path class="stage-focus__stroke" pathLength="1" d="M18 54C65 48 105 66 155 55S222 30 255 38 289 59 313 43 330 21 357 25"/>
-  <path class="stage-focus__pool" d="M54 53C81 51 106 61 133 58L153 55C130 63 103 63 81 58L65 56Z"/>
-  <path class="stage-focus__dry" d="M181 56L194 52M197 51C216 44 228 38 244 39M207 49L219 43M251 40L258 42M278 48L284 50M316 43C327 43 333 47 342 49M326 42L332 44M350 50L359 50M335 27L343 19M361 24L369 23M377 21L379 21"/>
+  <path class="stage-focus__stroke" pathLength="1" d="M16 77C63 89 111 83 151 68S215 42 257 34"/>
+  <path class="stage-focus__pool" d="M34 81C68 85 105 81 139 71L160 64C131 78 104 87 74 87 56 87 42 84 34 81Z"/>
+  <path class="stage-focus__trace" d="M53 85C82 88 112 80 130 75"/>
+  <path class="stage-focus__dry stage-focus__departure" d="M164 65C188 54 211 45 233 41M248 37L265 32M276 29C291 25 303 24 316 25M330 24L343 22M355 19L364 15M378 9L382 7"/>
   {%- when 'gather' -%}
   <path class="stage-focus__stroke" pathLength="1" d="M17 60C65 55 106 65 152 58S216 44 246 47 273 38 293 28 326 21 352 26"/>
   <path class="stage-focus__pool" d="M62 59C87 57 113 63 138 59L153 57C132 64 109 65 86 61L71 61Z"/>
   <path class="stage-focus__dry" d="M165 58L177 54M186 51L199 48M220 46L231 47M248 48L259 45M271 39L280 34M295 29L305 26M305 28L313 27M322 23L331 24M340 25L347 27M358 27L365 24M374 21L378 22M290 29L295 19M300 15L304 11"/>
   {%- when 'create' -%}
-  <path class="stage-focus__stroke" pathLength="1" d="M16 53C43 49 65 54 92 51S139 38 169 43 203 58 231 53 265 32 292 37 319 49 341 43"/>
-  <path class="stage-focus__pool" d="M28 52C47 49 67 54 87 51L105 48C87 57 69 58 49 54L35 54Z"/>
-  <path class="stage-focus__dry" d="M111 49L120 46M127 44L145 42M139 45L146 44M175 44L183 47M209 57L221 56M232 54L239 51M245 48L257 41M255 45L264 40M273 37L284 37M301 40L310 44M322 47L330 46M346 42L354 38M363 36L369 37M380 41L382 41"/>
+  <path class="stage-focus__stroke stage-focus__arrival" pathLength="1" d="M14 76C58 85 88 64 118 53S163 42 189 47"/>
+  <path class="stage-focus__stroke stage-focus__response" pathLength="1" d="M386 28C355 22 339 38 313 46S258 49 224 46"/>
+  <path class="stage-focus__pool" d="M87 67C112 51 140 42 159 43 172 43 181 45 189 47L176 47C158 45 145 48 132 52 114 57 101 64 87 67Z"/>
+  <path class="stage-focus__pool stage-focus__response" d="M340 34C328 41 319 47 301 49 279 52 253 48 239 47L224 46C246 46 274 49 293 47 313 45 324 40 340 34Z"/>
+  <path class="stage-focus__trace" d="M151 44C162 43 176 45 183 47M228 46L244 47"/>
+  <path class="stage-focus__dry" d="M18 80L27 81M37 81C48 81 58 78 66 75M74 72L81 69M350 29L358 27M367 26L377 27"/>
+  {%- when 'lead' -%}
+  <g class="stage-focus__bird stage-focus__shelter">
+    <path class="stage-focus__stroke stage-focus__arrival" pathLength="1" d="M70 68C121 20 222 2 278 61 294 33 318 22 346 25"/>
+    <path class="stage-focus__pool" d="M70 68C122 18 223 0 279 55 297 30 322 20 346 25 319 24 297 39 279 66 225 9 124 25 70 68Z"/>
+    <path class="stage-focus__trace" d="M231 29C247 35 262 47 274 59"/>
+  </g>
+  <g class="stage-focus__bird">
+    <path class="stage-focus__stroke stage-focus__arrival" pathLength="1" d="M119 51C130 47 140 54 146 68 154 54 163 47 177 49"/>
+    <path class="stage-focus__pool" d="M119 51C130 47 140 53 147 64 155 52 165 46 177 49 164 48 154 57 147 71 139 58 130 49 119 51Z"/>
+  </g>
+  <g class="stage-focus__bird">
+    <path class="stage-focus__stroke stage-focus__arrival" pathLength="1" d="M181 44C192 40 201 48 206 61 214 48 224 41 236 42"/>
+    <path class="stage-focus__pool" d="M181 44C192 40 201 47 207 57 215 46 225 40 236 42 224 42 214 52 207 64 200 52 191 42 181 44Z"/>
+  </g>
+  <g class="stage-focus__bird">
+    <path class="stage-focus__stroke stage-focus__arrival stage-focus__response" pathLength="1" d="M210 67C197 67 187 74 179 86 173 73 163 66 151 69"/>
+    <path class="stage-focus__pool stage-focus__response" d="M210 67C197 68 187 74 180 82 173 71 162 66 151 69 163 68 173 78 180 89 188 77 198 69 210 67Z"/>
+  </g>
+  <g class="stage-focus__bird">
+    <path class="stage-focus__stroke stage-focus__arrival stage-focus__response" pathLength="1" d="M270 60C258 62 248 70 241 83 235 70 226 63 215 66"/>
+    <path class="stage-focus__pool stage-focus__response" d="M270 60C258 63 248 70 241 79 234 67 225 63 215 66 226 65 235 75 241 86 249 73 259 64 270 60Z"/>
+  </g>
+  <path class="stage-focus__dry" d="M72 69L77 65M83 60L88 56M96 50L101 47M339 25L345 26M121 52L125 51M173 49L176 50M183 45L187 44M231 43L235 43M153 70L157 69M205 68L209 68M217 67L221 66M265 62L269 61"/>
   {%- else -%}
   <path class="stage-focus__stroke" pathLength="1" d="M18 50C65 43 108 60 157 54S226 45 259 54 281 70 299 69 319 55 341 57"/>
   <path class="stage-focus__pool" d="M61 50C88 51 111 58 137 55L158 53C136 61 111 61 89 55L73 53Z"/>

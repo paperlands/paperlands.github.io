@@ -66,15 +66,6 @@
       color-mix(in oklab, var(--light-key, #f6c87e) 32%, transparent), transparent 100%);
     opacity: var(--focus-heat);
   }
-  [data-look="experiences"] [data-stage-focus="explore"] .stage-focus__ink {
-    width: 220%;
-    top: .45em;
-  }
-  [data-look="experiences"] [data-stage-focus="create"] .stage-focus__ink {
-    width: 110%;
-    left: 62%;
-    top: .38em;
-  }
   [data-look="experiences"] [data-stage-focus="gather"] .stage-focus__ink {
     width: 135%;
     left: -9%;
@@ -91,11 +82,64 @@
     top: .28em;
     opacity: calc(.18 + var(--focus-heat));
   }
+  /* Material first: a loaded amber body, a small receiving edge, and a
+     nearly spent departure. No halo or noise filter stands in for pressure. */
+  [data-look="experiences"] .experiences-movement .stage-focus::before { display: none; }
+  [data-look="experiences"] .experiences-movement .stage-focus__ink {
+    left: -8%;
+    top: .67em;
+    width: 140%;
+    height: .7em;
+    color: var(--light-key);
+    opacity: calc(.88 + var(--focus-heat) * .3);
+    mask-image: none;
+  }
+  [data-look="experiences"] .experiences-movement .stage-focus__stroke {
+    stroke-width: .6;
+    opacity: .46;
+    stroke-dashoffset: calc(1 - var(--stroke-progress, var(--focus-progress)));
+  }
+  [data-look="experiences"] .experiences-movement .stage-focus__pool {
+    fill: color-mix(in oklab, var(--light-key) 72%, var(--light-key-deep));
+    clip-path: inset(0 calc((1 - var(--stroke-progress, var(--focus-progress))) * 100%) 0 0) fill-box;
+  }
+  /* The answering hand follows rather than mirrors the first reach.
+     Its pigment uncovers in its own direction, using the same reading clock. */
+  [data-look="experiences"] .experiences-movement .stage-focus__response {
+    --stroke-progress: clamp(0, calc(var(--focus-progress) * 1.25 - .25), 1);
+  }
+  [data-look="experiences"] .experiences-movement .stage-focus__pool.stage-focus__response {
+    clip-path: inset(0 0 0 calc((1 - var(--stroke-progress)) * 100%)) fill-box;
+  }
+  [data-look="experiences"] .experiences-movement .stage-focus__trace {
+    stroke: var(--light-high);
+    stroke-width: .45;
+    opacity: calc(var(--focus-pool) * .55);
+  }
+  [data-look="experiences"] .experiences-movement .stage-focus__dry {
+    stroke: color-mix(in oklab, var(--light-key) 58%, var(--light-ink));
+    stroke-width: .45;
+    stroke-linecap: butt;
+    opacity: .56;
+  }
+  /* A held beginning thins into separated traces, not a finished flourish. */
+  [data-look="experiences"] .experiences-movement [data-stage-focus="explore"] .stage-focus__ink {
+    left: -8%;
+    top: .57em;
+    width: 220%;
+    height: .95em;
+  }
+  /* A small family, not five scattered symbols: one broad wing shelters
+     the close huddle beneath it. The little birds share one brush rhythm. */
+  [data-look="experiences"] .experiences-movement [data-stage-focus="lead"] .stage-focus__ink {
+    left: -4%;
+    top: .84em;
+    width: 108%;
+    height: .7em;
+  }
   @media (max-width: 700px) {
     [data-look="experiences"] .stage-focus__ink { width: 132%; }
-    [data-look="experiences"] [data-stage-focus="explore"] .stage-focus__ink { width: 175%; }
     [data-look="experiences"] [data-stage-focus="gather"] .stage-focus__ink { width: 115%; left: -6%; }
-    [data-look="experiences"] [data-stage-focus="create"] .stage-focus__ink { width: 80%; left: 60%; }
   }
 }
 @layer utilities {

@@ -173,7 +173,10 @@
     }
     .site-nav [data-nav-panel] [data-nav-enter-label] { grid-area: 2 / 1; }
     .site-nav [data-nav-panel] > a[data-primary]::after {
-      content: "↗";
+      /* \FE0E is VARIATION SELECTOR-15: ask for text presentation, so Apple
+         stops resolving U+2197 from Apple Color Emoji. */
+      content: "\2197\FE0E";
+      font-variant-emoji: text;
       grid-area: 2 / 2;
       font-size: 1.1rem;
     }

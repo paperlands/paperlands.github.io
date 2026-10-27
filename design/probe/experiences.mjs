@@ -41,7 +41,7 @@ try {
     assert.deepEqual(state.duplicateIds, []);
     assert.deepEqual(state.overflow, [], `content overflows at ${width}`);
     assert.ok(state.links.every(Boolean));
-    assert.equal(state.embeds, 0, 'no film is currently composed into the page');
+    assert.equal(state.embeds, 0, 'no remote player loads before intent');
     await page.evaluate(`Promise.all([...document.querySelectorAll('.experiences-gathering img')].map(i => i.decode()))`);
     const opening = await page.evaluate(`(() => {
       const hero = document.querySelector('.experiences-overture');
@@ -63,7 +63,7 @@ try {
     assert.equal(opening.storyCount, 3, 'all three sentences stay in one passage');
     assert.ok(opening.preludeFollows && opening.possibilitiesFollowStory, 'questions lead to stories, then ways to share');
     assert.equal(opening.heroHasStory, false, 'the hero remains title and image');
-    assert.equal(opening.question, 'Meaning in math begins with our own questions.');
+    assert.equal(opening.question, 'Meaning in math begins with asking our own questions.');
     const palette = await page.evaluate(`(() => {
       const beginElement = document.querySelector('.experiences-support h2 em');
       const begin = getComputedStyle(beginElement);
@@ -102,12 +102,12 @@ try {
     assert.ok(palette.beginning.sky, 'the reference vault is silent, pointer-transparent static artwork, not another renderer');
     assert.ok(palette.beginning.glyphRoom.every(room => room >= -1), 'italic g descender and question-mark overhang fit inside the gradient paint box');
     const offer = await page.evaluate(`(() => {
-      const count = document.querySelector('.experiences-offer strong'), life = document.querySelector('.experiences-offer-life');
+      const count = document.querySelector('.experiences-offer strong');
       return { count: count.textContent, underline: getComputedStyle(count).textDecorationLine,
-        life: life.textContent, glow: getComputedStyle(life).textShadow };
+        text: document.querySelector('.experiences-offer').textContent };
     })()`);
     assert.equal(offer.count, '3 sessions'); assert.equal(offer.underline, 'underline');
-    assert.equal(offer.life, 'bring to life!'); assert.notEqual(offer.glow, 'none');
+    assert.ok(offer.text.startsWith('Bring an experience to your school.'), 'the practical offer explicitly turns from participation to hosting');
     const headlineInk = await page.evaluate(`[...document.querySelectorAll('.experiences-movement h3 em, .experiences-seam h2 em')].map(e => ({ ink: getComputedStyle(e).color, parent: getComputedStyle(e.parentElement).color, style: getComputedStyle(e).fontStyle }))`);
     assert.equal(new Set(headlineInk.map(s => s.ink)).size, 1, 'the quieter reading emphases share one ivory ink');
     assert.ok(headlineInk.every(s => s.ink === s.parent && s.style === 'italic'), 'emphasis comes from the letterform, not a different colour');
@@ -128,7 +128,7 @@ try {
     await page.evaluate(`document.querySelector('.experiences-faq summary').click()`);
     assert.equal(await page.evaluate(`document.querySelector('.experiences-faq details').open`), true);
     assert.ok(await page.evaluate(`document.querySelector('.experiences-cta').getAttribute('href').length > 1`));
-    const badImages = await page.evaluate(`Array.from(document.images).filter(i => i.loading !== 'lazy' && i.complete && !i.naturalWidth).map(i => i.src)`);
+    const badImages = await page.evaluate(`Array.from(document.images).filter(i => i.getAttribute('src') && i.loading !== 'lazy' && i.complete && !i.naturalWidth).map(i => i.src)`);
     assert.deepEqual(badImages, []);
     report.push(state);
   }

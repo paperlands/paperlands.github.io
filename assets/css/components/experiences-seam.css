@@ -97,6 +97,10 @@
     color: var(--light-accent);
   }
   .experiences-jump-number { color: var(--light-ink-dim); font-size: .6875rem; }
+  /* The arrow is a path, not a glyph: ↗ (U+2197) is emoji-capable, so Apple
+     platforms resolve it from Apple Color Emoji and the jump links grew a
+     coloured emoji. A path cannot fall back. */
+  .experiences-jump-arrow { display: inline-flex; align-self: center; font-size: .8em; line-height: 1; }
   .experiences .experiences-jump > a:hover { color: var(--light-high); }
   .experiences-possibilities .experiences-movement:first-of-type { padding-top: clamp(2.5rem, 5vw, 4rem); }
 

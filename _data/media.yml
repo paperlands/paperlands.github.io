@@ -68,6 +68,32 @@ shell:
   width: 720
   height: 1280
 
+# Experiences keeps the group in its landscape source, before the solo close-ups.
+workshop_gathering:
+  src: /assets/lib/notes/experiences/workshop-gathering-d6260ae7.mp4
+  av1: /assets/lib/notes/experiences/workshop-gathering-9c72ed07.av1.mp4
+  poster: /assets/lib/notes/experiences/workshop-gathering-20870a84.webp
+  alt: Students leaning together in a student-led workshop
+  width: 1024
+  height: 576
+
+# Full-width sources for Experiences; Helios keeps its portrait renditions.
+festival_scene:
+  src: /assets/lib/notes/experiences/festival_scene-af34137b.mp4
+  av1: /assets/lib/notes/experiences/festival_scene-f187a294.av1.mp4
+  poster: /assets/lib/notes/experiences/festival_scene-462fca3c.webp
+  alt: Two students watching the face they coded appear on a classroom screen
+  width: 1024
+  height: 576
+
+symposium_scene:
+  src: /assets/lib/notes/experiences/symposium_scene-684ba680.mp4
+  av1: /assets/lib/notes/experiences/symposium_scene-4b0ba824.av1.mp4
+  poster: /assets/lib/notes/experiences/symposium_scene-5c924193.webp
+  alt: A student presenting a recursive tree, microphone in hand
+  width: 1024
+  height: 576
+
 benz:
   src: /assets/lib/helios/benz-ccbf06.mp4
   poster: /assets/lib/helios/benz-start.webp

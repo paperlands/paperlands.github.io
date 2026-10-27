@@ -21,15 +21,15 @@ hero:
 prelude:
   label: From questions to stories
   paragraphs:
-    - Meaning in math begins with our own questions.
-    - They lead us down unknown paths, with only our curiosity to guide us.
-    - And suddenly we are on a quest and, these questions become stories waiting to be shared.
+    - Meaning in math begins with asking our own questions.
+    - We follow a question, try an idea, and find ourselves somewhere we didn’t expect.
+    - And now there’s a story worth sharing.
   invitation: That's when the stage
   focus: brings math to *life.*
 possibilities:
   seam:
-    lead: This Stage can take
-    experience: different Shapes
+    lead: That stage can take
+    experience: different shapes
     forms:
       - {shape: branch, src: /assets/lib/notes/experiences/forms-branch-6de71b4e.webp, width: 640, height: 796}
       - {shape: canopy, src: /assets/lib/notes/experiences/forms-canopy-eaf127b6.webp, width: 640, height: 796}
@@ -37,53 +37,61 @@ possibilities:
     - id: festival
       jump: Festival
       reverse: true
-      identity: To Create
-      invitation: Connections through Arts & Stories
-      event: Math Festivals & Carnivals
-      title: What I cannot *create* <br>I do not *understand*
+      title: What we cannot *create*<br>we do not *understand*
       gesture: create
-      clip: creators
-      caption: Storytelling that brings math to life.
-      body: Bridge art and nature through mathematics. Turn a pattern into a story, an idea into a movie. Build something for yourself and suddenly, others can see it too.
-      outcome: Mathematics meant to be felt.
+      position: 40% bottom
+      event: Math Festivals & Carnivals
+      clip: festival_scene
+      poster: /assets/lib/notes/experiences/festival_scene-462fca3c.webp
+      body: Carry art and nature into mathematics. Let a pattern grow into a story, an idea into a small film. <br><br> Create something your way, and let others see it too.
+      film:
+        label: Watch the festival film
+        caption: "From young Gambians: math is alive, and in our hands."
+        title: Gambian Mathematics Film Festival
+        href: https://www.youtube.com/watch?v=IT7jGh46MPc
+        embed: https://www.youtube-nocookie.com/embed/IT7jGh46MPc?autoplay=1&rel=0
+        poster: /assets/lib/notes/experiences/festival-in-our-hands.webp
+        alt: Festival students sharing a joyful moment, with an illustrated mathematical torus in the light behind them
+        width: 960
+        height: 540
     - id: symposium
       jump: Symposium
-      identity: To Explore
-      invitation: Through Inquiry & Discovery
-      event: Math Symposiums & Hackathons
-      title: Find your own <br>*Why.*
+      title: Find your own<br>*Why.*
       gesture: explore
-      clip: star
-      caption: Branching nature into mathematics.
-      body: Seek patterns and questions that lead you down your own conjectures. Share them with others and start a conversation few would have thought to have.
-      outcome: Mathematics for you to question.
+      position: 65% top
+      event: Math Symposiums & Hackathons
+      clip: symposium_scene
+      poster: /assets/lib/notes/experiences/symposium_scene-5c924193.webp
+      body: Find a pattern. Ask why. Follow a question down  unmarked paths. <br><br> Invite others to explore along with you and find their own Whys.
     - id: workshops
       jump: Student-led workshops
       reverse: true
-      identity: To Lead
-      invitation: In Service of your Community
-      event: Peer-led Workshops & Labs
-      title: By students <br>*for students*
+      title: By students<br>*for students*
       gesture: lead
-      clip: shell
-      caption: Inspiring the next big idea in a group huddle.
-      body: Lean in. Bring people together. Tend to their curiosity, make room for their questions. The next idea might be theirs.
-      outcome: Nurture our spirit of wonder.
+      framing: gathering
+      position: center
+      event: Student-led Workshops & Labs
+      clip: workshop_gathering
+      poster: /assets/lib/notes/experiences/workshop-gathering-20870a84.webp
+      body: Bring people together. Tend to their curiosity and make room for their questions.<br><br>The next idea might be theirs.
 support:
   title: Where do we<br><em> begin?</em>
-  offer: In as few as **3 sessions**, your students could surprise you with the mathematical stories they <em class="experiences-offer-life">bring to life!</em>
-  practical: Training available **online** and/or **in-person**.
-  cta: Begin on your experience!
+  invitation: Bring an experience to your school.
+  offer: >-
+    In as few as **3 sessions**, your students could surprise you with the
+    mathematical stories they <em class="experiences-offer-life">bring to life!</em>
+  practical: We can work together **online**, **in-person**, or both.
+  cta: Plan an experience with us
   routes:
-    - title: We train your *students.*
-      body: Guided lessons to explore mathematics, create animations and share discoveries.
+    - title: We guide *students.*
+      body: Students explore mathematics, create animations and share what they discover.
       image:
         src: /assets/lib/notes/experiences/students-together.webp
         alt: A facilitator and students working through a PaperLand lesson together
         width: 800
         height: 609
-    - title: We train your *teachers.*
-      body: Training, resources and support to lead PaperLand learning in your classrooms.
+    - title: We support *teachers.*
+      body: Training, lesson plans and support to lead these experiences in their classrooms.
       image:
         src: /assets/lib/notes/experiences/teacher-training.webp
         alt: Teachers working together during a PaperLand training session
@@ -94,13 +102,13 @@ planning:
   title: FAQ
   questions:
     - question: How much preparation is needed?
-      answer: Students can bring their mathematical stories to life in as few as 3 sessions. We’ll plan the preparation and sharing around what you wish to achieve.
+      answer: Students can prepare their mathematical stories in as few as 3 sessions. We’ll plan the preparation and sharing together with you.
     - question: What support does PaperLand provide?
-      answer: We provide the computational platform, design the programme with you, and train your student leaders or teachers to bring it to life.
-    - question: How does this fit our maths curriculum?
-      answer: Our lessons build on familiar middle and high school maths topics. Browse our [[lesson-plans|lesson plans]] to see what students can explore. We’ll help you adapt them to your curriculum.
-    - question: What do we need?
-      answer: Any digital device. If there are not enough to go around, students can work in pairs and groups.
+      answer: We provide the PaperLand platform, plan the programme with you, and train student leaders or teachers to lead it.
+    - question: How does this fit our curriculum?
+      answer: Our lessons draw on familiar middle and high school mathematics. Browse our [[lesson-plans|lesson plans]] for starting points. We’ll help you adapt them to your curriculum.
+    - question: What devices do we need?
+      answer: Any digital device. Students can work in pairs or groups if there aren’t enough devices for everyone.
 finale:
   title: Let’s set your<br>*stage together.*
 ---

@@ -1,0 +1,165 @@
+/* One aperture, whether a photograph or a film. The page remains the ground;
+   the media is held in its darkness, not inside another decorated card. */
+@layer components {
+  html:has([data-lightbox]) { scrollbar-gutter: stable; }
+  html:has([data-lightbox][open]) { overflow: hidden; scroll-behavior: auto; }
+
+  .media-lightbox-mark {
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid rgb(255 239 207 / .48);
+    border-radius: 50%;
+    background: rgb(5 3 9 / .72);
+    color: #fff0d3;
+  }
+  .media-lightbox-mark svg { width: 1.125rem; height: 1.125rem; }
+  .media-lightbox-invitation {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    text-align: inherit;
+    cursor: zoom-in;
+  }
+  .media-lightbox-invitation > .media-lightbox-mark { position: absolute; right: .625rem; bottom: .625rem; pointer-events: none; }
+  .media-lightbox-invitation:hover .media-lightbox-mark,
+  .media-lightbox-invitation:focus-visible .media-lightbox-mark,
+  [data-lightbox-open]:is(:hover, :focus-visible) .media-lightbox-mark { border-color: var(--light-accent, #ff9933); color: var(--light-accent, #ff9933); }
+  .media-lightbox-invitation:focus-visible { outline: 2px solid var(--light-accent, #ff9933); outline-offset: 5px; }
+
+  .media-lightbox {
+    --lightbox-time: 240ms;
+    --lightbox-ease: cubic-bezier(.2, .65, .3, 1);
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 5rem clamp(1rem, 4vw, 4rem) 3rem;
+    border: 0;
+    background: transparent;
+    color: var(--light-ink, #f6e6c4);
+    overflow: auto;
+    overscroll-behavior: contain;
+    opacity: 0;
+    color-scheme: dark;
+  }
+  .media-lightbox:not([open]) { display: none; }
+  .media-lightbox[open] { display: grid; place-items: center; opacity: 1; }
+  .media-lightbox::backdrop { background: rgb(2 1 5 / .9); opacity: 0; }
+  .media-lightbox[open]::backdrop { opacity: 1; }
+  .media-lightbox .media-lightbox__frame {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+  .media-lightbox__screen { position: relative; max-width: 100%; }
+  .media-lightbox .media-lightbox__image {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: calc(100dvh - 10rem);
+    object-fit: contain;
+    filter: none;
+    border: 0;
+  }
+  .media-lightbox[data-lightbox="image"] .media-lightbox__image { cursor: zoom-out; }
+  .media-lightbox[data-lightbox="film"] .media-lightbox__frame { width: min(70rem, 100%, calc((100dvh - 10rem) * 16 / 9)); }
+  .media-lightbox[data-lightbox="film"] .media-lightbox__screen { width: 100%; aspect-ratio: 16 / 9; }
+  .media-lightbox[data-lightbox="film"] .media-lightbox__image,
+  .media-lightbox__player { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .media-lightbox[data-lightbox="film"] .media-lightbox__image { object-fit: cover; }
+  .media-lightbox__player iframe { display: block; width: 100%; height: 100%; border: 0; opacity: 0; }
+  .media-lightbox__player iframe[data-lightbox-ready] { opacity: 1; }
+  .media-lightbox .media-lightbox__caption {
+    max-width: 46rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    color: var(--light-ink-dim, #bda78e);
+    font: italic 400 1rem/1.45 var(--font-serif);
+    text-align: center;
+  }
+  .media-lightbox__caption[hidden] { display: none; }
+  .media-lightbox__close {
+    position: absolute;
+    top: max(1rem, env(safe-area-inset-top));
+    right: max(1rem, env(safe-area-inset-right));
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    min-height: 2.75rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--light-ink-dim, #bda78e);
+    font: 400 1rem/1.4 var(--font-serif);
+    cursor: pointer;
+  }
+  .media-lightbox__close:is(:hover, :focus-visible) .media-lightbox-mark { border-color: var(--light-accent, #ff9933); color: var(--light-accent, #ff9933); }
+  .media-lightbox .media-lightbox__fallback {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-end;
+    gap: .375rem;
+    margin: .875rem 0 0;
+    padding: 0;
+    background: none;
+    color: var(--light-ink-dim, #bda78e);
+    font: 400 .8125rem/1.5 var(--font-serif);
+    text-decoration: none;
+  }
+  .media-lightbox__fallback svg { width: .875rem; height: .875rem; }
+  .media-lightbox .media-lightbox__fallback:hover { color: var(--light-accent, #ff9933); }
+  .media-lightbox :is(button, a):focus-visible { outline: 2px solid var(--light-accent, #ff9933); outline-offset: 5px; }
+  .media-lightbox .media-lightbox__close:focus-visible { outline: none; }
+  .media-lightbox__close:focus-visible .media-lightbox-mark { outline: 2px solid var(--light-accent, #ff9933); outline-offset: 4px; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .media-lightbox {
+      transition: opacity var(--lightbox-time) var(--lightbox-ease), display var(--lightbox-time) allow-discrete, overlay var(--lightbox-time) allow-discrete;
+    }
+    .media-lightbox::backdrop {
+      transition: opacity var(--lightbox-time) var(--lightbox-ease), display var(--lightbox-time) allow-discrete, overlay var(--lightbox-time) allow-discrete;
+    }
+    /* The room darkens first; its image is still arriving as the player starts.
+       Keep this overlap independent of network speed — never impose a hold. */
+    .media-lightbox[data-lightbox="film"][open] { transition-duration: 500ms; }
+    .media-lightbox[data-lightbox="film"] .media-lightbox__image {
+      animation: media-lightbox-film-light 1100ms ease-out both;
+    }
+    .media-lightbox__player iframe { transition: opacity 450ms ease; }
+    @keyframes media-lightbox-film-light {
+      from { filter: brightness(.84); }
+      to { filter: brightness(1); }
+    }
+    @starting-style {
+      .media-lightbox[open], .media-lightbox[open]::backdrop { opacity: 0; }
+    }
+  }
+  @media (forced-colors: active) {
+    .media-lightbox[data-lightbox="film"] .media-lightbox__image { animation: none; filter: none; }
+    .media-lightbox-mark { border-color: ButtonText; color: ButtonText; background: Canvas; }
+    .media-lightbox::backdrop { background: Canvas; }
+    .media-lightbox[open]::backdrop { opacity: .9; }
+  }
+  @media print {
+    html:has([data-lightbox][open]) { overflow: visible; }
+    .media-lightbox, .media-lightbox-mark { display: none !important; }
+    .media-lightbox-invitation { display: contents; }
+  }
+}
