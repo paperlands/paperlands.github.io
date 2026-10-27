@@ -443,3 +443,14 @@ The mobile probe now checks full-width no-JavaScript stills for every movement,
 matching poster/video framing and real decoding/dimensions/duration of all three
 clips. Its ten-width captures remain in `/tmp/experiences-mobile/`.
 Browser checks establish readability and behaviour, not emotional effectiveness.
+
+### A shared invitation
+
+The seam now continues the opening: “And the stage becomes / *ours to imagine.*”
+It keeps the existing tree and scroll-led light, without another animation or
+fixed-height title card. Responsive padding gives 56–64px after the preceding
+invitation and 36–56px before the jump links; the lead-to-emphasis interval grows
+to .9em. The phrase stays on one line at all six checked widths (320–1920px).
+Refreshed live-browser captures and spacing measurements: `/tmp/experiences-imagine/`.
+Authored paragraph breaks remain editorial choices; the page contract no longer
+forbids them in movement copy.

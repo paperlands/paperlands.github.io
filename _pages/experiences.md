@@ -28,8 +28,8 @@ prelude:
   focus: brings math to *life.*
 possibilities:
   seam:
-    lead: That stage can take
-    experience: different shapes
+    lead: And the stage becomes
+    experience: ours to imagine.
     forms:
       - {shape: branch, src: /assets/lib/notes/experiences/forms-branch-6de71b4e.webp, width: 640, height: 796}
       - {shape: canopy, src: /assets/lib/notes/experiences/forms-canopy-eaf127b6.webp, width: 640, height: 796}
@@ -76,12 +76,12 @@ possibilities:
       body: Bring people together. Tend to their curiosity and make room for their questions.<br><br>The next idea might be theirs.
 support:
   title: Where do we<br><em> begin?</em>
-  invitation: Bring an experience to your school.
+  invitation: Bring an experience to your community.
   offer: >-
     In as few as **3 sessions**, your students could surprise you with the
     mathematical stories they <em class="experiences-offer-life">bring to life!</em>
   practical: We can work together **online**, **in-person**, or both.
-  cta: Plan an experience with us
+  cta: Create your stage with us!
   routes:
     - title: We guide *students.*
       body: Students explore mathematics, create animations and share what they discover.
@@ -102,13 +102,13 @@ planning:
   title: FAQ
   questions:
     - question: How much preparation is needed?
-      answer: Students can prepare their mathematical stories in as few as 3 sessions. We’ll plan the preparation and sharing together with you.
+      answer: Students can prepare their mathematical stories in as few as 3 sessions. We’ll plan the preparation and their stage alongside with you.
     - question: What support does PaperLand provide?
-      answer: We provide the PaperLand platform, plan the programme with you, and train student leaders or teachers to lead it.
+      answer: We provide the PaperLand platform, design and plan the programme with you, and train student leaders or teachers who lead it.
     - question: How does this fit our curriculum?
       answer: Our lessons draw on familiar middle and high school mathematics. Browse our [[lesson-plans|lesson plans]] for starting points. We’ll help you adapt them to your curriculum.
     - question: What devices do we need?
-      answer: Any digital device. Students can work in pairs or groups if there aren’t enough devices for everyone.
+      answer: Any digital device works. Students can work in pairs or groups if there aren’t enough devices for everyone.
 finale:
   title: Let’s set your<br>*stage together.*
 ---

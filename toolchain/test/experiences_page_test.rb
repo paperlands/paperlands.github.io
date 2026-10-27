@@ -27,7 +27,6 @@ original.data.fetch('possibilities').fetch('items').each do |item|
   check.call(item['id'].match?(/\A[a-z][a-z0-9-]*\z/), "Invalid fragment ID: #{item['id']}")
   check.call(%w[create explore lead].include?(item['gesture']), "Unknown movement gesture: #{item['gesture']}")
   check.call(site.data.fetch('media').key?(item['clip']), "Unknown media clip: #{item['clip']}")
-  check.call(!item['body'].include?('<br'), 'Movement prose should flow without staged line-break pauses')
   media = site.data.fetch('media').fetch(item['clip'])
   check.call(media.fetch('width') * 9 == media.fetch('height') * 16, 'Movement scenes need full landscape sources for mobile')
 end

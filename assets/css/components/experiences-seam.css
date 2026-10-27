@@ -7,7 +7,9 @@
   .experiences-seam {
     position: relative;
     isolation: isolate;
-    padding-block: .25rem 1.75rem;
+    /* A pause before the invitation, then room for it to settle before the links.
+       No fixed-height stage: the words and their natural wrapping set the pace. */
+    padding-block: clamp(1rem, 2vw, 1.5rem) clamp(2.25rem, 4vw, 3.5rem);
     text-align: left;
   }
   .experiences-seam-copy {
@@ -23,7 +25,7 @@
   }
   .experiences-seam-lead {
     display: block;
-    margin-bottom: .6em;
+    margin-bottom: .9em;
     color: color-mix(in oklab, var(--light-ink-dim), #f8dfad calc(var(--passage-heat, .4) * 36%));
     font: 400 clamp(1.0625rem, 1.45vw, 1.375rem)/1.4 var(--font-serif);
     letter-spacing: .01em;
