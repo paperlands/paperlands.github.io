@@ -41,7 +41,7 @@
         {% include media/video.html id=item.clip poster=item.poster sizes=experience_scene_sizes %}
       </figure>
       <div class="experiences-movement-copy">
-        <p class="experiences-movement-body">{{ item.body | markup }}</p>
+        <div class="experiences-movement-body">{{ item.body | markup }}</div>
         {%- if item.film -%}
         {% include experiences/film.html film=item.film id=item.id %}
         {%- endif -%}

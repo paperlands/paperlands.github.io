@@ -64,6 +64,11 @@ core:
     - /a-computational-spirit-to-learning-mathematics
     - /beginnings
     - /experiences
+    # The Experiences document, served at its short address as well as at
+    # /experiences: one document, two routes (_pages/stage.md reads that page's
+    # data and renders the same include). Same surface, same mode sheet, so it
+    # is listed here and not classified twice.
+    - /stage
     - /our-approach
     - /why-must-i-learn-this
 

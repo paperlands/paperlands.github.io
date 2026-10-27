@@ -43,7 +43,11 @@ possibilities:
       event: Math Festivals & Carnivals
       clip: festival_scene
       poster: /assets/lib/notes/experiences/festival_scene-462fca3c.webp
-      body: Carry art and nature into mathematics. Let a pattern grow into a story, an idea into a small film. <br><br> Create something your way, and let others see it too.
+      body: |-
+        Carry art and nature into mathematics.<br class="experiences-desktop-break">
+        Let a pattern grow into a story, an idea into a small film.
+
+        Create something your way, and let others see it too.
       film:
         label: Watch the festival film
         caption: "From young Gambians: math is alive, and in our hands."
@@ -62,9 +66,14 @@ possibilities:
       event: Math Symposiums & Hackathons
       clip: symposium_scene
       poster: /assets/lib/notes/experiences/symposium_scene-5c924193.webp
-      body: Find a pattern. Ask why. Follow a question down  unmarked paths. <br><br> Invite others to explore along with you and find their own Whys.
+      body: |-
+        Find a pattern. Ask why.<br class="experiences-desktop-break">
+        Follow your question down unmarked paths.
+
+        Invite others into your search.<br class="experiences-desktop-break">
+        See where their questions take you.
     - id: workshops
-      jump: Student-led workshops
+      jump: Student-led Workshops
       reverse: true
       title: By students<br>*for students*
       gesture: lead
@@ -73,7 +82,11 @@ possibilities:
       event: Student-led Workshops & Labs
       clip: workshop_gathering
       poster: /assets/lib/notes/experiences/workshop-gathering-20870a84.webp
-      body: Bring people together. Tend to their curiosity and make room for their questions.<br><br>The next idea might be theirs.
+      body: |-
+        Bring people together.<br class="experiences-desktop-break">
+        Tend to their curiosity and make room for their questions.
+
+        The next idea might be theirs.
 support:
   title: Where do we<br><em> begin?</em>
   invitation: Bring an experience to your community.
@@ -81,7 +94,7 @@ support:
     In as few as **3 sessions**, your students could surprise you with the
     mathematical stories they <em class="experiences-offer-life">bring to life!</em>
   practical: We can work together **online**, **in-person**, or both.
-  cta: Create your stage with us!
+  cta: Create your stage with us
   routes:
     - title: We guide *students.*
       body: Students explore mathematics, create animations and share what they discover.
@@ -113,14 +126,4 @@ finale:
   title: Let’s set your<br>*stage together.*
 ---
 
-<div class="experiences" id="experiences">
-  <a class="experiences-skip internal-link" href="#possibilities">{{ page.skip_label | escape }}</a>
-  {% include experiences/overture.html hero=page.hero %}
-  {% include experiences/prelude.html prelude=page.prelude %}
-  {% include experiences/possibilities.html possibilities=page.possibilities %}
-  {% include experiences/support.html support=page.support %}
-  {% include experiences/planning.html planning=page.planning %}
-  {% include experiences/finale.html finale=page.finale %}
-</div>
-<script type="module" src="{{ '/assets/js/experiences/stage.mjs' | relative_url }}"></script>
-<script type="module" src="{{ '/assets/js/experiences/focus.mjs' | relative_url }}"></script>
+{% include experiences/document.html doc=page %}

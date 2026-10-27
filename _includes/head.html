@@ -1,7 +1,11 @@
 <head>
   <meta charset="UTF-8">
 
-  <link rel="canonical" href="{{ site.url }}{{ page.url }}" />
+  {%- comment -%} One document may be served at more than one address: /stage
+     serves the Experiences page and declares `canonical: /experiences`, so the
+     alias is declared here rather than in a second copy of the page. The page's
+     own `canonical` when it names one, its URL otherwise. {%- endcomment -%}
+  <link rel="canonical" href="{{ site.url }}{{ page.canonical | default: page.url }}" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 

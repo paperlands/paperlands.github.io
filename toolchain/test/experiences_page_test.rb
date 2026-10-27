@@ -62,6 +62,12 @@ root.css('.experiences-movement').zip(original.data.dig('possibilities', 'items'
   check.call(movement.css('.experiences-movement-event').size == 1 && movement.css('.experiences-movement-visual figcaption').empty?, 'The name appears once, not again beneath the picture')
   check.call(movement['aria-describedby'] == event['id'] && movement.at_css('figure')['aria-labelledby'] == event['id'], 'The event must still identify its movement and human scene')
   check.call(movement.at_css('.experiences-movement-copy').element_children.first['class'] == 'experiences-movement-body', 'Copy must open with the invitation')
+  body = movement.at_css('.experiences-movement-body')
+  check.call(body.name == 'div', 'Movement body must contain paragraphs without nesting p elements')
+  if item['body'].include?("\n\n")
+    check.call(body.element_children.count { |node| node.name == 'p' } > 1, 'Authored paragraphs must remain semantic paragraphs')
+  end
+  check.call(body.css('br.experiences-desktop-break').size == item['body'].scan('class="experiences-desktop-break"').size, 'Authored desktop sentence breaks must survive markup')
   check.call(movement.at_css('video')['aria-label'].to_s.length.positive?, 'Human scene needs an accessible description')
   check.call(movement.at_css('video')['poster'] == "/preview#{item['poster']}", 'Scene poster must be page-owned and baseurl-aware')
   gathering = item['framing'] == 'gathering'

@@ -54,6 +54,14 @@ The focus include decorates the first emphasized phrase; further emphasis keeps
 its ordinary meaning. The hero's span and line break are deliberate composition,
 not a title-splitting heuristic.
 
+Movement `body` fields are paragraph-aware: use a YAML `|-` string with blank
+lines between paragraphs. Their container is a `<div>`, so multi-paragraph
+Markdown does not nest `<p>` elements. A single-paragraph string still works.
+Use `<br class="experiences-desktop-break">` at a thought boundary for the wide
+composition; keep whitespace after it so hiding it at 900px and below leaves
+natural prose. Paragraphs pause by .8em, rather than an empty line. The movement
+width, reading measure and type size remain unchanged.
+
 ### Extend without branching templates
 
 1. Add a movement to `possibilities.items`, with a unique, stable slug `id` and

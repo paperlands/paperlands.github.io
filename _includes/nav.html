@@ -30,6 +30,11 @@
 {%- endcomment -%}
 {%- assign nav = site.data.nav -%}
 {%- assign tone = page.nav_tone | default: nav.default_tone | default: 'light' -%}
+{%- comment -%} The address the nav marks as current. A page may be served at an
+   address the nav does not link to — /stage serves the Experiences document,
+   which the nav links at /experiences — so it names the linked address in
+   `nav_url` and the mark lands on the page it is actually showing. {%- endcomment -%}
+{%- assign nav_url = page.nav_url | default: page.url -%}
 
 <div class="site-nav folio-nav" data-tone="{{ tone }}" data-nav-collapsed="false" data-nav-root>
 
@@ -57,7 +62,7 @@
       <nav class="folio-nav__menu-list" id="site-nav-menu" aria-label="Primary" data-nav-panel aria-hidden="true" inert>
         {%- for key in nav.mobile_nav -%}
           {%- assign link = nav.links[key] -%}
-          <a href="{{ link.href }}" class="site-nav__link"{% if page.url == link.href %} aria-current="page"{% endif %}>{{ link.label }}</a>
+          <a href="{{ link.href }}" class="site-nav__link"{% if nav_url == link.href %} aria-current="page"{% endif %}>{{ link.label }}</a>
         {%- endfor -%}
         {%- for action in nav.folio.actions -%}
           <a href="{{ action.href }}" class="site-nav__link"{% if action.primary %} data-primary{% endif %}>{% if action.primary %}{% include nav/window.html %}<span data-nav-enter-label>{{ action.label | replace: 'PaperLand', '<span data-nav-enter-word>PaperLand</span>' }}</span>{% else %}{{ action.label }}{% endif %}</a>
@@ -70,7 +75,7 @@
     <div class="folio-nav__plates">
       {%- for key in nav.nav -%}
         {%- assign link = nav.links[key] -%}
-        <a href="{{ link.href }}"{% if page.url == link.href %} aria-current="page"{% endif %}>{{ link.label }}</a>
+        <a href="{{ link.href }}"{% if nav_url == link.href %} aria-current="page"{% endif %}>{{ link.label }}</a>
       {%- endfor -%}
       {%- for action in nav.folio.actions -%}
         <a href="{{ action.href }}"{% if action.primary %} class="folio-nav__enter"{% endif %}>{% if action.primary %}{% include nav/window.html %}<span data-nav-enter-label>{{ action.label | replace: 'PaperLand', '<span data-nav-enter-word>PaperLand</span>' }}</span>{% else %}{{ action.label }}{% endif %}</a>

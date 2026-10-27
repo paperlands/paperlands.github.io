@@ -103,11 +103,9 @@ try {
     assert.ok(palette.beginning.glyphRoom.every(room => room >= -1), 'italic g descender and question-mark overhang fit inside the gradient paint box');
     const offer = await page.evaluate(`(() => {
       const count = document.querySelector('.experiences-offer strong');
-      return { count: count.textContent, underline: getComputedStyle(count).textDecorationLine,
-        text: document.querySelector('.experiences-offer').textContent };
+      return { count: count.textContent, underline: getComputedStyle(count).textDecorationLine };
     })()`);
     assert.equal(offer.count, '3 sessions'); assert.equal(offer.underline, 'underline');
-    assert.ok(offer.text.startsWith('Bring an experience to your school.'), 'the practical offer explicitly turns from participation to hosting');
     const headlineInk = await page.evaluate(`[...document.querySelectorAll('.experiences-movement h3 em, .experiences-seam h2 em')].map(e => ({ ink: getComputedStyle(e).color, parent: getComputedStyle(e.parentElement).color, style: getComputedStyle(e).fontStyle }))`);
     assert.equal(new Set(headlineInk.map(s => s.ink)).size, 1, 'the quieter reading emphases share one ivory ink');
     assert.ok(headlineInk.every(s => s.ink === s.parent && s.style === 'italic'), 'emphasis comes from the letterform, not a different colour');

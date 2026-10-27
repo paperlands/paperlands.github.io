@@ -1,0 +1,27 @@
+{%- comment -%}
+  The Experiences document, written once for both the addresses that serve it.
+
+  /experiences owns the words: its front matter carries every field the
+  sections below read. /stage serves the same document instead of redirecting
+  to it (_pages/stage.md), and hands this include that page's data, read back
+  out of `site.pages`. Nothing below reads `page.` — it reads `include.doc` —
+  so the short address cannot quietly become a second place the copy has to be
+  kept in step, and adding a section stays a one-file edit.
+
+  `doc` is passed rather than defaulted on purpose: the page contract
+  (toolchain/test/experiences_page_test.rb) re-renders this template against
+  data it mutates, and that render binds the data to `page`, not to a page in
+  `site.pages`.
+{%- endcomment -%}
+{%- assign doc = include.doc -%}
+<div class="experiences" id="experiences">
+  <a class="experiences-skip internal-link" href="#possibilities">{{ doc.skip_label | escape }}</a>
+  {% include experiences/overture.html hero=doc.hero %}
+  {% include experiences/prelude.html prelude=doc.prelude %}
+  {% include experiences/possibilities.html possibilities=doc.possibilities %}
+  {% include experiences/support.html support=doc.support %}
+  {% include experiences/planning.html planning=doc.planning %}
+  {% include experiences/finale.html finale=doc.finale %}
+</div>
+<script type="module" src="{{ '/assets/js/experiences/stage.mjs' | relative_url }}"></script>
+<script type="module" src="{{ '/assets/js/experiences/focus.mjs' | relative_url }}"></script>

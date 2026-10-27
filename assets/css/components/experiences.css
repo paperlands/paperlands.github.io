@@ -418,7 +418,11 @@
     color: var(--light-ink-dim);
     font-size: clamp(1.25rem, 1.8vw, 1.625rem);
     line-height: 1.75;
+    text-wrap: pretty;
   }
+  /* Real paragraphs give related thoughts a modest pause, not a blank line.
+     Authored sentence breaks belong only to the wide, paired composition. */
+  .experiences-movement-body > p + p { margin-top: .8em; }
   .experiences-movement-visual {
     position: relative;
     isolation: isolate;
@@ -612,7 +616,7 @@
     min-height: 2.75rem;
     padding: .5rem .25rem;
     color: var(--light-accent);
-    font-size: 1.125rem;
+    font-size: clamp(1.75rem, 2.25vw, 2rem);
     line-height: 1.4;
     text-decoration: underline;
     text-decoration-thickness: .06em;
@@ -724,6 +728,7 @@
     .experiences-gathering-thought { left: 0; width: 150%; top: -6%; }
   } /* photographic opening */
   @media (max-width: 900px) {
+    .experiences-desktop-break { display: none; }
     /* Give words the full width before the two-column pairing becomes a squeeze.
        Natural wrapping is preferable to shrinking a thought into two lines. */
     .experiences .experiences-possibilities > .experiences-wrap {
@@ -762,6 +767,7 @@
     .experiences .experiences-wrap { width: min(34rem, calc(100% - 2.5rem)); }
     .experiences figcaption { font-size: 0.8125rem; }
     .experiences-support { padding-block: 3rem; }
+    .experiences .experiences-support-cta { font-size: clamp(1.5rem, 6vw, 1.625rem); gap: .35em; }
     .experiences-support-heading { margin-bottom: 2.5rem; }
     .experiences-routes { grid-template-columns: 1fr; gap: 3rem; }
     .experiences-routes figure { margin-bottom: 1.25rem; }
