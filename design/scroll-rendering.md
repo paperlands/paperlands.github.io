@@ -20,6 +20,10 @@ A scene may also declare a small `twist`: the runtime rotates the decoded still
 on the same depth. It is a compositor transform, not another render, and it needs
 no new ink.
 
+Both drawings start progressing when the section's top reaches 40% of viewport
+height on mobile (width <=850px), or 55% on desktop. Resizing updates this timing
+with the ink layout.
+
 Priors informing the implementation:
 
 - [MDN: Optimizing canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Optimizing_canvas): pre-render repeated work; separate static and changing layers; avoid repeated blur.
@@ -107,6 +111,10 @@ A change to programme/range, vignette, host pin, compiler or shared arithmetic
 requires regeneration. A normal build **fails closed** with the regeneration
 instruction instead of shipping misleading old ink. Commit the catalogue,
 manifest and source changes together. No browser is needed in CI or deployment.
+
+The freshness check hashes all of `assets/js/home/ink-state.mjs`, including
+runtime-only scroll timing and comments. Editing those still requires running
+the compiler to refresh the manifest, even when the drawing pixels are unchanged.
 
 One distinct prior catalogue is retained for cached HTML during normal rolling
 updates; older unreferenced generations are culled. Unchanged recompiles preserve

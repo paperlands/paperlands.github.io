@@ -65,14 +65,14 @@ function boot(root) {
     lastPose = ''; lastDemand = '';
   }
 
-  function paint(y, viewportHeight) {
+  function paint(y, viewportHeight, width) {
     const visible = top + height > y && top < y + viewportHeight;
     if (!visible) {
       if (active) { cache.demand(owner, [], shown); active = false; lastDemand = ''; }
       return;
     }
     active = true;
-    const progress = curve(depthAt(top, height, viewportHeight, y), scene.grows?.ease);
+    const progress = curve(depthAt(top, height, viewportHeight, y, width), scene.grows?.ease);
     const resting = still();
     const key = frameKey(scene.grows, progress, resting);
     const wanted = frames[key];

@@ -2,7 +2,7 @@
 // No second interpreter or handwritten approximation. The output is transparent
 // WebP: pigment, two soft glows and the scene's vignette are paid for ONCE.
 //
-// BASE=http://127.0.0.1:4001 node design/compile-ink.mjs
+// BASE=http://127.0.0.1:4001 node toolchain/compile-ink.mjs
 // Optional CDP_PORT reuses an existing debugger; otherwise starts Chromium.
 import { createHash } from 'node:crypto';
 import { execFileSync, spawn } from 'node:child_process';
@@ -51,7 +51,7 @@ try {
     }
     if (!process.env.CDP_PORT) throw new Error('Chromium did not open its debugger.');
   }
-  const { connect, newPage } = await import('./probe/cdp.mjs');
+  const { connect, newPage } = await import('../design/probe/cdp.mjs');
   cdp = await connect(); page = await newPage(cdp);
   targetId = (await page.s('Target.getTargetInfo')).targetInfo.targetId;
   manifest.renderer = cdp.version.Browser;

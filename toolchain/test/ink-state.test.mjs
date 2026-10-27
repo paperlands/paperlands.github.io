@@ -43,11 +43,20 @@ test('substitution changes only the final literal and rejects an invalid authori
   assert.throws(() => statesFor({ program: 'fw 10', grows: { line: 'fw 20', from: 1, to: 10 } }));
 });
 
-test('cached document geometry gives the original depth without a DOM read', () => {
-  assert.equal(depthAt(1000, 900, 900, 352), 0);
-  assert.equal(depthAt(1000, 900, 900, 802), .5);
-  assert.equal(depthAt(1000, 900, 900, 1252), 1);
-  assert.equal(depthAt(1000, 0, 900, 9999), 1);
+test('cached geometry uses the mobile and desktop start lines, including the layout breakpoint', () => {
+  for (const width of [390, 850]) {
+    assert.equal(depthAt(1000, 1000, 1000, 0, width), 0);
+    assert.equal(depthAt(1000, 1000, 1000, 600, width), 0);
+    assert.equal(depthAt(1000, 1000, 1000, 1100, width), .5);
+    assert.equal(depthAt(1000, 1000, 1000, 1600, width), 1);
+  }
+  for (const width of [851, 1440]) {
+    assert.equal(depthAt(1000, 1000, 1000, 0, width), 0);
+    assert.equal(depthAt(1000, 1000, 1000, 450, width), 0);
+    assert.equal(depthAt(1000, 1000, 1000, 950, width), .5);
+    assert.equal(depthAt(1000, 1000, 1000, 1450, width), 1);
+  }
+  assert.equal(depthAt(1000, 0, 900, 9999, 390), 1);
 });
 
 test('an ease above 1 slows the start of the same depth and still meets both ends', () => {
