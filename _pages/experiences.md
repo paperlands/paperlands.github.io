@@ -23,7 +23,7 @@ prelude:
   paragraphs:
     - Meaning in math begins with asking our own questions.
     - We follow a question, try an idea, and find ourselves somewhere we didn’t expect.
-    - And now there’s a story worth sharing.
+    - And so discovers a story worth sharing.
   invitation: That's when the stage
   focus: brings math to *life.*
 possibilities:
@@ -49,7 +49,7 @@ possibilities:
 
         Create something your way, and let others see it too.
       film:
-        label: Watch the festival film
+        label: Watch math film festival
         caption: "From young Gambians: math is alive, and in our hands."
         title: Gambian Mathematics Film Festival
         href: https://www.youtube.com/watch?v=IT7jGh46MPc

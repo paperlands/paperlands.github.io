@@ -25,6 +25,7 @@
   }
   .experiences-seam-lead {
     display: block;
+    margin-top: 6rem;
     margin-bottom: .9em;
     color: color-mix(in oklab, var(--light-ink-dim), #f8dfad calc(var(--passage-heat, .4) * 36%));
     font: 400 clamp(1.0625rem, 1.45vw, 1.375rem)/1.4 var(--font-serif);
@@ -44,6 +45,7 @@
       linear-gradient(90deg, transparent, #000 34%, #000 88%, transparent),
       linear-gradient(180deg, transparent, #000 14%, #000 82%, transparent);
     mask-composite: intersect;
+    transform: translateY(12rem);
   }
   .experiences-seam-form {
     position: absolute;
@@ -85,6 +87,7 @@
     flex-wrap: wrap;
     align-items: baseline;
     gap: .15rem 1.75rem;
+    margin-bottom: 6rem;
     margin-inline-start: var(--seam-indent);
     padding-block: 0 .5rem;
   }
@@ -107,6 +110,7 @@
   .experiences-possibilities .experiences-movement:first-of-type { padding-top: clamp(2.5rem, 5vw, 4rem); }
 
   @media (max-width: 700px) {
+    .experiences-seam-lead { margin-top: 5rem; }
     .experiences-seam h2 { font-size: clamp(2.75rem, 11vw, 3.75rem); }
     .experiences-seam-field {
       inset-block: -18rem -.5rem;
@@ -115,7 +119,7 @@
       opacity: calc(.16 + var(--passage-heat, .4) * .08);
     }
     /* A short contents list is easier to scan than a two-plus-one link wrap. */
-    .experiences-jump { flex-direction: column; align-items: flex-start; gap: 0; }
+    .experiences-jump { flex-direction: column; align-items: flex-start; gap: 0; margin-bottom: 5rem; }
     .experiences-jump .experiences-label { flex-basis: auto; }
   }
 }
