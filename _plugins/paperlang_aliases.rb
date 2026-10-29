@@ -4,9 +4,10 @@
 #
 # /paperlang/<line>.js and /paperlang/latest.js are raw JavaScript, not pages:
 # they re-export the exact same-origin artifact named by _data/paperlang.json.
-# The build fails closed when a line, artifact, release manifest, source hash or
-# legal file is missing or changed. Publication is a separate act; a dirty
-# snapshot is emitted with explicit provenance and is not called clean.
+# The build fails closed when a line, artifact, release manifest, or legal file
+# is missing or changed. The source snapshot is the producer's record, not a
+# site input: hashes are checked when sources/ is present, and a checkout
+# without it still verifies the artifact.
 require 'digest'
 require 'fileutils'
 require 'json'
@@ -92,9 +93,12 @@ module PaperLangAliases
       file = file_within!(source, "#{generation.delete_prefix('/')}/#{name}", "PaperLang line #{line} artifact #{name}")
       raise "PaperLang line #{line} evidence artifact hash does not match: #{name}" unless Digest::SHA256.file(file).hexdigest == hash
     end
-    sources.each do |name, hash|
-      file = file_within!(source, "#{generation.delete_prefix('/')}/sources/#{name}", "PaperLang line #{line} source #{name}")
-      raise "PaperLang line #{line} source hash does not match: #{name}" unless Digest::SHA256.file(file).hexdigest == hash
+    snapshot = File.join(source, generation.delete_prefix('/'), 'sources')
+    if File.directory?(snapshot)
+      sources.each do |name, hash|
+        file = file_within!(source, "#{generation.delete_prefix('/')}/sources/#{name}", "PaperLang line #{line} source #{name}")
+        raise "PaperLang line #{line} source hash does not match: #{name}" unless Digest::SHA256.file(file).hexdigest == hash
+      end
     end
 
     package = JSON.parse(File.read(file_within!(source, "#{generation.delete_prefix('/')}/package.json", "PaperLang line #{line} package")))

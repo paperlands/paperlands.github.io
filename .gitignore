@@ -11,10 +11,10 @@ __pycache__/
 *.pyc
 .venv/
 
-# Historical Hatch release sources were not committed. New PaperLang
-# generations keep their complete sources and legal evidence beside the
-# artifact under assets/lib/paperlang; do not ignore that tree.
+# Source snapshots are the producer's record, not a site input. The generation
+# keeps the artifact, notices, and release.json. A checkout does not carry sources/.
 assets/lib/hatch/sources/
+assets/lib/paperlang/**/sources/
 
 # pi's session state and this machine's sandbox permissions: local, not shared.
 .pi/

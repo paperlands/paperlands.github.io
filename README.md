@@ -8,9 +8,9 @@
 
 # We see math differently.
 
-A mathematical idea is something you can see, play with, and bring to life.
+A mathematical idea becomes something you can see, play with, and bring to life.
 
-Live Website: [paperland.sg](https://paperland.sg) · [Enter PaperLand](https://dojo.paperland.sg/welcome)
+Our Website:[paperland.sg](https://paperland.sg) · [Enter PaperLand](https://dojo.paperland.sg/welcome)
 
 
 ## Build
@@ -21,4 +21,4 @@ npm ci
 bundle exec jekyll serve
 ```
 
-A production build is `JEKYLL_ENV=production bundle exec jekyll build`.
+A production build is `JEKYLL_ENV=production bundle exec jekyll build`. After a change to layout, styles, copy, or a pin, run the gates named in `design/probe/README.md`. This file does not repeat them.

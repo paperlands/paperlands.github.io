@@ -26,7 +26,7 @@ export function versionLine(version) {
   return version.split('.').slice(0, 2).join('.');
 }
 
-export function verifyHostRelease(directory, { hostFile = 'host.mjs' } = {}) {
+export function verifyHostRelease(directory, { hostFile = 'host.mjs', sourceSnapshot = 'required' } = {}) {
   const root = realpathSync(directory);
   const files = new Map();
   const read = (name) => {
@@ -52,10 +52,13 @@ export function verifyHostRelease(directory, { hostFile = 'host.mjs' } = {}) {
     files.set(name, bytes);
   }
   insist([...files.keys()].some(name => name.startsWith('licenses/')), 'release has no dependency license texts');
-  for (const [name, hash] of Object.entries(manifest.sources)) {
-    const bytes = read(`sources/${safePath(name)}`);
-    insist(digest.test(hash) && sha(bytes) === hash, `source hash mismatch: ${name}`);
-    files.set(`sources/${name}`, bytes);
+  const snapshot = join(root, 'sources');
+  if (sourceSnapshot === 'required' || existsSync(snapshot)) {
+    for (const [name, hash] of Object.entries(manifest.sources)) {
+      const bytes = read(`sources/${safePath(name)}`);
+      insist(digest.test(hash) && sha(bytes) === hash, `source hash mismatch: ${name}`);
+      files.set(`sources/${name}`, bytes);
+    }
   }
   insist(manifest.sourceDigest === sha(JSON.stringify(manifest.sources)), 'source inventory digest mismatch');
   const revision = manifest.sourceDirty ? `${manifest.commit}-dirty+${manifest.sourceDigest.slice(0, 12)}` : manifest.commit;
@@ -97,7 +100,7 @@ export function verifyCatalogue(root) {
     insist(typeof generation === 'string' && generation.startsWith('/assets/lib/paperlang/')
       && !generation.includes('..') && !generation.includes('//'), `${line}: generation path is unsafe`);
     const generationRoot = resolve(root, generation.slice(1));
-    const release = verifyHostRelease(generationRoot);
+    const release = verifyHostRelease(generationRoot, { sourceSnapshot: 'if-present' });
     const evidence = sha(readFileSync(join(generationRoot, 'release.json')));
     const canonical = `/assets/lib/paperlang/${versionLine(entry.version)}/${evidence}`;
     insist(generation === canonical, `${line}: generation is not canonical for its evidence`);
