@@ -88,6 +88,8 @@ jobs:
 
       - name: Verify the media player
         run: node --test toolchain/test/media-video.test.mjs
+      - name: Verify page-local media boot
+        run: bundle exec ruby toolchain/test/media_boot_test.rb
       - name: Verify generated media
         run: node toolchain/mint-media.mjs verify
 
@@ -105,6 +107,9 @@ jobs:
 
       - name: Verify image sources
         run: bundle exec ruby toolchain/test/image_sources_test.rb
+
+      - name: Verify responsive Library covers
+        run: bundle exec ruby toolchain/test/library_images_test.rb
 
       - name: Verify site markup
         run: bundle exec ruby toolchain/test/site_markup_test.rb

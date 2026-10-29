@@ -30,6 +30,13 @@ motion/lifecycle, release intake, trace arithmetic, scroll scheduling and the
 local media server. `fast_styles_test.rb` exercises the build pipeline with a
 controlled subprocess; `styles_artifact_test.rb` verifies the actual sheets and
 every local stylesheet URL in the built HTML (`SITE_DEST` selects another build).
+`library_images_test.rb` checks built Library cover candidates, intrinsic dimensions
+and loading priorities; a new cover without a responsive recipe fails the gate.
+`media_boot_test.rb` checks rendered media requirements and every built page's
+script selection. Shared players load only for their matching surfaces; the note
+layout passes its captured viewer markup, so layout-owned media is included too.
+New layout-owned media outside `content` must likewise pass its captured markup
+to `media/boot.html` as `extra` rather than adding a front-matter flag.
 `metadata_test.rb` builds a tiny Git fixture and a filtered clone: publication,
 visible datelines and per-file modification dates must survive a later unrelated
 commit, a different build time and a different host timezone.
@@ -73,6 +80,7 @@ for every edit. CDP tools require Chromium and Node 22+; no npm browser library.
 | `helios-ticker.mjs` | Scrolling words: delayed fonts, responsive loop seams, viewport changes, reduced motion and no-JS fallback |
 | `experiences.mjs` | Current experiences page: responsive layout, readable content, accessibility states and media |
 | `front-page-performance.mjs`, `experiences-performance.mjs` | Bounded, opt-in cold-load/scroll attribution; environment and arm controls are documented in each file |
+| `library-covers.mjs` | Compare two frozen builds: complete cover-set bytes and identical card geometry at six viewport/density combinations; not an LCP benchmark |
 | `static-grain.mjs` | Grain visibility lifecycle and paired snapshots (`TRACE=1` for paint attribution; pixel comparison needs Pillow) |
 | `toolchain/test/render-window.mjs` | Shared trace-window arithmetic, covered by a unit test |
 

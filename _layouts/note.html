@@ -88,10 +88,11 @@ css_mode: evening
       {% include notes/connections.html note=note graph=graph_data %}
     </main>
 
-    {% include notes/lightbox.html %}
+    {%- capture note_lightbox -%}{% include notes/lightbox.html %}{%- endcapture -%}
+    {{ note_lightbox }}
 
     {% include link-previews.html wrapperQuerySelector="content" %}
-    {% include media/boot.html %}
+    {% include media/boot.html extra=note_lightbox %}
     {%- comment -%} The letter — see _includes/contact_modal.html. {%- endcomment -%}
     {% include contact_modal.html %}
     <script src="{{ '/assets/js/notes/edition.js' | relative_url }}" defer></script>

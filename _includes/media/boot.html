@@ -1,5 +1,18 @@
-{%- comment -%}Shared players. Each no-ops without its marks.{%- endcomment -%}
+{%- comment -%}
+  Only the players this rendered content uses. Layout-owned media outside
+  `content` passes its captured markup as `extra`, not a duplicate page flag.
+  Keep the video player before the carousel writer; both remain deferred.
+{%- endcomment -%}
+{%- assign media_needs = content | media_requirements: include.extra -%}
+{%- if media_needs.video %}
 <script src="{{ '/assets/js/media-video.js' | relative_url }}" defer></script>
+{%- endif -%}
+{%- if media_needs.carousel %}
 <script src="{{ '/assets/js/media-carousel.js' | relative_url }}" defer></script>
+{%- endif -%}
+{%- if media_needs.film %}
 <script src="{{ '/assets/js/media-film.js' | relative_url }}" defer></script>
+{%- endif -%}
+{%- if media_needs.lightbox %}
 <script src="{{ '/assets/js/media-lightbox.js' | relative_url }}" defer></script>
+{%- endif -%}

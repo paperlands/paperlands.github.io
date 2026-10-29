@@ -66,18 +66,19 @@ copy:
       <div class="relative overflow-hidden transition-all duration-300 rounded-lg group hover:shadow-md">
       <a href="{{ site.baseurl }}{{ note.url }}" data-tooltip="true" >
         <div class="relative h-64 overflow-hidden">
-          {%- comment -%} Five covers of photographs at their own full size, and
-             the Library is the heaviest first view on the site because of it: on a
-             phone each card is a full screen, so only the first is in the reader's
-             viewport and only the first is worth fetching at high priority. The
-             other four arrive as the reader scrolls to them. {%- endcomment -%}
-          <img
-            src="{{note.heroimgurl}}"
-            alt=""
-            decoding="async"
-            {% if forloop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %}
-            class="object-cover w-full h-full transition-transform duration-700 transform group-hover:scale-105"
-          >
+          {%- comment -%} The browser may fetch lazy cards within its lookahead
+             window too. Give every cover a card-sized candidate, not merely a
+             lazy hint on the original. Keep the first cover eager for LCP. {%- endcomment -%}
+          {%- assign cover_loading = 'lazy' -%}
+          {%- assign cover_priority = 'low' -%}
+          {%- if forloop.first -%}
+            {%- assign cover_loading = 'eager' -%}
+            {%- assign cover_priority = 'high' -%}
+          {%- endif -%}
+          {% include media/img.html src=note.heroimgurl alt=""
+             sizes="(min-width: 640px) 44vw, 88vw"
+             loading=cover_loading fetchpriority=cover_priority
+             class="object-cover w-full h-full transition-transform duration-700 transform group-hover:scale-105" %}
           <!-- Hovering effect -->
           <div class="absolute inset-0 transition-opacity duration-300 opacity-100 bg-gradient-to-t from-black/90 to-transparent group-hover:from-amber-900/80"></div>
         </div>

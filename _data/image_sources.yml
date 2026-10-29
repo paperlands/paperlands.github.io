@@ -51,3 +51,13 @@
   widths: [360, 512, 768]
 /assets/lib/notes/experiences/symposium_scene-5c924193.webp:
   widths: [360, 512, 768]
+# Library covers: one phone column, two columns from 640px; originals remain
+# the largest candidates for dense screens and other uses of the same artwork.
+/assets/lib/notes/our-approach/student-flower.webp:
+  widths: [384, 768]
+/assets/lib/turtlekanagawawave.png:
+  widths: [384]
+/assets/lib/apprenticeship.jpg:
+  widths: [384, 768]
+/assets/lib/kids.jpg:
+  widths: [384]
