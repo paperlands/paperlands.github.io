@@ -66,10 +66,81 @@ function harness({ hidden = false, reduced = false, forced = false, saveData = f
 test('visible motion owns one frame and no steady geometry reads', () => {
   const h = harness();
   assert.equal(h.queue.size, 1);
-  const reads = h.counts.measures, draws = h.counts.draws;
+  const reads = h.counts.measures;
   for (let i = 1; i <= 10; i++) { h.flush(i * 16); assert.equal(h.queue.size, 1); }
   assert.equal(h.counts.measures, reads);
-  assert.equal(h.counts.draws, draws + 10);
+});
+
+test('an affordable frame presents even when the arcs barely moved', () => {
+  const h = harness();
+  h.flush(16);
+  const draws = h.counts.draws;
+  for (let i = 2; i <= 6; i++) h.flush(i * 16);
+  assert.equal(h.counts.draws, draws + 5, '60Hz keeps presenting the breathing arcs');
+});
+
+test('a resting slow cadence coalesces to visible steps', () => {
+  const h = harness();
+  h.flush(16);
+  const draws = h.counts.draws;
+  const wound = h.torus.style.transform;
+  h.flush(49);
+  h.flush(82);
+  assert.equal(h.counts.draws, draws, '33 ms frames do not clear for sub-visible motion');
+  assert.notEqual(h.torus.style.transform, wound, 'the torus keeps winding between presents');
+  h.flush(115);
+  assert.equal(h.counts.draws, draws + 1, 'the third 33 ms frame owes a visible step');
+  assert.equal(h.queue.size, 1);
+});
+
+test('a scroll presents on its own frame', () => {
+  const h = harness();
+  h.flush(16);
+  const draws = h.counts.draws;
+  h.sandbox.scrollY = 80;
+  h.flush(32);
+  assert.equal(h.counts.draws, draws + 1);
+});
+
+test('a 30Hz scroll presents both the torus and the arcs', () => {
+  // A browser-selected 30 Hz cadence is not overload. The frame is slow, so the
+  // step, not the clock, must decide: neither the unwind nor the arcs may freeze.
+  const h = harness();
+  h.flush(16);
+  h.sandbox.scrollY = 200;
+  h.flush(49);
+  const drawn = h.counts.draws;
+  const wound = h.torus.style.transform;
+  h.sandbox.scrollY = 320;
+  h.flush(82);
+  assert.ok(h.counts.draws > drawn, 'a slow frame does not drop the arc it moved');
+  assert.notEqual(h.torus.style.transform, wound);
+  assert.equal(h.dataset.stageState, 'moving');
+  assert.equal(h.queue.size, 1);
+});
+
+test('a fling presents every frame it moves', () => {
+  const h = harness();
+  h.flush(16);
+  h.sandbox.scrollY = 400;
+  h.flush(32);
+  const draws = h.counts.draws;
+  for (let i = 3; i <= 6; i++) h.flush(i * 16);
+  assert.equal(h.counts.draws, draws + 4);
+});
+
+test('sustained 30Hz frames keep the wind instead of latching a still', () => {
+  // Wall-clock misses cannot tell a 30 Hz cadence or a long task from incapable
+  // hardware, so they must never buy a permanent still.
+  const h = harness();
+  h.flush(16);
+  const drawn = h.counts.draws;
+  let now = 16;
+  for (let i = 0; i < 12; i++) h.flush(now += 33);
+  assert.equal(h.queue.size, 1, 'the clock is never abandoned for a slow cadence');
+  assert.equal(h.dataset.stageState, 'moving');
+  assert.notEqual(h.torus.style.transform, '');
+  assert.ok(h.counts.draws > drawn, 'the arcs still reach the canvas');
 });
 
 test('stable motion does not rewrite its diagnostic state every frame', () => {

@@ -3,6 +3,11 @@
 // not position, so the gesture hurries what is already moving and then lets it
 // settle back. Offscreen, hidden and Save-Data pages stop the clock entirely.
 // Authored noise is never fetched: the still is the settled frame.
+//
+// The phase always integrates. An affordable frame presents everything; a slow
+// one spends only on visible steps — the quantised pose, or the arcs once they
+// have travelled enough to see. Neither path drops a step it owes, so a slow
+// cadence or a long task costs smoothness for a frame, never the motion.
 import { drawArcs } from './arcs.mjs';
 
 const IDLE = 0.08;        // phase per second at rest (~one turn a minute)
@@ -12,6 +17,9 @@ const MAX_BOOST = 8;      // phase per second; a flung wheel stays an ornament
 const JUMP = 0.1;         // seconds; a hidden tab must not leap the phase
 const ARC = 4;            // the arcs own more of the phase than the torus
 const TURN = 55;          // degrees of torus rotation per phase unit
+const ARC_STEP = 0.03;    // arc-time; ~4.4px at rest, every frame of a fling (see evidence)
+const TURN_STEP = 0.2;    // degrees; a quantised pose is only written when it differs
+const MISS = 0.025;       // seconds; a frame slower than this presents only visible steps
 
 const root = document.querySelector('.experiences-overture');
 if (root) boot(root);
@@ -33,6 +41,7 @@ function boot(root) {
   let top = 0, span = 1;
   let phase = 0, boost = 0, previous = 0, frame = 0;
   let visible = true, painted = false, pageActive = true;
+  let drawnArc = null, shown = '';
   let y = scrollY;
   const awake = () => pageActive && !document.hidden;
 
@@ -58,18 +67,30 @@ function boot(root) {
     if (root.dataset.stageState !== state) root.dataset.stageState = state;
   }
 
-  function paint() {
+  function pose() {
     const progress = Math.min(1, Math.max(0, (scrollY - top) / span));
-    // The shallow orbit still follows the reader's place in the hero; only the
-    // rotation takes its time from the clock, so scrolling adds speed without
-    // ever jumping the figure.
     const angle = progress * Math.PI * .65;
     const x = -Math.sin(angle) * width * .035;
     const z = (1 - Math.cos(angle)) * height * .045;
-    torus.style.transform = `translate3d(${x.toFixed(2)}px,${z.toFixed(2)}px,0) rotate(${(-progress * 12 - phase * TURN).toFixed(2)}deg)`;
-    if (!context || forced.matches) return;
+    const rot = Math.round((-progress * 12 - phase * TURN) / TURN_STEP) * TURN_STEP;
+    return {
+      progress,
+      transform: `translate3d(${x.toFixed(2)}px,${z.toFixed(2)}px,0) rotate(${rot.toFixed(1)}deg)`,
+    };
+  }
+
+  function show(transform) {
+    if (transform === shown) return;
+    shown = transform;
+    torus.style.transform = transform;
+  }
+
+  function paint(posed = pose(), arcT = posed.progress * 8 + phase * ARC) {
+    show(posed.transform);
+    if (!context || forced.matches) { drawnArc = arcT; return; }
     if (resized) size();
-    drawArcs(context, width, height, progress * 8 + phase * ARC, { x: .7, y: .89 });
+    drawArcs(context, width, height, arcT, { x: .7, y: .89 });
+    drawnArc = arcT;
     if (!painted) arcs.classList.add('is-live');
     painted = true;
   }
@@ -78,6 +99,7 @@ function boot(root) {
   // on where the reader happens to be, so toggling a gate never leaves a
   // half-lit half-turn behind.
   function rest() {
+    shown = '';
     torus.style.transform = '';
     if (!context || forced.matches) return;
     if (resized) size();
@@ -109,9 +131,18 @@ function boot(root) {
     const travelled = Math.abs(scrollY - y);
     y = scrollY;
     if (travelled) boost = Math.min(MAX_BOOST, boost + travelled * KICK);
-    boost *= Math.exp(-dt / DECAY);
+    if (dt) boost *= Math.exp(-dt / DECAY);
     phase += dt * (IDLE + boost);
-    paint();
+
+    // An affordable frame presents everything; a slow one spends only on the
+    // steps it owes. A slow frame may not drop the arcs, and a fast one may not
+    // keep clearing a canvas that barely moved.
+    const affordable = dt <= MISS;
+    const posed = pose();
+    show(posed.transform);
+    const arcT = posed.progress * 8 + phase * ARC;
+    const moved = drawnArc === null || Math.abs(arcT - drawnArc) >= ARC_STEP;
+    if (resized || affordable || moved) paint(posed, arcT);
     frame = requestAnimationFrame(tick);
   }
 

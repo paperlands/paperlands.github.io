@@ -441,6 +441,7 @@ try {
           assert.ok(stationary.arcState.live && stationary.arcState.canvasVisible === 'visible',
             'shipped overture canvas must be live');
           assert.equal(stationary.arcState.stageState, 'moving', 'shipped overture clock is running');
+          assert.ok(stationary.draws > 0, 'shipped overture still reaches the canvas');
         }
         if (arm.id === 'still') {
           // Reduced motion still reaches the authored resting frame, but through
@@ -644,6 +645,8 @@ try {
           stationary: {
             frames: stats(stationary.frames), draws: stationary.draws, elapsedMs: Math.round(stationaryMs),
             drawsPerSecond: +(stationary.draws / (stationaryMs / 1000)).toFixed(1),
+            stageState: stationary.arcState.stageState,
+            canvasLive: stationary.arcState.live,
             customPropertyWrites: stationary.customPropertyWrites,
             loaf: {
               count: stationary.loaf.length,
@@ -780,6 +783,8 @@ for (const device of devices) {
       stationaryLongTasks: median(group.map(r => r.stationary.longTasks)),
       stationaryScriptMs: median(group.map(r => r.stationary.loaf.script)),
       scrollFrameP50: median(group.map(r => r.scroll.frames.p50)),
+      stationaryStageState: [...new Set(group.map(r => r.stationary.stageState))].join('|'),
+      stationaryCanvasLive: group.every(r => r.stationary.canvasLive),
       scrollFrameP95: median(group.map(r => r.scroll.frames.p95)),
       scrollCustomPropertyWrites: median(group.map(r => r.scroll.customPropertyWrites)),
       scrollLongTasks: median(group.map(r => r.scroll.longTasks)),

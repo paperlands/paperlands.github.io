@@ -56,8 +56,11 @@ if (root) {
         const center = gathering.center - y;
         // Bare wood climbs from the root first. Blossoms wait until the
         // phrase approaches centre, completing exactly at the half-screen.
-        const growth = ease((height * .94 - center) / (height * .39), 0, 1).toFixed(3);
-        const canopy = ease((height * .57 - center) / (height * .07), 0, 1).toFixed(3);
+        // Twenty steps, not a new mask on every pixel. The climb and the
+        // retrace stay; the gradient is not rebuilt for an invisible change.
+        const quant = n => (Math.round(n * 20) / 20).toFixed(2);
+        const growth = quant(ease((height * .94 - center) / (height * .39), 0, 1));
+        const canopy = quant(ease((height * .57 - center) / (height * .07), 0, 1));
         const state = `${growth}:${canopy}`;
         if (state !== treeLast) {
           tree?.style.setProperty('--tree-growth', growth);

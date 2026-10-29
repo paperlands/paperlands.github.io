@@ -202,31 +202,35 @@
   var previous = -1;
   var tick = 0;
 
+  function setAttr(el, name, value) {
+    if (el.getAttribute(name) === value) return;
+    el.setAttribute(name, value);
+  }
   function posePiece(piece, t) {
-    piece.el.setAttribute('visibility', t === 0 ? 'hidden' : 'visible');
+    setAttr(piece.el, 'visibility', t === 0 ? 'hidden' : 'visible');
     if (piece.kind === 'col') {
-      piece.el.setAttribute('transform', 'scale(1 ' + t + ')');
+      setAttr(piece.el, 'transform', 'scale(1 ' + t + ')');
       piece.el.removeAttribute('opacity');
       return;
     }
     if (piece.kind === 'roof') {
-      piece.el.setAttribute('transform', 'scale(' + (0.72 + 0.28 * t) + ' ' + t + ')');
-      piece.el.setAttribute('opacity', String(t));
+      setAttr(piece.el, 'transform', 'scale(' + (0.72 + 0.28 * t) + ' ' + t + ')');
+      setAttr(piece.el, 'opacity', String(t));
       return;
     }
     if (piece.kind === 'sun') {
-      piece.el.setAttribute('transform', 'scale(' + (0.62 + 0.38 * t) + ')');
-      piece.el.setAttribute('opacity', String(t));
+      setAttr(piece.el, 'transform', 'scale(' + (0.62 + 0.38 * t) + ')');
+      setAttr(piece.el, 'opacity', String(t));
       return;
     }
-    piece.el.setAttribute('transform', 'rotate(' + (piece.turn * (1 - t)) + ') scale(' + (0.78 + 0.22 * t) + ')');
-    piece.el.setAttribute('opacity', String(t));
+    setAttr(piece.el, 'transform', 'rotate(' + (piece.turn * (1 - t)) + ') scale(' + (0.78 + 0.22 * t) + ')');
+    setAttr(piece.el, 'opacity', String(t));
   }
 
   function pose() {
     tick = 0;
     if (!wordmark || reduced || !geometry) return;
-    var p = clamp01(scrollPosition / geometry.distance);
+    var p = Math.round(clamp01(scrollPosition / geometry.distance) * 80) / 80;
     sunrise(p);
     var writing = wordmark.getAttribute('data-helios-writing') === 'on';
     /* Hysteresis: do not flicker the banner at the 1.0 seam. */
