@@ -113,7 +113,7 @@
     defer
   ></script>
   {%- endunless -%}
-  <div class="{{ cf_field_class }}"{% if cf_lazy %} data-turnstile{% endif %} data-sitekey="0x4AAAAAACugliz5rFIg0aRA" data-theme="{{ cf_turnstile_theme }}"></div>
+  <div class="{{ cf_field_class }}"{% if cf_lazy %} data-turnstile{% endif %} data-sitekey="0x4AAAAAACugliz5rFIg0aRA" data-action="contact" data-theme="{{ cf_turnstile_theme }}"></div>
   </div>
 
   <button type="submit" class="{{ cf_action_class }}">{{ include.button_text }}</button>

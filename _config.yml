@@ -4,7 +4,9 @@ include:             ['_pages']
 # and the mode sheets — are built into the destination's assets/css/ by
 # _plugins/fast_styles.rb. Excluding the tree keeps 200KB of raw sources (and
 # their design commentary) out of the deploy.
-exclude:             ['design', 'toolchain', 'assets/css']
+# PaperLang `sources/` is the release's build input. The alias loads only
+# host.mjs, so the snapshot stays in the repo and out of the deploy for now.
+exclude:             ['design', 'toolchain', 'assets/css', 'assets/lib/paperlang/**/sources']
 # The stylesheets are BUILT INTO the destination (see _plugins/fast_styles.rb),
 # which is why they are excluded above — and which also puts them beyond
 # Jekyll's cleaner: it deletes every file in the destination it did not produce,

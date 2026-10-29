@@ -98,9 +98,10 @@ test('each layout contains every state, deduplicates identical source, and names
   assert.ok(bytes < 3_000_000, `${bytes} compiled bytes`);
 });
 
-test('the app worker never eagerly precaches the scroll catalogue', () => {
+test('the app worker never eagerly precaches scroll frames or PaperLang evidence', () => {
   const config = createRequire(import.meta.url)('../../workbox-config.js');
   assert.ok(config.globIgnores.includes('assets/lib/helios/ink/**'));
+  assert.ok(config.globIgnores.includes('assets/lib/paperlang/**'), 'retained runtimes and their sources are demand-loaded');
   assert.ok(config.globPatterns.every(pattern => !/png|jpe?g|webp|gif/.test(pattern)), 'raster artwork is cached as visited, not eagerly installed');
   assert.equal(config.runtimeCaching.find(rule => rule.options.cacheName === 'images-cache').options.expiration.maxEntries, 48);
   assert.equal(config.runtimeCaching.find(rule => rule.options.cacheName === 'media-cache').options.expiration.maxEntries, 3);

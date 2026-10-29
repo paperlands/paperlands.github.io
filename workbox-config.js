@@ -8,9 +8,11 @@ module.exports = {
 		'turtle.html'
 	],
 	swDest: '_site/sw.js',
-	// Compiled scroll states are demand-loaded, not an eager offline catalogue.
+	// Compiled scroll states and retained PaperLang generations are demand-loaded,
+	// not an eager offline catalogue. Their source snapshots are especially large:
+	// precaching every generation would fetch every served .js source file.
 	// The /turtle worker controls '/' too; visiting it must not fetch every frame.
-	globIgnores: ['assets/lib/helios/ink/**'],
+	globIgnores: ['assets/lib/helios/ink/**', 'assets/lib/paperlang/**'],
 	ignoreURLParametersMatching: [
 		/^utm_/,
 		/^fbclid$/

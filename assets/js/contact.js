@@ -65,7 +65,10 @@
     try {
       window.turnstile.render(slot, {
         sitekey: slot.getAttribute('data-sitekey'),
-        theme: slot.getAttribute('data-theme') || 'dark'
+        theme: slot.getAttribute('data-theme') || 'dark',
+        // Echoed back by siteverify so the proxy can tell surfaces apart. The
+        // eager path in _includes/contact_form.html carries it as data-action.
+        action: slot.getAttribute('data-action') || undefined
       });
       slot.setAttribute('data-rendered', 'true');
     } catch (error) {

@@ -6,7 +6,7 @@ require_relative '../../_plugins/compiled_ink'
 
 ROOT = File.expand_path('../..', __dir__)
 DATA = {
-  'hatch' => YAML.safe_load_file(File.join(ROOT, '_data/hatch.yml'), permitted_classes: [Date]),
+  'paperlang' => JSON.parse(File.read(File.join(ROOT, '_data/paperlang.json'))),
   'helios_possibilities' => YAML.safe_load_file(File.join(ROOT, '_data/helios_possibilities.yml')),
   'helios_ink' => JSON.parse(File.read(File.join(ROOT, '_data/helios_ink.json')))
 }
@@ -27,7 +27,7 @@ puts 'ok: current compiled programme, range, mask, pin and pixel digests'
 rejects('changed programme') { |d| d['helios_possibilities']['creators']['program'] += "\nfw 1" }
 rejects('changed range') { |d| d['helios_possibilities']['creators']['grows']['to'] = 50 }
 rejects('changed vignette') { |d| d['helios_possibilities']['inquiry']['ink_mask'][0] = 0.6 }
-rejects('changed host') { |d| d['hatch']['artifact_path'] = '/another-host.mjs' }
+rejects('changed runtime') { |d| d['paperlang']['lines'][d['paperlang']['latest']]['artifact_path'] = '/another-host.mjs' }
 rejects('changed compiler') { |d| d['helios_ink']['compiler'] = 'outdated' }
 rejects('changed scroll arithmetic') { |d| d['helios_ink']['model'] = 'outdated' }
 rejects('missing settled figure') { |d| d['helios_ink']['scenes']['inquiry']['layouts']['wide']['frames'].delete('settled') }

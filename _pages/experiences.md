@@ -22,13 +22,13 @@ prelude:
   label: From questions to stories
   paragraphs:
     - Meaning in math begins with asking our own questions.
-    - We follow a question, try an idea, and find ourselves somewhere we didn’t expect.
-    - And so discovers a story worth sharing.
-  invitation: That's when the stage
-  focus: brings math to *life.*
+    - They lead us down unknown paths, with only our curiosity to guide us.
+    - And suddenly we are on a quest and discover a story worth telling.
+  invitation: That's when the Stage could
+  focus: bring math to *life.*
 possibilities:
   seam:
-    lead: And the stage becomes
+    lead: And this Stage becomes
     experience: ours to imagine.
     forms:
       - {shape: branch, src: /assets/lib/notes/experiences/forms-branch-6de71b4e.webp, width: 640, height: 796}

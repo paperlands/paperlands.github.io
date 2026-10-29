@@ -16,8 +16,9 @@ module CompiledInk
     manifest = data['helios_ink']
     fail_with = ->(why) { raise ArgumentError, "Compiled Helios ink #{why}. Run BASE=http://localhost:4001 node toolchain/compile-ink.mjs (see design/scroll-rendering.md)." }
     fail_with.call('is missing') unless manifest && manifest['schema'] == 1
-    pin = data.fetch('hatch').fetch('artifact_path')
-    fail_with.call('uses a different host') unless manifest['artifact'] == pin
+    catalogue = data.fetch('paperlang')
+    pin = catalogue.fetch('lines').fetch(catalogue.fetch('latest')).fetch('artifact_path')
+    fail_with.call('uses a different runtime') unless manifest['artifact'] == pin
     { 'compiler' => 'toolchain/compile-ink.mjs', 'model' => 'assets/js/home/ink-state.mjs' }.each do |key, path|
       fail_with.call("has a stale #{key}") unless manifest[key] == Digest::SHA256.file(File.join(source, path)).hexdigest
     end

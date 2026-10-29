@@ -127,8 +127,14 @@ jobs:
       - name: Verify the experiences stage
         run: node --test toolchain/test/experiences-stage.test.mjs
 
-      - name: Verify the host release
-        run: node --test toolchain/test/host-release.test.mjs
+      - name: Verify the PaperLang release intake
+        run: node --test toolchain/test/paperlang-release.test.mjs
+
+      - name: Verify the PaperLang aliases
+        run: SITE_DEST=_site bundle exec ruby toolchain/test/paperlang_aliases_test.rb
+
+      - name: Verify the PaperLang served evidence
+        run: python3 design/probe/paperlang.py --site _site
 
       - name: Verify the render window
         run: node --test toolchain/test/render-window.test.mjs
@@ -201,6 +207,20 @@ jobs:
     timeout-minutes: 10
     needs: build
     steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      # Promotion is separate from ordinary byte-integrity tests. A dirty
+      # development snapshot may build and be reviewed locally, but it must not
+      # reach Pages as a versioned public runtime.
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Verify PaperLang promotion
+        run: node toolchain/vendor.mjs --promotion
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5

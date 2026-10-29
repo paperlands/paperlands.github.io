@@ -1,4 +1,4 @@
-// Compile the landing's finite Paperlang ranges with the exact shipped host.
+// Compile the landing's finite Paperlang ranges with the exact shipped runtime.
 // No second interpreter or handwritten approximation. The output is transparent
 // WebP: pigment, two soft glows and the scene's vignette are paid for ONCE.
 //
@@ -17,7 +17,12 @@ const base = process.env.BASE || 'http://127.0.0.1:4001';
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const scenes = JSON.parse(execFileSync('ruby', ['-ryaml', '-rjson', '-e',
   'puts JSON.generate(YAML.safe_load_file(ARGV[0]))', join(root, '_data/helios_possibilities.yml')], { encoding: 'utf8' }));
-const pin = /^artifact_path: (.+)$/m.exec(readFileSync(join(root, '_data/hatch.yml'), 'utf8'))[1];
+const catalogue = JSON.parse(readFileSync(join(root, '_data/paperlang.json'), 'utf8'));
+const latest = catalogue.latest;
+const runtime = catalogue.lines?.[latest];
+if (!runtime?.artifact_path) throw new Error(`PaperLang catalogue latest ${latest} has no immutable artifact.`);
+const pin = runtime.artifact_path;
+const alias = `/paperlang/${latest}.js`;
 const signature = scene => sha([scene.program.trim(), scene.grows?.line || '',
   scene.grows?.from ?? '', scene.grows?.to ?? '', JSON.stringify(scene.ink_mask), pin].join('\0'));
 const work = mkdtempSync(join(tmpdir(), 'helios-ink-'));
@@ -39,6 +44,12 @@ async function bounded(promise, ms = 20000) {
   } finally { clearTimeout(timer); }
 }
 try {
+  // Execute through the public alias, but refuse to bake unless that alias
+  // currently resolves to the immutable generation recorded in provenance.
+  const servedAlias = await (await fetch(new URL(alias, base))).text();
+  if (!servedAlias.includes(`export * from "${pin}"`)) {
+    throw new Error(`${alias} does not resolve to the catalogue generation ${pin}`);
+  }
   if (!process.env.CDP_PORT) {
     chrome = spawn(process.env.CHROMIUM_PATH || '/usr/bin/chromium', ['--headless', '--no-first-run',
       '--remote-debugging-port=0', `--user-data-dir=${work}/chrome`, 'about:blank'], { stdio: 'ignore' });
@@ -72,7 +83,7 @@ try {
   await page.s('Network.setBlockedURLs', { urls: [] });
   // Keep the authoring host entirely outside the moving/transformed scene.
   await page.evaluate(`document.body.innerHTML='';document.head.querySelectorAll('link[rel="stylesheet"],style').forEach(s=>s.remove());document.body.style.cssText='margin:0;background:transparent';`);
-  await page.evaluate(`import(${JSON.stringify(pin)}).then(module => window.createInkHatch=module.createHatch)`);
+  await page.evaluate(`import(${JSON.stringify(alias)}).then(module => window.createInkWorld=module.createWorld)`);
   for (const [name, scene] of Object.entries(scenes)) {
     if (!scene.program) continue;
     if (!/^[a-z][a-z0-9_-]*$/.test(name)) throw new Error('Unsafe ink scene name.');
@@ -88,7 +99,7 @@ try {
       await page.evaluate(`(() => {
         window.inkHost?.dispose();document.body.innerHTML='<div id="studio"><canvas id="ink"></canvas></div>';
         const canvas=document.querySelector('#ink');canvas.style.cssText='display:block;width:${width}px;height:${height}px';
-        window.inkCanvas=canvas;window.inkHost=createInkHatch(canvas,{caps:{maxCommands:500000,maxRecurseDepth:60}});
+        window.inkCanvas=canvas;window.inkHost=createInkWorld(canvas,{caps:{maxCommands:500000,maxRecurseDepth:60}});
       })()`);
       const output = entry.layouts[layout] = { width: width * dpr, height: height * dpr, frames: {} };
       const sourceCache = new Map();

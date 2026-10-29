@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "latest": "0.6",
+  "lines": {
+    "0.6": {
+      "version": "0.6.0",
+      "revision": "eaebaec4d45aeb94e822329df0ac540dea4d7c89-dirty+e774dad24290",
+      "commit": "eaebaec4d45aeb94e822329df0ac540dea4d7c89",
+      "source_dirty": true,
+      "source_digest": "e774dad24290586994ddbd2859bc0dddd2b0440b859fa2d42e62ddf6a8d5bf8a",
+      "evidence_sha256": "38a7325fceb5e1ded44d23319974190d606c03cd4444ce2b3b3a1ad8a1af6117",
+      "generation": "/assets/lib/paperlang/0.6/38a7325fceb5e1ded44d23319974190d606c03cd4444ce2b3b3a1ad8a1af6117",
+      "artifact_path": "/assets/lib/paperlang/0.6/38a7325fceb5e1ded44d23319974190d606c03cd4444ce2b3b3a1ad8a1af6117/host.mjs",
+      "artifact_sha256": "66f2dfd297307d8342d7a9158b428cd261a8dfa4bd343a46c500538dea75f7fa",
+      "artifact_bytes": 1012746,
+      "closure_inputs": 104,
+      "release_manifest": "release.json",
+      "release_manifest_sha256": "38a7325fceb5e1ded44d23319974190d606c03cd4444ce2b3b3a1ad8a1af6117",
+      "licence": "LICENSE",
+      "licence_id": "AGPL-3.0-only",
+      "licence_sha256": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
+      "notices": "NOTICE.txt",
+      "notices_sha256": "9b283c722c5033c78f4108b261fc0cea6b1b377d09a4554f344f64bba842f6d4",
+      "sources": "sources/",
+      "installed_at": "2026-10-27"
+    }
+  }
+}

@@ -109,9 +109,10 @@ headless attribution from actual device/field performance.
 
 `assets.py`, `catalog.py`, `coverage.py`, `looks.py`, `surfaces.py` inspect built
 assets and surface declarations. `webfonts.py` is the self-hosted-font intake
-tool. `hatch.py` is called by `toolchain/hatch-pull.sh` for release intake; full
-source verification requires the producer's uncommitted source snapshot. These
-are opt-in maintenance tools, not additional per-PR jobs.
+tool. `paperlang.py` is the independent audit for `toolchain/paperlang-pull.sh`;
+it checks the served catalogue, immutable generations and legal evidence. The
+source snapshot stays in the install; it is not a deploy requirement for now.
+These are opt-in maintenance tools, not additional per-PR jobs.
 
 ## Trust boundaries
 
