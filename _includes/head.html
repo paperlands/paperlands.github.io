@@ -77,6 +77,13 @@
   window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
   plausible.init()
 </script>
+{%- comment -%} Schema-1 document/exposure and client-action diagnostics.
+   Neither a pageview nor this layer establishes identity, intent or accepted
+   message delivery. behaviour.html emits the YAML contract and deferred kernel;
+   definitions and inference limits live in design/behaviour-metrics.md.
+   The native loader reads URL tags independently of the kernel's allowlist.
+{%- endcomment -%}
+{% include behaviour.html %}
 {% endif %}
 
   <meta property="og:description" content="{% if meta_description %}{{ meta_description | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.title | strip_html | strip_newlines | truncate: 160 }}{% endif %}"/>

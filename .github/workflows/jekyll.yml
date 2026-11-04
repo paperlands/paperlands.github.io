@@ -86,6 +86,11 @@ jobs:
       - name: Verify publication and modification dates
         run: bundle exec ruby toolchain/test/metadata_test.rb
 
+      - name: Verify behaviour measurements and aggregate reporting
+        run: node --test toolchain/test/behaviour.test.mjs toolchain/test/campaign-report.test.mjs
+      - name: Verify behaviour production wiring
+        run: bundle exec ruby toolchain/test/behaviour_config_test.rb
+
       - name: Verify the media player
         run: node --test toolchain/test/media-video.test.mjs
       - name: Verify page-local media boot

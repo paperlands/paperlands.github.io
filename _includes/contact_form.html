@@ -104,6 +104,14 @@
   <textarea id="{{ cf_prefix }}message-input" name="message" rows="4" placeholder="{{ include.message_placeholder }}" class="{{ cf_input_class }}" required></textarea>
 
   <input type="hidden" name="return_url" value="{{ cf_return_url }}" />
+  {%- comment -%} Approved campaign/content/source link context, filled at submit
+     by assets/js/behaviour.js. This is recorded attribution, not evidence that
+     a sentence caused the enquiry or that the reader has a particular role.
+     Empty without the kernel; "untagged" without approved context. The external
+     guru receiver must separately be verified to retain this field; the hidden
+     input alone does not prove inbox attribution or accepted delivery.
+     Never put recipient identities in campaign tags. {%- endcomment -%}
+  <input type="hidden" name="campaign" value="" />
 
   <div class="{{ cf_captcha_class }}">
   {%- unless cf_lazy -%}

@@ -1,0 +1,65 @@
+# The measurement contract, not a model of a visitor's identity or motives.
+# Schema changes measurement semantics; release identifies the site's design.
+schema: 1
+release: helios-2
+
+# Exact public campaign values approved for custom events and the hidden form
+# field. Empty is deliberate: do not invent a real send from an example tag.
+# Before a send, add the actual non-personal values here and test its link.
+# A link must carry an approved utm_campaign; every present tag must be approved.
+# No names, email addresses, recipient IDs or reversible encodings, even if they
+# look like harmless slugs. This does NOT sanitise the native Plausible loader:
+# correct the outbound link generator too. See design/behaviour-metrics.md.
+campaign:
+  source: []
+  medium: []
+  campaign: []
+  content: []
+
+# Acts are discovered and sorted in document order. Exposure requires at least
+# min(half the act height, 40% of viewport height) visibly intersecting.
+# Dwell counts visible exposure, not reading/comprehension. exit.max is maximum
+# reached depth, NOT where someone last looked or why they left.
+# Only matching selectors count toward exit.acts; never hardcode a denominator.
+acts:
+  - name: wordmark
+    selector: "#wordmark, .helios-wordmark"
+  - name: hero
+    selector: ".helios-hero"
+  - name: ticker
+    selector: ".helios-ticker"
+  - name: see
+    selector: "#see"
+  - name: create
+    selector: ".helios-create"
+  - name: possibilities
+    selector: ".helios-possibilities"
+  - name: fourthturn
+    selector: "#fourth-turn"
+  - name: colophon
+    selector: ".helios-colophon"
+
+  # Experiences has its own subset. movements groups all three passages; it
+  # cannot distinguish Festival, Symposium and Workshops. A reach/drop pattern
+  # identifies an observation to investigate, not an accepted/rejected offer.
+  - name: overture
+    selector: ".experiences-overture"
+  - name: prelude
+    selector: ".experiences-prelude"
+  - name: movements
+    selector: ".experiences-possibilities"
+  - name: support
+    selector: ".experiences-support"
+  - name: planning
+    selector: "#planning"
+  - name: finale
+    selector: ".experiences-finale"
+
+# These are optional DOM probes, not proof of educational or commercial value.
+# contact open/submit/receipt are diagnostics. A receipt URL is client-controlled;
+# only the form receiver/inbox can confirm acceptance. Do not call it a lead.
+probes:
+  ink: "[data-ink-scene]"
+  fault: "#fault"
+  fallback: "#enable-runtime"
+  contact: "dialog.contact"

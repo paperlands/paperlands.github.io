@@ -75,6 +75,7 @@ for every edit. CDP tools require Chromium and Node 22+; no npm browser library.
 
 | Tool | Purpose |
 | --- | --- |
+| `campaign.mjs` | Read-only aggregate Odin fallback through an existing authenticated tab: explicit DATE, actual date ranges, schema-1 contact steps and property-exclusion controls; no recipient identities or human/bot inference |
 | `triage.mjs`, `rules.mjs`, `eval.mjs`, `console.mjs` | Compare two frozen builds: rendered styles/geometry, winning declarations, arbitrary expressions, console/network errors |
 | `contact.mjs`, `identity.mjs`, `nav-lantern.mjs`, `scroll.mjs` | Contact, navigation hit areas, keyboard interaction and native scroll |
 | `helios-ticker.mjs` | Scrolling words: delayed fonts, responsive loop seams, viewport changes, reduced motion and no-JS fallback |
