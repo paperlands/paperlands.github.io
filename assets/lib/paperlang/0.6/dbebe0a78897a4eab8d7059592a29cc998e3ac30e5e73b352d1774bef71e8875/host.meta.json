@@ -47,7 +47,7 @@
       "format": "esm"
     },
     "assets/js/turtling/mafs/tower.js": {
-      "bytes": 18638,
+      "bytes": 22886,
       "imports": [],
       "format": "esm"
     },
@@ -98,7 +98,7 @@
       "format": "esm"
     },
     "assets/js/turtling/numerics.js": {
-      "bytes": 8410,
+      "bytes": 8649,
       "imports": [
         {
           "path": "assets/js/turtling/report.js",
@@ -189,7 +189,7 @@
       "format": "esm"
     },
     "assets/js/turtling/laws/meet.js": {
-      "bytes": 31365,
+      "bytes": 32916,
       "imports": [
         {
           "path": "assets/js/turtling/laws/relationships.js",
@@ -335,7 +335,7 @@
       "format": "esm"
     },
     "assets/js/turtling/commands.js": {
-      "bytes": 12029,
+      "bytes": 12557,
       "imports": [
         {
           "path": "assets/js/turtling/mafs/versors.js",
@@ -381,17 +381,6 @@
       "imports": [],
       "format": "esm"
     },
-    "assets/js/turtling/space.js": {
-      "bytes": 1241,
-      "imports": [
-        {
-          "path": "assets/js/turtling/numerics.js",
-          "kind": "import-statement",
-          "original": "./numerics.js"
-        }
-      ],
-      "format": "esm"
-    },
     "assets/js/turtling/localize.js": {
       "bytes": 1827,
       "imports": [
@@ -399,17 +388,6 @@
           "path": "assets/js/turtling/se3.js",
           "kind": "import-statement",
           "original": "./se3.js"
-        }
-      ],
-      "format": "esm"
-    },
-    "assets/js/turtling/laws/reactive.js": {
-      "bytes": 2335,
-      "imports": [
-        {
-          "path": "assets/js/turtling/mafs/tower.js",
-          "kind": "import-statement",
-          "original": "../mafs/tower.js"
         }
       ],
       "format": "esm"
@@ -471,9 +449,73 @@
       "imports": [],
       "format": "esm"
     },
-    "assets/js/turtling/executor.js": {
-      "bytes": 64590,
+    "assets/js/turtling/expressions.js": {
+      "bytes": 3509,
       "imports": [
+        {
+          "path": "assets/js/turtling/mafs/number.js",
+          "kind": "import-statement",
+          "original": "./mafs/number.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/parse_memo.js",
+          "kind": "import-statement",
+          "original": "./mafs/parse_memo.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/arguments.js": {
+      "bytes": 4442,
+      "imports": [
+        {
+          "path": "assets/js/turtling/frame.js",
+          "kind": "import-statement",
+          "original": "./frame.js"
+        },
+        {
+          "path": "assets/js/turtling/numerics.js",
+          "kind": "import-statement",
+          "original": "./numerics.js"
+        },
+        {
+          "path": "assets/js/turtling/expressions.js",
+          "kind": "import-statement",
+          "original": "./expressions.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/space.js": {
+      "bytes": 1241,
+      "imports": [
+        {
+          "path": "assets/js/turtling/numerics.js",
+          "kind": "import-statement",
+          "original": "./numerics.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/reactive.js": {
+      "bytes": 2335,
+      "imports": [
+        {
+          "path": "assets/js/turtling/mafs/tower.js",
+          "kind": "import-statement",
+          "original": "../mafs/tower.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/declarations.js": {
+      "bytes": 9296,
+      "imports": [
+        {
+          "path": "assets/js/turtling/ast.js",
+          "kind": "import-statement",
+          "original": "./ast.js"
+        },
         {
           "path": "assets/js/turtling/commands.js",
           "kind": "import-statement",
@@ -485,9 +527,75 @@
           "original": "./parse.js"
         },
         {
-          "path": "assets/js/turtling/ast.js",
+          "path": "assets/js/turtling/se3.js",
           "kind": "import-statement",
-          "original": "./ast.js"
+          "original": "./se3.js"
+        },
+        {
+          "path": "assets/js/turtling/frame.js",
+          "kind": "import-statement",
+          "original": "./frame.js"
+        },
+        {
+          "path": "assets/js/turtling/bindings.js",
+          "kind": "import-statement",
+          "original": "./bindings.js"
+        },
+        {
+          "path": "assets/js/turtling/space.js",
+          "kind": "import-statement",
+          "original": "./space.js"
+        },
+        {
+          "path": "assets/js/turtling/numerics.js",
+          "kind": "import-statement",
+          "original": "./numerics.js"
+        },
+        {
+          "path": "assets/js/turtling/report.js",
+          "kind": "import-statement",
+          "original": "./report.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/tower.js",
+          "kind": "import-statement",
+          "original": "./mafs/tower.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/parse_memo.js",
+          "kind": "import-statement",
+          "original": "./mafs/parse_memo.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/authored.js",
+          "kind": "import-statement",
+          "original": "./laws/authored.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/reactive.js",
+          "kind": "import-statement",
+          "original": "./laws/reactive.js"
+        },
+        {
+          "path": "assets/js/turtling/arguments.js",
+          "kind": "import-statement",
+          "original": "./arguments.js"
+        },
+        {
+          "path": "assets/js/turtling/expressions.js",
+          "kind": "import-statement",
+          "original": "./expressions.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/executor.js": {
+      "bytes": 35065,
+      "imports": [
+        {
+          "path": "assets/js/turtling/commands.js",
+          "kind": "import-statement",
+          "original": "./commands.js"
         },
         {
           "path": "assets/js/turtling/se3.js",
@@ -510,34 +618,9 @@
           "original": "./match.js"
         },
         {
-          "path": "assets/js/turtling/space.js",
-          "kind": "import-statement",
-          "original": "./space.js"
-        },
-        {
           "path": "assets/js/turtling/localize.js",
           "kind": "import-statement",
           "original": "./localize.js"
-        },
-        {
-          "path": "assets/js/turtling/mafs/number.js",
-          "kind": "import-statement",
-          "original": "./mafs/number.js"
-        },
-        {
-          "path": "assets/js/turtling/laws/authored.js",
-          "kind": "import-statement",
-          "original": "./laws/authored.js"
-        },
-        {
-          "path": "assets/js/turtling/laws/reactive.js",
-          "kind": "import-statement",
-          "original": "./laws/reactive.js"
-        },
-        {
-          "path": "assets/js/turtling/mafs/tower.js",
-          "kind": "import-statement",
-          "original": "./mafs/tower.js"
         },
         {
           "path": "assets/js/turtling/mafs/parse_memo.js",
@@ -563,12 +646,27 @@
           "path": "assets/js/turtling/bindings.js",
           "kind": "import-statement",
           "original": "./bindings.js"
+        },
+        {
+          "path": "assets/js/turtling/expressions.js",
+          "kind": "import-statement",
+          "original": "./expressions.js"
+        },
+        {
+          "path": "assets/js/turtling/arguments.js",
+          "kind": "import-statement",
+          "original": "./arguments.js"
+        },
+        {
+          "path": "assets/js/turtling/declarations.js",
+          "kind": "import-statement",
+          "original": "./declarations.js"
         }
       ],
       "format": "esm"
     },
     "assets/js/turtling/mafs/evaluate.js": {
-      "bytes": 14240,
+      "bytes": 14161,
       "imports": [
         {
           "path": "assets/js/turtling/mafs/operators.js",
@@ -842,7 +940,7 @@
       "format": "esm"
     },
     "assets/js/turtling/laws/feel.js": {
-      "bytes": 1292,
+      "bytes": 1372,
       "imports": [],
       "format": "esm"
     },
@@ -904,8 +1002,13 @@
       ],
       "format": "esm"
     },
+    "assets/js/turtling/capture.js": {
+      "bytes": 3761,
+      "imports": [],
+      "format": "esm"
+    },
     "assets/js/turtling/stage.js": {
-      "bytes": 19439,
+      "bytes": 20147,
       "imports": [
         {
           "path": "assets/js/utils/three-entry.js",
@@ -951,6 +1054,11 @@
           "path": "assets/js/turtling/laws/fit.js",
           "kind": "import-statement",
           "original": "./laws/fit.js"
+        },
+        {
+          "path": "assets/js/turtling/capture.js",
+          "kind": "import-statement",
+          "original": "./capture.js"
         }
       ],
       "format": "esm"
@@ -974,69 +1082,6 @@
     "assets/js/turtling/ambient.js": {
       "bytes": 1568,
       "imports": [],
-      "format": "esm"
-    },
-    "assets/js/turtling/laws/resolution.js": {
-      "bytes": 2414,
-      "imports": [],
-      "format": "esm"
-    },
-    "assets/js/turtling/laws/expression.js": {
-      "bytes": 3244,
-      "imports": [
-        {
-          "path": "assets/js/turtling/laws/relations.js",
-          "kind": "import-statement",
-          "original": "./relations.js"
-        },
-        {
-          "path": "assets/js/turtling/laws/relationships.js",
-          "kind": "import-statement",
-          "original": "./relationships.js"
-        },
-        {
-          "path": "assets/js/turtling/laws/authored.js",
-          "kind": "import-statement",
-          "original": "./authored.js"
-        },
-        {
-          "path": "assets/js/turtling/laws/vec3.js",
-          "kind": "import-statement",
-          "original": "./vec3.js"
-        }
-      ],
-      "format": "esm"
-    },
-    "assets/js/turtling/laws/replacement.js": {
-      "bytes": 8448,
-      "imports": [
-        {
-          "path": "assets/js/turtling/laws/expression.js",
-          "kind": "import-statement",
-          "original": "./expression.js"
-        },
-        {
-          "path": "assets/js/turtling/laws/authored.js",
-          "kind": "import-statement",
-          "original": "./authored.js"
-        }
-      ],
-      "format": "esm"
-    },
-    "assets/js/turtling/laws/component.js": {
-      "bytes": 4898,
-      "imports": [
-        {
-          "path": "assets/js/turtling/laws/vec3.js",
-          "kind": "import-statement",
-          "original": "./vec3.js"
-        },
-        {
-          "path": "assets/js/turtling/laws/authored.js",
-          "kind": "import-statement",
-          "original": "./authored.js"
-        }
-      ],
       "format": "esm"
     },
     "assets/js/turtling/laws/constraints.js": {
@@ -1096,6 +1141,152 @@
       ],
       "format": "esm"
     },
+    "assets/js/turtling/laws/action.js": {
+      "bytes": 9707,
+      "imports": [
+        {
+          "path": "assets/js/turtling/se3.js",
+          "kind": "import-statement",
+          "original": "../se3.js"
+        },
+        {
+          "path": "assets/js/turtling/mafs/versors.js",
+          "kind": "import-statement",
+          "original": "../mafs/versors.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/vec3.js",
+          "kind": "import-statement",
+          "original": "./vec3.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/cone.js",
+          "kind": "import-statement",
+          "original": "./cone.js"
+        },
+        {
+          "path": "assets/js/turtling/localize.js",
+          "kind": "import-statement",
+          "original": "../localize.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/hand_state.js": {
+      "bytes": 14734,
+      "imports": [
+        {
+          "path": "assets/js/turtling/se3.js",
+          "kind": "import-statement",
+          "original": "../se3.js"
+        },
+        {
+          "path": "assets/js/turtling/localize.js",
+          "kind": "import-statement",
+          "original": "../localize.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/batch.js",
+          "kind": "import-statement",
+          "original": "./batch.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/authored.js",
+          "kind": "import-statement",
+          "original": "./authored.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/candidate.js",
+          "kind": "import-statement",
+          "original": "./candidate.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/meet.js",
+          "kind": "import-statement",
+          "original": "./meet.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/action.js",
+          "kind": "import-statement",
+          "original": "./action.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/hand_choices.js": {
+      "bytes": 3798,
+      "imports": [
+        {
+          "path": "assets/js/turtling/laws/action.js",
+          "kind": "import-statement",
+          "original": "./action.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/resolution.js": {
+      "bytes": 2414,
+      "imports": [],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/expression.js": {
+      "bytes": 3244,
+      "imports": [
+        {
+          "path": "assets/js/turtling/laws/relations.js",
+          "kind": "import-statement",
+          "original": "./relations.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/relationships.js",
+          "kind": "import-statement",
+          "original": "./relationships.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/authored.js",
+          "kind": "import-statement",
+          "original": "./authored.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/vec3.js",
+          "kind": "import-statement",
+          "original": "./vec3.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/replacement.js": {
+      "bytes": 8907,
+      "imports": [
+        {
+          "path": "assets/js/turtling/laws/expression.js",
+          "kind": "import-statement",
+          "original": "./expression.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/authored.js",
+          "kind": "import-statement",
+          "original": "./authored.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "assets/js/turtling/laws/component.js": {
+      "bytes": 4898,
+      "imports": [
+        {
+          "path": "assets/js/turtling/laws/vec3.js",
+          "kind": "import-statement",
+          "original": "./vec3.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/authored.js",
+          "kind": "import-statement",
+          "original": "./authored.js"
+        }
+      ],
+      "format": "esm"
+    },
     "assets/js/turtling/laws/following.js": {
       "bytes": 4121,
       "imports": [
@@ -1113,7 +1304,7 @@
       "format": "esm"
     },
     "assets/js/turtling/laws/verdict.js": {
-      "bytes": 41730,
+      "bytes": 44627,
       "imports": [
         {
           "path": "assets/js/turtling/laws/relations.js",
@@ -1261,7 +1452,7 @@
       "format": "esm"
     },
     "assets/js/turtling/scheduler.js": {
-      "bytes": 203106,
+      "bytes": 214256,
       "imports": [
         {
           "path": "assets/js/turtling/frame.js",
@@ -1302,6 +1493,16 @@
           "path": "assets/js/turtling/laws/batch.js",
           "kind": "import-statement",
           "original": "./laws/batch.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/hand_state.js",
+          "kind": "import-statement",
+          "original": "./laws/hand_state.js"
+        },
+        {
+          "path": "assets/js/turtling/laws/hand_choices.js",
+          "kind": "import-statement",
+          "original": "./laws/hand_choices.js"
         },
         {
           "path": "assets/js/turtling/laws/resolution.js",
@@ -1651,7 +1852,7 @@
       "format": "esm"
     },
     "assets/js/turtling/laws/gesture.js": {
-      "bytes": 11248,
+      "bytes": 14388,
       "imports": [
         {
           "path": "assets/js/turtling/laws/handle.js",
@@ -1729,7 +1930,7 @@
       "format": "esm"
     },
     "assets/js/turtling/turtle.js": {
-      "bytes": 44807,
+      "bytes": 48708,
       "imports": [
         {
           "path": "assets/js/turtling/mafs/parse.js",
@@ -1940,7 +2141,7 @@
           "bytesInOutput": 1511
         },
         "assets/js/turtling/mafs/tower.js": {
-          "bytesInOutput": 4908
+          "bytesInOutput": 6664
         },
         "assets/js/turtling/mafs/parse.js": {
           "bytesInOutput": 6104
@@ -1952,7 +2153,7 @@
           "bytesInOutput": 126
         },
         "assets/js/turtling/numerics.js": {
-          "bytesInOutput": 1934
+          "bytesInOutput": 1982
         },
         "assets/js/turtling/laws/vec3.js": {
           "bytesInOutput": 878
@@ -1970,7 +2171,7 @@
           "bytesInOutput": 1493
         },
         "assets/js/turtling/laws/meet.js": {
-          "bytesInOutput": 13013
+          "bytesInOutput": 13549
         },
         "assets/js/turtling/rigid_precision.js": {
           "bytesInOutput": 229
@@ -1994,7 +2195,7 @@
           "bytesInOutput": 1029
         },
         "assets/js/turtling/commands.js": {
-          "bytesInOutput": 4331
+          "bytesInOutput": 4490
         },
         "assets/js/turtling/view.js": {
           "bytesInOutput": 285
@@ -2005,14 +2206,8 @@
         "assets/js/turtling/match.js": {
           "bytesInOutput": 518
         },
-        "assets/js/turtling/space.js": {
-          "bytesInOutput": 146
-        },
         "assets/js/turtling/localize.js": {
-          "bytesInOutput": 328
-        },
-        "assets/js/turtling/laws/reactive.js": {
-          "bytesInOutput": 940
+          "bytesInOutput": 390
         },
         "assets/js/turtling/mafs/parse_memo.js": {
           "bytesInOutput": 424
@@ -2032,8 +2227,23 @@
         "assets/js/turtling/bindings.js": {
           "bytesInOutput": 516
         },
+        "assets/js/turtling/expressions.js": {
+          "bytesInOutput": 1472
+        },
+        "assets/js/turtling/arguments.js": {
+          "bytesInOutput": 1742
+        },
+        "assets/js/turtling/space.js": {
+          "bytesInOutput": 146
+        },
+        "assets/js/turtling/laws/reactive.js": {
+          "bytesInOutput": 940
+        },
+        "assets/js/turtling/declarations.js": {
+          "bytesInOutput": 4144
+        },
         "assets/js/turtling/executor.js": {
-          "bytesInOutput": 17603
+          "bytesInOutput": 9749
         },
         "assets/js/turtling/mafs/evaluate.js": {
           "bytesInOutput": 4508
@@ -2042,7 +2252,7 @@
           "bytesInOutput": 1298
         },
         "assets/js/utils/three.core.min.js": {
-          "bytesInOutput": 237738
+          "bytesInOutput": 237736
         },
         "assets/js/utils/three-entry.js": {
           "bytesInOutput": 0
@@ -2107,8 +2317,11 @@
         "assets/js/turtling/laws/fit.js": {
           "bytesInOutput": 1122
         },
+        "assets/js/turtling/capture.js": {
+          "bytesInOutput": 1358
+        },
         "assets/js/turtling/stage.js": {
-          "bytesInOutput": 4770
+          "bytesInOutput": 5341
         },
         "assets/js/turtling/participation.js": {
           "bytesInOutput": 323
@@ -2119,6 +2332,21 @@
         "assets/js/turtling/ambient.js": {
           "bytesInOutput": 227
         },
+        "assets/js/turtling/laws/constraints.js": {
+          "bytesInOutput": 7264
+        },
+        "assets/js/turtling/laws/candidate.js": {
+          "bytesInOutput": 363
+        },
+        "assets/js/turtling/laws/action.js": {
+          "bytesInOutput": 3209
+        },
+        "assets/js/turtling/laws/hand_state.js": {
+          "bytesInOutput": 4246
+        },
+        "assets/js/turtling/laws/hand_choices.js": {
+          "bytesInOutput": 898
+        },
         "assets/js/turtling/laws/resolution.js": {
           "bytesInOutput": 419
         },
@@ -2126,22 +2354,16 @@
           "bytesInOutput": 815
         },
         "assets/js/turtling/laws/replacement.js": {
-          "bytesInOutput": 2425
+          "bytesInOutput": 2454
         },
         "assets/js/turtling/laws/component.js": {
           "bytesInOutput": 1099
-        },
-        "assets/js/turtling/laws/constraints.js": {
-          "bytesInOutput": 7264
-        },
-        "assets/js/turtling/laws/candidate.js": {
-          "bytesInOutput": 363
         },
         "assets/js/turtling/laws/following.js": {
           "bytesInOutput": 1429
         },
         "assets/js/turtling/laws/verdict.js": {
-          "bytesInOutput": 13104
+          "bytesInOutput": 13959
         },
         "assets/js/turtling/laws/program_following.js": {
           "bytesInOutput": 2180
@@ -2156,7 +2378,7 @@
           "bytesInOutput": 347
         },
         "assets/js/turtling/scheduler.js": {
-          "bytesInOutput": 57002
+          "bytesInOutput": 61189
         },
         "assets/js/turtling/laws/point_state.js": {
           "bytesInOutput": 614
@@ -2204,7 +2426,7 @@
           "bytesInOutput": 4756
         },
         "assets/js/turtling/laws/gesture.js": {
-          "bytesInOutput": 2887
+          "bytesInOutput": 3675
         },
         "assets/js/turtling/laws/pin.js": {
           "bytesInOutput": 3299
@@ -2222,7 +2444,7 @@
           "bytesInOutput": 14
         },
         "assets/js/turtling/turtle.js": {
-          "bytesInOutput": 15771
+          "bytesInOutput": 16805
         },
         "assets/js/turtling/run.js": {
           "bytesInOutput": 594
@@ -2231,7 +2453,7 @@
           "bytesInOutput": 2272
         }
       },
-      "bytes": 1012746
+      "bytes": 1031984
     }
   }
 }

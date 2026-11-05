@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "artifact": "/assets/lib/paperlang/0.6/38a7325fceb5e1ded44d23319974190d606c03cd4444ce2b3b3a1ad8a1af6117/host.mjs",
+  "artifact": "/assets/lib/paperlang/0.6/dbebe0a78897a4eab8d7059592a29cc998e3ac30e5e73b352d1774bef71e8875/host.mjs",
   "compiler": "21a6bfa508ac93da43cf7f959ec86c20824fe9f7fffb8d8feac55b889dc2d2bf",
   "model": "87629b1151aa4221bb22b17181a3456f9b3b4cdc16d634770a531afa749e7aaf",
   "scenes": {
     "inquiry": {
-      "signature": "3f0bc3528972730cdf7a61ff6e5f6deba74e4803aa9bf1a2598ad595752ec508",
+      "signature": "f7522445a7453d54549c4f8249ce0b64736c543fd50272372649b76c7d468f82",
       "grows": {
         "line": "tri 500 4",
         "from": 2,
@@ -39,7 +39,7 @@
       }
     },
     "creators": {
-      "signature": "73b9a53f0c9a6aecf9b02796a698f8770fba3c4f6e59499c20973a3328b575da",
+      "signature": "c69a08dc36103e5cc863c8ec824adfd7518534e49a39c0a16b422886c9539173",
       "grows": {
         "line": "torus 100",
         "from": 1,
@@ -107,7 +107,7 @@
       }
     }
   },
-  "renderer": "Chrome/154.0.8037.97",
+  "renderer": "Chrome/156.0.8078.79",
   "previous": [
     "/assets/lib/helios/ink/inquiry-wide-c8dceff2affa763a.webp",
     "/assets/lib/helios/ink/inquiry-wide-7032179c713c040e.webp",

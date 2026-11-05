@@ -1,0 +1,31 @@
+# =============================================================================
+# links.yml — where PaperLand is, elsewhere
+# =============================================================================
+#
+# The addresses that live off this site: the channel and the repository. They
+# belong to the SITE, not to a page, so they are authored once here and placed
+# by _includes/home/elsewhere.html — the close's other doors.
+#
+# A destination is a key plus its label and its address. The label is the word
+# the reader sees; the address is the only place the URL is written, so a moved
+# channel is an edit on one line and cannot drift between pages.
+#
+# `label` ("Elsewhere") is the rail's accessible name, not an overline: it is
+# heard by a screen reader and drawn nowhere. Copy still lives here and not in
+# the template, by the same rule the homepage states at the top of
+# _pages/helios.md.
+#
+# External links are opened in a new tab by _plugins/
+# open_external_links_in_new_tab.rb, so no `target` is written here.
+
+# `mark` is the key to the publisher's own geometry in _includes/icon.html: a
+# destination that leaves the site wears the shape it already has out there.
+# It is a key, not a drawing — the path is neither written nor invented here,
+# and a destination without one keeps the arrow it has always worn.
+elsewhere:
+  - label: YouTube
+    href: https://www.youtube.com/@realPaperLand
+    mark: youtube
+  - label: GitHub
+    href: https://github.com/paperlands/dojo
+    mark: github
