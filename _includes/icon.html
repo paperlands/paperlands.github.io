@@ -1,7 +1,16 @@
 {%- comment -%}
   Small decorative UI icons. Paths, rather than font glyphs, keep the shape
   consistent across platforms. The enclosing button/link supplies its label.
-  Params: name (play, asterisk, arrow-up, arrow-up-right, expand, close).
+  Params: name (play, asterisk, arrow-up, arrow-up-right, expand, close,
+  github, youtube).
+
+  The two marks at the end are NOT drawn here and must not be: they are the
+  publishers' own geometry, carried verbatim (the repository's 24x24 mark as
+  GitHub publishes it; YouTube's from simple-icons, CC0) so that a link that
+  leaves the site wears the shape its destination already has. Redrawing them
+  would be inventing brand geometry — the same line design/media.org draws
+  around the wordmark's raster pieces. What the site owns is how they are lit:
+  components/helios.css, "the close's other doors".
 {%- endcomment -%}
 <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
   {%- case include.name -%}
@@ -17,5 +26,9 @@
       <path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     {%- when 'close' -%}
       <path d="m6 6 12 12M6 18 18 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    {%- when 'github' -%}
+      <path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor" d="M12 0C5.37 0 0 5.506 0 12.303c0 5.445 3.435 10.043 8.205 11.674.6.107.825-.262.825-.585 0-.292-.015-1.261-.015-2.291C6 21.67 5.22 20.346 4.98 19.654c-.135-.354-.72-1.446-1.23-1.738-.42-.23-1.02-.8-.015-.815.945-.015 1.62.892 1.845 1.261 1.08 1.86 2.805 1.338 3.495 1.015.105-.8.42-1.338.765-1.645-2.67-.308-5.46-1.37-5.46-6.075 0-1.338.465-2.446 1.23-3.307-.12-.308-.54-1.569.12-3.26 0 0 1.005-.323 3.3 1.26.96-.276 1.98-.415 3-.415s2.04.139 3 .416c2.295-1.6 3.3-1.261 3.3-1.261.66 1.691.24 2.952.12 3.26.765.861 1.23 1.953 1.23 3.307 0 4.721-2.805 5.767-5.475 6.075.435.384.81 1.122.81 2.276 0 1.645-.015 2.968-.015 3.383 0 .323.225.707.825.585a12.047 12.047 0 0 0 5.919-4.489A12.536 12.536 0 0 0 24 12.304C24 5.505 18.63 0 12 0Z"/>
+    {%- when 'youtube' -%}
+      <path fill="currentColor" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
   {%- endcase -%}
 </svg>

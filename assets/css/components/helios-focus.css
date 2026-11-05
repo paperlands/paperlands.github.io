@@ -152,13 +152,28 @@
     -webkit-mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
     mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
   }
-  /* Both sides arrive at the same pigment, with the same absence of grain at
-     the join. This rule adds only the mask; the generic grain animation still
-     runs, gated by the visibility observer. */
-  [data-look="helios"] .helios-landscape .helios-possibility__stage::before,
-  [data-look="helios"] .helios-landscape .helios-possibilities::before {
+  /* THE JOIN IS MADE OF LIGHT AND TEXTURE BOTH, NOW.
+
+     Both sides arrive at the same pigment, but they must no longer arrive at the
+     same ABSENCE of grain. That absence was right while the close began in the
+     dark: nothing could be seen there, so nothing had to match. The close now
+     begins on `--helios-horizon`, the brightest part of either section, and the
+     grain is `overlay` — exactly as visible as the field under it — so a fade to
+     nothing at the last pixel of the act draws a smooth band across a lit join
+     and then a line where the close's own texture starts.
+
+     So a STAGE still dissolves its texture at its top and bottom (a stage is a
+     picture inside the act), and the closing invitation keeps its grain to its
+     last pixel: the reader is handed to the close through one continuous field,
+     pigment and speckle together. The generic grain animation still runs, gated
+     by the visibility observer. */
+  [data-look="helios"] .helios-landscape .helios-possibility__stage::before {
     -webkit-mask-image: linear-gradient(180deg, transparent, #000 24%, #000 76%, transparent);
     mask-image: linear-gradient(180deg, transparent, #000 24%, #000 76%, transparent);
+  }
+  [data-look="helios"] .helios-landscape .helios-possibilities::before {
+    -webkit-mask-image: linear-gradient(180deg, transparent, #000 24%, #000 100%);
+    mask-image: linear-gradient(180deg, transparent, #000 24%, #000 100%);
   }
 
   /* Match the landscape's grain cadence: six jumps per 1.2 seconds.

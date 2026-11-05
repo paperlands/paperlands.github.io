@@ -84,6 +84,11 @@
        exposure gives the values. This block is the composition — geometry, type
        scale, and the apparatus the edition has and no other surface does. */
     --helios-ease: cubic-bezier(.22, 1, .36, 1);
+    /* THE HORIZON'S OWN COLOUR, named once because TWO surfaces meet on it: the
+       last act's floor and the close's first pixel. It is the sky at the seam —
+       warm, never black — so the join between them is made of light. If this is
+       ever changed, both ends move together or the section boundary returns. */
+    --helios-horizon: color-mix(in srgb, var(--light-ember) 55%, var(--light-ground));
     --helios-gutter: clamp(1.25rem, 4.2vw, 4.2rem);
     --helios-verse-size: clamp(1.32rem, 2.05vw, 1.82rem);
     --helios-verse-lh: 1.05;
@@ -203,10 +208,12 @@
   [data-look="helios"] .helios-possibilities::before,
   [data-look="helios"] .helios-colophon::before { z-index: 0; }
 
-  /* Grain clocks stop stepping while their surface is out of view. */
+  /* Grain clocks stop stepping while their surface is out of view. The closing
+     invitation is absent on purpose: it shares an edge with the close, whose grain
+     never pauses, so pausing one side would put two clocks on one field and the
+     join would step out of alignment every 1.2s. See assets/js/home/grain-motion.mjs. */
   [data-look="helios"] .helios-hero [data-media-surface="fill"][data-grain-idle]::before,
-  [data-look="helios"] .helios-landscape .helios-possibility__stage[data-grain-idle]::before,
-  [data-look="helios"] .helios-landscape .helios-possibilities[data-grain-idle]::before {
+  [data-look="helios"] .helios-landscape .helios-possibility__stage[data-grain-idle]::before {
     animation-play-state: paused;
   }
 
@@ -902,7 +909,16 @@
   [data-look="helios"] .helios-section__call {
     display: inline-block;
     width: fit-content;
-    margin-top: 1.5rem;
+    /* THE HIT AREA IS THE SENTENCE, NOT ITS LINE BOX. At 23px on a 1.4 line this
+       door is 32px tall (28px on a phone) and a door that thin is one a thumb
+       misses. The padding is invisible — no background, no border, no thicker
+       rule — and the margin gives it back, so the composition below the body
+       text does not move by a pixel. Measured: 32 → 44px at 1440, 28 → 44px on a
+       phone (the same padding in the ≤850 block, six extra below). The
+       invitation's call overrides both, because it is the shared door grammar and
+       already carries a 74px box. */
+    padding-block: 0.375rem;
+    margin-block: calc(1.5rem - 0.375rem) 0;
     font: italic 400 clamp(1.25rem, 1.6vw, 1.5rem)/1.4 var(--font-serif);
     color: var(--light-accent);
     text-decoration: none;
@@ -923,6 +939,198 @@
   }
 
   [data-look="helios"] .helios-section__call:hover .helios-section__arrow { transform: translate(2px, -2px); }
+
+  /* ONE DOOR, TWO PLACES: the way off this page is always the same word.
+
+     The look has exactly one gesture for "go" — an italic serif line, lit, with a
+     rule of light under it. The seal at the foot of the landing ("Enter
+     PaperLand") is that gesture, and so is every door in the nav bar and the panel
+     it opens: a word you can press, not a control.
+
+     The invitation's call was the one that broke the grammar, and the fix is not a
+     second vocabulary. So both are set HERE, once, at the size the page's last
+     sentence deserves: same family, same weight, same ink, same rule, same lift.
+     What makes them ALLURING is not mass — it is that they carry more light than
+     anything else at their size.
+
+     The differences are the two rules below this block: the invitation answers a
+     paragraph (so it has a margin) and breathes its halo (it sits on the darkest
+     field in the look, and the ripple water below already sets the clock); the seal
+     has neither, because the close it lives in already breathes twice — once in
+     the water, once in the doors above it. */
+  [data-look="helios"] .helios-seal,
+  [data-look="helios"] .helios-possibilities .helios-section__call {
+    position: relative;
+    z-index: 3;
+    display: inline-flex;
+    align-items: baseline;
+    /* The gap is a word space, not an arrow's: the seal is a sentence and the
+       invitation's call is a sentence with a mark at the end of it. */
+    gap: .18em;
+    margin: 0;
+    /* The box IS the hit target: ~44px at the smallest size this clamp reaches,
+       so the rule can stay a rule instead of being pushed off the words. */
+    padding: .16em 0 .2em;
+    border: 0;
+    background: none;
+    color: var(--light-high);
+    font: italic 500 clamp(1.9rem, 3.6vw, 3.2rem)/1.08 var(--font-serif);
+    letter-spacing: 0;
+    text-transform: none;
+    text-decoration: none;
+    text-shadow:
+      0 0 .32em rgb(255 190 110 / .42),
+      0 0 .95em rgb(212 90 20 / .24);
+    transition:
+      color .45s var(--helios-ease),
+      transform .45s var(--helios-ease);
+  }
+  /* THE RULE IS LIGHT. Brightest under the words, gone at both ends, so it reads
+     as the last of the floor's reflection rather than as a UI edge. The focus skin
+     already owns ::after on the call (its travelling glint), so this draws in
+     front of it. */
+  [data-look="helios"] .helios-seal::before,
+  [data-look="helios"] .helios-possibilities .helios-section__call::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: .06em;
+    height: 1px;
+    background: linear-gradient(90deg,
+      transparent,
+      color-mix(in srgb, var(--light-high) 70%, transparent) 16%,
+      var(--light-high) 50%,
+      color-mix(in srgb, var(--light-high) 70%, transparent) 84%,
+      transparent);
+    opacity: .72;
+    transition: opacity .45s var(--helios-ease);
+  }
+  /* The seal's own hover, now both doors': the ink cools to the page's cream, the
+     line goes whole, and the word lifts a breath. */
+  [data-look="helios"] .helios-seal:hover,
+  [data-look="helios"] .helios-seal:focus-visible,
+  [data-look="helios"] .helios-possibilities .helios-section__call:hover,
+  [data-look="helios"] .helios-possibilities .helios-section__call:focus-visible {
+    background: none;
+    color: var(--light-ink);
+    transform: translateY(-2px);
+  }
+  [data-look="helios"] .helios-seal:hover::before,
+  [data-look="helios"] .helios-seal:focus-visible::before,
+  [data-look="helios"] .helios-possibilities .helios-section__call:hover::before,
+  [data-look="helios"] .helios-possibilities .helios-section__call:focus-visible::before {
+    opacity: 1;
+  }
+  [data-look="helios"] .helios-seal:focus-visible,
+  [data-look="helios"] .helios-possibilities .helios-section__call:focus-visible {
+    outline: 1px solid var(--light-accent);
+    outline-offset: .45em;
+  }
+  /* THE BRAND FACE IS NOT AN ITALIC. "PaperLand" is set in paperLang — the site's
+     hand-drawn face, the way the standing footer sets it (_data/site.yml) — so the
+     word stands up inside the italic sentence instead of being sheared with it.
+     Slightly larger than the serif at the same point size, because the face
+     carries a smaller body. */
+  [data-look="helios"] .helios-seal .font-paperlang {
+    font-style: normal;
+    font-size: 1.02em;
+    letter-spacing: .01em;
+  }
+
+  /* ---- what the invitation adds to the shared door --------------------- */
+  [data-look="helios"] .helios-possibilities .helios-section__call {
+    margin-top: clamp(1.5rem, 4.2vh, 2.6rem);
+    animation: helios-call-breath 14s var(--helios-ease) infinite alternate;
+  }
+  /* The writer wraps the words in <u> (_pages/helios.md). The rule is drawn by the
+     shared block, so the element stays and stops drawing. */
+  [data-look="helios"] .helios-possibilities .helios-section__call u {
+    text-decoration: none;
+  }
+  /* THE ARROW KEEPS ITS OWN ROOM. The shared block's gap is the space between
+     WORDS — it exists so "Enter PaperLand" reads as one sentence — and a mark at
+     the end of a line needs more than a word space, because it is not a word.
+     .24em here plus that .18em gap is the .42em the arrow had before the join; the
+     seal gets the same figure now that it carries the same mark. */
+  [data-look="helios"] .helios-seal .helios-section__arrow,
+  [data-look="helios"] .helios-possibilities .helios-section__call .helios-section__arrow {
+    width: .58em;
+    height: .58em;
+    margin-left: .24em;
+    vertical-align: baseline;
+    align-self: baseline;
+  }
+  /* The seal's hover, at this size: the ink cools to the page's cream, the line
+     goes whole, and the whole sentence lifts a breath. The halo is left to its own
+     animation: a declared text-shadow here would lose to the running animation, and
+     pausing that animation to win the argument stops the light instead. */
+  [data-look="helios"] .helios-possibilities .helios-section__call:hover,
+  [data-look="helios"] .helios-possibilities .helios-section__call:focus-visible {
+    color: var(--light-ink);
+    transform: translateY(-2px);
+  }
+  [data-look="helios"] .helios-possibilities .helios-section__call:hover::before,
+  [data-look="helios"] .helios-possibilities .helios-section__call:focus-visible::before {
+    opacity: 1;
+  }
+  [data-look="helios"] .helios-seal:hover .helios-section__arrow,
+  [data-look="helios"] .helios-seal:focus-visible .helios-section__arrow,
+  [data-look="helios"] .helios-possibilities .helios-section__call:hover .helios-section__arrow,
+  [data-look="helios"] .helios-possibilities .helios-section__call:focus-visible .helios-section__arrow {
+    transform: translate(3px, -3px);
+  }
+  /* The seal's own focus ring, so the two doors behave the same way by keyboard. */
+  [data-look="helios"] .helios-possibilities .helios-section__call:focus-visible {
+    outline: 1px solid var(--light-accent);
+    outline-offset: .45em;
+  }
+
+  /* The halo's breath: the interval's afterglow at a standing, unhurried level.
+     Two lights, the cream and the ember, so it belongs to this look and to no
+     other. Fourteen seconds a side — slower than a reader's breath, and about the
+     rate of the ripples in the close below. */
+  @keyframes helios-call-breath {
+    from {
+      text-shadow:
+        0 0 .3em rgb(255 190 110 / .36),
+        0 0 .9em rgb(212 90 20 / .2);
+    }
+    to {
+      text-shadow:
+        0 0 .44em rgb(255 220 165 / .58),
+        0 0 1.2em rgb(212 90 20 / .32);
+    }
+  }
+  /* One door, so one refusal: the halo holds still at its resting value and the
+     word does not lift — the ink's own hover colour is still the whole reply. */
+  @media (prefers-reduced-motion: reduce) {
+    [data-look="helios"] .helios-seal,
+    [data-look="helios"] .helios-possibilities .helios-section__call {
+      animation: none;
+      transition: none;
+      text-shadow:
+        0 0 .32em rgb(255 190 110 / .42),
+        0 0 .95em rgb(212 90 20 / .24);
+    }
+    [data-look="helios"] .helios-seal:hover,
+    [data-look="helios"] .helios-seal:focus-visible,
+    [data-look="helios"] .helios-possibilities .helios-section__call:hover,
+    [data-look="helios"] .helios-possibilities .helios-section__call:focus-visible {
+      transform: none;
+    }
+    /* The mark at the end of the line stays put too. */
+    [data-look="helios"] .helios-seal .helios-section__arrow,
+    [data-look="helios"] .helios-possibilities .helios-section__call .helios-section__arrow {
+      transition: none;
+    }
+    [data-look="helios"] .helios-seal:hover .helios-section__arrow,
+    [data-look="helios"] .helios-seal:focus-visible .helios-section__arrow,
+    [data-look="helios"] .helios-possibilities .helios-section__call:hover .helios-section__arrow,
+    [data-look="helios"] .helios-possibilities .helios-section__call:focus-visible .helios-section__arrow {
+      transform: none;
+    }
+  }
 
   /* ---- the interval, rehearsed ---------------------------------------- */
   /* The same night as the see act above, with the film's ribbon replaced by
@@ -1271,7 +1479,27 @@
   [data-look="helios"] .helios-create,
   [data-look="helios"] .helios-plate { background: var(--parallel-ground); }
   [data-look="helios"] .helios-possibilities {
-    background: linear-gradient(180deg, var(--parallel-ground), var(--parallel-ground) 75%, var(--light-ground));
+    /* THE FLOOR WARMS INTO THE HORIZON — A BAND, NOT THE ACT'S WEATHER. It used
+       to end in `--light-ground`, which made the close's arrival a fade out of
+       night: a dark stretch the reader had to sit through before the dawn
+       started. It ends on the horizon's own colour instead — the value the close
+       begins on — so the copy, the room and the invitation keep their own dark
+       and the light starts below the last line of them.
+
+       AND THE BAND IS A LENGTH, NOT A FIFTH. It was `79%` of the section until
+       the invariant above was measured: the section's height is set by its copy,
+       so on a phone the last fifth began ABOVE the door. At 390x844 the section
+       is 542px, the band started at y=2781, and "Talk to us!" runs to y=2803 —
+       22px of glow under the words the band exists to keep dark. At 834x1112 it
+       was 22px the same way. A percentage of a content-height box cannot be
+       promised to fall below that box's last line; a length in the same unit as
+       the air below the line can. `14svh` is shorter than the opening's own
+       bottom padding at every viewport (that padding is `clamp(6rem, 20svh,
+       14rem)` — never below 6rem, always at least its own 20svh), so the light
+       starts inside the empty dark whatever the phone, the tablet or the window
+       does. Measured after the change: the ramp begins 51px below the door's ink
+       at 390x844 and 118px below it at 1440x900. */
+    background: linear-gradient(180deg, var(--parallel-ground), var(--parallel-ground) calc(100% - 14svh), var(--helios-horizon));
   }
   [data-look="helios"] .helios-possibility__stage {
     --thought-x: 48%; --thought-y: -8%; --thought-w: 76%; --thought-h: 100%; --thought-scale: 2.2;
@@ -1372,10 +1600,22 @@
     background: linear-gradient(177deg, transparent 42%, #e284321a 43%, #fff2d699 44%, #ffd69666 44.4%, transparent 46%);
     mask-image: linear-gradient(90deg, transparent 25%, #000 48%, transparent);
   }
+  /* THE ONE SENTENCE ON THIS PAGE THAT IS EVIDENCE. "Students presenting their
+     torus" is what makes the violet plate an argument instead of a picture, and
+     it was set at .52rem (8.3px) with .13em of tracking — smaller than any
+     furniture on the page. At arm's length it was a grey smear under a photograph.
+
+     THE CASE IS THE FACE'S, NOT THE CSS'S. Cinzel is an inscriptional caps face:
+     it has no lowercase to switch to, so `text-transform` was never the lever and
+     stays as the statement of intent. The levers are size and tracking — 12px,
+     the smallest size at which a caps line reads without effort, and .08em
+     instead of .13em, because that tracking existed to open 8px capitals and at
+     12px it only stretches the line. The 2× it gains still leaves it the quietest
+     thing in the plate, which is right: it names the work, it does not compete. */
   [data-look="helios"] .helios-possibility__art figcaption {
     position: absolute; right: 4%; bottom: 2.5rem; z-index: 8;
     max-width: 45%; text-align: right; color: var(--light-voice);
-    font: .52rem/1.8 var(--font-display); letter-spacing: .13em; text-transform: uppercase;
+    font: .75rem/1.7 var(--font-display); letter-spacing: .08em; text-transform: uppercase;
   }
   [data-look="helios"] .helios-possibility__copy {
     position: relative; z-index: 9; width: min(48%, 42rem);
@@ -1461,75 +1701,583 @@
         linear-gradient(180deg, var(--light-ground-2), transparent var(--helios-section-space)),
         linear-gradient(180deg, #140910 0%, #140910ee 27%, #14091055 47%, transparent 67%, #140910 100%);
     }
-    [data-look="helios"] .helios-possibility__art figcaption { bottom: 1.2rem; max-width: 75%; font-size: .43rem; }
+    /* The caption keeps its 12px here: the phone's .43rem step was the same
+       sentence made unreadable at a smaller size, not a smaller caption. Only its
+       corner and its measure change. */
+    [data-look="helios"] .helios-possibility__art figcaption { bottom: 1.2rem; max-width: 75%; }
+    /* The two quiet doors on a phone: 28px → 44px, invisible padding, margin
+       given back. See .helios-section__call. The invitation's call overrides it
+       (the shared door grammar, already 44px here). */
+    [data-look="helios"] .helios-possibilities .helios-section__call {
+      padding: .16em 0 .2em;
+      margin-top: clamp(1.5rem, 4.2vh, 2.6rem);
+    }
+    [data-look="helios"] .helios-section__call {
+      padding-block: .5rem;
+      margin-block: calc(1.5rem - .5rem) 0;
+    }
     [data-look="helios"] .helios-possibility__echo img { left: 11%; width: 68%; }
     [data-look="helios"] .helios-possibility__body img,
     [data-look="helios"] .helios-possibility__body::after { left: 32%; top: 19%; width: 65%; height: 81%; }
+    /* The bottom of this frame is not rhythm, it is the dark the reader gets
+       after the question — and the warm floor below must start inside that dark
+       (see the band's comment at .helios-possibilities). --helios-section-space
+       is a 5-6rem measure, shorter than the band's own invariant needs; the
+       desktop figure is the one that invariant is written against, so the phone
+       keeps it. Top stays the rhythm. +76px here at 390x844, and the light then
+       begins 51px below the door's ink instead of 22px above it. */
     [data-look="helios"] .helios-possibilities__opening {
-      padding-block: var(--helios-section-space);
+      padding-block: var(--helios-section-space) clamp(6rem, 20svh, 14rem);
     }
   }
   @media (prefers-reduced-motion: reduce) {
     [data-look="helios"] .helios-create *,
     [data-look="helios"] .helios-possibilities * { transition: none !important; }
   }
-  /* ---- the close ------------------------------------------------------ */
+  /* ---- the close: a dawn ---------------------------------------------- */
+  /* THE ARRIVAL. This close used to open with `border-top: 2px solid
+     var(--light-ridge)` — a full-bleed rule, the one hard cut left on the page.
+     Then it opened with a hairline arc and a glow: the same picture inverted,
+     a bright line on a dark ground. Neither is a boundary this site believes
+     in. /experiences' finale ends with a hearth and one ARC ("a warm window at
+     the end of the passage"); a note's connections sets `border-top: 0` and
+     puts its air in a doubly-masked `::before` ("the section is part of the
+     page, not a card"). Both dissolve. So does this one.
+
+     What the close is now is a drawn dawn (see _includes/home/colophon.html):
+     air, a sun, two landforms, and the sun's path thrown back up the wet floor
+     toward the reader. The section has no top edge at all — the scene paints
+     from the last pixel of the act above to the last pixel of the page, and the
+     only thing that crosses between them is light. The act above ends on
+     `--helios-horizon` and so does this section's own ground: the near ridge is
+     `--light-ground`, the sky arrives over the horizon's colour, and the seam has
+     no darkness to be read as a boundary.
+
+     Structure, top to bottom of the stack: the scene (z1), the surface's own
+     grain (z2 — above the scene, or the drawing would be untextured while the
+     footer is grained), then the words, the doors and the threshold (z3). */
   [data-look="helios"] .helios-colophon {
     position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: end;
-    gap: 1.6rem 2rem;
+    isolation: isolate;
+    /* The closing viewport. The site already gives an act the screen when the
+       act is a place (the possibility stage: `min-height: max(100svh, 720px)`);
+       the last viewport is the place the reader leaves from.
+       The scene is drawn `xMidYMax slice`, so its vertical geometry is a
+       fraction of the section's height only while the section is TALLER in
+       proportion than the viewBox (i.e. up to 1200/720 = 5:3). Inside that
+       range the ridge sits at 47% of the height at any width and the copy can
+       be placed in the same fractions; past it the scene scales to the width
+       and the ridge climbs (at 1920x900 it is at ~32%), so the copy is a
+       compromise there — which is written down rather than assumed away. */
+    min-height: max(100svh, 620px);
     margin: 0;
-    font-size: inherit;
+    padding: 0;
+    background: var(--helios-horizon);
     color: inherit;
-    border-top: 2px solid var(--light-ridge);
-    padding: clamp(2.4rem, 7vh, 4.2rem) var(--helios-gutter);
-    background: var(--light-ground);
+    font-size: inherit;
   }
 
+  /* Absolute and proportional, not a row of a flex column: inside the 5:3 range
+     the scene's geometry IS a fraction of the section's height, so the words are
+     placed in the same fractions or they drift onto the ridge at some viewport.
+     55.5% buys two things at once — the whole statement gets a field of unbroken
+     near-black, and the doors and the threshold sit under it rather than across
+     it. That field begins where the near landform begins: the drawn crest's own
+     height is y≈400.5 of 720 (25.4% below the top of the viewBox), so the top
+     edge of this column lands on the crest within a pixel or two at every
+     aspect up to 5:3 — the statement's ascenders then clear the land by 8-14px
+     (0.20-0.26em of its own size) rather than floating in the sky. Measured:
+     design/probe/colophon-composition.mjs reports "columnTop − crest" and
+     "air, crest→ascenders" for eight viewports.
+     (The note here used to say the saddle was at y=405. The path's crest is 4.5
+     units higher than that, which is exactly the 25px error the vw term below
+     used to leave at 16:9 — see the comment on `top`.) */
+  [data-look="helios"] .helios-colophon__copy {
+    position: absolute;
+    z-index: 3;
+    /* Follows the scene's scaling, not the section's: `max(44.5%, 26.6vw)` is
+       the tall-aspect rule until the scene starts scaling by WIDTH (past 5:3),
+       after which the vw term tracks the ridge as it climbs. At 1440 and 390 the
+       first term wins and nothing moves.
+       THE SECOND TERM IS THE CREST, SOLVED. Past 5:3 the scene scales by width,
+       so the crest sits at (720 − 400.5)/1200 = 26.6% of the width, fixed. At
+       25.3vw the column was left 25px low at 1920x1080 and 33px low at 2.39:1 —
+       the statement stopped being registered to the land and simply floated in
+       the dark under it. At 26.6vw it is registered again: crest minus column
+       top is +0.4px at 1920x1080, −1.4px at 2560x1080, −1.4px at 1600x1000
+       (design/probe/colophon-composition.mjs, PROPOSALS=1). The rehearsal page
+       /helios-hall hides the dawn and so has no crest to track; it inherits this
+       top edge, which is harmless there and will go with the file. */
+    top: calc(100% - max(44.5%, 26.6vw));
+    left: var(--helios-gutter);
+    right: var(--helios-gutter);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(0.7rem, 1.8vh, 1.2rem);
+    text-align: center;
+  }
+
+  /* The scene covers the section and is anchored to its bottom edge
+     (`xMidYMax slice`), so the water always meets the page's last pixel and the
+     sun keeps its share of the height at any aspect. It is a drawing, not a
+     control: no role, no focus, no pointer. */
+  [data-look="helios"] .helios-colophon__dawn {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    /* THE ARRIVAL IS LIGHT, NOT A FADE OUT OF NIGHT.
+
+       The scene's box starts at the section's top edge. The sky is drawn bright
+       at its top (see `dawn-haze` in the include: the close is an awakening, not
+       a dusk), and the ground behind it is the horizon's own colour — the same
+       `--helios-horizon` the act above ends on. So what this mask fades in is
+       glow over glow, and no edge can be read wherever it lands: there is no
+       colour behind the sky that the sky is not already made of.
+
+       THE BAND IS ONE ARRIVAL, NOT A REGION. The mask is whole by 28% of the
+       section — a quarter of a viewport of glow joining a fifth of the act above —
+       because a longer ramp stops being an arrival and becomes the act's new
+       weather: the invitation would spend half its height in dawn light, and the
+       close would have no dark left to come out of. What matters is that no EDGE
+       appears anywhere; how long the band is, the composition decides. */
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgb(0 0 0 / 0.3) 7%,
+      rgb(0 0 0 / 0.6) 14%,
+      rgb(0 0 0 / 0.85) 21%,
+      black 28%,
+      black 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgb(0 0 0 / 0.3) 7%,
+      rgb(0 0 0 / 0.6) 14%,
+      rgb(0 0 0 / 0.85) 21%,
+      black 28%,
+      black 100%
+    );
+  }
+
+  /* Every stop names a role; the roles are bound here, once. (Not in the
+     include: `var()` inside a presentation attribute is not SVG's promise,
+     whatever one browser's parser currently allows.) */
+  [data-look="helios"] .helios-colophon__dawn [data-ink="ink"] { stop-color: var(--light-ink); }
+  [data-look="helios"] .helios-colophon__dawn [data-ink="high"] { stop-color: var(--light-high); }
+  [data-look="helios"] .helios-colophon__dawn [data-ink="accent"] { stop-color: var(--light-accent); }
+  [data-look="helios"] .helios-colophon__dawn [data-ink="ember"] { stop-color: var(--light-ember); }
+  [data-look="helios"] .helios-colophon__dawn [data-ink="voice"] { stop-color: var(--light-voice); }
+  [data-look="helios"] .helios-colophon__dawn [data-ink="ground"] { stop-color: var(--light-ground); }
+  [data-look="helios"] .helios-colophon__dawn [data-ink="ground-2"] { stop-color: var(--light-ground-2); }
+  /* Distance, not transparency. Each plane is the ground lifted toward a
+     different light — the far toward the ridge's warmth, the middle toward the
+     violet overhead — and every one is OPAQUE, because a veil would show the
+     sun's rim through it. Mixed from tokens; no colour is named here. */
+  [data-look="helios"] .helios-colophon__dawn [data-ink="far-tech"] {
+    stop-color: color-mix(in srgb, var(--light-ground-2) 68%, var(--light-ridge));
+  }
+  [data-look="helios"] .helios-colophon__dawn [data-ink="far-low"] {
+    stop-color: color-mix(in srgb, var(--light-ground-2) 88%, var(--light-ridge));
+  }
+  /* 90/10, not 78/22: at the stronger mix the middle plane's pockets read as two
+     violet bruises under the far plane's shoulders. The pockets are doing real
+     geometric work, so the pigment cools rather than the shape moving. */
+  [data-look="helios"] .helios-colophon__dawn [data-ink="middle-tech"] {
+    stop-color: color-mix(in srgb, var(--light-ground-2) 90%, var(--light-violet));
+  }
+
+  /* The near landform is the section's own ground — the same value, so the
+     seam between acts is a continuous surface of land, not a colour join. */
+  [data-look="helios"] .helios-colophon__near { fill: var(--light-ground); }
+
+  /* The reflection's mask reads the gradient's ALPHA, not its luminance: the
+     stops are the ground's own colour, so white never enters the palette. */
+  [data-look="helios"] .helios-colophon__waterline { mask-type: alpha; }
+
+  /* THE WATER RIPPLES OUTWARD, AND THE DARK MOVES MORE THAN THE LIGHT.
+
+     Six crests sit at (600,545) — the specular's own lip — and each is a pair
+     (see _includes/home/colophon.html): the face the low sun rims, and the body
+     of the wave falling away from it.
+
+     THE WAVE IS ONE BODY. Crest and trough travel together, so the expansion
+     lives on the GROUP. Scaled separately the two strokes would part by far more
+     than the 3 units that separate them, and the pair would come apart in flight.
+
+     IT TRAVELS. A ripple is born at the drop, spreads and is gone: 0.94 → 1.2 of
+     its radius, opacity 0 → 1 → 0, then born again. Not `alternate` — a wave
+     does not come back. The six are delayed unevenly, so a crest is born about
+     every four seconds and the pool always holds six at six different ages.
+
+     THE DARK IS THE WAKE. The trough's opacity runs 0.4s behind its crest's: the
+     light gathers, then the water it lifted falls back. Without that lag the
+     pool pulses in place, and a pulsing pool is a diagram.
+
+     Stroke widths are NOT corrected with `vector-effect`: a crest that widens as
+     it fades is a crest spreading, and the table of weights in the include stays
+     the picture at rest — one authored weight per stroke, multiplied by one
+     animation. Only transform and opacity animate: no filter, no geometry.
+
+     22s per wave, eased out, because a ripple slows as it spreads. Nothing eases
+     to a stop where it can be seen. */
+  [data-look="helios"] .helios-colophon__wave {
+    transform-box: view-box;
+    transform-origin: 600px 545px;
+    animation: helios-ripple 22s var(--helios-ease) infinite;
+    animation-delay: var(--d);
+  }
+  [data-look="helios"] .helios-colophon__crest {
+    /* A crest pinches out; it is not cut. The butt cap the group sets is right
+       for the lips, and wrong here: a bright tip that stops square reads as a
+       scratch on the water, and every crest's end is inside the light, so it is
+       a bright tip. A round cap softens it by a stroke-half and no more. */
+    stroke-linecap: round;
+    animation: helios-crest 22s linear infinite;
+    animation-delay: var(--d);
+  }
+  [data-look="helios"] .helios-colophon__trough {
+    animation: helios-trough 22s linear infinite;
+    animation-delay: calc(var(--d) - 0.4s);
+  }
+  /* World 4 is periodic motion, so the fourth crest keeps a beat of its own:
+     two swellings per wave, the second smaller. The geometry stays still — a
+     heartbeat changes how a surface catches light, never where it is. */
+  [data-look="helios"] .helios-colophon__crest.is-beat {
+    animation-name: helios-crest-beat;
+  }
+
+  @keyframes helios-ripple {
+    from { transform: scale(0.94); }
+    to { transform: scale(1.2); }
+  }
+
+  @keyframes helios-crest {
+    0% { opacity: 0; }
+    12% { opacity: 1; }
+    72% { opacity: 0.9; }
+    100% { opacity: 0; }
+  }
+
+  @keyframes helios-crest-beat {
+    0% { opacity: 0; }
+    16% { opacity: 0.9; }
+    30% { opacity: 1; }
+    44% { opacity: 0.82; }
+    58% { opacity: 0.96; }
+    76% { opacity: 0.86; }
+    100% { opacity: 0; }
+  }
+
+  @keyframes helios-trough {
+    0% { opacity: 0; }
+    15% { opacity: 1; }
+    74% { opacity: 0.92; }
+    100% { opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* The authored weights ARE the swell's zero crossing: the held frame is the
+       picture, not a paused one. */
+    [data-look="helios"] .helios-colophon__wave,
+    [data-look="helios"] .helios-colophon__crest,
+    [data-look="helios"] .helios-colophon__trough {
+      animation: none;
+    }
+  }
+
+  /* Grain above the scene, below the words — and FADED OUT OF THE SKY.
+
+     The surface's grain is a fixed density over whatever it covers, which was
+     right when the close was a flat dark ground and stopped being right when it
+     became a dawn: at .22 overlay over a bright amber sky the texture became the
+     loudest thing in the upper two-thirds. So the layer is masked by height.
+
+     But not to zero at the top. The act above ends in this same ground with its
+     grain at full density, and the close's scene is itself faded in from the top
+     (see .helios-colophon__dawn). If the grain died at the section's first pixel,
+     the reader would meet a horizontal line made of texture alone — the seam the
+     mask exists to remove.
+
+     THE SEAM MUST MATCH, AND THE DIP MUST BE SLOW.
+
+     At the section's first pixel the grain is FULL. The act above carries no mask
+     at all, and the grain is `overlay` — exactly as visible as the field under it
+     is bright — so with the seam now the brightest part of either section, a layer
+     that started at nothing here would punch a smooth stripe through a grained
+     field. That is the gap this file had for one build: the texture disappeared
+     where the light arrived.
+
+     Below the seam the mask thins very slowly (.85 by 14%, .62 by 46%) and comes
+     back over the land. Slow is the point: the steep version it replaced dropped
+     to .16 by 22% and drew a horizontal edge of texture — a band, which is the
+     same mistake as the gap, only louder.
+
+     The animation is untouched; design/probe/static-grain.mjs still finds
+     `helios-grain` here. Only where it can be seen changed. */
+  [data-look="helios"] .helios-colophon::before {
+    z-index: 2;
+    /* No opacity override: the shared rule's .22 is the weight the act above lays
+       down, and crossing the seam must not change the texture's weight. */
+    mask-image: linear-gradient(
+      to bottom,
+      black 0%,
+      rgb(0 0 0 / 0.85) 14%,
+      rgb(0 0 0 / 0.7) 30%,
+      rgb(0 0 0 / 0.62) 46%,
+      rgb(0 0 0 / 0.7) 60%,
+      rgb(0 0 0 / 0.85) 74%,
+      black 88%,
+      black 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      black 0%,
+      rgb(0 0 0 / 0.85) 14%,
+      rgb(0 0 0 / 0.7) 30%,
+      rgb(0 0 0 / 0.62) 46%,
+      rgb(0 0 0 / 0.7) 60%,
+      rgb(0 0 0 / 0.85) 74%,
+      black 88%,
+      black 100%
+    );
+  }
+
+  /* THE STATEMENT IS THE FIRST SENTENCE, BY MEASUREMENT. At 3.4rem the door was
+     the larger ink in the last viewport: 55px tall against the statement's 51px,
+     405px wide against its 392px, at the same contrast class (16.2 vs 16.9:1)
+     with two halo layers and a rule as well — so the eye reached "Enter
+     PaperLand" before it reached the sentence that had to be read first
+     (design/probe/colophon-composition.mjs; ratios in the evidence bundle's
+     verdict.md). Nothing about the door is reduced to fix that — it keeps its
+     grammar, its light and its 44px target — the statement is simply set to lead
+     it: 2.3-3.9rem against the door's 1.9-3.2rem, i.e. door ink ÷ statement ink
+     falls from 1.08 to 0.95 at 1440 and 0.89 on a phone, and the line grows from
+     392 to 457px without ever taking a break. */
   [data-look="helios"] .helios-colophon h2 {
     position: relative;
-    z-index: 1;
-    flex: 1 1 18rem;
-    min-width: 0;
+    z-index: 3;
+    width: 100%;
+    max-width: 20ch;
     margin: 0;
     font-family: var(--font-serif);
     font-style: italic;
     font-weight: 500;
-    font-size: clamp(1.6rem, 4.2vw, 3.4rem);
+    font-size: clamp(2.3rem, 7.4vw, 3.9rem);
     line-height: 1.12;
     letter-spacing: -0.01em;
     color: var(--light-ink);
   }
 
+  /* The accent word keeps the look's own light: the grain-clipped pigment and
+     the glow are the landing's signature and the only living thing in the text.
+     A dawn behind the words does not flatten the word that burns.
+
+     BUT THE LIGHT STOPS AT THE WORD'S OWN EDGE. The shared --helios-glow throws
+     1.05em; at the 54.4px the statement was set to when this was measured, that
+     is a 28.6px halo, and the word space before the accent is 12.0px — so 16.5px
+     of glow lay over the "h" of "Math" and two words read as one lit mass
+     (measured: "Math→accent" against "halo reach" in
+     design/probe/colophon-composition.mjs). So the close holds its third layer
+     closer — 0.65em at .16 instead of 1.05em at .28 — and buys the accent air of
+     its own. The extrusion and the middle halo ARE the token's, unchanged, and
+     the token itself is untouched: the hero's thesis and the rail's hovered word
+     read --helios-glow and neither of them has a neighbour this close.
+     THE AIR BELONGS TO THE EM, not to the tracking and not to the sentence's word
+     spaces: the statement's own spaces stay the statement's, and the added 0.12em
+     is an optical correction between two different treatments of light — a
+     space before a word that is drawn in another material. Measured clearance
+     between the gap and the halo's reach: +0.5px at 1440, +0.8px on a phone,
+     where before it was −16.6 and −9.6. */
   [data-look="helios"] .helios-colophon h2 em {
     font-style: italic;
+    margin-inline-start: 0.12em;
     color: var(--light-accent);
+    text-shadow:
+      0.045em 0.032em 0 rgb(255 153 51 / 0.62),
+      0 0 0.38em rgb(255 153 51 / 0.58),
+      0 0 0.65em rgb(255 153 51 / 0.16);
+  }
+
+  /* The threshold. It is words in the light now: no box, no caps, no tracking —
+     the bordered seal was the only hard-edged object in the last viewport and it
+     read as chrome laid on a landscape. The reference has one line of serif in
+     the light, and so does the close.
+
+     Its size, ink, rule and halo are not decided here. The seal and the
+     invitation's call are one door in two places, and they are set together, once,
+     in the block above `.helios-section__call`. This rule exists only so the shape
+     cannot drift from that grammar by accident. */
+
+  /* ---- the close's other doors ---------------------------------------- */
+  /* YouTube and the repository stand between the statement and the seal, set
+     in the italic the close already speaks in, with no overline and no
+     divider — the word "Elsewhere" and a hairline beside it were furniture,
+     and furniture is what the eye lands on first in a last viewport. Each
+     wears its destination's
+     own mark (_includes/icon.html, named by `mark:` in _data/links.yml) — and
+     the rule this file used to state, "no iconography of elsewhere", is
+     revised rather than broken: what is refused is still the BADGE, a brand
+     tile with its own plate, its own colours and its own corners, the one
+     borrowed object on the page. A silhouette at the ink's own weight, wearing
+     the close's ember and nothing else, is a word's punctuation, not a badge.
+     The geometry is the publisher's; the light is this surface's.
+
+     They breathe because the close is a place that is alive, not a finished
+     plate: each mark swells and dims on the same slow clock the hero's objects
+     drift by, offset half a period so two marks never pulse in unison. On
+     hover or focus the mark comes forward — the silhouette takes the high
+     cream and its halo opens, which is the gesture the arrow made here before
+     (a thing that noticed you). Transform and opacity only: both are
+     compositor work, so two 24px marks cost the close nothing it was not
+     already paying for grain. */
+  [data-look="helios"] .helios-elsewhere {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 1.6rem;
+    align-self: center;
+    margin: 0;
+  }
+
+  /* No padding-left and no border-left: the hairline that used to separate the
+     doors from the statement was a second edge in a viewport whose only edge is
+     the horizon. The gap is the whole separation. */
+  [data-look="helios"] .helios-elsewhere__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 1.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  [data-look="helios"] .helios-elsewhere__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(1.05rem, 1.35vw, 1.3rem);
+    line-height: 1;
+    color: var(--light-ink-dim);
+    text-decoration: none;
+    transition: color 0.4s var(--helios-ease), text-shadow 0.4s var(--helios-ease);
+  }
+
+  [data-look="helios"] .helios-elsewhere__word {
+    position: relative;
+    display: inline-block;
+  }
+
+  [data-look="helios"] .helios-elsewhere__word::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.24em;
+    height: 1px;
+    background: var(--light-accent);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.5s var(--helios-ease);
+  }
+
+  [data-look="helios"] .helios-elsewhere__mark {
+    position: relative;
+    display: inline-block;
+    flex: none;
+    width: 1.32em;
+    height: 1.32em;
+    color: var(--light-ink);
+    transform-origin: 50% 62%;
+    transition: transform 0.5s var(--helios-ease), color 0.5s var(--helios-ease);
+  }
+
+  /* The halo is the ember the close already burns, gathered under the mark:
+     light behind a silhouette, not a plate around it. It rides inside the mark
+     so the wrapper's hover lift carries it too, and it is a radial gradient
+     rather than a filter — nothing here repaints the page to glow. */
+  [data-look="helios"] .helios-elsewhere__mark::before {
+    content: "";
+    position: absolute;
+    inset: -60%;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--light-accent) 30%, transparent),
+      color-mix(in srgb, var(--light-accent) 0%, transparent) 70%
+    );
+    opacity: 0.42;
+    transform: scale(0.85);
+    transition: opacity 0.6s var(--helios-ease), transform 0.6s var(--helios-ease);
+  }
+
+  [data-look="helios"] .helios-elsewhere__mark svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    transform-origin: 50% 55%;
+    animation: helios-elsewhere-breath 11s var(--helios-ease) infinite alternate;
+  }
+
+  /* Half a period apart, so the two doors never inhale together. */
+  [data-look="helios"] .helios-elsewhere__list li:nth-child(even) .helios-elsewhere__mark svg {
+    animation-delay: -5.5s;
+  }
+
+  [data-look="helios"] .helios-elsewhere__link:hover,
+  [data-look="helios"] .helios-elsewhere__link:focus-visible {
+    color: var(--light-high);
     text-shadow: var(--helios-glow);
   }
 
-  [data-look="helios"] .helios-seal {
-    position: relative;
-    z-index: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.85rem 1.5rem;
-    border: 1px solid var(--light-accent);
-    color: #ffe27a;
-    font-family: var(--font-display);
-    font-size: 0.68rem;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: background 0.35s var(--helios-ease), color 0.35s var(--helios-ease);
+  [data-look="helios"] .helios-elsewhere__link:focus-visible {
+    outline: 1px solid var(--light-accent);
+    outline-offset: 0.3em;
   }
 
-  [data-look="helios"] .helios-seal:hover {
-    background: var(--light-accent);
-    color: var(--light-ground);
+  [data-look="helios"] .helios-elsewhere__link:hover .helios-elsewhere__word::after,
+  [data-look="helios"] .helios-elsewhere__link:focus-visible .helios-elsewhere__word::after {
+    transform: scaleX(1);
   }
+
+  /* The mark comes forward: it does not stop breathing, it comes closer to the
+     glass — the silhouette takes the high cream, the halo opens, and the lift
+     is the same 0.1em the arrow used to rise by. */
+  [data-look="helios"] .helios-elsewhere__link:hover .helios-elsewhere__mark,
+  [data-look="helios"] .helios-elsewhere__link:focus-visible .helios-elsewhere__mark {
+    color: var(--light-high);
+    transform: translate(0.06em, -0.1em) scale(1.12);
+  }
+
+  [data-look="helios"] .helios-elsewhere__link:hover .helios-elsewhere__mark::before,
+  [data-look="helios"] .helios-elsewhere__link:focus-visible .helios-elsewhere__mark::before {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-look="helios"] .helios-elsewhere__link,
+    [data-look="helios"] .helios-elsewhere__word::after,
+    [data-look="helios"] .helios-elsewhere__mark,
+    [data-look="helios"] .helios-elsewhere__mark::before {
+      transition: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    [data-look="helios"] .helios-elsewhere { flex: 1 0 100%; }
+  }
+
 
   /* The hero and colophon already wrap their accent words in <em>. The shared
      carousel emits [data-media-slot="title"], whose textContent changes in
@@ -1540,6 +2288,8 @@
   @supports (background-clip: text) or (-webkit-background-clip: text) {
     [data-look="helios"] .helios-thesis em,
     [data-look="helios"] .helios-hero [data-media-slot="title"],
+    [data-look="helios"] .helios-elsewhere__link:hover .helios-elsewhere__word,
+    [data-look="helios"] .helios-elsewhere__link:focus-visible .helios-elsewhere__word,
     [data-look="helios"] .helios-colophon h2 em {
       --helios-accent-veil: color-mix(in srgb, var(--light-accent) 84%, transparent);
       background-image:
@@ -1553,6 +2303,8 @@
     }
 
     [data-look="helios"] .helios-thesis em,
+    [data-look="helios"] .helios-elsewhere__link:hover .helios-elsewhere__word,
+    [data-look="helios"] .helios-elsewhere__link:focus-visible .helios-elsewhere__word,
     [data-look="helios"] .helios-colophon h2 em {
       animation: helios-grain 1.2s steps(2) infinite;
     }
@@ -1571,6 +2323,15 @@
     from { transform: translate3d(0, 0, 0); }
     to { transform: translate3d(var(--helios-drift-x, 1%), var(--helios-drift-y, -1%), 0); }
   }
+
+  /* The doors' breath: a swell and a dimming on the same slow clock the hero's
+     objects drift by — never enough to read as an animation, only enough that
+     the mark is never twice the same size. */
+  @keyframes helios-elsewhere-breath {
+    from { opacity: 0.62; transform: scale(0.94); }
+    to { opacity: 0.9; transform: scale(1.05); }
+  }
+
 
   @keyframes helios-crawl {
     to { transform: translate3d(-50%, 0, 0); }
@@ -1975,8 +2736,14 @@
   [data-look="helios"] .helios-hall .helios-colophon {
     position: relative;
     z-index: 7;
+    min-height: 0;
     background: linear-gradient(180deg, rgb(5 0 9 / 0.45), var(--light-ground) 40%);
   }
+
+  /* The hall is a rehearsal of the CLOSE, and it brings its own room. A dawn
+     drawn inside it would be two weathers in one frame, so the rehearsal keeps
+     its gradient and the landing keeps its dawn. */
+  [data-look="helios"] .helios-hall .helios-colophon__dawn { display: none; }
 
   /* The rehearsal's switch. It does not ship: it exists so a candidate can be
      put beside today's close without editing anything on <body>. State is read
@@ -2121,6 +2888,8 @@
   @media (prefers-reduced-motion: reduce) {
     body[data-look="helios"]:has(.helios-about)::before,
     [data-look="helios"] .helios-thesis em,
+    [data-look="helios"] .helios-elsewhere__link:hover .helios-elsewhere__word,
+    [data-look="helios"] .helios-elsewhere__link:focus-visible .helios-elsewhere__word,
     [data-look="helios"] .helios-colophon h2 em,
     [data-look="helios"] :is(
       .helios-hero [data-media-surface="fill"],
@@ -2131,9 +2900,11 @@
       .helios-colophon
     )::before,
     [data-look="helios"] .helios-ticker__track,
-    [data-look="helios"] .helios-see__object {
+    [data-look="helios"] .helios-see__object,
+    [data-look="helios"] .helios-elsewhere__mark svg {
       animation: none;
     }
+
 
     /* The hall's own two: the beacon's breath and the vault's shimmer. The
        embers are the runtime's, and it draws one still frame instead. */

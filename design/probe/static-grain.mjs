@@ -58,7 +58,10 @@ try{
   assert.equal(current.hero.size,'220px 220px');
   assert.equal(current.heroIdle,false,'hero grain is visible');
   assert.deepEqual(current.landscape.map(s=>s.animation),['helios-grain','helios-grain','helios-grain'],'landscape grain steps');
-  assert.deepEqual(current.landscapeIdle,[true,true,true],'offscreen landscape grain is paused');
+  // The two stages are gated. The closing invitation is not: it shares an edge
+  // with the close, whose grain is never gated, and one field cannot run on two
+  // clocks (see assets/js/home/grain-motion.mjs).
+  assert.deepEqual(current.landscapeIdle,[true,true,false],'offscreen stages pause; the threshold keeps the close\'s clock');
   assert.equal(current.ticker.animation,'helios-grain');assert.equal(current.colophon.animation,'helios-grain');
   const resumed=await page.evaluate(`new Promise(resolve=>{const hero=document.querySelector('.helios-hero [data-media-surface="fill"]'),e=document.querySelector('.helios-possibilities'),r=e.getBoundingClientRect();scrollTo({top:scrollY+r.top+r.height*.5-innerHeight*.5,behavior:'instant'});setTimeout(()=>resolve({idle:e.hasAttribute('data-grain-idle'),state:getComputedStyle(e,'::before').animationPlayState,heroIdle:hero.hasAttribute('data-grain-idle'),heroState:getComputedStyle(hero,'::before').animationPlayState}),450)})`);
   assert.equal(resumed.idle,false,'visible landscape grain resumes');

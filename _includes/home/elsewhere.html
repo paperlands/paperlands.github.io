@@ -1,0 +1,35 @@
+{%- comment -%}
+  The close's other doors: the addresses that live off the site.
+
+  Words AND addresses come from _data/links.yml — this file invents neither, the
+  same rule the page's own copy follows. The rail is placed by
+  _includes/home/colophon.html between the statement and the seal; the look
+  (components/helios.css) owns how it reads. Pass `links: false` to withhold it
+  from a close that should show the statement alone.
+
+  No overline and no divider: the words "Elsewhere" and a hairline between the
+  doors and the statement were furniture, and in a last viewport furniture is
+  what the eye lands on first. The two doors are words with marks, and the nav
+  keeps its accessible name from the same data (`label`) — heard, not drawn.
+
+  Each door wears its destination's mark: the `mark` key in the same data names
+  one of the publishers' own paths in _includes/icon.html, and a destination
+  without one keeps the arrow. The geometry is borrowed; the light it is drawn
+  in is the look's.
+{%- endcomment -%}
+{%- assign elsewhere = site.data.links -%}
+{%- if include.links != false and elsewhere.elsewhere -%}
+<nav class="helios-elsewhere" aria-label="{{ elsewhere.label | escape }}">
+  <ul class="helios-elsewhere__list">
+    {%- for link in elsewhere.elsewhere %}
+    <li>
+      {%- assign mark = link.mark | default: 'arrow-up-right' -%}
+      <a class="helios-elsewhere__link" href="{{ link.href }}">
+        <span class="helios-elsewhere__mark" aria-hidden="true">{% include icon.html name=mark %}</span>
+        <span class="helios-elsewhere__word">{{ link.label }}</span>
+      </a>
+    </li>
+    {%- endfor %}
+  </ul>
+</nav>
+{%- endif -%}

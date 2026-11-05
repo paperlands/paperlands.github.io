@@ -1,12 +1,370 @@
 {%- comment -%}
-  The close. A statement, then one way forward.
+  The close. A dawn, then one way forward.
 
   Copy is the page's (`page.colophon`) — the words AND the address: this file
   invents none of them. Params override:
-    colophon, title, title_em, action, href
+    colophon, title, title_em, action, href, links
+
+  `links: false` withholds the elsewhere rail (home/elsewhere.html) from a close
+  that should show the statement alone. Its words live in _data/links.yml.
+
+  THE SCENE. The last viewport is the landing's dawn, drawn — not photographed,
+  not filtered, no new asset: two silhouettes of land, a sun going down behind
+  them, the air it lights, and the wet floor that throws it back at the reader.
+  The reference is design/prior/helios.jpg, and the three things that make that
+  frame a dawn are structural, not decorative:
+
+    1. THE HORIZON IS NOT A LINE. It is the upper contour of land that is
+       darker than the sky behind it. Nothing is stroked along it: the sun's
+       disc is cut by the near ridge, and that cut IS the horizon. An earlier
+       version of this close drew a hairline arc with a glow around it, which is
+       the same picture inverted — a bright line on a dark ground reads as a
+       rule with light, never as weather.
+    2. THE LIGHT COMES TOWARD THE READER. The sun's path lies on the floor, not
+       in the sky: a 24-unit opening under the ridge that widens to 414 units at
+       the bottom edge, tapering on Bézier edges, broken into a few separate lips
+       so it reads as light on water rather than as a road. The gaps are the
+       point, and there are deliberately few of them.
+    3. NOTHING MOVES SIDEWAYS. A dawn is a sustained illumination, not a light
+       travelling across a line, so the crossing glint and its `stroke-dashoffset`
+       are gone — that animation also repainted the whole band every frame for
+       one thin dash. What is left to move is the grain the surface already
+       carries and the doors' own breath below.
+
+  The SVG covers the section (viewBox 1200x720, `slice`, anchored to the bottom)
+  so the floor always meets the page's last pixel, whatever the viewport's
+  aspect: the sun keeps its 40% of the height, the ridge its 46%, the water its
+  rest. Nothing is clipped into view by a hidden overflow.
+
+  Colours are read from the site's light roles, never stated here: each `<stop>`
+  names a role with `data-ink` and components/helios.css binds it. (A `var()`
+  inside a presentation attribute happens to work in current Chromium and
+  Firefox; it is not part of SVG's promise, and this file does not lean on it.)
 {%- endcomment -%}
 {%- assign home_colophon = include.colophon | default: page.colophon -%}
 <footer class="helios-colophon">
-  <h2>{{ include.title | default: home_colophon.title }} <em>{{ include.title_em | default: home_colophon.title_em }}</em></h2>
-  <a class="helios-seal" href="{{ include.href | default: home_colophon.href }}">{{ include.action | default: home_colophon.action }}</a>
+  <svg class="helios-colophon__dawn" viewBox="0 0 1200 720" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+    <defs>
+      {%- comment -%}
+        THE SKY is three full-bleed layers, not one radial: a haze that lights the
+        whole frame, the sun's bloom, and the sun's core. Every one is a rect or a
+        circle far larger than the viewBox, so no edge is reachable and no isoline
+        can show. One radial alone leaves a dome whose corner the frame runs out
+        of — a lamp, not weather.
+        AND THE HAZE IS BRIGHT AT ITS TOP. The reference is design/prior/helios.jpg:
+        an overwhelmed horizon, where the light is above the sunrise and not only
+        around it. A haze that fades to black at the top of the frame would give the
+        close a dusk, and the section above a dark band to arrive out of. The seam is
+        instead the horizon's own colour on both sides (--helios-horizon,
+        components/helios.css), so what the arrival mask fades in is glow over glow:
+        an awakening, not a fade-in from night.
+      {%- endcomment -%}
+      <linearGradient id="dawn-haze" gradientUnits="userSpaceOnUse" x1="0" y1="-260" x2="0" y2="400">
+        <stop offset="0" data-ink="accent" stop-opacity=".46"/>
+        <stop offset=".55" data-ink="accent" stop-opacity=".44"/>
+        <stop offset="1" data-ink="high" stop-opacity=".34"/>
+      </linearGradient>
+      <radialGradient id="dawn-bloom" gradientUnits="userSpaceOnUse" cx="600" cy="318" r="430">
+        <stop offset="0" data-ink="ink" stop-opacity=".7"/>
+        <stop offset=".11" data-ink="high" stop-opacity=".55"/>
+        <stop offset=".26" data-ink="accent" stop-opacity=".27"/>
+        <stop offset=".52" data-ink="ember" stop-opacity=".1"/>
+        <stop offset=".78" data-ink="ember" stop-opacity=".018"/>
+        <stop offset="1" data-ink="ember" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="dawn-core" gradientUnits="userSpaceOnUse" cx="600" cy="318" r="154">
+        <stop offset="0" data-ink="ink" stop-opacity="1"/>
+        <stop offset=".12" data-ink="ink" stop-opacity=".8"/>
+        <stop offset=".32" data-ink="high" stop-opacity=".5"/>
+        <stop offset=".58" data-ink="high" stop-opacity=".14"/>
+        <stop offset=".82" data-ink="accent" stop-opacity=".025"/>
+        <stop offset="1" data-ink="accent" stop-opacity="0"/>
+      </radialGradient>
+
+      {%- comment -%}
+        THE LAND is three OPAQUE planes. Distance is warmth and relative darkness,
+        never alpha: a translucent ridge lets the sun's disc show through it, and
+        a disc seen through a veil has a rim — the one thing this scene cannot
+        have. Each plane's own fill fades toward the ground as it descends, so a
+        ridge is a mass, not a cut-out with a flat colour.
+      {%- endcomment -%}
+      <linearGradient id="dawn-far" gradientUnits="userSpaceOnUse" x1="0" y1="275" x2="0" y2="470">
+        <stop offset="0" data-ink="far-tech" stop-opacity="1"/>
+        <stop offset=".55" data-ink="far-low" stop-opacity="1"/>
+        <stop offset="1" data-ink="ground-2" stop-opacity="1"/>
+      </linearGradient>
+      <linearGradient id="dawn-middle" gradientUnits="userSpaceOnUse" x1="0" y1="300" x2="0" y2="445">
+        <stop offset="0" data-ink="middle-tech" stop-opacity="1"/>
+        <stop offset="1" data-ink="ground-2" stop-opacity="1"/>
+      </linearGradient>
+
+      {%- comment -%}
+        THE WATER. Two very weak axial fields — an elongated ellipse centred on
+        the sun's x, and a broad floor wash centred below the frame's edge — so
+        the reflection has a source without ever becoming a beam. The glints
+        supply the reflection; these only tell the eye which way is out.
+      {%- endcomment -%}
+      {%- comment -%}
+        THE SHORE. Not a column of marks on black: three broad pools of wet light
+        that overlap, drift left as they come forward (the source is at x=600 and
+        the shore's lit area wanders to x≈480 by the frame's edge), and fade to
+        nothing in every direction, so the illuminated area has no outline at
+        all. The lips (glints, specular) sit ON the pools; the pools are what
+        make the floor a surface rather than a sequence.
+      {%- endcomment -%}
+      <radialGradient id="dawn-pool-1" gradientUnits="userSpaceOnUse" cx="588" cy="548" r="168"
+        gradientTransform="matrix(1 0 0 .82 0 99)">
+        <stop offset="0" data-ink="accent" stop-opacity=".2"/>
+        <stop offset=".38" data-ink="ember" stop-opacity=".1"/>
+        <stop offset="1" data-ink="ember" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="dawn-pool-2" gradientUnits="userSpaceOnUse" cx="552" cy="652" r="252"
+        gradientTransform="matrix(1 0 0 .78 0 143)">
+        <stop offset="0" data-ink="accent" stop-opacity=".24"/>
+        <stop offset=".4" data-ink="ember" stop-opacity=".11"/>
+        <stop offset="1" data-ink="ember" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="dawn-pool-3" gradientUnits="userSpaceOnUse" cx="500" cy="768" r="350"
+        gradientTransform="matrix(1 0 0 .74 0 200)">
+        <stop offset="0" data-ink="accent" stop-opacity=".22"/>
+        <stop offset=".42" data-ink="ember" stop-opacity=".09"/>
+        <stop offset="1" data-ink="ember" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="dawn-floor" gradientUnits="userSpaceOnUse" cx="627" cy="736" r="340">
+        <stop offset="0" data-ink="accent" stop-opacity=".10"/>
+        <stop offset=".48" data-ink="ember" stop-opacity=".055"/>
+        <stop offset="1" data-ink="ember" stop-opacity="0"/>
+      </radialGradient>
+
+      {%- comment -%}
+        The glint colour is USER SPACE and centred on the sun (x=600), so the
+        brightest reflection is the one under the sun by construction rather
+        than by luck. The profile is slightly asymmetric — the cooler shoulder
+        is broader — and both ends die out before the gutters.
+      {%- endcomment -%}
+      {%- comment -%}
+        The specular: the sun's own reflection, not more water. Four lips on the
+        axis, near-white at x=600 and gone by x=500/700 — the brightest thing on
+        the floor, and the only part of it that is genuinely luminous. The three
+        fragment clusters stay subordinate to this and are never brightened to
+        compensate for it.
+      {%- endcomment -%}
+      <linearGradient id="dawn-specular" gradientUnits="userSpaceOnUse" x1="536" y1="0" x2="668" y2="0">
+        <stop offset="0" data-ink="accent" stop-opacity="0"/>
+        <stop offset=".3" data-ink="high" stop-opacity=".84"/>
+        <stop offset=".5" data-ink="ink" stop-opacity="1"/>
+        <stop offset=".7" data-ink="high" stop-opacity=".84"/>
+        <stop offset="1" data-ink="accent" stop-opacity="0"/>
+      </linearGradient>
+      <linearGradient id="dawn-glint" gradientUnits="userSpaceOnUse" x1="300" y1="0" x2="900" y2="0">
+        <stop offset="0" data-ink="ember" stop-opacity="0"/>
+        <stop offset=".18" data-ink="ember" stop-opacity=".3"/>
+        <stop offset=".34" data-ink="accent" stop-opacity=".72"/>
+        <stop offset=".5" data-ink="high" stop-opacity="1"/>
+        <stop offset=".66" data-ink="accent" stop-opacity=".72"/>
+        <stop offset=".82" data-ink="ember" stop-opacity=".3"/>
+        <stop offset="1" data-ink="ember" stop-opacity="0"/>
+      </linearGradient>
+
+      {%- comment -%}
+        THE TROUGH'S OWN FADE. A crest dies where the light does: url(#dawn-glint)
+        spans x=300..900 and is already transparent at every crest's ends. The dark
+        that follows a crest has to die in the same places, or it draws a ruled
+        line across the water. The stops name the ROLE, never a colour — the
+        ground's own value painted over lit water is what makes a trough read as
+        deeper water instead of as a drop shadow.
+      {%- endcomment -%}
+      <linearGradient id="dawn-trough" gradientUnits="userSpaceOnUse" x1="240" y1="0" x2="960" y2="0">
+        <stop offset="0" data-ink="ground" stop-opacity="0"/>
+        <stop offset=".3" data-ink="ground" stop-opacity=".8"/>
+        <stop offset=".5" data-ink="ground" stop-opacity="1"/>
+        <stop offset=".7" data-ink="ground" stop-opacity=".8"/>
+        <stop offset="1" data-ink="ground" stop-opacity="0"/>
+      </linearGradient>
+
+      {%- comment -%}
+        The waterline is a mask read as ALPHA (`mask-type` in the CSS), so the
+        stops can be the ground's own colour. It opens 29 units under the ridge
+        and never closes again: the mask's rect runs to y=800, so the frame's
+        last pixel is fully open and only the very end fades (.65 at 800). The
+        fragments run past the viewport too, so the page ends on wet light
+        rather than on a shoreline drawn to be tidy.
+      {%- endcomment -%}
+      <linearGradient id="dawn-water" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" data-ink="ground" stop-opacity="0"/>
+        <stop offset=".10" data-ink="ground" stop-opacity="1"/>
+        <stop offset=".91" data-ink="ground" stop-opacity="1"/>
+        <stop offset="1" data-ink="ground" stop-opacity=".65"/>
+      </linearGradient>
+      <mask id="dawn-waterline" class="helios-colophon__waterline" maskUnits="userSpaceOnUse" x="0" y="510" width="1200" height="290">
+        <rect x="0" y="510" width="1200" height="290" fill="url(#dawn-water)"/>
+      </mask>
+    </defs>
+
+    <rect class="helios-colophon__sky" x="-500" y="-400" width="2200" height="1700" fill="url(#dawn-haze)"/>
+    <circle class="helios-colophon__bloom" cx="600" cy="318" r="430" fill="url(#dawn-bloom)"/>
+    <circle class="helios-colophon__core" cx="600" cy="318" r="154" fill="url(#dawn-core)"/>
+
+    {%- comment -%}
+      The horizon, three planes. The far plane's peaks are unequal in approach
+      and departure and space 277–321 units apart; the near plane has two broad
+      shoulders instead of a peak every 40 units, and its central saddle at y=405
+      is what leaves the words a field of unbroken dark. The middle plane is
+      deliberately NOT a continuous band: it is visible only in pockets, which is
+      what keeps three planes from reading as three stripes.
+    {%- endcomment -%}
+    <path class="helios-colophon__far"
+      d="M0 348 C58 331 120 307 164 281 C191 268 217 285 244 301 C287 327 342 326 395 321 C431 317 457 278 485 277 C512 278 535 309 566 331 C592 348 629 347 664 332 C726 305 760 292 802 294 C857 296 885 327 924 337 C978 348 1032 297 1079 284 C1125 273 1171 300 1200 321 L1200 720 H0Z"
+      fill="url(#dawn-far)"/>
+    <path class="helios-colophon__middle"
+      d="M0 410 C102 399 175 391 233 370 C273 351 284 327 309 331 C368 341 393 385 449 386 C494 387 542 369 580 389 C611 403 665 415 714 389 C742 374 763 339 798 342 C838 348 874 398 913 405 C960 418 1010 370 1059 343 C1104 318 1149 371 1200 402 L1200 720 H0Z"
+      fill="url(#dawn-middle)"/>
+    <path class="helios-colophon__near"
+      d="M0 393 C79 384 142 370 181 366 C215 361 230 395 271 400 C324 407 353 379 407 365 C455 352 506 381 546 393 C583 406 619 405 659 389 C703 371 737 353 774 358 C818 367 854 395 912 397 C955 398 1002 382 1047 378 C1094 373 1152 393 1200 410 L1200 720 H0Z"/>
+
+    <rect class="helios-colophon__pool" x="-400" y="240" width="2000" height="650" fill="url(#dawn-pool-1)"/>
+    <rect class="helios-colophon__pool" x="-400" y="240" width="2000" height="650" fill="url(#dawn-pool-2)"/>
+    <rect class="helios-colophon__pool" x="-400" y="240" width="2000" height="650" fill="url(#dawn-pool-3)"/>
+    <rect class="helios-colophon__floor" x="-400" y="300" width="2000" height="590" fill="url(#dawn-floor)"/>
+
+    {%- comment -%}
+      The reflection, kept almost empty. A reflection is broad light broken by a
+      few lips, not a metre of water ruled with lines: three clusters of two or
+      three tapered fragments, 60–80 units apart, each fragment a closed unequal
+      shape rather than a stroked dash (a stroke with a round cap stays
+      mechanically straight however its length is varied, which is what turned an
+      earlier version into rungs). The gaps are the water, and the light they sit
+      in comes from the pools above, not from more marks.
+    {%- endcomment -%}
+    {%- comment -%}
+      Three quiet levels, nothing more. A reflection is broad light broken by a
+      few lips, not a metre of water ruled with lines: each cluster here holds
+      two or three fragments of unequal length, the clusters are 60–80 units
+      apart, and every opacity is low enough that the surface reads before the
+      marks do. The gaps do the work.
+    {%- endcomment -%}
+    <g class="helios-colophon__glints" fill="url(#dawn-glint)" mask="url(#dawn-waterline)">
+      <g opacity=".3">
+        <path d="M568 574Q586 572.7 610 573.2Q626 572.7 640 574Q612 576.1 574 575.7Z"/>
+        <path d="M651 583Q671 581.3 690 582.2Q680 584.3 658 584.3Z"/>
+      </g>
+      <g opacity=".24" transform="translate(-58 0)">
+        <path d="M470 665Q509 662.5 548 663.3Q526 666.3 481 667.1Z"/>
+        <path d="M634 656Q670 653.9 706 656Q681 658.1 647 658.9Z"/>
+      </g>
+      <g opacity=".17" transform="translate(-112 0)">
+        <path d="M426 697Q453 694.1 490 695.3Q481 697.8 441 699.1Z"/>
+        <path d="M604 690Q627 688.7 652 688.7Q639 691.3 612 692.5Z"/>
+      </g>
+    </g>
+
+    {%- comment -%}
+      The fine field. Water reflects in MANY short bands, not a handful of long
+      ones: between the tapered lips there are dozens of hair-thin slivers, each
+      a dash of a line rather than a shape, warmer and dimmer than the lips they
+      sit under. One element per band — the irregularity is in the dash pattern,
+      so the SVG stays small and nothing is measured per frame.
+    {%- endcomment -%}
+    {%- comment -%}
+      THE WATER BREATHES. Six crests, one drop.
+
+      Two dashed hairlines stood here: texture, and it read as a rule with light
+      on it. What replaces them is the catalogue the site already teaches —
+      _data/lessons.yml worlds 1-6, in order — struck as ripples on the sun's own
+      reflection. The origin is the specular's lip (600,545), so the first crest
+      IS the edge of the light: the water is not decorated with mathematics, it
+      is made of it. `the_academy` gets no element; it is the water these six
+      pour into.
+
+      A CREST IS A PAIR, because the sun is behind the water. `__crest` is the
+      far face the low light rims; `__trough` is the near face falling away from
+      it in the water's own dark, 3 units under it. BOTH ARE BANDS, NOT RULES: a
+      2.4-unit sheen at .20 riding on a 14-unit darkening at .08, because light on
+      water at this angle lies in a film, and a hairline is a line. The amplitude
+      across a wave is 10 units on a 210-unit floor — you have to look twice.
+
+      AND THEY TRAVEL OUTWARD. A swell is not a pulse in place: each world is born
+      at the specular (invisible, .94 of its radius), spreads to 1.2 and
+      dissolves, then is born again — one crest about every four seconds across
+      the six, so the pool always holds six at six different ages. The trough runs
+      0.4s behind its crest, which makes the dark the WAKE: the light gathers,
+      then the water it lifted falls back. The clock and the curve are in
+      components/helios.css.
+
+      THE RINGS ARE NOT CONICS. Each carries a ±1.5-unit displacement over three
+      unequal spans, and the spans break unevenly per world. A clean ellipse is a
+      diagram; light on water never is one.
+
+      SIX RULES, ALL AT ONCE. An act can afford a suite of movements; a close
+      cannot — this is one chord, held at every instant: one ring per world, each
+      at its own age on its way out. The six are never stated in the same
+      currency, so they cannot be counted or read as a legend:
+        1 gemstone    one facet struck straight where the glint turns on it
+        2 arcs        broken into two sweeps; the gap's edges rest two points
+        3 recursion   two short bud fragments riding above the crest
+        4 heartbeat   geometry still; the crest double-swells (lub-dub) in CSS
+        5 flock       fragmented into nine unequal slivers, no two alike
+        6 kepler      doubled and tilted .6° — a shell seen almost edge-on
+
+      GEOMETRY: rx = 96·k^1.05, ry = .28·rx with a ±6% skew per world so the
+      family is never evenly nested, origin (600,545), half-sweep 78°→39°. At
+      mid-travel the apexes are 572/597/635/652/695/716 and the gaps between them
+      25/39/16/43/21 — uneven, because a set of evenly nested rings is a target.
+      The displacement is scaled to each crest's own height, so the small crest
+      under the words is almost straight. Every crest's ends fall outside
+      url(#dawn-glint)'s span and are transparent there: nothing is stroked across
+      the sun.
+    {%- endcomment -%}
+    <g class="helios-colophon__ripples" fill="none" stroke="url(#dawn-glint)" stroke-linecap="butt" mask="url(#dawn-waterline)">
+      <g class="helios-colophon__wave" style="--d:0s" data-world="1">
+        <path class="helios-colophon__trough" stroke="url(#dawn-trough)" stroke-width="14" stroke-opacity=".08" d="M693.9 553.9C688.2 563.8 671.3 566.1 647.5 571.4C620.5 576.7 587.7 576.7 559.5 572.2C532.1 567.3 512.4 564.0 506.1 553.4"/>
+        <path class="helios-colophon__crest is-facet" stroke-width="2.6" stroke-opacity=".08" d="M642.9 569.0L600.0 571.7"/>
+        <path class="helios-colophon__crest" stroke-width="2.4" stroke-opacity="0.2" d="M693.9 550.9C688.2 560.8 671.3 563.1 647.5 568.4C620.5 573.7 587.7 573.7 559.5 569.2C532.1 564.3 512.4 561.0 506.1 550.4"/>
+      </g>
+      <g class="helios-colophon__wave" style="--d:-3.4s" data-world="2">
+        <path class="helios-colophon__trough" stroke="url(#dawn-trough)" stroke-width="12" stroke-opacity=".07" d="M786.8 566.1C767.7 583.9 727.4 588.5 675.7 596.1C624.1 603.0 565.9 602.6 515.4 594.7C467.9 586.6 431.2 582.4 413.2 565.4"/>
+        <path class="helios-colophon__crest" stroke-width="2.2" stroke-opacity="0.15" stroke-dasharray="165 23 999" d="M786.8 563.1C767.7 580.9 727.4 585.5 675.7 593.1C624.1 600.0 565.9 599.6 515.4 591.7C467.9 583.6 431.2 579.4 413.2 562.4"/>
+        <circle cx="633.8" cy="596.2" r="1.5" fill="url(#dawn-glint)" opacity=".4"/>
+        <circle cx="604.9" cy="596.9" r="1.5" fill="url(#dawn-glint)" opacity=".4"/>
+      </g>
+      <g class="helios-colophon__wave" style="--d:-7.9s" data-world="3">
+        <path class="helios-colophon__trough" stroke="url(#dawn-trough)" stroke-width="11" stroke-opacity=".065" d="M863.5 591.8C832.5 613.2 785.7 617.6 729.5 628.8C661.5 640.8 584.0 642.6 512.1 634.9C438.0 626.0 375.2 619.9 336.5 594.6"/>
+        <path class="helios-colophon__crest" stroke-width="2.0" stroke-opacity="0.11" d="M863.5 588.8C832.5 610.2 785.7 614.6 729.5 625.8C661.5 637.8 584.0 639.6 512.1 631.9C438.0 623.0 375.2 616.9 336.5 591.6"/>
+        <path class="helios-colophon__bud" stroke-width="1.8" stroke-opacity=".05" stroke-dasharray="48 162 65 999" stroke-dashoffset="-162" d="M863.5 580.8C832.5 602.2 785.7 606.6 729.5 617.8C661.5 629.8 584.0 631.6 512.1 623.9C438.0 615.0 375.2 608.9 336.5 583.6"/>
+      </g>
+      <g class="helios-colophon__wave" style="--d:-11.6s" data-world="4">
+        <path class="helios-colophon__trough" stroke="url(#dawn-trough)" stroke-width="10" stroke-opacity=".06" d="M924.3 615.0C868.6 638.7 791.0 645.0 703.5 653.0C620.9 659.8 533.6 658.7 453.9 648.7C383.6 638.8 322.0 634.1 275.7 613.5"/>
+        <path class="helios-colophon__crest is-beat" stroke-width="1.8" stroke-opacity="0.09" d="M924.3 612.0C868.6 635.7 791.0 642.0 703.5 650.0C620.9 656.8 533.6 655.7 453.9 645.7C383.6 635.8 322.0 631.1 275.7 610.5"/>
+      </g>
+      <g class="helios-colophon__wave" style="--d:-15.8s" data-world="5">
+        <path class="helios-colophon__trough" stroke="url(#dawn-trough)" stroke-width="9" stroke-opacity=".055" d="M967.9 654.3C903.9 678.1 824.5 683.0 737.3 692.4C647.4 701.2 552.6 701.1 462.7 692.3C375.5 682.8 296.1 677.6 232.1 653.7"/>
+        <path class="helios-colophon__crest is-slivers" stroke-width="1.6" stroke-opacity="0.075" stroke-dasharray="7 21 13 14 5 26 17 11 9 19 6 29 15 13 8 24 11 999" d="M967.9 651.3C903.9 675.1 824.5 680.0 737.3 689.4C647.4 698.2 552.6 698.1 462.7 689.3C375.5 679.8 296.1 674.6 232.1 650.7"/>
+      </g>
+      <g class="helios-colophon__wave" style="--d:-19.1s" data-world="6">
+        <path class="helios-colophon__trough" stroke="url(#dawn-trough)" stroke-width="8" stroke-opacity=".05" d="M996.5 680.9C929.6 700.4 852.3 703.4 769.4 712.2C669.8 721.5 564.9 721.6 463.9 714.2C368.5 706.4 279.4 702.0 203.5 680.6"/>
+        <path class="helios-colophon__crest" stroke-width="1.4" stroke-opacity="0.06" d="M996.5 677.9C929.6 697.4 852.3 700.4 769.4 709.2C669.8 718.5 564.9 718.6 463.9 711.2C368.5 703.4 279.4 699.0 203.5 677.6"/>
+        <path class="helios-colophon__crest is-shell" transform="rotate(.6 600 545) translate(0 -6)" stroke-width="1.2" stroke-opacity=".04" d="M996.5 677.9C929.6 697.4 852.3 700.4 769.4 709.2C669.8 718.5 564.9 718.6 463.9 711.2C368.5 703.4 279.4 699.0 203.5 677.6"/>
+      </g>
+    </g>
+    <g class="helios-colophon__specular" fill="url(#dawn-specular)" mask="url(#dawn-waterline)">
+      <path opacity=".52" d="M571 605Q596 603.5 634 604.6Q617 607 582 607.1Z"/>
+    </g>
+  </svg>
+
+  <div class="helios-colophon__copy">
+    <h2>{{ include.title | default: home_colophon.title }} <em>{{ include.title_em | default: home_colophon.title_em }}</em></h2>
+    {% include home/elsewhere.html links=include.links %}
+    {%- comment -%}
+      The label is written unescaped on purpose, the way the standing footer's
+      line is (_data/site.yml): the page owns the sentence and may mark up a word
+      in it — "Enter <span class="font-paperlang">PaperLand</span>" sets the brand
+      in the site's own face, which is the only place that face belongs.
+    {%- endcomment -%}
+    {%- comment -%}
+      It carries the arrow now, because the invitation's call does: the two are
+      one door (assets/css/components/helios.css, "one door, two places") and a
+      door that leaves the site says so the same way on both.
+    {%- endcomment -%}
+    <a class="helios-seal" href="{{ include.href | default: home_colophon.href }}">{{ include.action | default: home_colophon.action }} {% include home/cta-arrow.html %}</a>
+  </div>
 </footer>

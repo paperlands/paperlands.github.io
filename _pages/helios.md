@@ -49,7 +49,7 @@ create:
   focus: Stage
   focus_gesture: gather
   body: |
-    It may be a curious question you've asked, ideas you wrestled with, a surprising discovery you stumbled.
+    It may be a curious question you've asked, ideas you wrestled with, a surprising discovery you stumbled upon.
 
     We design avenues for students to share their own stories through their mathematical creations for their community.
   action: Explore our <u>experiences</u>
@@ -88,7 +88,10 @@ ticker:
 colophon:
   title: See Math
   title_em: Differently
-  action: Enter PaperLand
+  # The brand word wears the site's own face, as the standing footer's line does
+  # (_data/site.yml): the resolver and the class own the drawing, the page owns the
+  # sentence. Raw HTML is expected here — the include writes the label unescaped.
+  action: Enter <span class="font-paperlang">PaperLand</span>
   href: https://dojo.paperland.sg/welcome
 
 # The letter's words are NOT here. The contact modal is the site's, not this
