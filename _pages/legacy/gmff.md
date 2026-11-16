@@ -162,11 +162,11 @@ permalink: /gmff
     </div>
     <div class="gmff-hero__stage" data-gmff-hero-stage>
       <div class="gmff-hero__poster-frame">
-        <img class="gmff-hero__poster" src="https://i.ytimg.com/vi/IT7jGh46MPc/maxresdefault.jpg" alt="Preview of the Gambian Mathematics Film Festival film" width="1280" height="720" />
+        <img class="gmff-hero__poster" src="https://i.ytimg.com/vi/ccGRri9nASo/maxresdefault.jpg" alt="Preview of the Gambian Mathematics Film Festival film" width="1280" height="720" />
       </div>
       <iframe
         class="gmff-hero__video"
-        data-gmff-hero-video="https://www.youtube-nocookie.com/embed/IT7jGh46MPc?autoplay=1&rel=0"
+        data-gmff-hero-video="https://www.youtube-nocookie.com/embed/ccGRri9nASo?autoplay=1&rel=0"
         title="Gambian Mathematics Film Festival film"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         referrerpolicy="strict-origin-when-cross-origin"

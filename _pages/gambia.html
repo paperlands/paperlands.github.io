@@ -1,0 +1,68 @@
+---
+layout: folio
+look: gambia
+nav_tone: dark
+title: Gambia
+permalink: /gambia
+description: What happens when students make the math their own? Visit a classroom in The Gambia and see students explore, create, and share with PaperLand.
+copy:
+  eyebrow: PaperLand in The Gambia
+  title: What happens when students make the math their own?
+  intro: >-
+    Coordinates become butterflies. Randomness makes a house wobble.
+    In The Gambia, students use PaperLand to explore math through code
+    and create something of their own.
+  label: Watch the classroom story · 4 minutes
+  caption: Sights and Sounds on the Ground · PaperLand
+  watch: Watch on YouTube
+  invitation: What could your students create?
+  about: >-
+    PaperLand helps students explore math through code, make visual creations,
+    and share their ideas. Bring that spirit to your school, math circle,
+    or math community.
+  approach: Explore our approach
+  contact: Plan an experience with us
+video:
+  title: Sights and Sounds on the Ground — PaperLand
+  embed: https://www.youtube-nocookie.com/embed/wjt2Lo9cFGI?rel=0
+  url: https://www.youtube.com/watch?v=wjt2Lo9cFGI
+---
+
+<article class="gambia" aria-labelledby="gambia-title">
+  <header class="gambia__intro">
+    <p class="gambia__eyebrow">{{ page.copy.eyebrow }}</p>
+    <h1 id="gambia-title">{{ page.copy.title }}</h1>
+    <p class="gambia__deck">{{ page.copy.intro }}</p>
+  </header>
+
+  <figure class="gambia__film" aria-labelledby="gambia-film-label">
+    <p class="gambia__label" id="gambia-film-label">
+      <span class="gambia__play-mark" aria-hidden="true">{% include icon.html name="play" %}</span>
+      {{ page.copy.label }}
+    </p>
+    <div class="gambia__frame">
+      <iframe
+        src="{{ page.video.embed }}"
+        title="{{ page.video.title | escape }}"
+        width="960"
+        height="540"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen
+      ></iframe>
+    </div>
+    <figcaption class="gambia__caption">
+      <span>{{ page.copy.caption }}</span>
+      <a href="{{ page.video.url }}">{{ page.copy.watch }} <span aria-hidden="true">↗</span></a>
+    </figcaption>
+  </figure>
+
+  <section class="gambia__invitation" aria-labelledby="gambia-invitation">
+    <h2 id="gambia-invitation">{{ page.copy.invitation }}</h2>
+    <p>{{ page.copy.about }}</p>
+    <div class="gambia__actions">
+      <a href="{{ '/our-approach' | relative_url }}">{{ page.copy.approach }} <span aria-hidden="true">→</span></a>
+      <a href="{{ '/contact' | relative_url }}">{{ page.copy.contact }} <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+</article>

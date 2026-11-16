@@ -1,0 +1,154 @@
+/* A single film, using the folio's ink, light and shared navigation. */
+@layer components {
+  [data-look="gambia"] {
+    min-height: 100svh;
+  }
+
+  .gambia {
+    width: min(100% - 3rem, 60rem);
+    margin-inline: auto;
+    padding-block: clamp(8rem, 13vw, 10rem) 3rem;
+  }
+
+  .gambia__intro {
+    text-align: center;
+    margin-bottom: clamp(2.75rem, 6vw, 4rem);
+  }
+
+  .gambia__eyebrow,
+  .gambia__label {
+    color: var(--light-accent);
+    font: 400 .6875rem/1.6 var(--font-display);
+    letter-spacing: .18em;
+    text-transform: uppercase;
+  }
+
+  .gambia__eyebrow {
+    margin: 0 0 1rem;
+  }
+
+  .gambia__intro h1 {
+    max-width: 44rem;
+    margin: 0 auto;
+    font: 500 clamp(2.5rem, 5.5vw, 4.5rem)/1.1 var(--font-serif);
+    letter-spacing: -.025em;
+    text-wrap: balance;
+  }
+
+  .gambia__deck {
+    max-width: 40rem;
+    margin: 1.5rem auto 0;
+    color: var(--light-ink-dim);
+    font-size: clamp(1.125rem, 2.5vw, 1.375rem);
+    line-height: 1.5;
+    text-wrap: balance;
+  }
+
+  .gambia__film {
+    margin: 0;
+  }
+
+  .gambia__label {
+    display: flex;
+    align-items: center;
+    gap: .875rem;
+    margin: 0 0 1.25rem;
+  }
+
+  .gambia__play-mark {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 1.5rem;
+    border-radius: .25rem;
+    background: var(--light-ember);
+    color: var(--light-ink);
+  }
+
+  .gambia__play-mark svg {
+    width: .625rem;
+    height: .625rem;
+  }
+
+  .gambia__frame {
+    border: 1px solid var(--light-rule);
+    border-left: .375rem solid var(--light-ember);
+    background: var(--light-ground-2);
+    box-shadow: .5rem .5rem 0 color-mix(in srgb, var(--light-ember) 18%, transparent);
+  }
+
+  .gambia__frame iframe {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    border: 0;
+  }
+
+  .gambia__caption {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .5rem 1.5rem;
+    margin-top: 1.25rem;
+    color: var(--light-ink-dim);
+    font-size: 1rem;
+  }
+
+  .gambia a {
+    color: var(--light-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--light-rule);
+    text-underline-offset: .25em;
+  }
+
+  .gambia a:hover {
+    color: var(--light-accent);
+    text-decoration-color: currentColor;
+  }
+
+  .gambia a:focus-visible {
+    outline: 2px solid var(--light-accent);
+    outline-offset: .375rem;
+  }
+
+  .gambia__invitation {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--light-rule);
+    text-align: center;
+  }
+
+  .gambia__invitation h2 {
+    margin: 0;
+    font: 500 clamp(1.75rem, 3vw, 2.5rem)/1.2 var(--font-serif);
+  }
+
+  .gambia__invitation p {
+    max-width: 36rem;
+    margin: 1rem auto 0;
+    color: var(--light-ink-dim);
+    font-size: 1.125rem;
+    line-height: 1.5;
+  }
+
+  .gambia__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: .75rem 2rem;
+    margin-top: 1.5rem;
+    font-size: 1.125rem;
+  }
+
+  @media (max-width: 480px) {
+    .gambia {
+      width: calc(100% - 2.5rem);
+      padding-top: 7rem;
+    }
+
+    .gambia__caption {
+      flex-direction: column;
+    }
+  }
+}

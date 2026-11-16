@@ -113,6 +113,9 @@ tailwind:
 # ground every folio page stands on, two declarations), as do the foundation
 # sheets — tokens, lights, faces, the bar, the drawn mark, media, document.
 css_modes:
+  gambia:
+    input: assets/css/components/gambia.css
+    output: assets/css/mode-gambia.css
   experiences:
     input: assets/css/components/experiences.css
     output: assets/css/mode-experiences.css
