@@ -258,6 +258,8 @@
 
   function canPlay(video) {
     if (document.hidden || suspended || video.dataset.mediaAttached !== '1' || !video.isConnected) return false;
+    // A page's explicit pause control must survive sync, observers and retries.
+    if (video.hasAttribute('data-media-paused')) return false;
     if ((video.dataset.mediaMode || 'loop') === 'hover') return true;
     var p = policy(video, markedGroups());
     return p === 'play' || (p === 'io' && !!visOf.get(video));

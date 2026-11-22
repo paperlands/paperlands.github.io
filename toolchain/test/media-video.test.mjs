@@ -299,6 +299,26 @@ test('legacy players without play promises reveal through the playing event', ()
   assert.equal(h.videos[0].hasAttribute('data-ready'), true);
 });
 
+test('an explicit page pause survives sync, pause events and lifecycle restoration', () => {
+  const h = harness(); h.sync(); h.start();
+  const v = h.videos[0];
+  v.setAttribute('data-media-paused', ''); v.pause(); v.emit('pause');
+  h.sync(); h.visibility(true); h.visibility(false);
+  h.window.emit('pagehide'); h.window.emit('pageshow');
+  assert.equal(h.calls.length, 1, 'observers and restoration must not undo a user pause');
+  assert.equal(v.paused, true);
+  v.removeAttribute('data-media-paused'); h.sync();
+  assert.equal(h.calls.length, 2, 'explicit resume returns to the shared playback policy');
+});
+
+test('a page can begin still and opt into playback without another player', () => {
+  const h = harness(), v = h.videos[0];
+  v.setAttribute('data-media-paused', ''); h.sync();
+  assert.equal(h.calls.length, 0);
+  v.removeAttribute('data-media-paused'); h.sync();
+  assert.equal(h.calls.length, 1);
+});
+
 test('priority markup and reduced-motion styles permit native autoplay', () => {
   const template = readFileSync(new URL('../../_includes/media/video.html', import.meta.url), 'utf8');
   const css = readFileSync(new URL('../../assets/css/core/media.css', import.meta.url), 'utf8');

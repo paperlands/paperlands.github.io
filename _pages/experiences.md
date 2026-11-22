@@ -23,13 +23,13 @@ prelude:
   paragraphs:
     - Meaning in math begins with asking our own questions.
     - They lead us down unknown paths, with only our curiosity to guide us.
-    - And suddenly we are on a quest and discover a story worth telling.
-  invitation: That's when the Stage could
-  focus: bring math to *life.*
+    - And suddenly we are on a journey and find stories worth telling.
+  invitation: That's where the  
+  focus: "*Stage* brings math to *life.*"
 possibilities:
   seam:
-    lead: And this Stage becomes
-    experience: ours to imagine.
+    lead: A Stage for
+    experience: us to imagine.
     forms:
       - {shape: branch, src: /assets/lib/notes/experiences/forms-branch-6de71b4e.webp, width: 640, height: 796}
       - {shape: canopy, src: /assets/lib/notes/experiences/forms-canopy-eaf127b6.webp, width: 640, height: 796}
@@ -37,7 +37,7 @@ possibilities:
     - id: festival
       jump: Festival
       reverse: true
-      title: What we cannot *create*<br>we do not *understand*
+      title: "*Create* it to *Believe it*"
       gesture: create
       position: 40% bottom
       event: Math Festivals & Carnivals
@@ -45,9 +45,9 @@ possibilities:
       poster: /assets/lib/notes/experiences/festival_scene-462fca3c.webp
       body: |-
         Carry art and nature into mathematics.<br class="experiences-desktop-break">
-        Let a pattern grow into a story, an idea into a small film.
+        Find a pattern that tells a story or an idea that speaks through a short film.
 
-        Create something your way, and let others see it too.
+        Create something of your own, and let others see it in their way.
       film:
         label: Watch math film festival
         caption: "From young Gambians: math is alive, and in our hands."
@@ -67,7 +67,7 @@ possibilities:
       clip: symposium_scene
       poster: /assets/lib/notes/experiences/symposium_scene-5c924193.webp
       body: |-
-        Find a pattern. Ask why.<br class="experiences-desktop-break">
+        See a pattern. Ask why.<br class="experiences-desktop-break">
         Follow your question down unmarked paths.
 
         Invite others into your search.<br class="experiences-desktop-break">
@@ -86,7 +86,7 @@ possibilities:
         Bring people together.<br class="experiences-desktop-break">
         Tend to their curiosity and make room for their questions.
 
-        The next idea might be theirs.
+        The next big idea might be theirs.
 support:
   title: Where do we<br><em> begin?</em>
   invitation: Bring an experience to your community.
